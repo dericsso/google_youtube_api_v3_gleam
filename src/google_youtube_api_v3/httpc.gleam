@@ -1,10 +1,13 @@
-//// Execute [`Request`](./request.html#Request) values with Erlang's
-//// built-in `httpc` client.
+//// Execute [`Request`](./request.html#Request) values with
+//// [`gleam_httpc`](https://hex.pm/packages/gleam_httpc), bindings to
+//// Erlang's built-in `httpc` client.
 ////
-//// Erlang target only. This module is a worked-example transport
-//// over the Sans-IO core, maintained as source (not generated): render the URL purely with [`to_url`](#to_url),
-//// send it with [`send`](#send), then decode the body with
-//// `request.parse_response` and a generated `decoder()`.
+//// Erlang target only. This module is a worked-example transport over
+//// the Sans-IO core, maintained as source (not generated): render a
+//// `Request` purely with [`to_url`](#to_url) for logging, convert it
+//// with [`to_httpc_request`](#to_httpc_request), send it with
+//// [`send`](#send), then decode the body with `request.parse_response`
+//// and a generated `decoder()`.
 ////
 //// ```gleam
 //// import google_youtube_api_v3/httpc
@@ -27,14 +30,16 @@
 //// }
 //// ```
 
-import gleam/http.{Delete, Get, Post, Put}
+import gleam/http
+import gleam/http/request as http_request
+import gleam/http/response as http_response
+import gleam/httpc
 import gleam/list
-import gleam/option.{None, Some}
-import gleam/result
+import gleam/option.{Some}
 import gleam/string
 import google_youtube_api_v3/request.{type Credentials, type Request}
 
-const api_root = "https://www.googleapis.com/"
+const api_host = "www.googleapis.com"
 
 /// An executed exchange: status code, headers, and body as a string.
 /// Feed `status` and `body` into `request.parse_response`.
@@ -46,16 +51,21 @@ pub type Response {
 /// back as `Ok(Response)` with a non-2xx status; decode those with
 /// `request.parse_response`.
 pub type HttpError {
-  TransportFailed(String)
+  TransportFailed(httpc.HttpError)
 }
 
-/// Render a request's full URL: root + path + encoded query string.
-/// Pure: test your request builders through this without any I/O.
+/// Render a request's full URL for display and logging: root + path +
+/// encoded query string. Pure: test request builders through this
+/// without any I/O. The transport itself goes through
+/// [`to_httpc_request`](#to_httpc_request), which lets `gleam_http`
+/// own the encoding.
 pub fn to_url(request: Request) -> String {
   case request.query {
-    [] -> api_root <> request.path
+    [] -> "https://" <> api_host <> "/" <> request.path
     query ->
-      api_root
+      "https://"
+      <> api_host
+      <> "/"
       <> request.path
       <> "?"
       <> string.join(
@@ -67,6 +77,31 @@ pub fn to_url(request: Request) -> String {
   }
 }
 
+/// Convert a Sans-IO request into a `gleam_http` request record ready
+/// for `httpc.send`. Pure.
+pub fn to_httpc_request(request: Request) -> http_request.Request(String) {
+  http_request.new()
+  |> http_request.set_method(request.method)
+  |> http_request.set_scheme(http.Https)
+  |> http_request.set_host(api_host)
+  |> http_request.set_path("/" <> request.path)
+  |> http_request.set_query(request.query)
+  |> with_headers(request.headers)
+  |> http_request.set_body(case request.body {
+    Some(body) -> body
+    _ -> ""
+  })
+}
+
+fn with_headers(
+  req: http_request.Request(String),
+  headers: List(#(String, String)),
+) -> http_request.Request(String) {
+  list.fold(headers, req, fn(req, header) {
+    http_request.prepend_header(req, header.0, header.1)
+  })
+}
+
 /// Send one request with `httpc` and collect the response.
 /// Only JSON bodies are supported; media uploads need a
 /// resumable-upload client instead.
@@ -75,34 +110,23 @@ pub fn send(
   credentials: Credentials,
 ) -> Result(Response, HttpError) {
   let request = request.authorize(request, credentials)
-  use #(verb, content_type, body) <- result.try(method_and_body(request))
-  case ffi_request(verb, to_url(request), request.headers, content_type, body) {
-    Ok(#(status, headers, raw_body)) ->
-      Ok(Response(status:, headers:, body: raw_body))
+  case httpc.send(to_httpc_request(request)) {
+    Ok(response) -> Ok(from_httpc_response(response))
     Error(reason) -> Error(TransportFailed(reason))
   }
 }
 
-/// Split a request into its httpc verb, content type, and body.
-/// Generated builders only ever produce get/post/put/delete; anything
-/// else is a caller-constructed `Request` this transport won't send.
-fn method_and_body(
-  request: Request,
-) -> Result(#(String, String, String), HttpError) {
-  case request.method, request.body {
-    Get, _ -> Ok(#("get", "", ""))
-    Delete, _ -> Ok(#("delete", "", ""))
-    Post, None -> Ok(#("post", "application/json", ""))
-    Put, None -> Ok(#("put", "application/json", ""))
-    Post, Some(payload) -> Ok(#("post", "application/json", payload))
-    Put, Some(payload) -> Ok(#("put", "application/json", payload))
-    _, _ -> Error(TransportFailed("unsupported HTTP method for httpc"))
-  }
+fn from_httpc_response(response: http_response.Response(String)) -> Response {
+  Response(
+    status: response.status,
+    headers: response.headers,
+    body: response.body,
+  )
 }
 
 fn percent_encode(value: String) -> String {
   // The values codegen produces (ids, tokens, part names) are already
-  // URL-safe; encode just the reserved few.
+  // URL-safe; encode just the reserved few for display URLs.
   value
   |> string.replace(" ", "%20")
   |> string.replace("&", "%26")
@@ -111,12 +135,3 @@ fn percent_encode(value: String) -> String {
   |> string.replace("#", "%23")
   |> string.replace("+", "%2B")
 }
-
-@external(erlang, "gleam_youtube_api_v3_httpc_ffi", "request")
-fn ffi_request(
-  method: String,
-  url: String,
-  headers: List(#(String, String)),
-  content_type: String,
-  body: String,
-) -> Result(#(Int, List(#(String, String)), String), String)

@@ -1,0 +1,6 @@
+//// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
+
+/// Stub token pagination template to suppress results.
+pub type TokenPagination {
+  TokenPagination
+}

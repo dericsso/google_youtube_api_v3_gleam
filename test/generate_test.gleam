@@ -404,3 +404,15 @@ pub fn description_is_optional_test() {
   parse_schema("{\"type\": \"object\"}")
   |> should.equal(Schema(None, Object(dict.new(), None)))
 }
+
+// ---------------------------------------------------------------------------
+// Codegen tests: the `type` emitted per file
+// ---------------------------------------------------------------------------
+
+pub fn generated_module_carries_do_not_change_header_test() {
+  let Discovery(schemas:) = load_discovery()
+  let assert Ok(schema) = dict.get(schemas, "Video")
+  generate.build_module("Video", schema)
+  |> string.starts_with("//// " <> generate.generated_notice)
+  |> should.be_true
+}

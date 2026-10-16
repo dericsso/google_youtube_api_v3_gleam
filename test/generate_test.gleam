@@ -1,9 +1,3 @@
-import generate.{
-  type Discovery, type Kind, type Method, type Parameter, type Resource,
-  type Schema, Array, Boolean, Delete, Discovery, Get, Integer, Method, Number,
-  Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path, Post, Put,
-  Query, Ref, Resource, Schema, Str,
-}
 import gleam/dict
 import gleam/http
 import gleam/json
@@ -12,17 +6,23 @@ import gleam/option.{None, Some}
 import gleam/set
 import gleam/string
 import gleeunit/should
+import google_youtube_api_v3/generate.{
+  type Discovery, type Kind, type Method, type Parameter, type Resource,
+  type Schema, Array, Boolean, Delete, Discovery, Get, Integer, Method, Number,
+  Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path, Post, Put,
+  Query, Ref, Resource, Schema, Str,
+}
 import google_youtube_api_v3/httpc as api_httpc
 import google_youtube_api_v3/request as api_request
+import google_youtube_api_v3/youtube/api/captions as captions_api
+import google_youtube_api_v3/youtube/api/playlists as playlists_api
+import google_youtube_api_v3/youtube/api/videos as videos_api
+import google_youtube_api_v3/youtube/page_info
+import google_youtube_api_v3/youtube/playlist
+import google_youtube_api_v3/youtube/playlist_item_status
+import google_youtube_api_v3/youtube/video_snippet
+import google_youtube_api_v3/youtube/video_suggestions
 import simplifile
-import youtube/api/captions as captions_api
-import youtube/api/playlists as playlists_api
-import youtube/api/videos as videos_api
-import youtube/page_info
-import youtube/playlist
-import youtube/playlist_item_status
-import youtube/video_snippet
-import youtube/video_suggestions
 
 const discovery_file_path = "discovery/2026-10-16_discovery_document.json"
 

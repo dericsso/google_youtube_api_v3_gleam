@@ -91,7 +91,7 @@ Further documentation can be found at <https://hexdocs.pm/google_youtube_api_v3/
 
 ```sh
 gleam test                  # Run the tests
-gleam run -m generate       # Regenerate src/youtube from discovery/
+gleam run -m google_youtube_api_v3/generate  # Regenerate from discovery/
 gleam format src test       # Generated code needs a format pass
 ```
 
@@ -112,7 +112,7 @@ the generator, not the output. Everything else (`src/generate.gleam`,
 AI assistance, reviewed by a human before commit.
 
 > **Disclosure:** this project is AI-assisted, not vibe-coded. An AI coding
-> agent (Muse Spark via OpenCode) wrote the generator and the generated code
+> agent (via OpenCode) wrote the generator and the generated code
 > under human direction, and a human reviews what gets committed. Every
 > generated decoder is exercised by round-trip tests, and `gleam build` plus
 > `gleam test` pass clean — trust the test suite, not the author list.

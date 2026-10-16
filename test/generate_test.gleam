@@ -12,7 +12,6 @@ import google_youtube_api_v3/generate.{
   Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path, Post, Put,
   Query, Ref, Resource, Schema, Str,
 }
-import google_youtube_api_v3/httpc as api_httpc
 import google_youtube_api_v3/request as api_request
 import google_youtube_api_v3/youtube/api/captions as captions_api
 import google_youtube_api_v3/youtube/api/playlists as playlists_api
@@ -983,19 +982,19 @@ pub fn to_url_encodes_query_test() {
     videos_api.list(["snippet"])
     |> videos_api.list_with_max_results(5)
     |> videos_api.list_request
-    |> api_httpc.to_url
+    |> api_request.to_url
   should.equal(
     url,
     "https://www.googleapis.com/youtube/v3/videos?part=snippet&maxResults=5",
   )
 }
 
-pub fn to_httpc_request_converts_sans_io_request_test() {
+pub fn to_http_request_converts_sans_io_request_test() {
   let converted =
     videos_api.list(["snippet"])
     |> videos_api.list_with_max_results(5)
     |> videos_api.list_request
-    |> api_httpc.to_httpc_request
+    |> api_request.to_http_request
   should.equal(converted.method, http.Get)
   should.equal(converted.scheme, http.Https)
   should.equal(converted.host, "www.googleapis.com")

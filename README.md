@@ -29,23 +29,24 @@ in `google_youtube_api_v3/request` (maintained source, not generated):
   or Google's standard error object.
 
 This is a **Sans-IO library**: it never performs I/O. You execute the
-rendered `Request` with your own HTTP client — an Erlang `httpc` adapter
-ships as `google_youtube_api_v3/httpc` as a worked example.
+rendered `Request` with your own HTTP client — convert it with
+`request.to_http_request` into a standard `gleam/http` record and hand
+it to any ecosystem client such as `gleam_httpc`.
 
 ```sh
 gleam add google_youtube_api_v3@1
 ```
 
 ```gleam
+import gleam/httpc
 import gleam/json
 import gleam/option
 import gleam/result
-import google_youtube_api_v3/httpc
 import google_youtube_api_v3/request
-import youtube/api/videos
-import youtube/playlist_item_status
-import youtube/video
-import youtube/video_list_response
+import google_youtube_api_v3/youtube/api/videos
+import google_youtube_api_v3/youtube/playlist_item_status
+import google_youtube_api_v3/youtube/video
+import google_youtube_api_v3/youtube/video_list_response
 
 pub fn video_title(body: String) -> option.Option(String) {
   // Decode a video resource. Missing fields become `None`,
@@ -65,15 +66,19 @@ pub fn privacy_label(status: playlist_item_status.PlaylistItemStatus) -> String 
 }
 
 pub fn most_popular(api_key: String) {
-  // Build the request as pure data, authorize it, send it with Stock
-  // Erlang httpc, then parse the response with a generated decoder.
+  // Build the request as pure data, convert it to a standard
+  // `gleam/http` request, send it with Stock Erlang httpc, then parse
+  // the response with a generated decoder.
   let req =
     videos.list(["snippet"])
     |> videos.list_with_chart(videos.ListChartMostPopular)
     |> videos.list_with_max_results(10)
     |> videos.list_request
   use response <- result.try(
-    httpc.send(req, request.ApiKey(api_key))
+    req
+    |> request.authorize(request.ApiKey(api_key))
+    |> request.to_http_request
+    |> httpc.send
     |> result.map_error(fn(_) { Nil }),
   )
   request.parse_response(

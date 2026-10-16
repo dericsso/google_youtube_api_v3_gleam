@@ -1,16 +1,22 @@
 //// Sans-IO HTTP runtime for the generated YouTube API bindings.
 ////
 //// This module never performs I/O. It describes requests as data
-//// ([`Request`](#Request)), applies credentials to them, and parses
-//// responses back into the generated types. Executing a request against
-//// a real transport (see `google_youtube_api_v3/httpc` for an Erlang
-//// example) is the caller's job.
+//// ([`Request`](#Request)), converts them to `gleam/http` records,
+//// applies credentials to them, and parses responses back into the
+//// generated types. Executing a request against a real transport is
+//// the caller's job — see the module documentation for a `gleam_httpc`
+//// one-liner.
 
 import gleam/dict
 import gleam/dynamic/decode
 import gleam/http.{type Method}
+import gleam/http/request as http_request
 import gleam/json
+import gleam/list
 import gleam/option.{type Option, None, Some}
+import gleam/string
+
+const api_host = "www.googleapis.com"
 
 /// A fully-described API call. Build one with the generated
 /// `*_request` functions (e.g. `youtube/api/videos.list_request`),
@@ -130,4 +136,62 @@ fn option_from_result(result: Result(a, e)) -> Option(a) {
     Ok(value) -> Some(value)
     Error(_) -> None
   }
+}
+
+/// Render a request's full URL for display and logging: root + path +
+/// encoded query string. Pure.
+pub fn to_url(request: Request) -> String {
+  case request.query {
+    [] -> "https://" <> api_host <> "/" <> request.path
+    query ->
+      "https://"
+      <> api_host
+      <> "/"
+      <> request.path
+      <> "?"
+      <> string.join(
+        list.map(query, fn(pair) {
+          percent_encode(pair.0) <> "=" <> percent_encode(pair.1)
+        }),
+        with: "&",
+      )
+  }
+}
+
+/// Convert a Sans-IO request into a `gleam/http` request record, ready
+/// to hand to any ecosystem client (e.g. `gleam_httpc`'s `send`). Pure.
+/// Query encoding is left to `gleam/http`, which owns it.
+pub fn to_http_request(request: Request) -> http_request.Request(String) {
+  http_request.new()
+  |> http_request.set_method(request.method)
+  |> http_request.set_scheme(http.Https)
+  |> http_request.set_host(api_host)
+  |> http_request.set_path("/" <> request.path)
+  |> http_request.set_query(request.query)
+  |> with_headers(request.headers)
+  |> http_request.set_body(case request.body {
+    Some(body) -> body
+    _ -> ""
+  })
+}
+
+fn with_headers(
+  req: http_request.Request(String),
+  headers: List(#(String, String)),
+) -> http_request.Request(String) {
+  list.fold(headers, req, fn(req, header) {
+    http_request.prepend_header(req, header.0, header.1)
+  })
+}
+
+fn percent_encode(value: String) -> String {
+  // The values codegen produces (ids, tokens, part names) are already
+  // URL-safe; encode just the reserved few for display URLs.
+  value
+  |> string.replace(" ", "%20")
+  |> string.replace("&", "%26")
+  |> string.replace("=", "%3D")
+  |> string.replace("?", "%3F")
+  |> string.replace("#", "%23")
+  |> string.replace("+", "%2B")
 }

@@ -392,7 +392,6 @@ fn generate_code(
   let file_name = justin.snake_case(key)
   let file_path = base_path <> "/" <> file_name <> ".gleam"
   let code = build_module(key, schema)
-  echo code
 
   use _ <- result.try(
     simplifile.write(file_path, code) |> result.map_error(WriteFailed),
@@ -418,7 +417,6 @@ fn generate_requests(
   let #(module_name, methods) = item
   let file_path = base_path <> "/" <> module_name <> ".gleam"
   let code = build_request_module(methods)
-  echo code
 
   use _ <- result.try(
     simplifile.write(file_path, code) |> result.map_error(WriteFailed),

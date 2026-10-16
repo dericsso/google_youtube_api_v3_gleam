@@ -1,6 +1,8 @@
 import generate.{
-  type Discovery, type Kind, type Schema, Array, Boolean, Discovery, Integer,
-  Number, Object, Ref, Schema, Str,
+  type Discovery, type Kind, type Method, type Parameter, type Resource,
+  type Schema, Array, Boolean, Delete, Discovery, Get, Integer, Method,
+  Number, Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path,
+  Post, Put, Query, Ref, Resource, Schema, Str,
 }
 import gleam/dict
 import gleam/json
@@ -10,6 +12,11 @@ import gleam/set
 import gleam/string
 import gleeunit/should
 import simplifile
+import youtube/page_info
+import youtube/playlist
+import youtube/playlist_item_status
+import youtube/video_snippet
+import youtube/video_suggestions
 
 const discovery_file_path = "discovery/2026-10-16_discovery_document.json"
 
@@ -66,13 +73,13 @@ pub fn parses_real_discovery_document_test() {
 }
 
 pub fn schema_count_test() {
-  let Discovery(schemas:) = load_discovery()
+  let Discovery(schemas:, ..) = load_discovery()
   // Guard against silently decoding an empty/truncated document.
   should.equal(dict.size(schemas), 209)
 }
 
 pub fn every_top_level_schema_is_an_object_test() {
-  let Discovery(schemas:) = load_discovery()
+  let Discovery(schemas:, ..) = load_discovery()
   let kinds = dict.values(schemas) |> kinds
   let objects = list.filter(kinds, fn(kind) { is_object(kind) })
   // All 209 top-level schemas in this document are type=object.
@@ -157,10 +164,10 @@ fn is_array(kind: Kind) -> Bool {
 }
 
 pub fn every_ref_target_exists_test() {
-  let Discovery(schemas:) = load_discovery()
+  let Discovery(schemas:, ..) = load_discovery()
   let names = dict.keys(schemas) |> set.from_list
   let missing =
-    all_schemas(Discovery(schemas:))
+    all_schemas(Discovery(schemas:, resources: dict.new()))
     |> kinds
     |> list.filter_map(fn(kind) {
       case kind {
@@ -228,7 +235,7 @@ pub fn number_format_is_double_test() {
 }
 
 pub fn string_enums_are_decoded_test() {
-  let Discovery(schemas:) = load_discovery()
+  let Discovery(schemas:, ..) = load_discovery()
   // Spot-check a schema known to carry enum + enumDescriptions alongside
   // the type (extra keys the decoder must tolerate, not choke on).
   let assert Ok(status) = dict.get(schemas, "PlaylistItemStatus")
@@ -238,7 +245,7 @@ pub fn string_enums_are_decoded_test() {
 }
 
 pub fn nested_object_properties_are_decoded_test() {
-  let Discovery(schemas:) = load_discovery()
+  let Discovery(schemas:, ..) = load_discovery()
   // ChannelContentDetails.relatedPlaylists is the only property in the
   // document that nests a "properties" map inside a property.
   let assert Ok(details) = dict.get(schemas, "ChannelContentDetails")
@@ -258,12 +265,12 @@ pub fn nested_object_properties_are_decoded_test() {
 }
 
 pub fn additional_properties_are_decoded_test() {
-  let Discovery(schemas:) = load_discovery()
+  let Discovery(schemas:, ..) = load_discovery()
   // 4 properties use additionalProperties: $ref (Video/Channel/Playlist/
   // ChannelSection localizations). They live on properties, not on
   // top-level schemas, so walk the whole tree.
   let with_additional =
-    all_schemas(Discovery(schemas:))
+    all_schemas(Discovery(schemas:, resources: dict.new()))
     |> list.filter(fn(schema) {
       case schema.kind {
         Object(additional: Some(_), ..) -> True
@@ -279,7 +286,7 @@ pub fn additional_properties_are_decoded_test() {
 }
 
 pub fn empty_object_decodes_test() {
-  let Discovery(schemas:) = load_discovery()
+  let Discovery(schemas:, ..) = load_discovery()
   // TokenPagination has no properties at all.
   let assert Ok(token) = dict.get(schemas, "TokenPagination")
   let assert Object(properties:, additional:) = token.kind
@@ -288,7 +295,7 @@ pub fn empty_object_decodes_test() {
 }
 
 pub fn array_items_variants_are_decoded_test() {
-  let Discovery(schemas:) = load_discovery()
+  let Discovery(schemas:, ..) = load_discovery()
   // Array of inline strings: VideoSnippet.tags.
   let assert Ok(snippet) = dict.get(schemas, "VideoSnippet")
   let assert Object(properties: snippet_props, ..) = snippet.kind
@@ -410,9 +417,407 @@ pub fn description_is_optional_test() {
 // ---------------------------------------------------------------------------
 
 pub fn generated_module_carries_do_not_change_header_test() {
-  let Discovery(schemas:) = load_discovery()
+  let Discovery(schemas:, ..) = load_discovery()
   let assert Ok(schema) = dict.get(schemas, "Video")
   generate.build_module("Video", schema)
   |> string.starts_with("//// " <> generate.generated_notice)
   |> should.be_true
+}
+
+// ---------------------------------------------------------------------------
+// Method/resource regression tests
+// ---------------------------------------------------------------------------
+
+/// Every method in the tree, including nested resources (e.g. youtube.*).
+fn all_methods(discovery: Discovery) -> List(Method) {
+  let Discovery(resources:, ..) = discovery
+  dict.values(resources) |> list.flat_map(methods_of_resource)
+}
+
+fn methods_of_resource(resource: Resource) -> List(Method) {
+  let Resource(methods:, nested:) = resource
+  list.flatten([
+    dict.values(methods),
+    dict.values(nested) |> list.flat_map(methods_of_resource),
+  ])
+}
+
+fn all_parameters(discovery: Discovery) -> List(Parameter) {
+  all_methods(discovery)
+  |> list.flat_map(fn(method) { dict.values(method.parameters) })
+}
+
+pub fn resource_count_test() {
+  let Discovery(resources:, ..) = load_discovery()
+  // 31 resources with methods plus the nested `youtube` resource tree.
+  should.equal(dict.size(resources), 32)
+}
+
+pub fn method_count_test() {
+  let discovery = load_discovery()
+  should.equal(list.length(all_methods(discovery)), 83)
+}
+
+pub fn http_method_tallies_test() {
+  let methods = all_methods(load_discovery())
+  let count = fn(want) {
+    list.filter(methods, fn(m) { m.http_method == want }) |> list.length
+  }
+  should.equal(count(Get), 29)
+  should.equal(count(Post), 29)
+  should.equal(count(Put), 11)
+  should.equal(count(Delete), 14)
+}
+
+pub fn videos_list_spot_check_test() {
+  let Discovery(resources:, ..) = load_discovery()
+  let assert Ok(videos) = dict.get(resources, "videos")
+  let assert Ok(list) = dict.get(videos.methods, "list")
+  should.equal(list.id, "youtube.videos.list")
+  should.equal(list.http_method, Get)
+  should.equal(list.response, Some("VideoListResponse"))
+  should.equal(list.request, None)
+  // The `part` parameter is required and repeatable.
+  let assert Ok(part) = dict.get(list.parameters, "part")
+  should.equal(part.required, True)
+  should.equal(part.repeated, True)
+  should.equal(part.location, Query)
+  should.equal(part.param_type, ParamString)
+  // Enum + format details survive decoding.
+  let assert Ok(chart) = dict.get(list.parameters, "chart")
+  should.equal(chart.enum, ["chartUnspecified", "mostPopular"])
+  let assert Ok(max_results) = dict.get(list.parameters, "maxResults")
+  should.equal(max_results.param_type, ParamInteger)
+  should.equal(max_results.format, Some("uint32"))
+}
+
+pub fn request_and_response_refs_resolve_test() {
+  let Discovery(schemas:, resources:) = load_discovery()
+  let names = dict.keys(schemas) |> set.from_list
+  let missing =
+    all_methods(Discovery(schemas:, resources:))
+    |> list.flat_map(fn(method) {
+      [method.request, method.response] |> option.values
+    })
+    |> list.filter(fn(name) { !set.contains(names, name) })
+  // Codegen cannot resolve dangling request/response $refs.
+  should.equal(missing, [])
+}
+
+pub fn methods_without_response_are_deletes_and_friends_test() {
+  let methods = all_methods(load_discovery())
+  let without_response =
+    list.filter(methods, fn(m) { m.response == None })
+  // 21 methods return no resource: deletes, rate, captions.download, etc.
+  should.equal(list.length(without_response), 21)
+  list.any(without_response, fn(m) {
+    m.id == "youtube.captions.download"
+  })
+  |> should.be_true
+}
+
+pub fn path_parameter_is_decoded_test() {
+  let Discovery(resources:, ..) = load_discovery()
+  // captions.download.id is the only path parameter in the document.
+  let assert Ok(captions) = dict.get(resources, "captions")
+  let assert Ok(download) = dict.get(captions.methods, "download")
+  let assert Ok(id) = dict.get(download.parameters, "id")
+  should.equal(id.location, Path)
+  should.equal(id.required, True)
+  should.equal(download.supports_media_download, True)
+}
+
+pub fn parameter_location_tallies_test() {
+  let params = all_parameters(load_discovery())
+  let queries = list.filter(params, fn(p) { p.location == Query })
+  let paths = list.filter(params, fn(p) { p.location == Path })
+  should.equal(list.length(queries), 318)
+  should.equal(list.length(paths), 1)
+}
+
+pub fn parameter_flag_tallies_test() {
+  let params = all_parameters(load_discovery())
+  let count = fn(f: fn(Parameter) -> Bool) {
+    list.filter(params, f) |> list.length
+  }
+  should.equal(count(fn(p) { p.required }), 81)
+  should.equal(count(fn(p) { p.repeated }), 75)
+  should.equal(count(fn(p) { p.enum != [] }), 29)
+  should.equal(count(fn(p) { p.param_type == ParamString }), 277)
+  should.equal(count(fn(p) { p.param_type == ParamInteger }), 21)
+  should.equal(count(fn(p) { p.param_type == ParamBoolean }), 21)
+}
+
+pub fn scopes_are_decoded_test() {
+  let methods = all_methods(load_discovery())
+  let scoped = list.filter(methods, fn(m) { m.scopes != [] })
+  // All methods carry scopes except the four thirdPartyLinks ones.
+  should.equal(list.length(scoped), 79)
+  let assert Ok(list_method) =
+    list.find(methods, fn(m) { m.id == "youtube.videos.list" })
+  should.be_true(list.contains(
+    list_method.scopes,
+    "https://www.googleapis.com/auth/youtube.readonly",
+  ))
+}
+
+pub fn media_upload_is_decoded_test() {
+  let methods = all_methods(load_discovery())
+  let uploads = list.filter(methods, fn(m) { m.media_upload != None })
+  // videos/captions/channelBanners/thumbnails/watermarks/playlistImages.
+  should.equal(list.length(uploads), 8)
+  let assert Ok(insert) =
+    list.find(methods, fn(m) { m.id == "youtube.videos.insert" })
+  let assert Some(upload) = insert.media_upload
+  should.equal(upload.max_size, Some("274877906944"))
+  should.be_true(list.contains(upload.protocols, "resumable"))
+}
+
+// ---------------------------------------------------------------------------
+// Method/resource decoder unit tests on inline JSON snippets
+// ---------------------------------------------------------------------------
+
+fn parse_method(raw: String) -> Method {
+  let assert Ok(method) = json.parse(raw, generate.method_decoder())
+    as "inline method snippet must decode"
+  method
+}
+
+fn parse_parameter(raw: String) -> Parameter {
+  let assert Ok(parameter) = json.parse(raw, generate.parameter_decoder())
+    as "inline parameter snippet must decode"
+  parameter
+}
+
+pub fn minimal_method_decodes_with_defaults_test() {
+  parse_method(
+    "{\"id\": \"youtube.videos.list\", \"path\": \"youtube/v3/videos\", \"httpMethod\": \"GET\"}",
+  )
+  |> should.equal(Method(
+    "youtube.videos.list",
+    "youtube/v3/videos",
+    Get,
+    None,
+    dict.new(),
+    [],
+    None,
+    None,
+    [],
+    None,
+    False,
+    False,
+  ))
+}
+
+pub fn unknown_http_method_fails_test() {
+  json.parse(
+    "{\"id\": \"x\", \"path\": \"y\", \"httpMethod\": \"PATCH\"}",
+    generate.method_decoder(),
+  )
+  |> should.be_error
+}
+
+pub fn each_http_method_decodes_test() {
+  let method = fn(http) {
+    parse_method(
+      "{\"id\": \"x\", \"path\": \"y\", \"httpMethod\": \"" <> http <> "\"}",
+    ).http_method
+  }
+  should.equal(method("GET"), Get)
+  should.equal(method("POST"), Post)
+  should.equal(method("PUT"), Put)
+  should.equal(method("DELETE"), Delete)
+}
+
+pub fn request_response_refs_decode_test() {
+  let method =
+    parse_method(
+      "{\"id\": \"x\", \"path\": \"y\", \"httpMethod\": \"POST\", \"request\": {\"$ref\": \"Video\"}, \"response\": {\"$ref\": \"VideoListResponse\"}}",
+    )
+  should.equal(method.request, Some("Video"))
+  should.equal(method.response, Some("VideoListResponse"))
+}
+
+pub fn minimal_parameter_decodes_with_defaults_test() {
+  parse_parameter("{\"location\": \"query\", \"type\": \"string\"}")
+  |> should.equal(Parameter(
+    Query,
+    ParamString,
+    None,
+    None,
+    False,
+    False,
+    None,
+    None,
+    None,
+    [],
+    False,
+  ))
+}
+
+pub fn unknown_parameter_location_fails_test() {
+  json.parse(
+    "{\"location\": \"header\", \"type\": \"string\"}",
+    generate.parameter_decoder(),
+  )
+  |> should.be_error
+}
+
+pub fn unknown_parameter_type_fails_test() {
+  json.parse(
+    "{\"location\": \"query\", \"type\": \"null\"}",
+    generate.parameter_decoder(),
+  )
+  |> should.be_error
+}
+
+// ---------------------------------------------------------------------------
+// Generated `decoder()` tests, including live roundtrips through the
+// generated youtube modules
+// ---------------------------------------------------------------------------
+
+pub fn generated_decoder_uses_original_json_keys_test() {
+  let Discovery(schemas:, ..) = load_discovery()
+  let assert Ok(schema) = dict.get(schemas, "PageInfo")
+  let code = generate.build_module("PageInfo", schema)
+  // Gleam fields are snake_case but the wire keys stay camelCase.
+  should.be_true(string.contains(code, "\"resultsPerPage\""))
+  should.be_true(string.contains(code, "\"totalResults\""))
+  should.be_true(string.contains(
+    code,
+    "pub fn decoder() -> Decoder(PageInfo)",
+  ))
+}
+
+pub fn every_schema_generates_a_decoder_test() {
+  let Discovery(schemas:, ..) = load_discovery()
+  let missing =
+    dict.to_list(schemas)
+    |> list.filter(fn(item) {
+      !string.contains(
+        generate.build_module(item.0, item.1),
+        "pub fn decoder()",
+      )
+    })
+    |> list.map(fn(item) { item.0 })
+  should.equal(missing, [])
+}
+
+pub fn generated_decoder_decodes_scalars_test() {
+  json.parse(
+    "{\"totalResults\": 5, \"resultsPerPage\": 10}",
+    page_info.decoder(),
+  )
+  |> should.equal(
+    Ok(page_info.PageInfo(Some(10), Some(5))),
+  )
+}
+
+pub fn generated_decoder_defaults_missing_fields_to_none_test() {
+  json.parse("{}", page_info.decoder())
+  |> should.equal(Ok(page_info.PageInfo(None, None)))
+}
+
+pub fn generated_decoder_decodes_nested_refs_and_lists_test() {
+  let assert Ok(snippet) =
+    json.parse(
+      "{\"title\": \"Hello\", \"tags\": [\"a\", \"b\"], \"thumbnails\": {\"default\": {\"url\": \"https://x/y.jpg\"}}}",
+      video_snippet.decoder(),
+    )
+  should.equal(snippet.title, Some("Hello"))
+  should.equal(snippet.tags, Some(["a", "b"]))
+  let assert Some(thumbnails) = snippet.thumbnails
+  let assert Some(default) = thumbnails.default
+  should.equal(default.url, Some("https://x/y.jpg"))
+}
+
+pub fn generated_decoder_decodes_string_maps_test() {
+  let assert Ok(list) =
+    json.parse(
+      "{\"id\": \"PL1\", \"localizations\": {\"en\": {\"title\": \"Hi\"}}}",
+      playlist.decoder(),
+    )
+  should.equal(list.id, Some("PL1"))
+  let assert Some(localizations) = list.localizations
+  let assert Ok(entry) = dict.get(localizations, "en")
+  should.equal(entry.title, Some("Hi"))
+}
+
+// ---------------------------------------------------------------------------
+// Generated string-enum tests
+// ---------------------------------------------------------------------------
+
+pub fn generated_enum_type_and_helpers_test() {
+  let Discovery(schemas:, ..) = load_discovery()
+  let assert Ok(schema) = dict.get(schemas, "PlaylistItemStatus")
+  let code = generate.build_module("PlaylistItemStatus", schema)
+  // Field type is the custom enum, not String.
+  should.be_true(string.contains(
+    code,
+    "privacy_status: option.Option(PrivacyStatus)",
+  ))
+  should.be_true(string.contains(code, "pub type PrivacyStatus {"))
+  should.be_true(string.contains(
+    code,
+    "pub fn privacy_status_to_string(value: PrivacyStatus) -> String",
+  ))
+  should.be_true(string.contains(
+    code,
+    "pub fn privacy_status_decoder() -> Decoder(PrivacyStatus)",
+  ))
+}
+
+pub fn generated_enum_to_string_test() {
+  playlist_item_status.privacy_status_to_string(
+    playlist_item_status.PrivacyStatusPrivate,
+  )
+  |> should.equal("private")
+  playlist_item_status.privacy_status_to_string(
+    playlist_item_status.PrivacyStatusPublic,
+  )
+  |> should.equal("public")
+}
+
+pub fn generated_enum_decodes_through_parent_test() {
+  let assert Ok(status) =
+    json.parse(
+      "{\"privacyStatus\": \"private\"}",
+      playlist_item_status.decoder(),
+    )
+  should.equal(
+    status.privacy_status,
+    Some(playlist_item_status.PrivacyStatusPrivate),
+  )
+}
+
+pub fn generated_enum_rejects_unknown_values_test() {
+  json.parse(
+    "{\"privacyStatus\": \"sometimes\"}",
+    playlist_item_status.decoder(),
+  )
+  |> should.be_error
+}
+
+pub fn generated_enum_sanitizes_digit_led_values_test() {
+  let Discovery(schemas:, ..) = load_discovery()
+  let assert Ok(schema) = dict.get(schemas, "CdnSettings")
+  let code = generate.build_module("CdnSettings", schema)
+  // `240p` is not a valid constructor name on its own.
+  should.be_true(string.contains(code, "ResolutionValue240p"))
+  should.be_true(string.contains(code, "FrameRateVariable"))
+}
+
+pub fn generated_enum_decodes_arrays_test() {
+  let assert Ok(suggestions) =
+    json.parse(
+      "{\"processingWarnings\": [\"hasEditlist\", \"unknownContainer\"]}",
+      video_suggestions.decoder(),
+    )
+  should.equal(
+    suggestions.processing_warnings,
+    Some([
+      video_suggestions.ProcessingWarningsHasEditlist,
+      video_suggestions.ProcessingWarningsUnknownContainer,
+    ]),
+  )
 }

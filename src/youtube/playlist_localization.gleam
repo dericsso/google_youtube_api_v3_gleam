@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
 import gleam/option
 
 /// Playlist localization setting
@@ -8,4 +9,14 @@ pub type PlaylistLocalization {
     description: option.Option(String),
     title: option.Option(String),
   )
+}
+
+pub fn decoder() -> Decoder(PlaylistLocalization) {
+  use description <- optional_field(
+    "description",
+    option.None,
+    optional(string),
+  )
+  use title <- optional_field("title", option.None, optional(string))
+  success(PlaylistLocalization(description, title))
 }

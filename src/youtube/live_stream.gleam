@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
 import gleam/option
 import youtube/cdn_settings.{type CdnSettings}
 import youtube/live_stream_content_details.{type LiveStreamContentDetails}
@@ -17,4 +18,31 @@ pub type LiveStream {
     snippet: option.Option(LiveStreamSnippet),
     status: option.Option(LiveStreamStatus),
   )
+}
+
+pub fn decoder() -> Decoder(LiveStream) {
+  use cdn <- optional_field(
+    "cdn",
+    option.None,
+    optional(cdn_settings.decoder()),
+  )
+  use content_details <- optional_field(
+    "contentDetails",
+    option.None,
+    optional(live_stream_content_details.decoder()),
+  )
+  use etag <- optional_field("etag", option.None, optional(string))
+  use id <- optional_field("id", option.None, optional(string))
+  use kind <- optional_field("kind", option.None, optional(string))
+  use snippet <- optional_field(
+    "snippet",
+    option.None,
+    optional(live_stream_snippet.decoder()),
+  )
+  use status <- optional_field(
+    "status",
+    option.None,
+    optional(live_stream_status.decoder()),
+  )
+  success(LiveStream(cdn, content_details, etag, id, kind, snippet, status))
 }

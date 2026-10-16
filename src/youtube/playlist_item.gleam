@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
 import gleam/option
 import youtube/playlist_item_content_details.{type PlaylistItemContentDetails}
 import youtube/playlist_item_snippet.{type PlaylistItemSnippet}
@@ -15,4 +16,26 @@ pub type PlaylistItem {
     snippet: option.Option(PlaylistItemSnippet),
     status: option.Option(PlaylistItemStatus),
   )
+}
+
+pub fn decoder() -> Decoder(PlaylistItem) {
+  use content_details <- optional_field(
+    "contentDetails",
+    option.None,
+    optional(playlist_item_content_details.decoder()),
+  )
+  use etag <- optional_field("etag", option.None, optional(string))
+  use id <- optional_field("id", option.None, optional(string))
+  use kind <- optional_field("kind", option.None, optional(string))
+  use snippet <- optional_field(
+    "snippet",
+    option.None,
+    optional(playlist_item_snippet.decoder()),
+  )
+  use status <- optional_field(
+    "status",
+    option.None,
+    optional(playlist_item_status.decoder()),
+  )
+  success(PlaylistItem(content_details, etag, id, kind, snippet, status))
 }

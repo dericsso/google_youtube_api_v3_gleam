@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
 import gleam/option
 import youtube/activity_content_details.{type ActivityContentDetails}
 import youtube/activity_snippet.{type ActivitySnippet}
@@ -13,4 +14,21 @@ pub type Activity {
     kind: option.Option(String),
     snippet: option.Option(ActivitySnippet),
   )
+}
+
+pub fn decoder() -> Decoder(Activity) {
+  use content_details <- optional_field(
+    "contentDetails",
+    option.None,
+    optional(activity_content_details.decoder()),
+  )
+  use etag <- optional_field("etag", option.None, optional(string))
+  use id <- optional_field("id", option.None, optional(string))
+  use kind <- optional_field("kind", option.None, optional(string))
+  use snippet <- optional_field(
+    "snippet",
+    option.None,
+    optional(activity_snippet.decoder()),
+  )
+  success(Activity(content_details, etag, id, kind, snippet))
 }

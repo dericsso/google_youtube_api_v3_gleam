@@ -1,5 +1,5 @@
 name = "google_youtube_api_v3"
-version = "1.0.0"
+version = "1.0.1"
 description = "Gleam bindings for the YouTube Data API v3, generated from the official discovery document"
 licences = ["Apache-2.0"]
 repository = { type = "github", user = "dericsso", repo = "google_api_gleam" }

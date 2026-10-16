@@ -1,4 +1,4 @@
-name = "google_api"
+name = "google_youtube_api_v3"
 version = "1.0.0"
 
 # Fill out these fields if you intend to generate HTML documentation or publish

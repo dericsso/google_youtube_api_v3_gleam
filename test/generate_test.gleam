@@ -1,8 +1,8 @@
 import generate.{
   type Discovery, type Kind, type Method, type Parameter, type Resource,
-  type Schema, Array, Boolean, Delete, Discovery, Get, Integer, Method,
-  Number, Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path,
-  Post, Put, Query, Ref, Resource, Schema, Str,
+  type Schema, Array, Boolean, Delete, Discovery, Get, Integer, Method, Number,
+  Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path, Post, Put,
+  Query, Ref, Resource, Schema, Str,
 }
 import gleam/dict
 import gleam/json
@@ -506,13 +506,10 @@ pub fn request_and_response_refs_resolve_test() {
 
 pub fn methods_without_response_are_deletes_and_friends_test() {
   let methods = all_methods(load_discovery())
-  let without_response =
-    list.filter(methods, fn(m) { m.response == None })
+  let without_response = list.filter(methods, fn(m) { m.response == None })
   // 21 methods return no resource: deletes, rate, captions.download, etc.
   should.equal(list.length(without_response), 21)
-  list.any(without_response, fn(m) {
-    m.id == "youtube.captions.download"
-  })
+  list.any(without_response, fn(m) { m.id == "youtube.captions.download" })
   |> should.be_true
 }
 
@@ -683,10 +680,7 @@ pub fn generated_decoder_uses_original_json_keys_test() {
   // Gleam fields are snake_case but the wire keys stay camelCase.
   should.be_true(string.contains(code, "\"resultsPerPage\""))
   should.be_true(string.contains(code, "\"totalResults\""))
-  should.be_true(string.contains(
-    code,
-    "pub fn decoder() -> Decoder(PageInfo)",
-  ))
+  should.be_true(string.contains(code, "pub fn decoder() -> Decoder(PageInfo)"))
 }
 
 pub fn every_schema_generates_a_decoder_test() {
@@ -708,9 +702,7 @@ pub fn generated_decoder_decodes_scalars_test() {
     "{\"totalResults\": 5, \"resultsPerPage\": 10}",
     page_info.decoder(),
   )
-  |> should.equal(
-    Ok(page_info.PageInfo(Some(10), Some(5))),
-  )
+  |> should.equal(Ok(page_info.PageInfo(Some(10), Some(5))))
 }
 
 pub fn generated_decoder_defaults_missing_fields_to_none_test() {

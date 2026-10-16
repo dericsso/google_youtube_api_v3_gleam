@@ -989,3 +989,10 @@ pub fn to_url_encodes_query_test() {
     "https://www.googleapis.com/youtube/v3/videos?part=snippet&maxResults=5",
   )
 }
+
+pub fn httpc_ffi_shim_is_packaged_test() {
+  // Gleam never checks `@external` targets at compile time: a missing
+  // Erlang shim only explodes at runtime. Pin the file in place.
+  simplifile.is_file("src/gleam_youtube_api_v3_httpc_ffi.erl")
+  |> should.equal(Ok(True))
+}

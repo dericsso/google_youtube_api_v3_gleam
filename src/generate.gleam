@@ -1,3 +1,4 @@
+import gleam/bool
 import gleam/dict.{type Dict}
 import gleam/dynamic/decode
 import gleam/int
@@ -7,12 +8,20 @@ import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/result
 import gleam/string
-import simplifile
+import gleamgen/module.{type Module}
+import gleamgen/module/definition
+import gleamgen/render
+import gleamgen/type_
+import gleamgen/type_/custom
+import gleamgen/type_/variant
+import justin
+import simplifile.{type FileError}
 
 const discovery_file_path = "discovery/2026-10-16_discovery_document.json"
 
 pub type DiscoveryError {
-  ReadFailed(simplifile.FileError)
+  ReadFailed(FileError)
+  WriteFailed(FileError)
   ParseFailed(json.DecodeError)
 }
 
@@ -43,7 +52,9 @@ fn run() -> Result(Discovery, DiscoveryError) {
   use content <- result.try(
     simplifile.read(discovery_file_path) |> result.map_error(ReadFailed),
   )
-  parse_discovery(content)
+  use discovery <- result.try(parse_discovery(content))
+  use a <- result.try(generate_code(discovery, "src/youtube"))
+  Ok(discovery)
 }
 
 pub fn root_decoder() -> decode.Decoder(Discovery) {
@@ -119,15 +130,63 @@ pub fn kind_decoder() -> decode.Decoder(Kind) {
   }
 }
 
+fn generate_code(
+  discovery: Discovery,
+  base_path: String,
+) -> Result(Nil, DiscoveryError) {
+  use _ <- result.try(
+    initialize_directory(base_path) |> result.map_error(WriteFailed),
+  )
+
+  use item <- list.try_each(discovery.schemas |> dict.to_list)
+
+  let #(key, schema) = item
+  let file_name = justin.snake_case(key)
+  let file_path = base_path <> "/" <> file_name <> ".gleam"
+  use _ <- result.try(
+    simplifile.create_file(file_path) |> result.map_error(WriteFailed),
+  )
+  Ok(Nil)
+}
+
+fn initialize_directory(directory_path: String) -> Result(Nil, FileError) {
+  use res <- result.try(simplifile.exists(directory_path, False))
+  let res = case res {
+    True -> Ok(Nil)
+    False -> simplifile.create_directory(directory_path)
+  }
+  use _ <- result.try(res)
+  simplifile.clear_directory(directory_path)
+}
+
+fn build_object(schema: Schema) {
+  let my_type =
+    custom.new()
+    |> custom.with_variant(fn(_) { variant.new("MyType") })
+
+  let mod = {
+    use _type, _constructor <- module.with_custom_type1(
+      definition.new("MyType") |> definition.with_publicity(True),
+      my_type,
+    )
+    module.eof()
+  }
+
+  module.render(mod, render.default_context())
+}
+
+fn build_module(schema: Schema) -> Module {
+  todo
+}
+
 pub fn main() -> Nil {
   case run() {
     Ok(discovery) -> {
       io.println("schemas: " <> int.to_string(dict.size(discovery.schemas)))
-      use l <- list.each(discovery.schemas |> dict.to_list)
-      echo l
       Nil
     }
-    Error(ReadFailed(err)) -> io.println_error(simplifile.describe_error(err))
+    Error(ReadFailed(err)) | Error(WriteFailed(err)) ->
+      io.println_error(simplifile.describe_error(err))
     Error(ParseFailed(err)) ->
       io.println_error("failed to parse: " <> string.inspect(err))
   }

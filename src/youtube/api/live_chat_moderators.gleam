@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/http
 import gleam/int
 import gleam/json
 import gleam/list
@@ -18,7 +19,7 @@ pub fn delete(id: String) -> DeleteParams {
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/liveChat/moderators",
     list.flatten([[#("id", params.id)]]),
     [],
@@ -48,7 +49,7 @@ pub fn insert_request(
   body: LiveChatModerator,
 ) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/liveChat/moderators",
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],
@@ -103,7 +104,7 @@ pub fn list_with_max_results(params: ListParams, value: Int) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/liveChat/moderators",
     list.flatten([
       [#("liveChatId", params.live_chat_id)],

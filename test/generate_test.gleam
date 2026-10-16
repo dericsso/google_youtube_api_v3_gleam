@@ -5,6 +5,7 @@ import generate.{
   Query, Ref, Resource, Schema, Str,
 }
 import gleam/dict
+import gleam/http
 import gleam/json
 import gleam/list
 import gleam/option.{None, Some}
@@ -876,7 +877,7 @@ pub fn fluent_builder_renders_full_request_test() {
     |> videos_api.list_with_max_results(10)
     |> videos_api.list_with_chart(videos_api.ListChartMostPopular)
     |> videos_api.list_request
-  should.equal(request.method, api_request.Get)
+  should.equal(request.method, http.Get)
   should.equal(request.path, "youtube/v3/videos")
   should.equal(request.query, [
     #("part", "snippet"),
@@ -905,7 +906,7 @@ pub fn fluent_builder_renders_path_template_test() {
     captions_api.download("abc123")
     |> captions_api.download_request
   should.equal(request.path, "youtube/v3/captions/abc123")
-  should.equal(request.method, api_request.Get)
+  should.equal(request.method, http.Get)
 }
 
 pub fn fluent_builder_encodes_typed_body_test() {
@@ -915,7 +916,7 @@ pub fn fluent_builder_encodes_typed_body_test() {
   let request =
     playlists_api.insert(["snippet"])
     |> playlists_api.insert_request(body)
-  should.equal(request.method, api_request.Post)
+  should.equal(request.method, http.Post)
   should.equal(request.path, "youtube/v3/playlists")
   let assert Some(raw) = request.body
   let assert Ok(back) = json.parse(raw, playlist.decoder())
@@ -972,8 +973,9 @@ pub fn parse_response_maps_decode_failures_test() {
 }
 
 pub fn http_method_to_string_test() {
-  should.equal(api_request.http_method_to_string(api_request.Get), "GET")
-  should.equal(api_request.http_method_to_string(api_request.Delete), "DELETE")
+  // Verbs come from gleam_http so requests plug into ecosystem clients.
+  should.equal(http.method_to_string(http.Get), "GET")
+  should.equal(http.method_to_string(http.Delete), "DELETE")
 }
 
 pub fn to_url_encodes_query_test() {

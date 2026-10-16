@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/http
 import gleam/int
 import gleam/list
 import gleam/option.{type Option}
@@ -47,7 +48,7 @@ pub fn list_with_hl(params: ListParams, value: String) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/superChatEvents",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

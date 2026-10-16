@@ -2,6 +2,7 @@
 
 import gleam/bool
 import gleam/dynamic/decode.{type Decoder}
+import gleam/http
 import gleam/int
 import gleam/json
 import gleam/list
@@ -82,7 +83,7 @@ pub fn batch_get_stats_add_id(
 
 pub fn batch_get_stats_request(params: BatchGetStatsParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/videos:batchGetStats",
     list.flatten([
       case params.id {
@@ -127,7 +128,7 @@ pub fn delete_with_on_behalf_of_content_owner(
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/videos",
     list.flatten([
       [#("id", params.id)],
@@ -174,7 +175,7 @@ pub fn get_rating_with_on_behalf_of_content_owner(
 
 pub fn get_rating_request(params: GetRatingParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/videos/getRating",
     list.flatten([
       list.map(params.id, fn(v) { #("id", v) }),
@@ -300,7 +301,7 @@ pub fn insert_with_auto_levels(
 
 pub fn insert_request(params: InsertParams, body: Video) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/videos",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -639,7 +640,7 @@ pub fn list_with_chart(params: ListParams, value: ListChart) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/videos",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -714,7 +715,7 @@ pub fn rate(id: String, rating: RateRating) -> RateParams {
 
 pub fn rate_request(params: RateParams) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/videos/rate",
     list.flatten([
       [#("id", params.id)],
@@ -751,7 +752,7 @@ pub fn report_abuse_request(
   body: VideoAbuseReport,
 ) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/videos/reportAbuse",
     list.flatten([
       case params.on_behalf_of_content_owner {
@@ -794,7 +795,7 @@ pub fn update_with_on_behalf_of_content_owner(
 
 pub fn update_request(params: UpdateParams, body: Video) -> Request {
   Request(
-    request.Put,
+    http.Put,
     "youtube/v3/videos",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

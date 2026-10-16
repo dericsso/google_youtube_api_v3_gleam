@@ -2,6 +2,7 @@
 
 import gleam/bool
 import gleam/dynamic/decode.{type Decoder}
+import gleam/http
 import gleam/int
 import gleam/list
 import gleam/option.{type Option}
@@ -1294,7 +1295,7 @@ pub fn list_with_channel_id(params: ListParams, value: String) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/search",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

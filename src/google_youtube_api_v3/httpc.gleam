@@ -27,12 +27,12 @@
 //// }
 //// ```
 
+import gleam/http.{Delete, Get, Post, Put}
 import gleam/list
-import gleam/option.{None}
+import gleam/option.{None, Some}
+import gleam/result
 import gleam/string
-import google_youtube_api_v3/request.{
-  type Credentials, type Request, Delete, Get, Post, Put,
-}
+import google_youtube_api_v3/request.{type Credentials, type Request}
 
 const api_root = "https://www.googleapis.com/"
 
@@ -75,24 +75,28 @@ pub fn send(
   credentials: Credentials,
 ) -> Result(Response, HttpError) {
   let request = request.authorize(request, credentials)
-  let #(verb, content_type, body) = case request.method, request.body {
-    Get, _ -> #("get", "", "")
-    Delete, _ -> #("delete", "", "")
-    Post, None -> #("post", "application/json", "")
-    Put, None -> #("put", "application/json", "")
-    _, option.Some(payload) -> #(
-      case request.method {
-        Post -> "post"
-        _ -> "put"
-      },
-      "application/json",
-      payload,
-    )
-  }
+  use #(verb, content_type, body) <- result.try(method_and_body(request))
   case ffi_request(verb, to_url(request), request.headers, content_type, body) {
     Ok(#(status, headers, raw_body)) ->
       Ok(Response(status:, headers:, body: raw_body))
     Error(reason) -> Error(TransportFailed(reason))
+  }
+}
+
+/// Split a request into its httpc verb, content type, and body.
+/// Generated builders only ever produce get/post/put/delete; anything
+/// else is a caller-constructed `Request` this transport won't send.
+fn method_and_body(
+  request: Request,
+) -> Result(#(String, String, String), HttpError) {
+  case request.method, request.body {
+    Get, _ -> Ok(#("get", "", ""))
+    Delete, _ -> Ok(#("delete", "", ""))
+    Post, None -> Ok(#("post", "application/json", ""))
+    Put, None -> Ok(#("put", "application/json", ""))
+    Post, Some(payload) -> Ok(#("post", "application/json", payload))
+    Put, Some(payload) -> Ok(#("put", "application/json", payload))
+    _, _ -> Error(TransportFailed("unsupported HTTP method for httpc"))
   }
 }
 

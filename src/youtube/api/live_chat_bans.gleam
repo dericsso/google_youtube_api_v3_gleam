@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/http
 import gleam/json
 import gleam/list
 import gleam/option
@@ -17,7 +18,7 @@ pub fn delete(id: String) -> DeleteParams {
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/liveChat/bans",
     list.flatten([[#("id", params.id)]]),
     [],
@@ -44,7 +45,7 @@ pub fn insert_add_part(params: InsertParams, value: String) -> InsertParams {
 
 pub fn insert_request(params: InsertParams, body: LiveChatBan) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/liveChat/bans",
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],

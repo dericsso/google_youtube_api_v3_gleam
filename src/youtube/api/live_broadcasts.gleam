@@ -2,6 +2,7 @@
 
 import gleam/bool
 import gleam/dynamic/decode.{type Decoder}
+import gleam/http
 import gleam/int
 import gleam/json
 import gleam/list
@@ -73,7 +74,7 @@ pub fn bind_with_on_behalf_of_content_owner(
 
 pub fn bind_request(params: BindParams) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/liveBroadcasts/bind",
     list.flatten([
       [#("id", params.id)],
@@ -133,7 +134,7 @@ pub fn delete_with_on_behalf_of_content_owner(
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/liveBroadcasts",
     list.flatten([
       [#("id", params.id)],
@@ -200,7 +201,7 @@ pub fn insert_with_on_behalf_of_content_owner(
 
 pub fn insert_request(params: InsertParams, body: LiveBroadcast) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/liveBroadcasts",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -304,7 +305,7 @@ pub fn insert_cuepoint_request(
   body: Cuepoint,
 ) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/liveBroadcasts/cuepoint",
     list.flatten([
       case params.id {
@@ -520,7 +521,7 @@ pub fn list_with_broadcast_status(
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/liveBroadcasts",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -631,7 +632,7 @@ pub fn transition_with_on_behalf_of_content_owner(
 
 pub fn transition_request(params: TransitionParams) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/liveBroadcasts/transition",
     list.flatten([
       [
@@ -705,7 +706,7 @@ pub fn update_with_on_behalf_of_content_owner(
 
 pub fn update_request(params: UpdateParams, body: LiveBroadcast) -> Request {
   Request(
-    request.Put,
+    http.Put,
     "youtube/v3/liveBroadcasts",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

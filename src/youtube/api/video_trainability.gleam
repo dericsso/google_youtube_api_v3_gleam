@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/http
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
@@ -19,7 +20,7 @@ pub fn get_with_id(_params: GetParams, value: String) -> GetParams {
 
 pub fn get_request(params: GetParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/videoTrainability",
     list.flatten([
       case params.id {

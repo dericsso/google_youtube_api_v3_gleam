@@ -1,6 +1,7 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
 import gleam/dynamic/decode.{type Decoder}
+import gleam/http
 import gleam/int
 import gleam/json
 import gleam/list
@@ -19,7 +20,7 @@ pub fn delete(id: String) -> DeleteParams {
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/liveChat/messages",
     list.flatten([[#("id", params.id)]]),
     [],
@@ -46,7 +47,7 @@ pub fn insert_add_part(params: InsertParams, value: String) -> InsertParams {
 
 pub fn insert_request(params: InsertParams, body: LiveChatMessage) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/liveChat/messages",
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],
@@ -141,7 +142,7 @@ pub fn list_with_hl(params: ListParams, value: String) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/liveChat/messages",
     list.flatten([
       [#("liveChatId", params.live_chat_id)],
@@ -198,7 +199,7 @@ pub fn transition_with_id(
 
 pub fn transition_request(params: TransitionParams) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/liveChat/messages/transition",
     list.flatten([
       case params.id {

@@ -2,6 +2,7 @@
 
 import gleam/bool
 import gleam/dynamic/decode.{type Decoder}
+import gleam/http
 import gleam/int
 import gleam/json
 import gleam/list
@@ -20,7 +21,7 @@ pub fn delete(id: String) -> DeleteParams {
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/subscriptions",
     list.flatten([[#("id", params.id)]]),
     [],
@@ -48,7 +49,7 @@ pub fn insert_add_part(params: InsertParams, value: String) -> InsertParams {
 
 pub fn insert_request(params: InsertParams, body: Subscription) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/subscriptions",
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],
@@ -334,7 +335,7 @@ pub fn list_with_channel_id(params: ListParams, value: String) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/subscriptions",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

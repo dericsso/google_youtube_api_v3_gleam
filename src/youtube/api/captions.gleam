@@ -1,6 +1,7 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
 import gleam/bool
+import gleam/http
 import gleam/json
 import gleam/list
 import gleam/option.{type Option}
@@ -36,7 +37,7 @@ pub fn delete_with_on_behalf_of(
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/captions",
     list.flatten([
       [#("id", params.id)],
@@ -127,7 +128,7 @@ pub fn download_with_on_behalf_of(
 
 pub fn download_request(params: DownloadParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/captions/" <> params.id,
     list.flatten([
       [#("id", params.id)],
@@ -215,7 +216,7 @@ pub fn insert_with_on_behalf_of(
 
 pub fn insert_request(params: InsertParams, body: Caption) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/captions",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -314,7 +315,7 @@ pub fn list_add_id(params: ListParams, value: String) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/captions",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -399,7 +400,7 @@ pub fn update_with_on_behalf_of(
 
 pub fn update_request(params: UpdateParams, body: Caption) -> Request {
   Request(
-    request.Put,
+    http.Put,
     "youtube/v3/captions",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

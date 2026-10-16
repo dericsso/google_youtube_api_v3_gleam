@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/http
 import gleam/int
 import gleam/list
 import gleam/option.{type Option}
@@ -125,7 +126,7 @@ pub fn stream_with_hl(params: StreamParams, value: String) -> StreamParams {
 
 pub fn stream_request(params: StreamParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/liveChat/messages/stream",
     list.flatten([
       case params.hl {

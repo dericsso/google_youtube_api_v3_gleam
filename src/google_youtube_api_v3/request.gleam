@@ -8,34 +8,21 @@
 
 import gleam/dict
 import gleam/dynamic/decode
+import gleam/http.{type Method}
 import gleam/json
 import gleam/option.{type Option, None, Some}
-
-/// An HTTP verb. Render with [`http_method_to_string`](#http_method_to_string).
-pub type HttpMethod {
-  Get
-  Post
-  Put
-  Delete
-}
-
-/// Render a method for the wire, e.g. `Get` becomes `"GET"`.
-pub fn http_method_to_string(method: HttpMethod) -> String {
-  case method {
-    Get -> "GET"
-    Post -> "POST"
-    Put -> "PUT"
-    Delete -> "DELETE"
-  }
-}
 
 /// A fully-described API call. Build one with the generated
 /// `*_request` functions (e.g. `youtube/api/videos.list_request`),
 /// attach credentials with [`authorize`](#authorize), then execute it
 /// with your own HTTP client.
+///
+/// The verb is [`gleam/http`'s `Method`](https://hexdocs.pm/gleam_http/gleam/http.html#Method)
+/// so requests plug straight into ecosystem clients; only
+/// `Get`/`Post`/`Put`/`Delete` are ever generated.
 pub type Request {
   Request(
-    method: HttpMethod,
+    method: Method,
     path: String,
     query: List(#(String, String)),
     headers: List(#(String, String)),

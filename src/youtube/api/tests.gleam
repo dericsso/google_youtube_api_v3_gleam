@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/http
 import gleam/json
 import gleam/list
 import gleam/option.{type Option}
@@ -47,7 +48,7 @@ pub fn insert_with_external_channel_id(
 
 pub fn insert_request(params: InsertParams, body: TestItem) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/tests",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

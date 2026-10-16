@@ -1,6 +1,7 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
 import gleam/dynamic/decode.{type Decoder}
+import gleam/http
 import gleam/int
 import gleam/list
 import gleam/option.{type Option}
@@ -103,7 +104,7 @@ pub fn list_with_filter_by_member_channel_id(
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/members",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

@@ -1,6 +1,7 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
 import gleam/dynamic/decode.{type Decoder}
+import gleam/http
 import gleam/json
 import gleam/list
 import gleam/option.{type Option}
@@ -59,7 +60,7 @@ pub fn delete_with_external_channel_id(
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/thirdPartyLinks",
     list.flatten([
       [#("linkingToken", params.linking_token)],
@@ -101,7 +102,7 @@ pub fn insert_with_external_channel_id(
 
 pub fn insert_request(params: InsertParams, body: ThirdPartyLink) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/thirdPartyLinks",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -174,7 +175,7 @@ pub fn list_with_external_channel_id(
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/thirdPartyLinks",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -219,7 +220,7 @@ pub fn update_with_external_channel_id(
 
 pub fn update_request(params: UpdateParams, body: ThirdPartyLink) -> Request {
   Request(
-    request.Put,
+    http.Put,
     "youtube/v3/thirdPartyLinks",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

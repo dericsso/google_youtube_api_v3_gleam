@@ -1,6 +1,7 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
 import gleam/dynamic/decode.{type Decoder}
+import gleam/http
 import gleam/int
 import gleam/json
 import gleam/list
@@ -23,7 +24,7 @@ pub fn insert_add_part(params: InsertParams, value: String) -> InsertParams {
 
 pub fn insert_request(params: InsertParams, body: CommentThread) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/commentThreads",
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],
@@ -271,7 +272,7 @@ pub fn list_with_all_threads_related_to_channel_id(
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/commentThreads",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

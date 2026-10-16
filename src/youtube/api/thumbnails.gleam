@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/http
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
@@ -22,7 +23,7 @@ pub fn set_with_on_behalf_of_content_owner(
 
 pub fn set_request(params: SetParams) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/thumbnails/set",
     list.flatten([
       [#("videoId", params.video_id)],

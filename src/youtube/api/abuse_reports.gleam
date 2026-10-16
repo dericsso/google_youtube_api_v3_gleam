@@ -1,5 +1,6 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
+import gleam/http
 import gleam/json
 import gleam/list
 import gleam/option
@@ -21,7 +22,7 @@ pub fn insert_add_part(params: InsertParams, value: String) -> InsertParams {
 
 pub fn insert_request(params: InsertParams, body: AbuseReport) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/abuseReports",
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],

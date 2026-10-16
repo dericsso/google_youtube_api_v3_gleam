@@ -2,6 +2,7 @@
 
 import gleam/bool
 import gleam/dynamic/decode.{type Decoder}
+import gleam/http
 import gleam/int
 import gleam/json
 import gleam/list
@@ -20,7 +21,7 @@ pub fn delete(id: String) -> DeleteParams {
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/comments",
     list.flatten([[#("id", params.id)]]),
     [],
@@ -44,7 +45,7 @@ pub fn insert_add_part(params: InsertParams, value: String) -> InsertParams {
 
 pub fn insert_request(params: InsertParams, body: Comment) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/comments",
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],
@@ -161,7 +162,7 @@ pub fn list_add_id(params: ListParams, value: String) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/comments",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -210,7 +211,7 @@ pub fn mark_as_spam_add_id(
 
 pub fn mark_as_spam_request(params: MarkAsSpamParams) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/comments/markAsSpam",
     list.flatten([list.map(params.id, fn(v) { #("id", v) })]),
     [],
@@ -261,7 +262,7 @@ pub fn set_moderation_status_request(
   params: SetModerationStatusParams,
 ) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/comments/setModerationStatus",
     list.flatten([
       list.map(params.id, fn(v) { #("id", v) }),
@@ -299,7 +300,7 @@ pub fn update_add_part(params: UpdateParams, value: String) -> UpdateParams {
 
 pub fn update_request(params: UpdateParams, body: Comment) -> Request {
   Request(
-    request.Put,
+    http.Put,
     "youtube/v3/comments",
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],

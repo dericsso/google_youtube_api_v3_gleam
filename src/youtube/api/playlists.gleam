@@ -1,6 +1,7 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
 import gleam/bool
+import gleam/http
 import gleam/int
 import gleam/json
 import gleam/list
@@ -26,7 +27,7 @@ pub fn delete_with_on_behalf_of_content_owner(
 
 pub fn delete_request(params: DeleteParams) -> Request {
   Request(
-    request.Delete,
+    http.Delete,
     "youtube/v3/playlists",
     list.flatten([
       [#("id", params.id)],
@@ -90,7 +91,7 @@ pub fn insert_with_on_behalf_of_content_owner(
 
 pub fn insert_request(params: InsertParams, body: Playlist) -> Request {
   Request(
-    request.Post,
+    http.Post,
     "youtube/v3/playlists",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -293,7 +294,7 @@ pub fn list_with_channel_id(params: ListParams, value: String) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/playlists",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -366,7 +367,7 @@ pub fn update_with_on_behalf_of_content_owner(
 
 pub fn update_request(params: UpdateParams, body: Playlist) -> Request {
   Request(
-    request.Put,
+    http.Put,
     "youtube/v3/playlists",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

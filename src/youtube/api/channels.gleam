@@ -1,6 +1,7 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
 import gleam/bool
+import gleam/http
 import gleam/int
 import gleam/json
 import gleam/list
@@ -272,7 +273,7 @@ pub fn list_with_category_id(params: ListParams, value: String) -> ListParams {
 
 pub fn list_request(params: ListParams) -> Request {
   Request(
-    request.Get,
+    http.Get,
     "youtube/v3/channels",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),
@@ -358,7 +359,7 @@ pub fn update_with_on_behalf_of_content_owner(
 
 pub fn update_request(params: UpdateParams, body: Channel) -> Request {
   Request(
-    request.Put,
+    http.Put,
     "youtube/v3/channels",
     list.flatten([
       list.map(params.part, fn(v) { #("part", v) }),

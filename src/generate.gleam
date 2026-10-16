@@ -478,6 +478,7 @@ type MethodSpec {
 type BuilderCtx {
   BuilderCtx(
     runtime_ref: ImportReference,
+    http_ref: ImportReference,
     decode_ref: ImportReference,
     option_ref: ImportReference,
     int_ref: ImportReference,
@@ -587,9 +588,12 @@ fn build_request_module(methods: List(#(String, Method))) -> String {
       import_.unqualified_type("Request"),
       import_.unqualified_value("Request"),
     ])
+  // Verbs come from gleam_http so generated requests plug into
+  // ecosystem clients; only Get/Post/Put/Delete are ever emitted.
+  let http_import = import_.new(["gleam", "http"])
   let tagged: List(#(String, import_.ImportedModule)) =
     list.flatten([
-      [#("runtime", runtime_import)],
+      [#("runtime", runtime_import), #("http", http_import)],
       case has_enums {
         True -> [
           #(
@@ -653,6 +657,7 @@ fn build_request_module(methods: List(#(String, Method))) -> String {
             "google_youtube_api_v3",
             "request",
           ]),
+          http_ref: ref_or(refs, "http", ["gleam", "http"]),
           decode_ref: ref_or(refs, "decode", ["gleam", "dynamic", "decode"]),
           option_ref: ref_or(refs, "option", ["gleam", "option"]),
           int_ref: ref_or(refs, "int", ["gleam", "int"]),
@@ -839,7 +844,7 @@ fn with_to_request(
       ))
         |> expression.to_dynamic,
       [
-        qualified(ctx.runtime_ref, http_method),
+        qualified(ctx.http_ref, http_method),
         path_expr(spec.method.path),
         query,
         empty_list(),

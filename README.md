@@ -18,8 +18,8 @@ Each of the 209 API resource types gets its own module under `youtube/` with:
   string-enum field (e.g. `PrivacyStatusPublic` instead of a bare string).
 
 Each of the 32 API resources also gets a fluent request builder under
-`youtube/api/` (one per resource, all 83 methods), plus a handwritten
-Sans-IO runtime in `google_youtube_api_v3/request`:
+`youtube/api/` (one per resource, all 83 methods), plus a Sans-IO runtime
+in `google_youtube_api_v3/request` (maintained source, not generated):
 
 - `videos.list(["snippet"]) |> videos.list_with_max_results(10)` builds
   params; `videos.list_request(params)` renders a pure `Request` value
@@ -63,7 +63,6 @@ pub fn privacy_label(status: playlist_item_status.PlaylistItemStatus) -> String 
     option.None -> "unknown"
   }
 }
-}
 
 pub fn most_popular(api_key: String) {
   // Build the request as pure data, authorize it, send it with Stock
@@ -101,11 +100,16 @@ type-checks the tests — which import the generated modules. If the two
 drift apart mid-change, move `test/generate_test.gleam` aside, regenerate,
 format, and restore it.
 
-The generator (`src/generate.gleam`) parses `discovery/` with hand-written
+The generator (`src/generate.gleam`) parses `discovery/` with maintained
 `gleam/dynamic/decode` decoders — covered by regression tests that pin
 schema counts, method counts, and tallies per type — and emits each module
-with [gleamgen](https://hex.pm/packages/gleamgen). Generated files carry a
-`DO NOT CHANGE` header; edit the generator, not the output.
+with [gleamgen](https://hex.pm/packages/gleamgen).
+
+Vocabulary used here: *generated* files (everything under `src/youtube/`,
+marked `DO NOT CHANGE`) are reproducible artifacts of the generator — edit
+the generator, not the output. Everything else (`src/generate.gleam`,
+`src/google_youtube_api_v3/`, tests) is *maintained* source: written with
+AI assistance, reviewed by a human before commit.
 
 > **Disclosure:** this project is AI-assisted, not vibe-coded. An AI coding
 > agent (Muse Spark via OpenCode) wrote the generator and the generated code

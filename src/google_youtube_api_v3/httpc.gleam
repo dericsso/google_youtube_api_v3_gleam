@@ -1,8 +1,8 @@
 //// Execute [`Request`](./request.html#Request) values with Erlang's
 //// built-in `httpc` client.
 ////
-//// Erlang target only. This module is a handwritten example transport
-//// over the Sans-IO core: render the URL purely with [`to_url`](#to_url),
+//// Erlang target only. This module is a worked-example transport
+//// over the Sans-IO core, maintained as source (not generated): render the URL purely with [`to_url`](#to_url),
 //// send it with [`send`](#send), then decode the body with
 //// `request.parse_response` and a generated `decoder()`.
 ////

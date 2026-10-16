@@ -1,4 +1,4 @@
-%% Thin wrapper around OTP's httpc for the handwritten example transport.
+%% Thin wrapper around OTP's httpc for the example transport.
 %% Everything crosses the boundary as binaries; httpc's charlists stay
 %% inside this module.
 -module(gleam_youtube_api_v3_httpc_ffi).

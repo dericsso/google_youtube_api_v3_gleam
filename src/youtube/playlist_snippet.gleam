@@ -1,77 +1,109 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/playlist_localization.{type PlaylistLocalization}
 import youtube/thumbnail_details.{type ThumbnailDetails}
 
 /// Basic details about a playlist, including title, description and thumbnails.
 pub type PlaylistSnippet {
   PlaylistSnippet(
-    channel_id: option.Option(String),
-    channel_title: option.Option(String),
-    default_language: option.Option(String),
-    description: option.Option(String),
-    localized: option.Option(PlaylistLocalization),
-    published_at: option.Option(String),
-    tags: option.Option(List(String)),
-    thumbnail_video_id: option.Option(String),
-    thumbnails: option.Option(ThumbnailDetails),
-    title: option.Option(String),
+    channel_id: Option(String),
+    channel_title: Option(String),
+    default_language: Option(String),
+    description: Option(String),
+    localized: Option(PlaylistLocalization),
+    published_at: Option(String),
+    tags: Option(List(String)),
+    thumbnail_video_id: Option(String),
+    thumbnails: Option(ThumbnailDetails),
+    title: Option(String),
   )
 }
 
 pub fn decoder() -> Decoder(PlaylistSnippet) {
-  use channel_id <- optional_field("channelId", option.None, optional(string))
-  use channel_title <- optional_field(
+  use channel_id <- decode.optional_field(
+    "channelId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use channel_title <- decode.optional_field(
     "channelTitle",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use default_language <- optional_field(
+  use default_language <- decode.optional_field(
     "defaultLanguage",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use description <- optional_field(
+  use description <- decode.optional_field(
     "description",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use localized <- optional_field(
+  use localized <- decode.optional_field(
     "localized",
     option.None,
-    optional(playlist_localization.decoder()),
+    decode.optional(playlist_localization.decoder()),
   )
-  use published_at <- optional_field(
+  use published_at <- decode.optional_field(
     "publishedAt",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use tags <- optional_field("tags", option.None, optional(list(string)))
-  use thumbnail_video_id <- optional_field(
+  use tags <- decode.optional_field(
+    "tags",
+    option.None,
+    decode.optional(decode.list(decode.string)),
+  )
+  use thumbnail_video_id <- decode.optional_field(
     "thumbnailVideoId",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use thumbnails <- optional_field(
+  use thumbnails <- decode.optional_field(
     "thumbnails",
     option.None,
-    optional(thumbnail_details.decoder()),
+    decode.optional(thumbnail_details.decoder()),
   )
-  use title <- optional_field("title", option.None, optional(string))
-  success(
-    PlaylistSnippet(
-      channel_id,
-      channel_title,
-      default_language,
-      description,
-      localized,
-      published_at,
-      tags,
-      thumbnail_video_id,
-      thumbnails,
-      title,
+  use title <- decode.optional_field(
+    "title",
+    option.None,
+    decode.optional(decode.string),
+  )
+  decode.success(PlaylistSnippet(
+    channel_id,
+    channel_title,
+    default_language,
+    description,
+    localized,
+    published_at,
+    tags,
+    thumbnail_video_id,
+    thumbnails,
+    title,
+  ))
+}
+
+pub fn to_json(value: PlaylistSnippet) -> Json {
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("channelTitle", json.nullable(value.channel_title, json.string)),
+    #("defaultLanguage", json.nullable(value.default_language, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #(
+      "localized",
+      json.nullable(value.localized, playlist_localization.to_json),
     ),
-  )
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #(
+      "tags",
+      json.nullable(value.tags, fn(items) { json.array(items, json.string) }),
+    ),
+    #("thumbnailVideoId", json.nullable(value.thumbnail_video_id, json.string)),
+    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }

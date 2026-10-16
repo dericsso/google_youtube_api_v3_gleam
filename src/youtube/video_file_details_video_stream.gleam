@@ -1,59 +1,90 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, int, float, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Information about a video stream.
 pub type VideoFileDetailsVideoStream {
   VideoFileDetailsVideoStream(
-    aspect_ratio: option.Option(Float),
-    bitrate_bps: option.Option(String),
-    codec: option.Option(String),
-    frame_rate_fps: option.Option(Float),
-    height_pixels: option.Option(Int),
-    rotation: option.Option(Rotation),
-    vendor: option.Option(String),
-    width_pixels: option.Option(Int),
+    aspect_ratio: Option(Float),
+    bitrate_bps: Option(String),
+    codec: Option(String),
+    frame_rate_fps: Option(Float),
+    height_pixels: Option(Int),
+    rotation: Option(Rotation),
+    vendor: Option(String),
+    width_pixels: Option(Int),
   )
 }
 
 pub fn decoder() -> Decoder(VideoFileDetailsVideoStream) {
-  use aspect_ratio <- optional_field(
+  use aspect_ratio <- decode.optional_field(
     "aspectRatio",
     option.None,
-    optional(float),
+    decode.optional(decode.float),
   )
-  use bitrate_bps <- optional_field("bitrateBps", option.None, optional(string))
-  use codec <- optional_field("codec", option.None, optional(string))
-  use frame_rate_fps <- optional_field(
+  use bitrate_bps <- decode.optional_field(
+    "bitrateBps",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use codec <- decode.optional_field(
+    "codec",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use frame_rate_fps <- decode.optional_field(
     "frameRateFps",
     option.None,
-    optional(float),
+    decode.optional(decode.float),
   )
-  use height_pixels <- optional_field(
+  use height_pixels <- decode.optional_field(
     "heightPixels",
     option.None,
-    optional(int),
+    decode.optional(decode.int),
   )
-  use rotation <- optional_field(
+  use rotation <- decode.optional_field(
     "rotation",
     option.None,
-    optional(rotation_decoder()),
+    decode.optional(rotation_decoder()),
   )
-  use vendor <- optional_field("vendor", option.None, optional(string))
-  use width_pixels <- optional_field("widthPixels", option.None, optional(int))
-  success(
-    VideoFileDetailsVideoStream(
-      aspect_ratio,
-      bitrate_bps,
-      codec,
-      frame_rate_fps,
-      height_pixels,
-      rotation,
-      vendor,
-      width_pixels,
+  use vendor <- decode.optional_field(
+    "vendor",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use width_pixels <- decode.optional_field(
+    "widthPixels",
+    option.None,
+    decode.optional(decode.int),
+  )
+  decode.success(VideoFileDetailsVideoStream(
+    aspect_ratio,
+    bitrate_bps,
+    codec,
+    frame_rate_fps,
+    height_pixels,
+    rotation,
+    vendor,
+    width_pixels,
+  ))
+}
+
+pub fn to_json(value: VideoFileDetailsVideoStream) -> Json {
+  json.object([
+    #("aspectRatio", json.nullable(value.aspect_ratio, json.float)),
+    #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
+    #("codec", json.nullable(value.codec, json.string)),
+    #("frameRateFps", json.nullable(value.frame_rate_fps, json.float)),
+    #("heightPixels", json.nullable(value.height_pixels, json.int)),
+    #(
+      "rotation",
+      json.nullable(value.rotation, fn(e) { json.string(rotation_to_string(e)) }),
     ),
-  )
+    #("vendor", json.nullable(value.vendor, json.string)),
+    #("widthPixels", json.nullable(value.width_pixels, json.int)),
+  ])
 }
 
 /// The amount that YouTube needs to rotate the original source content to properly display the video.
@@ -76,13 +107,13 @@ pub fn rotation_to_string(value: Rotation) -> String {
 }
 
 pub fn rotation_decoder() -> Decoder(Rotation) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "none" -> success(RotationNone)
-    "clockwise" -> success(RotationClockwise)
-    "upsideDown" -> success(RotationUpsideDown)
-    "counterClockwise" -> success(RotationCounterClockwise)
-    "other" -> success(RotationOther)
-    _ -> failure(RotationNone, "a valid Rotation")
+    "none" -> decode.success(RotationNone)
+    "clockwise" -> decode.success(RotationClockwise)
+    "upsideDown" -> decode.success(RotationUpsideDown)
+    "counterClockwise" -> decode.success(RotationCounterClockwise)
+    "other" -> decode.success(RotationOther)
+    _ -> decode.failure(RotationNone, "a valid Rotation")
   }
 }

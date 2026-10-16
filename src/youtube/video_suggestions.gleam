@@ -1,55 +1,93 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success, then, failure}
-import gleam/option
-import youtube/video_suggestions_tag_suggestion.{type VideoSuggestionsTagSuggestion}
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
+import youtube/video_suggestions_tag_suggestion.{
+  type VideoSuggestionsTagSuggestion,
+}
 
 /// Specifies suggestions on how to improve video content, including encoding hints, tag suggestions, and editor suggestions.
 pub type VideoSuggestions {
   VideoSuggestions(
-    editor_suggestions: option.Option(List(EditorSuggestions)),
-    processing_errors: option.Option(List(ProcessingErrors)),
-    processing_hints: option.Option(List(ProcessingHints)),
-    processing_warnings: option.Option(List(ProcessingWarnings)),
-    tag_suggestions: option.Option(List(VideoSuggestionsTagSuggestion)),
+    editor_suggestions: Option(List(EditorSuggestions)),
+    processing_errors: Option(List(ProcessingErrors)),
+    processing_hints: Option(List(ProcessingHints)),
+    processing_warnings: Option(List(ProcessingWarnings)),
+    tag_suggestions: Option(List(VideoSuggestionsTagSuggestion)),
   )
 }
 
 pub fn decoder() -> Decoder(VideoSuggestions) {
-  use editor_suggestions <- optional_field(
+  use editor_suggestions <- decode.optional_field(
     "editorSuggestions",
     option.None,
-    optional(list(editor_suggestions_decoder())),
+    decode.optional(decode.list(editor_suggestions_decoder())),
   )
-  use processing_errors <- optional_field(
+  use processing_errors <- decode.optional_field(
     "processingErrors",
     option.None,
-    optional(list(processing_errors_decoder())),
+    decode.optional(decode.list(processing_errors_decoder())),
   )
-  use processing_hints <- optional_field(
+  use processing_hints <- decode.optional_field(
     "processingHints",
     option.None,
-    optional(list(processing_hints_decoder())),
+    decode.optional(decode.list(processing_hints_decoder())),
   )
-  use processing_warnings <- optional_field(
+  use processing_warnings <- decode.optional_field(
     "processingWarnings",
     option.None,
-    optional(list(processing_warnings_decoder())),
+    decode.optional(decode.list(processing_warnings_decoder())),
   )
-  use tag_suggestions <- optional_field(
+  use tag_suggestions <- decode.optional_field(
     "tagSuggestions",
     option.None,
-    optional(list(video_suggestions_tag_suggestion.decoder())),
+    decode.optional(decode.list(video_suggestions_tag_suggestion.decoder())),
   )
-  success(
-    VideoSuggestions(
-      editor_suggestions,
-      processing_errors,
-      processing_hints,
-      processing_warnings,
-      tag_suggestions,
+  decode.success(VideoSuggestions(
+    editor_suggestions,
+    processing_errors,
+    processing_hints,
+    processing_warnings,
+    tag_suggestions,
+  ))
+}
+
+pub fn to_json(value: VideoSuggestions) -> Json {
+  json.object([
+    #(
+      "editorSuggestions",
+      json.nullable(value.editor_suggestions, fn(items) {
+        json.array(items, fn(e) { json.string(editor_suggestions_to_string(e)) })
+      }),
     ),
-  )
+    #(
+      "processingErrors",
+      json.nullable(value.processing_errors, fn(items) {
+        json.array(items, fn(e) { json.string(processing_errors_to_string(e)) })
+      }),
+    ),
+    #(
+      "processingHints",
+      json.nullable(value.processing_hints, fn(items) {
+        json.array(items, fn(e) { json.string(processing_hints_to_string(e)) })
+      }),
+    ),
+    #(
+      "processingWarnings",
+      json.nullable(value.processing_warnings, fn(items) {
+        json.array(items, fn(e) {
+          json.string(processing_warnings_to_string(e))
+        })
+      }),
+    ),
+    #(
+      "tagSuggestions",
+      json.nullable(value.tag_suggestions, fn(items) {
+        json.array(items, video_suggestions_tag_suggestion.to_json)
+      }),
+    ),
+  ])
 }
 
 /// A list of video editing operations that might improve the video quality or playback experience of the uploaded video.
@@ -70,13 +108,18 @@ pub fn editor_suggestions_to_string(value: EditorSuggestions) -> String {
 }
 
 pub fn editor_suggestions_decoder() -> Decoder(EditorSuggestions) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "videoAutoLevels" -> success(EditorSuggestionsVideoAutoLevels)
-    "videoStabilize" -> success(EditorSuggestionsVideoStabilize)
-    "videoCrop" -> success(EditorSuggestionsVideoCrop)
-    "audioQuietAudioSwap" -> success(EditorSuggestionsAudioQuietAudioSwap)
-    _ -> failure(EditorSuggestionsVideoAutoLevels, "a valid EditorSuggestions")
+    "videoAutoLevels" -> decode.success(EditorSuggestionsVideoAutoLevels)
+    "videoStabilize" -> decode.success(EditorSuggestionsVideoStabilize)
+    "videoCrop" -> decode.success(EditorSuggestionsVideoCrop)
+    "audioQuietAudioSwap" ->
+      decode.success(EditorSuggestionsAudioQuietAudioSwap)
+    _ ->
+      decode.failure(
+        EditorSuggestionsVideoAutoLevels,
+        "a valid EditorSuggestions",
+      )
   }
 }
 
@@ -99,23 +142,23 @@ pub fn processing_errors_to_string(value: ProcessingErrors) -> String {
     ProcessingErrorsNotAvideoFile -> "notAVideoFile"
     ProcessingErrorsDocFile -> "docFile"
     ProcessingErrorsArchiveFile -> "archiveFile"
-    ProcessingErrorsUnsupportedSpatialAudioLayout -> "unsupportedSpatialAudioLayout"
+    ProcessingErrorsUnsupportedSpatialAudioLayout ->
+      "unsupportedSpatialAudioLayout"
   }
 }
 
 pub fn processing_errors_decoder() -> Decoder(ProcessingErrors) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "audioFile" -> success(ProcessingErrorsAudioFile)
-    "imageFile" -> success(ProcessingErrorsImageFile)
-    "projectFile" -> success(ProcessingErrorsProjectFile)
-    "notAVideoFile" -> success(ProcessingErrorsNotAvideoFile)
-    "docFile" -> success(ProcessingErrorsDocFile)
-    "archiveFile" -> success(ProcessingErrorsArchiveFile)
-    "unsupportedSpatialAudioLayout" -> success(
-      ProcessingErrorsUnsupportedSpatialAudioLayout,
-    )
-    _ -> failure(ProcessingErrorsAudioFile, "a valid ProcessingErrors")
+    "audioFile" -> decode.success(ProcessingErrorsAudioFile)
+    "imageFile" -> decode.success(ProcessingErrorsImageFile)
+    "projectFile" -> decode.success(ProcessingErrorsProjectFile)
+    "notAVideoFile" -> decode.success(ProcessingErrorsNotAvideoFile)
+    "docFile" -> decode.success(ProcessingErrorsDocFile)
+    "archiveFile" -> decode.success(ProcessingErrorsArchiveFile)
+    "unsupportedSpatialAudioLayout" ->
+      decode.success(ProcessingErrorsUnsupportedSpatialAudioLayout)
+    _ -> decode.failure(ProcessingErrorsAudioFile, "a valid ProcessingErrors")
   }
 }
 
@@ -141,15 +184,17 @@ pub fn processing_hints_to_string(value: ProcessingHints) -> String {
 }
 
 pub fn processing_hints_decoder() -> Decoder(ProcessingHints) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "nonStreamableMov" -> success(ProcessingHintsNonStreamableMov)
-    "sendBestQualityVideo" -> success(ProcessingHintsSendBestQualityVideo)
-    "sphericalVideo" -> success(ProcessingHintsSphericalVideo)
-    "spatialAudio" -> success(ProcessingHintsSpatialAudio)
-    "vrVideo" -> success(ProcessingHintsVrVideo)
-    "hdrVideo" -> success(ProcessingHintsHdrVideo)
-    _ -> failure(ProcessingHintsNonStreamableMov, "a valid ProcessingHints")
+    "nonStreamableMov" -> decode.success(ProcessingHintsNonStreamableMov)
+    "sendBestQualityVideo" ->
+      decode.success(ProcessingHintsSendBestQualityVideo)
+    "sphericalVideo" -> decode.success(ProcessingHintsSphericalVideo)
+    "spatialAudio" -> decode.success(ProcessingHintsSpatialAudio)
+    "vrVideo" -> decode.success(ProcessingHintsVrVideo)
+    "hdrVideo" -> decode.success(ProcessingHintsHdrVideo)
+    _ ->
+      decode.failure(ProcessingHintsNonStreamableMov, "a valid ProcessingHints")
   }
 }
 
@@ -179,43 +224,42 @@ pub fn processing_warnings_to_string(value: ProcessingWarnings) -> String {
     ProcessingWarningsProblematicVideoCodec -> "problematicVideoCodec"
     ProcessingWarningsProblematicAudioCodec -> "problematicAudioCodec"
     ProcessingWarningsUnsupportedVrStereoMode -> "unsupportedVrStereoMode"
-    ProcessingWarningsUnsupportedSphericalProjectionType -> "unsupportedSphericalProjectionType"
+    ProcessingWarningsUnsupportedSphericalProjectionType ->
+      "unsupportedSphericalProjectionType"
     ProcessingWarningsUnsupportedHdrPixelFormat -> "unsupportedHdrPixelFormat"
-    ProcessingWarningsUnsupportedHdrColorMetadata -> "unsupportedHdrColorMetadata"
+    ProcessingWarningsUnsupportedHdrColorMetadata ->
+      "unsupportedHdrColorMetadata"
     ProcessingWarningsProblematicHdrLookupTable -> "problematicHdrLookupTable"
   }
 }
 
 pub fn processing_warnings_decoder() -> Decoder(ProcessingWarnings) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "unknownContainer" -> success(ProcessingWarningsUnknownContainer)
-    "unknownVideoCodec" -> success(ProcessingWarningsUnknownVideoCodec)
-    "unknownAudioCodec" -> success(ProcessingWarningsUnknownAudioCodec)
-    "inconsistentResolution" -> success(
-      ProcessingWarningsInconsistentResolution,
-    )
-    "hasEditlist" -> success(ProcessingWarningsHasEditlist)
-    "problematicVideoCodec" -> success(ProcessingWarningsProblematicVideoCodec)
-    "problematicAudioCodec" -> success(ProcessingWarningsProblematicAudioCodec)
-    "unsupportedVrStereoMode" -> success(
-      ProcessingWarningsUnsupportedVrStereoMode,
-    )
-    "unsupportedSphericalProjectionType" -> success(
-      ProcessingWarningsUnsupportedSphericalProjectionType,
-    )
-    "unsupportedHdrPixelFormat" -> success(
-      ProcessingWarningsUnsupportedHdrPixelFormat,
-    )
-    "unsupportedHdrColorMetadata" -> success(
-      ProcessingWarningsUnsupportedHdrColorMetadata,
-    )
-    "problematicHdrLookupTable" -> success(
-      ProcessingWarningsProblematicHdrLookupTable,
-    )
-    _ -> failure(
-      ProcessingWarningsUnknownContainer,
-      "a valid ProcessingWarnings",
-    )
+    "unknownContainer" -> decode.success(ProcessingWarningsUnknownContainer)
+    "unknownVideoCodec" -> decode.success(ProcessingWarningsUnknownVideoCodec)
+    "unknownAudioCodec" -> decode.success(ProcessingWarningsUnknownAudioCodec)
+    "inconsistentResolution" ->
+      decode.success(ProcessingWarningsInconsistentResolution)
+    "hasEditlist" -> decode.success(ProcessingWarningsHasEditlist)
+    "problematicVideoCodec" ->
+      decode.success(ProcessingWarningsProblematicVideoCodec)
+    "problematicAudioCodec" ->
+      decode.success(ProcessingWarningsProblematicAudioCodec)
+    "unsupportedVrStereoMode" ->
+      decode.success(ProcessingWarningsUnsupportedVrStereoMode)
+    "unsupportedSphericalProjectionType" ->
+      decode.success(ProcessingWarningsUnsupportedSphericalProjectionType)
+    "unsupportedHdrPixelFormat" ->
+      decode.success(ProcessingWarningsUnsupportedHdrPixelFormat)
+    "unsupportedHdrColorMetadata" ->
+      decode.success(ProcessingWarningsUnsupportedHdrColorMetadata)
+    "problematicHdrLookupTable" ->
+      decode.success(ProcessingWarningsProblematicHdrLookupTable)
+    _ ->
+      decode.failure(
+        ProcessingWarningsUnknownContainer,
+        "a valid ProcessingWarnings",
+      )
   }
 }

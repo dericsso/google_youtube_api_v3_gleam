@@ -1,18 +1,23 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/entity.{type Entity}
 
 pub type RelatedEntity {
-  RelatedEntity(entity: option.Option(Entity))
+  RelatedEntity(entity: Option(Entity))
 }
 
 pub fn decoder() -> Decoder(RelatedEntity) {
-  use entity <- optional_field(
+  use entity <- decode.optional_field(
     "entity",
     option.None,
-    optional(entity.decoder()),
+    decode.optional(entity.decoder()),
   )
-  success(RelatedEntity(entity))
+  decode.success(RelatedEntity(entity))
+}
+
+pub fn to_json(value: RelatedEntity) -> Json {
+  json.object([#("entity", json.nullable(value.entity, entity.to_json))])
 }

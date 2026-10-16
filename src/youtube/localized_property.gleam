@@ -1,29 +1,50 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/language_tag.{type LanguageTag}
 import youtube/localized_string.{type LocalizedString}
 
 pub type LocalizedProperty {
   LocalizedProperty(
-    default: option.Option(String),
-    default_language: option.Option(LanguageTag),
-    localized: option.Option(List(LocalizedString)),
+    default: Option(String),
+    default_language: Option(LanguageTag),
+    localized: Option(List(LocalizedString)),
   )
 }
 
 pub fn decoder() -> Decoder(LocalizedProperty) {
-  use default <- optional_field("default", option.None, optional(string))
-  use default_language <- optional_field(
+  use default <- decode.optional_field(
+    "default",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use default_language <- decode.optional_field(
     "defaultLanguage",
     option.None,
-    optional(language_tag.decoder()),
+    decode.optional(language_tag.decoder()),
   )
-  use localized <- optional_field(
+  use localized <- decode.optional_field(
     "localized",
     option.None,
-    optional(list(localized_string.decoder())),
+    decode.optional(decode.list(localized_string.decoder())),
   )
-  success(LocalizedProperty(default, default_language, localized))
+  decode.success(LocalizedProperty(default, default_language, localized))
+}
+
+pub fn to_json(value: LocalizedProperty) -> Json {
+  json.object([
+    #("default", json.nullable(value.default, json.string)),
+    #(
+      "defaultLanguage",
+      json.nullable(value.default_language, language_tag.to_json),
+    ),
+    #(
+      "localized",
+      json.nullable(value.localized, fn(items) {
+        json.array(items, localized_string.to_json)
+      }),
+    ),
+  ])
 }

@@ -11,7 +11,12 @@ import gleam/option.{None, Some}
 import gleam/set
 import gleam/string
 import gleeunit/should
+import google_youtube_api_v3/httpc as api_httpc
+import google_youtube_api_v3/request as api_request
 import simplifile
+import youtube/api/captions as captions_api
+import youtube/api/playlists as playlists_api
+import youtube/api/videos as videos_api
 import youtube/page_info
 import youtube/playlist
 import youtube/playlist_item_status
@@ -697,6 +702,41 @@ pub fn every_schema_generates_a_decoder_test() {
   should.equal(missing, [])
 }
 
+pub fn every_schema_generates_an_encoder_test() {
+  let Discovery(schemas:, ..) = load_discovery()
+  let missing =
+    dict.to_list(schemas)
+    |> list.filter(fn(item) {
+      !string.contains(generate.build_module(item.0, item.1), "pub fn to_json(")
+    })
+    |> list.map(fn(item) { item.0 })
+  should.equal(missing, [])
+}
+
+pub fn generated_encoder_roundtrip_test() {
+  let info = page_info.PageInfo(Some(10), None)
+  let assert Ok(back) =
+    page_info.to_json(info)
+    |> json.to_string
+    |> json.parse(page_info.decoder())
+  should.equal(back, info)
+}
+
+pub fn generated_encoder_handles_enums_and_nesting_test() {
+  let status =
+    playlist_item_status.PlaylistItemStatus(Some(
+      playlist_item_status.PrivacyStatusUnlisted,
+    ))
+  playlist_item_status.to_json(status)
+  |> json.to_string
+  |> should.equal("{\"privacyStatus\":\"unlisted\"}")
+  let assert Ok(back) =
+    playlist_item_status.to_json(status)
+    |> json.to_string
+    |> json.parse(playlist_item_status.decoder())
+  should.equal(back, status)
+}
+
 pub fn generated_decoder_decodes_scalars_test() {
   json.parse(
     "{\"totalResults\": 5, \"resultsPerPage\": 10}",
@@ -744,10 +784,7 @@ pub fn generated_enum_type_and_helpers_test() {
   let assert Ok(schema) = dict.get(schemas, "PlaylistItemStatus")
   let code = generate.build_module("PlaylistItemStatus", schema)
   // Field type is the custom enum, not String.
-  should.be_true(string.contains(
-    code,
-    "privacy_status: option.Option(PrivacyStatus)",
-  ))
+  should.be_true(string.contains(code, "privacy_status: Option(PrivacyStatus)"))
   should.be_true(string.contains(code, "pub type PrivacyStatus {"))
   should.be_true(string.contains(
     code,
@@ -811,5 +848,142 @@ pub fn generated_enum_decodes_arrays_test() {
       video_suggestions.ProcessingWarningsHasEditlist,
       video_suggestions.ProcessingWarningsUnknownContainer,
     ]),
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Request builder tests: resources flatten, fluent builders render
+// ---------------------------------------------------------------------------
+
+pub fn resources_flatten_to_32_builder_modules_test() {
+  let Discovery(resources:, ..) = load_discovery()
+  let flat = generate.flatten_resources(resources)
+  should.equal(list.length(flat), 32)
+  // The only nested resource tree lands in its own module.
+  should.be_true(
+    list.any(flat, fn(item) { item.0 == "youtube_v3_live_chat_messages" }),
+  )
+  // Every one of the 83 methods is accounted for exactly once.
+  should.equal(
+    list.fold(flat, 0, fn(total, item) { total + list.length(item.1) }),
+    83,
+  )
+}
+
+pub fn fluent_builder_renders_full_request_test() {
+  let request =
+    videos_api.list(["snippet", "id"])
+    |> videos_api.list_with_max_results(10)
+    |> videos_api.list_with_chart(videos_api.ListChartMostPopular)
+    |> videos_api.list_request
+  should.equal(request.method, api_request.Get)
+  should.equal(request.path, "youtube/v3/videos")
+  should.equal(request.query, [
+    #("part", "snippet"),
+    #("part", "id"),
+    #("chart", "mostPopular"),
+    #("maxResults", "10"),
+  ])
+  should.equal(request.headers, [])
+  should.equal(request.body, None)
+  should.be_true(list.contains(
+    request.scopes,
+    "https://www.googleapis.com/auth/youtube.readonly",
+  ))
+}
+
+pub fn fluent_builder_appends_repeated_values_test() {
+  let request =
+    videos_api.list(["snippet"])
+    |> videos_api.list_add_part("id")
+    |> videos_api.list_request
+  should.equal(request.query, [#("part", "snippet"), #("part", "id")])
+}
+
+pub fn fluent_builder_renders_path_template_test() {
+  let request =
+    captions_api.download("abc123")
+    |> captions_api.download_request
+  should.equal(request.path, "youtube/v3/captions/abc123")
+  should.equal(request.method, api_request.Get)
+}
+
+pub fn fluent_builder_encodes_typed_body_test() {
+  // Playlist fields are alphabetical: content_details, etag, id, ...
+  let body =
+    playlist.Playlist(None, None, Some("PL1"), None, None, None, None, None)
+  let request =
+    playlists_api.insert(["snippet"])
+    |> playlists_api.insert_request(body)
+  should.equal(request.method, api_request.Post)
+  should.equal(request.path, "youtube/v3/playlists")
+  let assert Some(raw) = request.body
+  let assert Ok(back) = json.parse(raw, playlist.decoder())
+  should.equal(back, body)
+}
+
+// ---------------------------------------------------------------------------
+// Sans-IO runtime tests
+// ---------------------------------------------------------------------------
+
+pub fn authorize_appends_api_key_to_query_test() {
+  let request =
+    videos_api.list(["snippet"])
+    |> videos_api.list_request
+    |> api_request.authorize(api_request.ApiKey("KEY"))
+  should.equal(request.query, [#("key", "KEY"), #("part", "snippet")])
+}
+
+pub fn authorize_adds_bearer_header_test() {
+  let request =
+    videos_api.list(["snippet"])
+    |> videos_api.list_request
+    |> api_request.authorize(api_request.OAuthToken("TOKEN"))
+  should.equal(request.headers, [#("Authorization", "Bearer TOKEN")])
+}
+
+pub fn parse_response_decodes_success_test() {
+  api_request.parse_response(
+    200,
+    "{\"totalResults\": 3, \"resultsPerPage\": 1}",
+    page_info.decoder(),
+  )
+  |> should.equal(Ok(page_info.PageInfo(Some(1), Some(3))))
+}
+
+pub fn parse_response_maps_api_errors_test() {
+  let body =
+    "{\"error\": {\"code\": 403, \"message\": \"Access forbidden\", \"errors\": [{\"reason\": \"forbidden\"}]}}"
+  api_request.parse_response(403, body, page_info.decoder())
+  |> should.equal(
+    Error(
+      api_request.HttpError(api_request.ApiError(403, 403, "Access forbidden")),
+    ),
+  )
+}
+
+pub fn parse_response_maps_decode_failures_test() {
+  api_request.parse_response(
+    200,
+    "{\"totalResults\": \"many\"}",
+    page_info.decoder(),
+  )
+  |> should.be_error
+}
+
+pub fn http_method_to_string_test() {
+  should.equal(api_request.http_method_to_string(api_request.Get), "GET")
+  should.equal(api_request.http_method_to_string(api_request.Delete), "DELETE")
+}
+
+pub fn to_url_encodes_query_test() {
+  let url =
+    videos_api.list(["snippet"])
+    |> videos_api.list_with_max_results(5)
+    |> videos_api.list_request
+    |> api_httpc.to_url
+  should.equal(
+    url,
+    "https://www.googleapis.com/youtube/v3/videos?part=snippet&maxResults=5",
   )
 }

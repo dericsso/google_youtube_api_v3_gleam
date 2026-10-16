@@ -1,33 +1,47 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, int, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 pub type MembershipsDurationAtLevel {
   MembershipsDurationAtLevel(
-    level: option.Option(String),
-    member_since: option.Option(String),
-    member_total_duration_months: option.Option(Int),
+    level: Option(String),
+    member_since: Option(String),
+    member_total_duration_months: Option(Int),
   )
 }
 
 pub fn decoder() -> Decoder(MembershipsDurationAtLevel) {
-  use level <- optional_field("level", option.None, optional(string))
-  use member_since <- optional_field(
+  use level <- decode.optional_field(
+    "level",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use member_since <- decode.optional_field(
     "memberSince",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use member_total_duration_months <- optional_field(
+  use member_total_duration_months <- decode.optional_field(
     "memberTotalDurationMonths",
     option.None,
-    optional(int),
+    decode.optional(decode.int),
   )
-  success(
-    MembershipsDurationAtLevel(
-      level,
-      member_since,
-      member_total_duration_months,
+  decode.success(MembershipsDurationAtLevel(
+    level,
+    member_since,
+    member_total_duration_months,
+  ))
+}
+
+pub fn to_json(value: MembershipsDurationAtLevel) -> Json {
+  json.object([
+    #("level", json.nullable(value.level, json.string)),
+    #("memberSince", json.nullable(value.member_since, json.string)),
+    #(
+      "memberTotalDurationMonths",
+      json.nullable(value.member_total_duration_months, json.int),
     ),
-  )
+  ])
 }

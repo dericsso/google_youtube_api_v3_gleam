@@ -1,28 +1,54 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// ChannelSection targeting setting.
 pub type ChannelSectionTargeting {
   ChannelSectionTargeting(
-    countries: option.Option(List(String)),
-    languages: option.Option(List(String)),
-    regions: option.Option(List(String)),
+    countries: Option(List(String)),
+    languages: Option(List(String)),
+    regions: Option(List(String)),
   )
 }
 
 pub fn decoder() -> Decoder(ChannelSectionTargeting) {
-  use countries <- optional_field(
+  use countries <- decode.optional_field(
     "countries",
     option.None,
-    optional(list(string)),
+    decode.optional(decode.list(decode.string)),
   )
-  use languages <- optional_field(
+  use languages <- decode.optional_field(
     "languages",
     option.None,
-    optional(list(string)),
+    decode.optional(decode.list(decode.string)),
   )
-  use regions <- optional_field("regions", option.None, optional(list(string)))
-  success(ChannelSectionTargeting(countries, languages, regions))
+  use regions <- decode.optional_field(
+    "regions",
+    option.None,
+    decode.optional(decode.list(decode.string)),
+  )
+  decode.success(ChannelSectionTargeting(countries, languages, regions))
+}
+
+pub fn to_json(value: ChannelSectionTargeting) -> Json {
+  json.object([
+    #(
+      "countries",
+      json.nullable(value.countries, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "languages",
+      json.nullable(value.languages, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "regions",
+      json.nullable(value.regions, fn(items) { json.array(items, json.string) }),
+    ),
+  ])
 }

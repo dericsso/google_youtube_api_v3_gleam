@@ -1,61 +1,94 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, bool, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Live broadcast state.
 pub type LiveBroadcastStatus {
   LiveBroadcastStatus(
-    life_cycle_status: option.Option(LifeCycleStatus),
-    live_broadcast_priority: option.Option(LiveBroadcastPriority),
-    made_for_kids: option.Option(Bool),
-    privacy_status: option.Option(PrivacyStatus),
-    recording_status: option.Option(RecordingStatus),
-    self_declared_made_for_kids: option.Option(Bool),
+    life_cycle_status: Option(LifeCycleStatus),
+    live_broadcast_priority: Option(LiveBroadcastPriority),
+    made_for_kids: Option(Bool),
+    privacy_status: Option(PrivacyStatus),
+    recording_status: Option(RecordingStatus),
+    self_declared_made_for_kids: Option(Bool),
   )
 }
 
 pub fn decoder() -> Decoder(LiveBroadcastStatus) {
-  use life_cycle_status <- optional_field(
+  use life_cycle_status <- decode.optional_field(
     "lifeCycleStatus",
     option.None,
-    optional(life_cycle_status_decoder()),
+    decode.optional(life_cycle_status_decoder()),
   )
-  use live_broadcast_priority <- optional_field(
+  use live_broadcast_priority <- decode.optional_field(
     "liveBroadcastPriority",
     option.None,
-    optional(live_broadcast_priority_decoder()),
+    decode.optional(live_broadcast_priority_decoder()),
   )
-  use made_for_kids <- optional_field(
+  use made_for_kids <- decode.optional_field(
     "madeForKids",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use privacy_status <- optional_field(
+  use privacy_status <- decode.optional_field(
     "privacyStatus",
     option.None,
-    optional(privacy_status_decoder()),
+    decode.optional(privacy_status_decoder()),
   )
-  use recording_status <- optional_field(
+  use recording_status <- decode.optional_field(
     "recordingStatus",
     option.None,
-    optional(recording_status_decoder()),
+    decode.optional(recording_status_decoder()),
   )
-  use self_declared_made_for_kids <- optional_field(
+  use self_declared_made_for_kids <- decode.optional_field(
     "selfDeclaredMadeForKids",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  success(
-    LiveBroadcastStatus(
-      life_cycle_status,
-      live_broadcast_priority,
-      made_for_kids,
-      privacy_status,
-      recording_status,
-      self_declared_made_for_kids,
+  decode.success(LiveBroadcastStatus(
+    life_cycle_status,
+    live_broadcast_priority,
+    made_for_kids,
+    privacy_status,
+    recording_status,
+    self_declared_made_for_kids,
+  ))
+}
+
+pub fn to_json(value: LiveBroadcastStatus) -> Json {
+  json.object([
+    #(
+      "lifeCycleStatus",
+      json.nullable(value.life_cycle_status, fn(e) {
+        json.string(life_cycle_status_to_string(e))
+      }),
     ),
-  )
+    #(
+      "liveBroadcastPriority",
+      json.nullable(value.live_broadcast_priority, fn(e) {
+        json.string(live_broadcast_priority_to_string(e))
+      }),
+    ),
+    #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
+    #(
+      "privacyStatus",
+      json.nullable(value.privacy_status, fn(e) {
+        json.string(privacy_status_to_string(e))
+      }),
+    ),
+    #(
+      "recordingStatus",
+      json.nullable(value.recording_status, fn(e) {
+        json.string(recording_status_to_string(e))
+      }),
+    ),
+    #(
+      "selfDeclaredMadeForKids",
+      json.nullable(value.self_declared_made_for_kids, json.bool),
+    ),
+  ])
 }
 
 /// The broadcast's status. The status can be updated using the API's liveBroadcasts.transition method.
@@ -86,23 +119,23 @@ pub fn life_cycle_status_to_string(value: LifeCycleStatus) -> String {
 }
 
 pub fn life_cycle_status_decoder() -> Decoder(LifeCycleStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "lifeCycleStatusUnspecified" -> success(
-      LifeCycleStatusLifeCycleStatusUnspecified,
-    )
-    "created" -> success(LifeCycleStatusCreated)
-    "ready" -> success(LifeCycleStatusReady)
-    "testing" -> success(LifeCycleStatusTesting)
-    "live" -> success(LifeCycleStatusLive)
-    "complete" -> success(LifeCycleStatusComplete)
-    "revoked" -> success(LifeCycleStatusRevoked)
-    "testStarting" -> success(LifeCycleStatusTestStarting)
-    "liveStarting" -> success(LifeCycleStatusLiveStarting)
-    _ -> failure(
-      LifeCycleStatusLifeCycleStatusUnspecified,
-      "a valid LifeCycleStatus",
-    )
+    "lifeCycleStatusUnspecified" ->
+      decode.success(LifeCycleStatusLifeCycleStatusUnspecified)
+    "created" -> decode.success(LifeCycleStatusCreated)
+    "ready" -> decode.success(LifeCycleStatusReady)
+    "testing" -> decode.success(LifeCycleStatusTesting)
+    "live" -> decode.success(LifeCycleStatusLive)
+    "complete" -> decode.success(LifeCycleStatusComplete)
+    "revoked" -> decode.success(LifeCycleStatusRevoked)
+    "testStarting" -> decode.success(LifeCycleStatusTestStarting)
+    "liveStarting" -> decode.success(LifeCycleStatusLiveStarting)
+    _ ->
+      decode.failure(
+        LifeCycleStatusLifeCycleStatusUnspecified,
+        "a valid LifeCycleStatus",
+      )
   }
 }
 
@@ -114,10 +147,12 @@ pub type LiveBroadcastPriority {
   LiveBroadcastPriorityHigh
 }
 
-pub fn live_broadcast_priority_to_string(value: LiveBroadcastPriority) -> String {
-  case value
-  {
-    LiveBroadcastPriorityLiveBroadcastPriorityUnspecified -> "liveBroadcastPriorityUnspecified"
+pub fn live_broadcast_priority_to_string(
+  value: LiveBroadcastPriority,
+) -> String {
+  case value {
+    LiveBroadcastPriorityLiveBroadcastPriorityUnspecified ->
+      "liveBroadcastPriorityUnspecified"
     LiveBroadcastPriorityLow -> "low"
     LiveBroadcastPriorityNormal -> "normal"
     LiveBroadcastPriorityHigh -> "high"
@@ -125,18 +160,18 @@ pub fn live_broadcast_priority_to_string(value: LiveBroadcastPriority) -> String
 }
 
 pub fn live_broadcast_priority_decoder() -> Decoder(LiveBroadcastPriority) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "liveBroadcastPriorityUnspecified" -> success(
-      LiveBroadcastPriorityLiveBroadcastPriorityUnspecified,
-    )
-    "low" -> success(LiveBroadcastPriorityLow)
-    "normal" -> success(LiveBroadcastPriorityNormal)
-    "high" -> success(LiveBroadcastPriorityHigh)
-    _ -> failure(
-      LiveBroadcastPriorityLiveBroadcastPriorityUnspecified,
-      "a valid LiveBroadcastPriority",
-    )
+    "liveBroadcastPriorityUnspecified" ->
+      decode.success(LiveBroadcastPriorityLiveBroadcastPriorityUnspecified)
+    "low" -> decode.success(LiveBroadcastPriorityLow)
+    "normal" -> decode.success(LiveBroadcastPriorityNormal)
+    "high" -> decode.success(LiveBroadcastPriorityHigh)
+    _ ->
+      decode.failure(
+        LiveBroadcastPriorityLiveBroadcastPriorityUnspecified,
+        "a valid LiveBroadcastPriority",
+      )
   }
 }
 
@@ -156,12 +191,12 @@ pub fn privacy_status_to_string(value: PrivacyStatus) -> String {
 }
 
 pub fn privacy_status_decoder() -> Decoder(PrivacyStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "public" -> success(PrivacyStatusPublic)
-    "unlisted" -> success(PrivacyStatusUnlisted)
-    "private" -> success(PrivacyStatusPrivate)
-    _ -> failure(PrivacyStatusPublic, "a valid PrivacyStatus")
+    "public" -> decode.success(PrivacyStatusPublic)
+    "unlisted" -> decode.success(PrivacyStatusUnlisted)
+    "private" -> decode.success(PrivacyStatusPrivate)
+    _ -> decode.failure(PrivacyStatusPublic, "a valid PrivacyStatus")
   }
 }
 
@@ -175,7 +210,8 @@ pub type RecordingStatus {
 
 pub fn recording_status_to_string(value: RecordingStatus) -> String {
   case value {
-    RecordingStatusLiveBroadcastRecordingStatusUnspecified -> "liveBroadcastRecordingStatusUnspecified"
+    RecordingStatusLiveBroadcastRecordingStatusUnspecified ->
+      "liveBroadcastRecordingStatusUnspecified"
     RecordingStatusNotRecording -> "notRecording"
     RecordingStatusRecording -> "recording"
     RecordingStatusRecorded -> "recorded"
@@ -183,17 +219,17 @@ pub fn recording_status_to_string(value: RecordingStatus) -> String {
 }
 
 pub fn recording_status_decoder() -> Decoder(RecordingStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "liveBroadcastRecordingStatusUnspecified" -> success(
-      RecordingStatusLiveBroadcastRecordingStatusUnspecified,
-    )
-    "notRecording" -> success(RecordingStatusNotRecording)
-    "recording" -> success(RecordingStatusRecording)
-    "recorded" -> success(RecordingStatusRecorded)
-    _ -> failure(
-      RecordingStatusLiveBroadcastRecordingStatusUnspecified,
-      "a valid RecordingStatus",
-    )
+    "liveBroadcastRecordingStatusUnspecified" ->
+      decode.success(RecordingStatusLiveBroadcastRecordingStatusUnspecified)
+    "notRecording" -> decode.success(RecordingStatusNotRecording)
+    "recording" -> decode.success(RecordingStatusRecording)
+    "recorded" -> decode.success(RecordingStatusRecorded)
+    _ ->
+      decode.failure(
+        RecordingStatusLiveBroadcastRecordingStatusUnspecified,
+        "a valid RecordingStatus",
+      )
   }
 }

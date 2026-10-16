@@ -1,86 +1,145 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, bool, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Basic details about a caption track, such as its language and name.
 pub type CaptionSnippet {
   CaptionSnippet(
-    audio_track_type: option.Option(AudioTrackType),
-    failure_reason: option.Option(FailureReason),
-    is_auto_synced: option.Option(Bool),
-    is_cc: option.Option(Bool),
-    is_draft: option.Option(Bool),
-    is_easy_reader: option.Option(Bool),
-    is_large: option.Option(Bool),
-    language: option.Option(String),
-    last_updated: option.Option(String),
-    name: option.Option(String),
-    status: option.Option(Status),
-    track_kind: option.Option(TrackKind),
-    video_id: option.Option(String),
+    audio_track_type: Option(AudioTrackType),
+    failure_reason: Option(FailureReason),
+    is_auto_synced: Option(Bool),
+    is_cc: Option(Bool),
+    is_draft: Option(Bool),
+    is_easy_reader: Option(Bool),
+    is_large: Option(Bool),
+    language: Option(String),
+    last_updated: Option(String),
+    name: Option(String),
+    status: Option(Status),
+    track_kind: Option(TrackKind),
+    video_id: Option(String),
   )
 }
 
 pub fn decoder() -> Decoder(CaptionSnippet) {
-  use audio_track_type <- optional_field(
+  use audio_track_type <- decode.optional_field(
     "audioTrackType",
     option.None,
-    optional(audio_track_type_decoder()),
+    decode.optional(audio_track_type_decoder()),
   )
-  use failure_reason <- optional_field(
+  use failure_reason <- decode.optional_field(
     "failureReason",
     option.None,
-    optional(failure_reason_decoder()),
+    decode.optional(failure_reason_decoder()),
   )
-  use is_auto_synced <- optional_field(
+  use is_auto_synced <- decode.optional_field(
     "isAutoSynced",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use is_cc <- optional_field("isCC", option.None, optional(bool))
-  use is_draft <- optional_field("isDraft", option.None, optional(bool))
-  use is_easy_reader <- optional_field(
+  use is_cc <- decode.optional_field(
+    "isCC",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use is_draft <- decode.optional_field(
+    "isDraft",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use is_easy_reader <- decode.optional_field(
     "isEasyReader",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use is_large <- optional_field("isLarge", option.None, optional(bool))
-  use language <- optional_field("language", option.None, optional(string))
-  use last_updated <- optional_field(
+  use is_large <- decode.optional_field(
+    "isLarge",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use language <- decode.optional_field(
+    "language",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use last_updated <- decode.optional_field(
     "lastUpdated",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use name <- optional_field("name", option.None, optional(string))
-  use status <- optional_field(
+  use name <- decode.optional_field(
+    "name",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use status <- decode.optional_field(
     "status",
     option.None,
-    optional(status_decoder()),
+    decode.optional(status_decoder()),
   )
-  use track_kind <- optional_field(
+  use track_kind <- decode.optional_field(
     "trackKind",
     option.None,
-    optional(track_kind_decoder()),
+    decode.optional(track_kind_decoder()),
   )
-  use video_id <- optional_field("videoId", option.None, optional(string))
-  success(
-    CaptionSnippet(
-      audio_track_type,
-      failure_reason,
-      is_auto_synced,
-      is_cc,
-      is_draft,
-      is_easy_reader,
-      is_large,
-      language,
-      last_updated,
-      name,
-      status,
-      track_kind,
-      video_id,
+  use video_id <- decode.optional_field(
+    "videoId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  decode.success(CaptionSnippet(
+    audio_track_type,
+    failure_reason,
+    is_auto_synced,
+    is_cc,
+    is_draft,
+    is_easy_reader,
+    is_large,
+    language,
+    last_updated,
+    name,
+    status,
+    track_kind,
+    video_id,
+  ))
+}
+
+pub fn to_json(value: CaptionSnippet) -> Json {
+  json.object([
+    #(
+      "audioTrackType",
+      json.nullable(value.audio_track_type, fn(e) {
+        json.string(audio_track_type_to_string(e))
+      }),
     ),
-  )
+    #(
+      "failureReason",
+      json.nullable(value.failure_reason, fn(e) {
+        json.string(failure_reason_to_string(e))
+      }),
+    ),
+    #("isAutoSynced", json.nullable(value.is_auto_synced, json.bool)),
+    #("isCC", json.nullable(value.is_cc, json.bool)),
+    #("isDraft", json.nullable(value.is_draft, json.bool)),
+    #("isEasyReader", json.nullable(value.is_easy_reader, json.bool)),
+    #("isLarge", json.nullable(value.is_large, json.bool)),
+    #("language", json.nullable(value.language, json.string)),
+    #("lastUpdated", json.nullable(value.last_updated, json.string)),
+    #("name", json.nullable(value.name, json.string)),
+    #(
+      "status",
+      json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
+    ),
+    #(
+      "trackKind",
+      json.nullable(value.track_kind, fn(e) {
+        json.string(track_kind_to_string(e))
+      }),
+    ),
+    #("videoId", json.nullable(value.video_id, json.string)),
+  ])
 }
 
 /// The type of audio track associated with the caption track.
@@ -101,13 +160,13 @@ pub fn audio_track_type_to_string(value: AudioTrackType) -> String {
 }
 
 pub fn audio_track_type_decoder() -> Decoder(AudioTrackType) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "unknown" -> success(AudioTrackTypeUnknown)
-    "primary" -> success(AudioTrackTypePrimary)
-    "commentary" -> success(AudioTrackTypeCommentary)
-    "descriptive" -> success(AudioTrackTypeDescriptive)
-    _ -> failure(AudioTrackTypeUnknown, "a valid AudioTrackType")
+    "unknown" -> decode.success(AudioTrackTypeUnknown)
+    "primary" -> decode.success(AudioTrackTypePrimary)
+    "commentary" -> decode.success(AudioTrackTypeCommentary)
+    "descriptive" -> decode.success(AudioTrackTypeDescriptive)
+    _ -> decode.failure(AudioTrackTypeUnknown, "a valid AudioTrackType")
   }
 }
 
@@ -127,12 +186,12 @@ pub fn failure_reason_to_string(value: FailureReason) -> String {
 }
 
 pub fn failure_reason_decoder() -> Decoder(FailureReason) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "unknownFormat" -> success(FailureReasonUnknownFormat)
-    "unsupportedFormat" -> success(FailureReasonUnsupportedFormat)
-    "processingFailed" -> success(FailureReasonProcessingFailed)
-    _ -> failure(FailureReasonUnknownFormat, "a valid FailureReason")
+    "unknownFormat" -> decode.success(FailureReasonUnknownFormat)
+    "unsupportedFormat" -> decode.success(FailureReasonUnsupportedFormat)
+    "processingFailed" -> decode.success(FailureReasonProcessingFailed)
+    _ -> decode.failure(FailureReasonUnknownFormat, "a valid FailureReason")
   }
 }
 
@@ -152,12 +211,12 @@ pub fn status_to_string(value: Status) -> String {
 }
 
 pub fn status_decoder() -> Decoder(Status) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "serving" -> success(StatusServing)
-    "syncing" -> success(StatusSyncing)
-    "failed" -> success(StatusFailed)
-    _ -> failure(StatusServing, "a valid Status")
+    "serving" -> decode.success(StatusServing)
+    "syncing" -> decode.success(StatusSyncing)
+    "failed" -> decode.success(StatusFailed)
+    _ -> decode.failure(StatusServing, "a valid Status")
   }
 }
 
@@ -177,11 +236,11 @@ pub fn track_kind_to_string(value: TrackKind) -> String {
 }
 
 pub fn track_kind_decoder() -> Decoder(TrackKind) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "standard" -> success(TrackKindStandard)
-    "ASR" -> success(TrackKindAsr)
-    "forced" -> success(TrackKindForced)
-    _ -> failure(TrackKindStandard, "a valid TrackKind")
+    "standard" -> decode.success(TrackKindStandard)
+    "ASR" -> decode.success(TrackKindAsr)
+    "forced" -> decode.success(TrackKindForced)
+    _ -> decode.failure(TrackKindStandard, "a valid TrackKind")
   }
 }

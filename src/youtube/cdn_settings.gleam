@@ -1,45 +1,82 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/ingestion_info.{type IngestionInfo}
 
 /// Brief description of the live stream cdn settings.
 pub type CdnSettings {
   CdnSettings(
-    format: option.Option(String),
-    frame_rate: option.Option(FrameRate),
-    ingestion_info: option.Option(IngestionInfo),
-    ingestion_type: option.Option(IngestionType),
-    resolution: option.Option(Resolution),
+    format: Option(String),
+    frame_rate: Option(FrameRate),
+    ingestion_info: Option(IngestionInfo),
+    ingestion_type: Option(IngestionType),
+    resolution: Option(Resolution),
   )
 }
 
 pub fn decoder() -> Decoder(CdnSettings) {
-  use format <- optional_field("format", option.None, optional(string))
-  use frame_rate <- optional_field(
+  use format <- decode.optional_field(
+    "format",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use frame_rate <- decode.optional_field(
     "frameRate",
     option.None,
-    optional(frame_rate_decoder()),
+    decode.optional(frame_rate_decoder()),
   )
-  use ingestion_info <- optional_field(
+  use ingestion_info <- decode.optional_field(
     "ingestionInfo",
     option.None,
-    optional(ingestion_info.decoder()),
+    decode.optional(ingestion_info.decoder()),
   )
-  use ingestion_type <- optional_field(
+  use ingestion_type <- decode.optional_field(
     "ingestionType",
     option.None,
-    optional(ingestion_type_decoder()),
+    decode.optional(ingestion_type_decoder()),
   )
-  use resolution <- optional_field(
+  use resolution <- decode.optional_field(
     "resolution",
     option.None,
-    optional(resolution_decoder()),
+    decode.optional(resolution_decoder()),
   )
-  success(
-    CdnSettings(format, frame_rate, ingestion_info, ingestion_type, resolution),
-  )
+  decode.success(CdnSettings(
+    format,
+    frame_rate,
+    ingestion_info,
+    ingestion_type,
+    resolution,
+  ))
+}
+
+pub fn to_json(value: CdnSettings) -> Json {
+  json.object([
+    #("format", json.nullable(value.format, json.string)),
+    #(
+      "frameRate",
+      json.nullable(value.frame_rate, fn(e) {
+        json.string(frame_rate_to_string(e))
+      }),
+    ),
+    #(
+      "ingestionInfo",
+      json.nullable(value.ingestion_info, ingestion_info.to_json),
+    ),
+    #(
+      "ingestionType",
+      json.nullable(value.ingestion_type, fn(e) {
+        json.string(ingestion_type_to_string(e))
+      }),
+    ),
+    #(
+      "resolution",
+      json.nullable(value.resolution, fn(e) {
+        json.string(resolution_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The frame rate of the inbound video data.
@@ -58,12 +95,12 @@ pub fn frame_rate_to_string(value: FrameRate) -> String {
 }
 
 pub fn frame_rate_decoder() -> Decoder(FrameRate) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "30fps" -> success(FrameRateValue30fps)
-    "60fps" -> success(FrameRateValue60fps)
-    "variable" -> success(FrameRateVariable)
-    _ -> failure(FrameRateValue30fps, "a valid FrameRate")
+    "30fps" -> decode.success(FrameRateValue30fps)
+    "60fps" -> decode.success(FrameRateValue60fps)
+    "variable" -> decode.success(FrameRateVariable)
+    _ -> decode.failure(FrameRateValue30fps, "a valid FrameRate")
   }
 }
 
@@ -85,13 +122,13 @@ pub fn ingestion_type_to_string(value: IngestionType) -> String {
 }
 
 pub fn ingestion_type_decoder() -> Decoder(IngestionType) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "rtmp" -> success(IngestionTypeRtmp)
-    "dash" -> success(IngestionTypeDash)
-    "webrtc" -> success(IngestionTypeWebrtc)
-    "hls" -> success(IngestionTypeHls)
-    _ -> failure(IngestionTypeRtmp, "a valid IngestionType")
+    "rtmp" -> decode.success(IngestionTypeRtmp)
+    "dash" -> decode.success(IngestionTypeDash)
+    "webrtc" -> decode.success(IngestionTypeWebrtc)
+    "hls" -> decode.success(IngestionTypeHls)
+    _ -> decode.failure(IngestionTypeRtmp, "a valid IngestionType")
   }
 }
 
@@ -121,16 +158,16 @@ pub fn resolution_to_string(value: Resolution) -> String {
 }
 
 pub fn resolution_decoder() -> Decoder(Resolution) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "240p" -> success(ResolutionValue240p)
-    "360p" -> success(ResolutionValue360p)
-    "480p" -> success(ResolutionValue480p)
-    "720p" -> success(ResolutionValue720p)
-    "1080p" -> success(ResolutionValue1080p)
-    "1440p" -> success(ResolutionValue1440p)
-    "2160p" -> success(ResolutionValue2160p)
-    "variable" -> success(ResolutionVariable)
-    _ -> failure(ResolutionValue240p, "a valid Resolution")
+    "240p" -> decode.success(ResolutionValue240p)
+    "360p" -> decode.success(ResolutionValue360p)
+    "480p" -> decode.success(ResolutionValue480p)
+    "720p" -> decode.success(ResolutionValue720p)
+    "1080p" -> decode.success(ResolutionValue1080p)
+    "1440p" -> decode.success(ResolutionValue1440p)
+    "2160p" -> decode.success(ResolutionValue2160p)
+    "variable" -> decode.success(ResolutionVariable)
+    _ -> decode.failure(ResolutionValue240p, "a valid Resolution")
   }
 }

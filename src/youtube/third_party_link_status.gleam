@@ -1,20 +1,32 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// The third-party link status object contains information about the status of the link.
 pub type ThirdPartyLinkStatus {
-  ThirdPartyLinkStatus(link_status: option.Option(LinkStatus))
+  ThirdPartyLinkStatus(link_status: Option(LinkStatus))
 }
 
 pub fn decoder() -> Decoder(ThirdPartyLinkStatus) {
-  use link_status <- optional_field(
+  use link_status <- decode.optional_field(
     "linkStatus",
     option.None,
-    optional(link_status_decoder()),
+    decode.optional(link_status_decoder()),
   )
-  success(ThirdPartyLinkStatus(link_status))
+  decode.success(ThirdPartyLinkStatus(link_status))
+}
+
+pub fn to_json(value: ThirdPartyLinkStatus) -> Json {
+  json.object([
+    #(
+      "linkStatus",
+      json.nullable(value.link_status, fn(e) {
+        json.string(link_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 pub type LinkStatus {
@@ -34,12 +46,12 @@ pub fn link_status_to_string(value: LinkStatus) -> String {
 }
 
 pub fn link_status_decoder() -> Decoder(LinkStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "unknown" -> success(LinkStatusUnknown)
-    "failed" -> success(LinkStatusFailed)
-    "pending" -> success(LinkStatusPending)
-    "linked" -> success(LinkStatusLinked)
-    _ -> failure(LinkStatusUnknown, "a valid LinkStatus")
+    "unknown" -> decode.success(LinkStatusUnknown)
+    "failed" -> decode.success(LinkStatusFailed)
+    "pending" -> decode.success(LinkStatusPending)
+    "linked" -> decode.success(LinkStatusLinked)
+    _ -> decode.failure(LinkStatusUnknown, "a valid LinkStatus")
   }
 }

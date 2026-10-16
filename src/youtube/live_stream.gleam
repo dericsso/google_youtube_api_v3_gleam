@@ -1,7 +1,8 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/cdn_settings.{type CdnSettings}
 import youtube/live_stream_content_details.{type LiveStreamContentDetails}
 import youtube/live_stream_snippet.{type LiveStreamSnippet}
@@ -10,39 +11,74 @@ import youtube/live_stream_status.{type LiveStreamStatus}
 /// A live stream describes a live ingestion point.
 pub type LiveStream {
   LiveStream(
-    cdn: option.Option(CdnSettings),
-    content_details: option.Option(LiveStreamContentDetails),
-    etag: option.Option(String),
-    id: option.Option(String),
-    kind: option.Option(String),
-    snippet: option.Option(LiveStreamSnippet),
-    status: option.Option(LiveStreamStatus),
+    cdn: Option(CdnSettings),
+    content_details: Option(LiveStreamContentDetails),
+    etag: Option(String),
+    id: Option(String),
+    kind: Option(String),
+    snippet: Option(LiveStreamSnippet),
+    status: Option(LiveStreamStatus),
   )
 }
 
 pub fn decoder() -> Decoder(LiveStream) {
-  use cdn <- optional_field(
+  use cdn <- decode.optional_field(
     "cdn",
     option.None,
-    optional(cdn_settings.decoder()),
+    decode.optional(cdn_settings.decoder()),
   )
-  use content_details <- optional_field(
+  use content_details <- decode.optional_field(
     "contentDetails",
     option.None,
-    optional(live_stream_content_details.decoder()),
+    decode.optional(live_stream_content_details.decoder()),
   )
-  use etag <- optional_field("etag", option.None, optional(string))
-  use id <- optional_field("id", option.None, optional(string))
-  use kind <- optional_field("kind", option.None, optional(string))
-  use snippet <- optional_field(
+  use etag <- decode.optional_field(
+    "etag",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use id <- decode.optional_field(
+    "id",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use kind <- decode.optional_field(
+    "kind",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use snippet <- decode.optional_field(
     "snippet",
     option.None,
-    optional(live_stream_snippet.decoder()),
+    decode.optional(live_stream_snippet.decoder()),
   )
-  use status <- optional_field(
+  use status <- decode.optional_field(
     "status",
     option.None,
-    optional(live_stream_status.decoder()),
+    decode.optional(live_stream_status.decoder()),
   )
-  success(LiveStream(cdn, content_details, etag, id, kind, snippet, status))
+  decode.success(LiveStream(
+    cdn,
+    content_details,
+    etag,
+    id,
+    kind,
+    snippet,
+    status,
+  ))
+}
+
+pub fn to_json(value: LiveStream) -> Json {
+  json.object([
+    #("cdn", json.nullable(value.cdn, cdn_settings.to_json)),
+    #(
+      "contentDetails",
+      json.nullable(value.content_details, live_stream_content_details.to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, live_stream_snippet.to_json)),
+    #("status", json.nullable(value.status, live_stream_status.to_json)),
+  ])
 }

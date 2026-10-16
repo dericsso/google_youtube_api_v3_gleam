@@ -1,81 +1,119 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Details about a resource which is being promoted.
 pub type ActivityContentDetailsPromotedItem {
   ActivityContentDetailsPromotedItem(
-    ad_tag: option.Option(String),
-    click_tracking_url: option.Option(String),
-    creative_view_url: option.Option(String),
-    cta_type: option.Option(CtaType),
-    custom_cta_button_text: option.Option(String),
-    description_text: option.Option(String),
-    destination_url: option.Option(String),
-    forecasting_url: option.Option(List(String)),
-    impression_url: option.Option(List(String)),
-    video_id: option.Option(String),
+    ad_tag: Option(String),
+    click_tracking_url: Option(String),
+    creative_view_url: Option(String),
+    cta_type: Option(CtaType),
+    custom_cta_button_text: Option(String),
+    description_text: Option(String),
+    destination_url: Option(String),
+    forecasting_url: Option(List(String)),
+    impression_url: Option(List(String)),
+    video_id: Option(String),
   )
 }
 
 pub fn decoder() -> Decoder(ActivityContentDetailsPromotedItem) {
-  use ad_tag <- optional_field("adTag", option.None, optional(string))
-  use click_tracking_url <- optional_field(
+  use ad_tag <- decode.optional_field(
+    "adTag",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use click_tracking_url <- decode.optional_field(
     "clickTrackingUrl",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use creative_view_url <- optional_field(
+  use creative_view_url <- decode.optional_field(
     "creativeViewUrl",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use cta_type <- optional_field(
+  use cta_type <- decode.optional_field(
     "ctaType",
     option.None,
-    optional(cta_type_decoder()),
+    decode.optional(cta_type_decoder()),
   )
-  use custom_cta_button_text <- optional_field(
+  use custom_cta_button_text <- decode.optional_field(
     "customCtaButtonText",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use description_text <- optional_field(
+  use description_text <- decode.optional_field(
     "descriptionText",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use destination_url <- optional_field(
+  use destination_url <- decode.optional_field(
     "destinationUrl",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use forecasting_url <- optional_field(
+  use forecasting_url <- decode.optional_field(
     "forecastingUrl",
     option.None,
-    optional(list(string)),
+    decode.optional(decode.list(decode.string)),
   )
-  use impression_url <- optional_field(
+  use impression_url <- decode.optional_field(
     "impressionUrl",
     option.None,
-    optional(list(string)),
+    decode.optional(decode.list(decode.string)),
   )
-  use video_id <- optional_field("videoId", option.None, optional(string))
-  success(
-    ActivityContentDetailsPromotedItem(
-      ad_tag,
-      click_tracking_url,
-      creative_view_url,
-      cta_type,
-      custom_cta_button_text,
-      description_text,
-      destination_url,
-      forecasting_url,
-      impression_url,
-      video_id,
+  use video_id <- decode.optional_field(
+    "videoId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  decode.success(ActivityContentDetailsPromotedItem(
+    ad_tag,
+    click_tracking_url,
+    creative_view_url,
+    cta_type,
+    custom_cta_button_text,
+    description_text,
+    destination_url,
+    forecasting_url,
+    impression_url,
+    video_id,
+  ))
+}
+
+pub fn to_json(value: ActivityContentDetailsPromotedItem) -> Json {
+  json.object([
+    #("adTag", json.nullable(value.ad_tag, json.string)),
+    #("clickTrackingUrl", json.nullable(value.click_tracking_url, json.string)),
+    #("creativeViewUrl", json.nullable(value.creative_view_url, json.string)),
+    #(
+      "ctaType",
+      json.nullable(value.cta_type, fn(e) { json.string(cta_type_to_string(e)) }),
     ),
-  )
+    #(
+      "customCtaButtonText",
+      json.nullable(value.custom_cta_button_text, json.string),
+    ),
+    #("descriptionText", json.nullable(value.description_text, json.string)),
+    #("destinationUrl", json.nullable(value.destination_url, json.string)),
+    #(
+      "forecastingUrl",
+      json.nullable(value.forecasting_url, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "impressionUrl",
+      json.nullable(value.impression_url, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #("videoId", json.nullable(value.video_id, json.string)),
+  ])
 }
 
 /// The type of call-to-action, a message to the user indicating action that can be taken.
@@ -92,10 +130,10 @@ pub fn cta_type_to_string(value: CtaType) -> String {
 }
 
 pub fn cta_type_decoder() -> Decoder(CtaType) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "ctaTypeUnspecified" -> success(CtaTypeCtaTypeUnspecified)
-    "visitAdvertiserSite" -> success(CtaTypeVisitAdvertiserSite)
-    _ -> failure(CtaTypeCtaTypeUnspecified, "a valid CtaType")
+    "ctaTypeUnspecified" -> decode.success(CtaTypeCtaTypeUnspecified)
+    "visitAdvertiserSite" -> decode.success(CtaTypeVisitAdvertiserSite)
+    _ -> decode.failure(CtaTypeCtaTypeUnspecified, "a valid CtaType")
   }
 }

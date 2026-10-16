@@ -1,23 +1,42 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success}
-import gleam/option
-import youtube/video_abuse_report_secondary_reason.{type VideoAbuseReportSecondaryReason}
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
+import youtube/video_abuse_report_secondary_reason.{
+  type VideoAbuseReportSecondaryReason,
+}
 
 /// Basic details about a video category, such as its localized title.
 pub type VideoAbuseReportReasonSnippet {
   VideoAbuseReportReasonSnippet(
-    label: option.Option(String),
-    secondary_reasons: option.Option(List(VideoAbuseReportSecondaryReason)),
+    label: Option(String),
+    secondary_reasons: Option(List(VideoAbuseReportSecondaryReason)),
   )
 }
 
 pub fn decoder() -> Decoder(VideoAbuseReportReasonSnippet) {
-  use label <- optional_field("label", option.None, optional(string))
-  use secondary_reasons <- optional_field(
+  use label <- decode.optional_field(
+    "label",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use secondary_reasons <- decode.optional_field(
     "secondaryReasons",
     option.None,
-    optional(list(video_abuse_report_secondary_reason.decoder())),
+    decode.optional(decode.list(video_abuse_report_secondary_reason.decoder())),
   )
-  success(VideoAbuseReportReasonSnippet(label, secondary_reasons))
+  decode.success(VideoAbuseReportReasonSnippet(label, secondary_reasons))
+}
+
+pub fn to_json(value: VideoAbuseReportReasonSnippet) -> Json {
+  json.object([
+    #("label", json.nullable(value.label, json.string)),
+    #(
+      "secondaryReasons",
+      json.nullable(value.secondary_reasons, fn(items) {
+        json.array(items, video_abuse_report_secondary_reason.to_json)
+      }),
+    ),
+  ])
 }

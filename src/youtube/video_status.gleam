@@ -1,88 +1,143 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, bool, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Basic details about a video category, such as its localized title. Next Id: 20
 pub type VideoStatus {
   VideoStatus(
-    contains_synthetic_media: option.Option(Bool),
-    embeddable: option.Option(Bool),
-    failure_reason: option.Option(FailureReason),
-    license: option.Option(License),
-    made_for_kids: option.Option(Bool),
-    privacy_status: option.Option(PrivacyStatus),
-    public_stats_viewable: option.Option(Bool),
-    publish_at: option.Option(String),
-    rejection_reason: option.Option(RejectionReason),
-    self_declared_made_for_kids: option.Option(Bool),
-    upload_status: option.Option(UploadStatus),
+    contains_synthetic_media: Option(Bool),
+    embeddable: Option(Bool),
+    failure_reason: Option(FailureReason),
+    license: Option(License),
+    made_for_kids: Option(Bool),
+    privacy_status: Option(PrivacyStatus),
+    public_stats_viewable: Option(Bool),
+    publish_at: Option(String),
+    rejection_reason: Option(RejectionReason),
+    self_declared_made_for_kids: Option(Bool),
+    upload_status: Option(UploadStatus),
   )
 }
 
 pub fn decoder() -> Decoder(VideoStatus) {
-  use contains_synthetic_media <- optional_field(
+  use contains_synthetic_media <- decode.optional_field(
     "containsSyntheticMedia",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use embeddable <- optional_field("embeddable", option.None, optional(bool))
-  use failure_reason <- optional_field(
+  use embeddable <- decode.optional_field(
+    "embeddable",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use failure_reason <- decode.optional_field(
     "failureReason",
     option.None,
-    optional(failure_reason_decoder()),
+    decode.optional(failure_reason_decoder()),
   )
-  use license <- optional_field(
+  use license <- decode.optional_field(
     "license",
     option.None,
-    optional(license_decoder()),
+    decode.optional(license_decoder()),
   )
-  use made_for_kids <- optional_field(
+  use made_for_kids <- decode.optional_field(
     "madeForKids",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use privacy_status <- optional_field(
+  use privacy_status <- decode.optional_field(
     "privacyStatus",
     option.None,
-    optional(privacy_status_decoder()),
+    decode.optional(privacy_status_decoder()),
   )
-  use public_stats_viewable <- optional_field(
+  use public_stats_viewable <- decode.optional_field(
     "publicStatsViewable",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use publish_at <- optional_field("publishAt", option.None, optional(string))
-  use rejection_reason <- optional_field(
+  use publish_at <- decode.optional_field(
+    "publishAt",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use rejection_reason <- decode.optional_field(
     "rejectionReason",
     option.None,
-    optional(rejection_reason_decoder()),
+    decode.optional(rejection_reason_decoder()),
   )
-  use self_declared_made_for_kids <- optional_field(
+  use self_declared_made_for_kids <- decode.optional_field(
     "selfDeclaredMadeForKids",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use upload_status <- optional_field(
+  use upload_status <- decode.optional_field(
     "uploadStatus",
     option.None,
-    optional(upload_status_decoder()),
+    decode.optional(upload_status_decoder()),
   )
-  success(
-    VideoStatus(
-      contains_synthetic_media,
-      embeddable,
-      failure_reason,
-      license,
-      made_for_kids,
-      privacy_status,
-      public_stats_viewable,
-      publish_at,
-      rejection_reason,
-      self_declared_made_for_kids,
-      upload_status,
+  decode.success(VideoStatus(
+    contains_synthetic_media,
+    embeddable,
+    failure_reason,
+    license,
+    made_for_kids,
+    privacy_status,
+    public_stats_viewable,
+    publish_at,
+    rejection_reason,
+    self_declared_made_for_kids,
+    upload_status,
+  ))
+}
+
+pub fn to_json(value: VideoStatus) -> Json {
+  json.object([
+    #(
+      "containsSyntheticMedia",
+      json.nullable(value.contains_synthetic_media, json.bool),
     ),
-  )
+    #("embeddable", json.nullable(value.embeddable, json.bool)),
+    #(
+      "failureReason",
+      json.nullable(value.failure_reason, fn(e) {
+        json.string(failure_reason_to_string(e))
+      }),
+    ),
+    #(
+      "license",
+      json.nullable(value.license, fn(e) { json.string(license_to_string(e)) }),
+    ),
+    #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
+    #(
+      "privacyStatus",
+      json.nullable(value.privacy_status, fn(e) {
+        json.string(privacy_status_to_string(e))
+      }),
+    ),
+    #(
+      "publicStatsViewable",
+      json.nullable(value.public_stats_viewable, json.bool),
+    ),
+    #("publishAt", json.nullable(value.publish_at, json.string)),
+    #(
+      "rejectionReason",
+      json.nullable(value.rejection_reason, fn(e) {
+        json.string(rejection_reason_to_string(e))
+      }),
+    ),
+    #(
+      "selfDeclaredMadeForKids",
+      json.nullable(value.self_declared_made_for_kids, json.bool),
+    ),
+    #(
+      "uploadStatus",
+      json.nullable(value.upload_status, fn(e) {
+        json.string(upload_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// This value explains why a video failed to upload. This property is only present if the `uploadStatus` property indicates that the upload failed.
@@ -107,15 +162,15 @@ pub fn failure_reason_to_string(value: FailureReason) -> String {
 }
 
 pub fn failure_reason_decoder() -> Decoder(FailureReason) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "conversion" -> success(FailureReasonConversion)
-    "invalidFile" -> success(FailureReasonInvalidFile)
-    "emptyFile" -> success(FailureReasonEmptyFile)
-    "tooSmall" -> success(FailureReasonTooSmall)
-    "codec" -> success(FailureReasonCodec)
-    "uploadAborted" -> success(FailureReasonUploadAborted)
-    _ -> failure(FailureReasonConversion, "a valid FailureReason")
+    "conversion" -> decode.success(FailureReasonConversion)
+    "invalidFile" -> decode.success(FailureReasonInvalidFile)
+    "emptyFile" -> decode.success(FailureReasonEmptyFile)
+    "tooSmall" -> decode.success(FailureReasonTooSmall)
+    "codec" -> decode.success(FailureReasonCodec)
+    "uploadAborted" -> decode.success(FailureReasonUploadAborted)
+    _ -> decode.failure(FailureReasonConversion, "a valid FailureReason")
   }
 }
 
@@ -133,11 +188,11 @@ pub fn license_to_string(value: License) -> String {
 }
 
 pub fn license_decoder() -> Decoder(License) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "youtube" -> success(LicenseYoutube)
-    "creativeCommon" -> success(LicenseCreativeCommon)
-    _ -> failure(LicenseYoutube, "a valid License")
+    "youtube" -> decode.success(LicenseYoutube)
+    "creativeCommon" -> decode.success(LicenseCreativeCommon)
+    _ -> decode.failure(LicenseYoutube, "a valid License")
   }
 }
 
@@ -157,12 +212,12 @@ pub fn privacy_status_to_string(value: PrivacyStatus) -> String {
 }
 
 pub fn privacy_status_decoder() -> Decoder(PrivacyStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "public" -> success(PrivacyStatusPublic)
-    "unlisted" -> success(PrivacyStatusUnlisted)
-    "private" -> success(PrivacyStatusPrivate)
-    _ -> failure(PrivacyStatusPublic, "a valid PrivacyStatus")
+    "public" -> decode.success(PrivacyStatusPublic)
+    "unlisted" -> decode.success(PrivacyStatusUnlisted)
+    "private" -> decode.success(PrivacyStatusPrivate)
+    _ -> decode.failure(PrivacyStatusPublic, "a valid PrivacyStatus")
   }
 }
 
@@ -196,21 +251,21 @@ pub fn rejection_reason_to_string(value: RejectionReason) -> String {
 }
 
 pub fn rejection_reason_decoder() -> Decoder(RejectionReason) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "copyright" -> success(RejectionReasonCopyright)
-    "inappropriate" -> success(RejectionReasonInappropriate)
-    "duplicate" -> success(RejectionReasonDuplicate)
-    "termsOfUse" -> success(RejectionReasonTermsOfUse)
-    "uploaderAccountSuspended" -> success(
-      RejectionReasonUploaderAccountSuspended,
-    )
-    "length" -> success(RejectionReasonLength)
-    "claim" -> success(RejectionReasonClaim)
-    "uploaderAccountClosed" -> success(RejectionReasonUploaderAccountClosed)
-    "trademark" -> success(RejectionReasonTrademark)
-    "legal" -> success(RejectionReasonLegal)
-    _ -> failure(RejectionReasonCopyright, "a valid RejectionReason")
+    "copyright" -> decode.success(RejectionReasonCopyright)
+    "inappropriate" -> decode.success(RejectionReasonInappropriate)
+    "duplicate" -> decode.success(RejectionReasonDuplicate)
+    "termsOfUse" -> decode.success(RejectionReasonTermsOfUse)
+    "uploaderAccountSuspended" ->
+      decode.success(RejectionReasonUploaderAccountSuspended)
+    "length" -> decode.success(RejectionReasonLength)
+    "claim" -> decode.success(RejectionReasonClaim)
+    "uploaderAccountClosed" ->
+      decode.success(RejectionReasonUploaderAccountClosed)
+    "trademark" -> decode.success(RejectionReasonTrademark)
+    "legal" -> decode.success(RejectionReasonLegal)
+    _ -> decode.failure(RejectionReasonCopyright, "a valid RejectionReason")
   }
 }
 
@@ -234,13 +289,13 @@ pub fn upload_status_to_string(value: UploadStatus) -> String {
 }
 
 pub fn upload_status_decoder() -> Decoder(UploadStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "uploaded" -> success(UploadStatusUploaded)
-    "processed" -> success(UploadStatusProcessed)
-    "failed" -> success(UploadStatusFailed)
-    "rejected" -> success(UploadStatusRejected)
-    "deleted" -> success(UploadStatusDeleted)
-    _ -> failure(UploadStatusUploaded, "a valid UploadStatus")
+    "uploaded" -> decode.success(UploadStatusUploaded)
+    "processed" -> decode.success(UploadStatusProcessed)
+    "failed" -> decode.success(UploadStatusFailed)
+    "rejected" -> decode.success(UploadStatusRejected)
+    "deleted" -> decode.success(UploadStatusDeleted)
+    _ -> decode.failure(UploadStatusUploaded, "a valid UploadStatus")
   }
 }

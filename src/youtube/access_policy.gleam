@@ -1,22 +1,36 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, bool, list, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Rights management policy for YouTube resources.
 pub type AccessPolicy {
-  AccessPolicy(
-    allowed: option.Option(Bool),
-    exception: option.Option(List(String)),
-  )
+  AccessPolicy(allowed: Option(Bool), exception: Option(List(String)))
 }
 
 pub fn decoder() -> Decoder(AccessPolicy) {
-  use allowed <- optional_field("allowed", option.None, optional(bool))
-  use exception <- optional_field(
+  use allowed <- decode.optional_field(
+    "allowed",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use exception <- decode.optional_field(
     "exception",
     option.None,
-    optional(list(string)),
+    decode.optional(decode.list(decode.string)),
   )
-  success(AccessPolicy(allowed, exception))
+  decode.success(AccessPolicy(allowed, exception))
+}
+
+pub fn to_json(value: AccessPolicy) -> Json {
+  json.object([
+    #("allowed", json.nullable(value.allowed, json.bool)),
+    #(
+      "exception",
+      json.nullable(value.exception, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+  ])
 }

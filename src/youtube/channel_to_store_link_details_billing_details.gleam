@@ -1,22 +1,32 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Information specific to billing.
 pub type ChannelToStoreLinkDetailsBillingDetails {
-  ChannelToStoreLinkDetailsBillingDetails(
-    billing_status: option.Option(BillingStatus),
-  )
+  ChannelToStoreLinkDetailsBillingDetails(billing_status: Option(BillingStatus))
 }
 
 pub fn decoder() -> Decoder(ChannelToStoreLinkDetailsBillingDetails) {
-  use billing_status <- optional_field(
+  use billing_status <- decode.optional_field(
     "billingStatus",
     option.None,
-    optional(billing_status_decoder()),
+    decode.optional(billing_status_decoder()),
   )
-  success(ChannelToStoreLinkDetailsBillingDetails(billing_status))
+  decode.success(ChannelToStoreLinkDetailsBillingDetails(billing_status))
+}
+
+pub fn to_json(value: ChannelToStoreLinkDetailsBillingDetails) -> Json {
+  json.object([
+    #(
+      "billingStatus",
+      json.nullable(value.billing_status, fn(e) {
+        json.string(billing_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The current billing profile status.
@@ -37,12 +47,18 @@ pub fn billing_status_to_string(value: BillingStatus) -> String {
 }
 
 pub fn billing_status_decoder() -> Decoder(BillingStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "billingStatusUnspecified" -> success(BillingStatusBillingStatusUnspecified)
-    "billingStatusPending" -> success(BillingStatusBillingStatusPending)
-    "billingStatusActive" -> success(BillingStatusBillingStatusActive)
-    "billingStatusInactive" -> success(BillingStatusBillingStatusInactive)
-    _ -> failure(BillingStatusBillingStatusUnspecified, "a valid BillingStatus")
+    "billingStatusUnspecified" ->
+      decode.success(BillingStatusBillingStatusUnspecified)
+    "billingStatusPending" -> decode.success(BillingStatusBillingStatusPending)
+    "billingStatusActive" -> decode.success(BillingStatusBillingStatusActive)
+    "billingStatusInactive" ->
+      decode.success(BillingStatusBillingStatusInactive)
+    _ ->
+      decode.failure(
+        BillingStatusBillingStatusUnspecified,
+        "a valid BillingStatus",
+      )
   }
 }

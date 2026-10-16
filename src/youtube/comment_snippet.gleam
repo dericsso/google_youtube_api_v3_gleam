@@ -1,104 +1,176 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, int, bool, success, then, failure}
-import gleam/option
-import youtube/comment_snippet_author_channel_id.{type CommentSnippetAuthorChannelId}
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
+import youtube/comment_snippet_author_channel_id.{
+  type CommentSnippetAuthorChannelId,
+}
 
 /// Basic details about a comment, such as its author and text.
 pub type CommentSnippet {
   CommentSnippet(
-    author_channel_id: option.Option(CommentSnippetAuthorChannelId),
-    author_channel_url: option.Option(String),
-    author_display_name: option.Option(String),
-    author_profile_image_url: option.Option(String),
-    can_rate: option.Option(Bool),
-    channel_id: option.Option(String),
-    image_url: option.Option(String),
-    like_count: option.Option(Int),
-    moderation_status: option.Option(ModerationStatus),
-    parent_id: option.Option(String),
-    published_at: option.Option(String),
-    text_display: option.Option(String),
-    text_original: option.Option(String),
-    updated_at: option.Option(String),
-    video_id: option.Option(String),
-    viewer_rating: option.Option(ViewerRating),
+    author_channel_id: Option(CommentSnippetAuthorChannelId),
+    author_channel_url: Option(String),
+    author_display_name: Option(String),
+    author_profile_image_url: Option(String),
+    can_rate: Option(Bool),
+    channel_id: Option(String),
+    image_url: Option(String),
+    like_count: Option(Int),
+    moderation_status: Option(ModerationStatus),
+    parent_id: Option(String),
+    published_at: Option(String),
+    text_display: Option(String),
+    text_original: Option(String),
+    updated_at: Option(String),
+    video_id: Option(String),
+    viewer_rating: Option(ViewerRating),
   )
 }
 
 pub fn decoder() -> Decoder(CommentSnippet) {
-  use author_channel_id <- optional_field(
+  use author_channel_id <- decode.optional_field(
     "authorChannelId",
     option.None,
-    optional(comment_snippet_author_channel_id.decoder()),
+    decode.optional(comment_snippet_author_channel_id.decoder()),
   )
-  use author_channel_url <- optional_field(
+  use author_channel_url <- decode.optional_field(
     "authorChannelUrl",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use author_display_name <- optional_field(
+  use author_display_name <- decode.optional_field(
     "authorDisplayName",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use author_profile_image_url <- optional_field(
+  use author_profile_image_url <- decode.optional_field(
     "authorProfileImageUrl",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use can_rate <- optional_field("canRate", option.None, optional(bool))
-  use channel_id <- optional_field("channelId", option.None, optional(string))
-  use image_url <- optional_field("imageUrl", option.None, optional(string))
-  use like_count <- optional_field("likeCount", option.None, optional(int))
-  use moderation_status <- optional_field(
+  use can_rate <- decode.optional_field(
+    "canRate",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use channel_id <- decode.optional_field(
+    "channelId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use image_url <- decode.optional_field(
+    "imageUrl",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use like_count <- decode.optional_field(
+    "likeCount",
+    option.None,
+    decode.optional(decode.int),
+  )
+  use moderation_status <- decode.optional_field(
     "moderationStatus",
     option.None,
-    optional(moderation_status_decoder()),
+    decode.optional(moderation_status_decoder()),
   )
-  use parent_id <- optional_field("parentId", option.None, optional(string))
-  use published_at <- optional_field(
+  use parent_id <- decode.optional_field(
+    "parentId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use published_at <- decode.optional_field(
     "publishedAt",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use text_display <- optional_field(
+  use text_display <- decode.optional_field(
     "textDisplay",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use text_original <- optional_field(
+  use text_original <- decode.optional_field(
     "textOriginal",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use updated_at <- optional_field("updatedAt", option.None, optional(string))
-  use video_id <- optional_field("videoId", option.None, optional(string))
-  use viewer_rating <- optional_field(
+  use updated_at <- decode.optional_field(
+    "updatedAt",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use video_id <- decode.optional_field(
+    "videoId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use viewer_rating <- decode.optional_field(
     "viewerRating",
     option.None,
-    optional(viewer_rating_decoder()),
+    decode.optional(viewer_rating_decoder()),
   )
-  success(
-    CommentSnippet(
-      author_channel_id,
-      author_channel_url,
-      author_display_name,
-      author_profile_image_url,
-      can_rate,
-      channel_id,
-      image_url,
-      like_count,
-      moderation_status,
-      parent_id,
-      published_at,
-      text_display,
-      text_original,
-      updated_at,
-      video_id,
-      viewer_rating,
+  decode.success(CommentSnippet(
+    author_channel_id,
+    author_channel_url,
+    author_display_name,
+    author_profile_image_url,
+    can_rate,
+    channel_id,
+    image_url,
+    like_count,
+    moderation_status,
+    parent_id,
+    published_at,
+    text_display,
+    text_original,
+    updated_at,
+    video_id,
+    viewer_rating,
+  ))
+}
+
+pub fn to_json(value: CommentSnippet) -> Json {
+  json.object([
+    #(
+      "authorChannelId",
+      json.nullable(
+        value.author_channel_id,
+        comment_snippet_author_channel_id.to_json,
+      ),
     ),
-  )
+    #("authorChannelUrl", json.nullable(value.author_channel_url, json.string)),
+    #(
+      "authorDisplayName",
+      json.nullable(value.author_display_name, json.string),
+    ),
+    #(
+      "authorProfileImageUrl",
+      json.nullable(value.author_profile_image_url, json.string),
+    ),
+    #("canRate", json.nullable(value.can_rate, json.bool)),
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("imageUrl", json.nullable(value.image_url, json.string)),
+    #("likeCount", json.nullable(value.like_count, json.int)),
+    #(
+      "moderationStatus",
+      json.nullable(value.moderation_status, fn(e) {
+        json.string(moderation_status_to_string(e))
+      }),
+    ),
+    #("parentId", json.nullable(value.parent_id, json.string)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #("textDisplay", json.nullable(value.text_display, json.string)),
+    #("textOriginal", json.nullable(value.text_original, json.string)),
+    #("updatedAt", json.nullable(value.updated_at, json.string)),
+    #("videoId", json.nullable(value.video_id, json.string)),
+    #(
+      "viewerRating",
+      json.nullable(value.viewer_rating, fn(e) {
+        json.string(viewer_rating_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The comment's moderation status. Will not be set if the comments were requested through the id filter.
@@ -119,13 +191,13 @@ pub fn moderation_status_to_string(value: ModerationStatus) -> String {
 }
 
 pub fn moderation_status_decoder() -> Decoder(ModerationStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "published" -> success(ModerationStatusPublished)
-    "heldForReview" -> success(ModerationStatusHeldForReview)
-    "likelySpam" -> success(ModerationStatusLikelySpam)
-    "rejected" -> success(ModerationStatusRejected)
-    _ -> failure(ModerationStatusPublished, "a valid ModerationStatus")
+    "published" -> decode.success(ModerationStatusPublished)
+    "heldForReview" -> decode.success(ModerationStatusHeldForReview)
+    "likelySpam" -> decode.success(ModerationStatusLikelySpam)
+    "rejected" -> decode.success(ModerationStatusRejected)
+    _ -> decode.failure(ModerationStatusPublished, "a valid ModerationStatus")
   }
 }
 
@@ -145,11 +217,11 @@ pub fn viewer_rating_to_string(value: ViewerRating) -> String {
 }
 
 pub fn viewer_rating_decoder() -> Decoder(ViewerRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "none" -> success(ViewerRatingNone)
-    "like" -> success(ViewerRatingLike)
-    "dislike" -> success(ViewerRatingDislike)
-    _ -> failure(ViewerRatingNone, "a valid ViewerRating")
+    "none" -> decode.success(ViewerRatingNone)
+    "like" -> decode.success(ViewerRatingLike)
+    "dislike" -> decode.success(ViewerRatingDislike)
+    _ -> decode.failure(ViewerRatingNone, "a valid ViewerRating")
   }
 }

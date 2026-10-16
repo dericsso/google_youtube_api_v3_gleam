@@ -1,26 +1,34 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/level_details.{type LevelDetails}
 
 pub type MembershipsLevelSnippet {
   MembershipsLevelSnippet(
-    creator_channel_id: option.Option(String),
-    level_details: option.Option(LevelDetails),
+    creator_channel_id: Option(String),
+    level_details: Option(LevelDetails),
   )
 }
 
 pub fn decoder() -> Decoder(MembershipsLevelSnippet) {
-  use creator_channel_id <- optional_field(
+  use creator_channel_id <- decode.optional_field(
     "creatorChannelId",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use level_details <- optional_field(
+  use level_details <- decode.optional_field(
     "levelDetails",
     option.None,
-    optional(level_details.decoder()),
+    decode.optional(level_details.decoder()),
   )
-  success(MembershipsLevelSnippet(creator_channel_id, level_details))
+  decode.success(MembershipsLevelSnippet(creator_channel_id, level_details))
+}
+
+pub fn to_json(value: MembershipsLevelSnippet) -> Json {
+  json.object([
+    #("creatorChannelId", json.nullable(value.creator_channel_id, json.string)),
+    #("levelDetails", json.nullable(value.level_details, level_details.to_json)),
+  ])
 }

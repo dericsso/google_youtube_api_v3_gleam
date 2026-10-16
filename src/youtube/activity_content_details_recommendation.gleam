@@ -1,37 +1,54 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/resource_id.{type ResourceId}
 
 /// Information that identifies the recommended resource.
 pub type ActivityContentDetailsRecommendation {
   ActivityContentDetailsRecommendation(
-    reason: option.Option(Reason),
-    resource_id: option.Option(ResourceId),
-    seed_resource_id: option.Option(ResourceId),
+    reason: Option(Reason),
+    resource_id: Option(ResourceId),
+    seed_resource_id: Option(ResourceId),
   )
 }
 
 pub fn decoder() -> Decoder(ActivityContentDetailsRecommendation) {
-  use reason <- optional_field(
+  use reason <- decode.optional_field(
     "reason",
     option.None,
-    optional(reason_decoder()),
+    decode.optional(reason_decoder()),
   )
-  use resource_id <- optional_field(
+  use resource_id <- decode.optional_field(
     "resourceId",
     option.None,
-    optional(resource_id.decoder()),
+    decode.optional(resource_id.decoder()),
   )
-  use seed_resource_id <- optional_field(
+  use seed_resource_id <- decode.optional_field(
     "seedResourceId",
     option.None,
-    optional(resource_id.decoder()),
+    decode.optional(resource_id.decoder()),
   )
-  success(
-    ActivityContentDetailsRecommendation(reason, resource_id, seed_resource_id),
-  )
+  decode.success(ActivityContentDetailsRecommendation(
+    reason,
+    resource_id,
+    seed_resource_id,
+  ))
+}
+
+pub fn to_json(value: ActivityContentDetailsRecommendation) -> Json {
+  json.object([
+    #(
+      "reason",
+      json.nullable(value.reason, fn(e) { json.string(reason_to_string(e)) }),
+    ),
+    #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
+    #(
+      "seedResourceId",
+      json.nullable(value.seed_resource_id, resource_id.to_json),
+    ),
+  ])
 }
 
 /// The reason that the resource is recommended to the user.
@@ -48,10 +65,10 @@ pub fn reason_to_string(value: Reason) -> String {
 }
 
 pub fn reason_decoder() -> Decoder(Reason) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "reasonUnspecified" -> success(ReasonReasonUnspecified)
-    "videoWatched" -> success(ReasonVideoWatched)
-    _ -> failure(ReasonReasonUnspecified, "a valid Reason")
+    "reasonUnspecified" -> decode.success(ReasonReasonUnspecified)
+    "videoWatched" -> decode.success(ReasonVideoWatched)
+    _ -> decode.failure(ReasonReasonUnspecified, "a valid Reason")
   }
 }

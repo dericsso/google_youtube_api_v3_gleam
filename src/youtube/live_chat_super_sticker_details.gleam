@@ -1,44 +1,70 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, int, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/super_sticker_metadata.{type SuperStickerMetadata}
 
 pub type LiveChatSuperStickerDetails {
   LiveChatSuperStickerDetails(
-    amount_display_string: option.Option(String),
-    amount_micros: option.Option(String),
-    currency: option.Option(String),
-    super_sticker_metadata: option.Option(SuperStickerMetadata),
-    tier: option.Option(Int),
+    amount_display_string: Option(String),
+    amount_micros: Option(String),
+    currency: Option(String),
+    super_sticker_metadata: Option(SuperStickerMetadata),
+    tier: Option(Int),
   )
 }
 
 pub fn decoder() -> Decoder(LiveChatSuperStickerDetails) {
-  use amount_display_string <- optional_field(
+  use amount_display_string <- decode.optional_field(
     "amountDisplayString",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use amount_micros <- optional_field(
+  use amount_micros <- decode.optional_field(
     "amountMicros",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use currency <- optional_field("currency", option.None, optional(string))
-  use super_sticker_metadata <- optional_field(
+  use currency <- decode.optional_field(
+    "currency",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use super_sticker_metadata <- decode.optional_field(
     "superStickerMetadata",
     option.None,
-    optional(super_sticker_metadata.decoder()),
+    decode.optional(super_sticker_metadata.decoder()),
   )
-  use tier <- optional_field("tier", option.None, optional(int))
-  success(
-    LiveChatSuperStickerDetails(
-      amount_display_string,
-      amount_micros,
-      currency,
-      super_sticker_metadata,
-      tier,
+  use tier <- decode.optional_field(
+    "tier",
+    option.None,
+    decode.optional(decode.int),
+  )
+  decode.success(LiveChatSuperStickerDetails(
+    amount_display_string,
+    amount_micros,
+    currency,
+    super_sticker_metadata,
+    tier,
+  ))
+}
+
+pub fn to_json(value: LiveChatSuperStickerDetails) -> Json {
+  json.object([
+    #(
+      "amountDisplayString",
+      json.nullable(value.amount_display_string, json.string),
     ),
-  )
+    #("amountMicros", json.nullable(value.amount_micros, json.string)),
+    #("currency", json.nullable(value.currency, json.string)),
+    #(
+      "superStickerMetadata",
+      json.nullable(
+        value.super_sticker_metadata,
+        super_sticker_metadata.to_json,
+      ),
+    ),
+    #("tier", json.nullable(value.tier, json.int)),
+  ])
 }

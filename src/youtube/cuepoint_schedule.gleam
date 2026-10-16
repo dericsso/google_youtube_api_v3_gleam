@@ -1,43 +1,60 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, int, bool, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Schedule to insert cuepoints into a broadcast by ads automator.
 pub type CuepointSchedule {
   CuepointSchedule(
-    enabled: option.Option(Bool),
-    pause_ads_until: option.Option(String),
-    repeat_interval_secs: option.Option(Int),
-    schedule_strategy: option.Option(ScheduleStrategy),
+    enabled: Option(Bool),
+    pause_ads_until: Option(String),
+    repeat_interval_secs: Option(Int),
+    schedule_strategy: Option(ScheduleStrategy),
   )
 }
 
 pub fn decoder() -> Decoder(CuepointSchedule) {
-  use enabled <- optional_field("enabled", option.None, optional(bool))
-  use pause_ads_until <- optional_field(
+  use enabled <- decode.optional_field(
+    "enabled",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use pause_ads_until <- decode.optional_field(
     "pauseAdsUntil",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use repeat_interval_secs <- optional_field(
+  use repeat_interval_secs <- decode.optional_field(
     "repeatIntervalSecs",
     option.None,
-    optional(int),
+    decode.optional(decode.int),
   )
-  use schedule_strategy <- optional_field(
+  use schedule_strategy <- decode.optional_field(
     "scheduleStrategy",
     option.None,
-    optional(schedule_strategy_decoder()),
+    decode.optional(schedule_strategy_decoder()),
   )
-  success(
-    CuepointSchedule(
-      enabled,
-      pause_ads_until,
-      repeat_interval_secs,
-      schedule_strategy,
+  decode.success(CuepointSchedule(
+    enabled,
+    pause_ads_until,
+    repeat_interval_secs,
+    schedule_strategy,
+  ))
+}
+
+pub fn to_json(value: CuepointSchedule) -> Json {
+  json.object([
+    #("enabled", json.nullable(value.enabled, json.bool)),
+    #("pauseAdsUntil", json.nullable(value.pause_ads_until, json.string)),
+    #("repeatIntervalSecs", json.nullable(value.repeat_interval_secs, json.int)),
+    #(
+      "scheduleStrategy",
+      json.nullable(value.schedule_strategy, fn(e) {
+        json.string(schedule_strategy_to_string(e))
+      }),
     ),
-  )
+  ])
 }
 
 /// The strategy to use when scheduling cuepoints.
@@ -56,16 +73,16 @@ pub fn schedule_strategy_to_string(value: ScheduleStrategy) -> String {
 }
 
 pub fn schedule_strategy_decoder() -> Decoder(ScheduleStrategy) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "scheduleStrategyUnspecified" -> success(
-      ScheduleStrategyScheduleStrategyUnspecified,
-    )
-    "concurrent" -> success(ScheduleStrategyConcurrent)
-    "nonConcurrent" -> success(ScheduleStrategyNonConcurrent)
-    _ -> failure(
-      ScheduleStrategyScheduleStrategyUnspecified,
-      "a valid ScheduleStrategy",
-    )
+    "scheduleStrategyUnspecified" ->
+      decode.success(ScheduleStrategyScheduleStrategyUnspecified)
+    "concurrent" -> decode.success(ScheduleStrategyConcurrent)
+    "nonConcurrent" -> decode.success(ScheduleStrategyNonConcurrent)
+    _ ->
+      decode.failure(
+        ScheduleStrategyScheduleStrategyUnspecified,
+        "a valid ScheduleStrategy",
+      )
   }
 }

@@ -1,63 +1,87 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/channel_localization.{type ChannelLocalization}
 import youtube/thumbnail_details.{type ThumbnailDetails}
 
 /// Basic details about a channel, including title, description and thumbnails.
 pub type ChannelSnippet {
   ChannelSnippet(
-    country: option.Option(String),
-    custom_url: option.Option(String),
-    default_language: option.Option(String),
-    description: option.Option(String),
-    localized: option.Option(ChannelLocalization),
-    published_at: option.Option(String),
-    thumbnails: option.Option(ThumbnailDetails),
-    title: option.Option(String),
+    country: Option(String),
+    custom_url: Option(String),
+    default_language: Option(String),
+    description: Option(String),
+    localized: Option(ChannelLocalization),
+    published_at: Option(String),
+    thumbnails: Option(ThumbnailDetails),
+    title: Option(String),
   )
 }
 
 pub fn decoder() -> Decoder(ChannelSnippet) {
-  use country <- optional_field("country", option.None, optional(string))
-  use custom_url <- optional_field("customUrl", option.None, optional(string))
-  use default_language <- optional_field(
+  use country <- decode.optional_field(
+    "country",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use custom_url <- decode.optional_field(
+    "customUrl",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use default_language <- decode.optional_field(
     "defaultLanguage",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use description <- optional_field(
+  use description <- decode.optional_field(
     "description",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use localized <- optional_field(
+  use localized <- decode.optional_field(
     "localized",
     option.None,
-    optional(channel_localization.decoder()),
+    decode.optional(channel_localization.decoder()),
   )
-  use published_at <- optional_field(
+  use published_at <- decode.optional_field(
     "publishedAt",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use thumbnails <- optional_field(
+  use thumbnails <- decode.optional_field(
     "thumbnails",
     option.None,
-    optional(thumbnail_details.decoder()),
+    decode.optional(thumbnail_details.decoder()),
   )
-  use title <- optional_field("title", option.None, optional(string))
-  success(
-    ChannelSnippet(
-      country,
-      custom_url,
-      default_language,
-      description,
-      localized,
-      published_at,
-      thumbnails,
-      title,
-    ),
+  use title <- decode.optional_field(
+    "title",
+    option.None,
+    decode.optional(decode.string),
   )
+  decode.success(ChannelSnippet(
+    country,
+    custom_url,
+    default_language,
+    description,
+    localized,
+    published_at,
+    thumbnails,
+    title,
+  ))
+}
+
+pub fn to_json(value: ChannelSnippet) -> Json {
+  json.object([
+    #("country", json.nullable(value.country, json.string)),
+    #("customUrl", json.nullable(value.custom_url, json.string)),
+    #("defaultLanguage", json.nullable(value.default_language, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #("localized", json.nullable(value.localized, channel_localization.to_json)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }

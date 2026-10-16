@@ -1,49 +1,89 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, int, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/channel_section_localization.{type ChannelSectionLocalization}
 
 /// Basic details about a channel section, including title, style and position.
 pub type ChannelSectionSnippet {
   ChannelSectionSnippet(
-    channel_id: option.Option(String),
-    default_language: option.Option(String),
-    localized: option.Option(ChannelSectionLocalization),
-    position: option.Option(Int),
-    style: option.Option(Style),
-    title: option.Option(String),
-    type_: option.Option(Type),
+    channel_id: Option(String),
+    default_language: Option(String),
+    localized: Option(ChannelSectionLocalization),
+    position: Option(Int),
+    style: Option(Style),
+    title: Option(String),
+    type_: Option(Type),
   )
 }
 
 pub fn decoder() -> Decoder(ChannelSectionSnippet) {
-  use channel_id <- optional_field("channelId", option.None, optional(string))
-  use default_language <- optional_field(
+  use channel_id <- decode.optional_field(
+    "channelId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use default_language <- decode.optional_field(
     "defaultLanguage",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use localized <- optional_field(
+  use localized <- decode.optional_field(
     "localized",
     option.None,
-    optional(channel_section_localization.decoder()),
+    decode.optional(channel_section_localization.decoder()),
   )
-  use position <- optional_field("position", option.None, optional(int))
-  use style <- optional_field("style", option.None, optional(style_decoder()))
-  use title <- optional_field("title", option.None, optional(string))
-  use type_ <- optional_field("type", option.None, optional(type_decoder()))
-  success(
-    ChannelSectionSnippet(
-      channel_id,
-      default_language,
-      localized,
-      position,
-      style,
-      title,
-      type_,
+  use position <- decode.optional_field(
+    "position",
+    option.None,
+    decode.optional(decode.int),
+  )
+  use style <- decode.optional_field(
+    "style",
+    option.None,
+    decode.optional(style_decoder()),
+  )
+  use title <- decode.optional_field(
+    "title",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use type_ <- decode.optional_field(
+    "type",
+    option.None,
+    decode.optional(type_decoder()),
+  )
+  decode.success(ChannelSectionSnippet(
+    channel_id,
+    default_language,
+    localized,
+    position,
+    style,
+    title,
+    type_,
+  ))
+}
+
+pub fn to_json(value: ChannelSectionSnippet) -> Json {
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("defaultLanguage", json.nullable(value.default_language, json.string)),
+    #(
+      "localized",
+      json.nullable(value.localized, channel_section_localization.to_json),
     ),
-  )
+    #("position", json.nullable(value.position, json.int)),
+    #(
+      "style",
+      json.nullable(value.style, fn(e) { json.string(style_to_string(e)) }),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+    #(
+      "type",
+      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+    ),
+  ])
 }
 
 /// The style of the channel section.
@@ -62,14 +102,13 @@ pub fn style_to_string(value: Style) -> String {
 }
 
 pub fn style_decoder() -> Decoder(Style) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "channelsectionStyleUnspecified" -> success(
-      StyleChannelsectionStyleUnspecified,
-    )
-    "horizontalRow" -> success(StyleHorizontalRow)
-    "verticalList" -> success(StyleVerticalList)
-    _ -> failure(StyleChannelsectionStyleUnspecified, "a valid Style")
+    "channelsectionStyleUnspecified" ->
+      decode.success(StyleChannelsectionStyleUnspecified)
+    "horizontalRow" -> decode.success(StyleHorizontalRow)
+    "verticalList" -> decode.success(StyleVerticalList)
+    _ -> decode.failure(StyleChannelsectionStyleUnspecified, "a valid Style")
   }
 }
 
@@ -117,25 +156,26 @@ pub fn type_to_string(value: Type) -> String {
 }
 
 pub fn type_decoder() -> Decoder(Type) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "channelsectionTypeUndefined" -> success(TypeChannelsectionTypeUndefined)
-    "singlePlaylist" -> success(TypeSinglePlaylist)
-    "multiplePlaylists" -> success(TypeMultiplePlaylists)
-    "popularUploads" -> success(TypePopularUploads)
-    "recentUploads" -> success(TypeRecentUploads)
-    "likes" -> success(TypeLikes)
-    "allPlaylists" -> success(TypeAllPlaylists)
-    "likedPlaylists" -> success(TypeLikedPlaylists)
-    "recentPosts" -> success(TypeRecentPosts)
-    "recentActivity" -> success(TypeRecentActivity)
-    "liveEvents" -> success(TypeLiveEvents)
-    "upcomingEvents" -> success(TypeUpcomingEvents)
-    "completedEvents" -> success(TypeCompletedEvents)
-    "multipleChannels" -> success(TypeMultipleChannels)
-    "postedVideos" -> success(TypePostedVideos)
-    "postedPlaylists" -> success(TypePostedPlaylists)
-    "subscriptions" -> success(TypeSubscriptions)
-    _ -> failure(TypeChannelsectionTypeUndefined, "a valid Type")
+    "channelsectionTypeUndefined" ->
+      decode.success(TypeChannelsectionTypeUndefined)
+    "singlePlaylist" -> decode.success(TypeSinglePlaylist)
+    "multiplePlaylists" -> decode.success(TypeMultiplePlaylists)
+    "popularUploads" -> decode.success(TypePopularUploads)
+    "recentUploads" -> decode.success(TypeRecentUploads)
+    "likes" -> decode.success(TypeLikes)
+    "allPlaylists" -> decode.success(TypeAllPlaylists)
+    "likedPlaylists" -> decode.success(TypeLikedPlaylists)
+    "recentPosts" -> decode.success(TypeRecentPosts)
+    "recentActivity" -> decode.success(TypeRecentActivity)
+    "liveEvents" -> decode.success(TypeLiveEvents)
+    "upcomingEvents" -> decode.success(TypeUpcomingEvents)
+    "completedEvents" -> decode.success(TypeCompletedEvents)
+    "multipleChannels" -> decode.success(TypeMultipleChannels)
+    "postedVideos" -> decode.success(TypePostedVideos)
+    "postedPlaylists" -> decode.success(TypePostedPlaylists)
+    "subscriptions" -> decode.success(TypeSubscriptions)
+    _ -> decode.failure(TypeChannelsectionTypeUndefined, "a valid Type")
   }
 }

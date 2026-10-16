@@ -1,40 +1,60 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success, then, failure}
-import gleam/option
-import youtube/live_stream_configuration_issue.{type LiveStreamConfigurationIssue}
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
+import youtube/live_stream_configuration_issue.{
+  type LiveStreamConfigurationIssue,
+}
 
 pub type LiveStreamHealthStatus {
   LiveStreamHealthStatus(
-    configuration_issues: option.Option(List(LiveStreamConfigurationIssue)),
-    last_update_time_seconds: option.Option(String),
-    status: option.Option(Status),
+    configuration_issues: Option(List(LiveStreamConfigurationIssue)),
+    last_update_time_seconds: Option(String),
+    status: Option(Status),
   )
 }
 
 pub fn decoder() -> Decoder(LiveStreamHealthStatus) {
-  use configuration_issues <- optional_field(
+  use configuration_issues <- decode.optional_field(
     "configurationIssues",
     option.None,
-    optional(list(live_stream_configuration_issue.decoder())),
+    decode.optional(decode.list(live_stream_configuration_issue.decoder())),
   )
-  use last_update_time_seconds <- optional_field(
+  use last_update_time_seconds <- decode.optional_field(
     "lastUpdateTimeSeconds",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use status <- optional_field(
+  use status <- decode.optional_field(
     "status",
     option.None,
-    optional(status_decoder()),
+    decode.optional(status_decoder()),
   )
-  success(
-    LiveStreamHealthStatus(
-      configuration_issues,
-      last_update_time_seconds,
-      status,
+  decode.success(LiveStreamHealthStatus(
+    configuration_issues,
+    last_update_time_seconds,
+    status,
+  ))
+}
+
+pub fn to_json(value: LiveStreamHealthStatus) -> Json {
+  json.object([
+    #(
+      "configurationIssues",
+      json.nullable(value.configuration_issues, fn(items) {
+        json.array(items, live_stream_configuration_issue.to_json)
+      }),
     ),
-  )
+    #(
+      "lastUpdateTimeSeconds",
+      json.nullable(value.last_update_time_seconds, json.string),
+    ),
+    #(
+      "status",
+      json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
+    ),
+  ])
 }
 
 /// The status code of this stream
@@ -57,13 +77,13 @@ pub fn status_to_string(value: Status) -> String {
 }
 
 pub fn status_decoder() -> Decoder(Status) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "good" -> success(StatusGood)
-    "ok" -> success(StatusOk)
-    "bad" -> success(StatusBad)
-    "noData" -> success(StatusNoData)
-    "revoked" -> success(StatusRevoked)
-    _ -> failure(StatusGood, "a valid Status")
+    "good" -> decode.success(StatusGood)
+    "ok" -> decode.success(StatusOk)
+    "bad" -> decode.success(StatusBad)
+    "noData" -> decode.success(StatusNoData)
+    "revoked" -> decode.success(StatusRevoked)
+    _ -> decode.failure(StatusGood, "a valid Status")
   }
 }

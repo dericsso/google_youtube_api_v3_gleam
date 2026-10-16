@@ -1,26 +1,37 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/channel_profile_details.{type ChannelProfileDetails}
 
 pub type LiveChatModeratorSnippet {
   LiveChatModeratorSnippet(
-    live_chat_id: option.Option(String),
-    moderator_details: option.Option(ChannelProfileDetails),
+    live_chat_id: Option(String),
+    moderator_details: Option(ChannelProfileDetails),
   )
 }
 
 pub fn decoder() -> Decoder(LiveChatModeratorSnippet) {
-  use live_chat_id <- optional_field(
+  use live_chat_id <- decode.optional_field(
     "liveChatId",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use moderator_details <- optional_field(
+  use moderator_details <- decode.optional_field(
     "moderatorDetails",
     option.None,
-    optional(channel_profile_details.decoder()),
+    decode.optional(channel_profile_details.decoder()),
   )
-  success(LiveChatModeratorSnippet(live_chat_id, moderator_details))
+  decode.success(LiveChatModeratorSnippet(live_chat_id, moderator_details))
+}
+
+pub fn to_json(value: LiveChatModeratorSnippet) -> Json {
+  json.object([
+    #("liveChatId", json.nullable(value.live_chat_id, json.string)),
+    #(
+      "moderatorDetails",
+      json.nullable(value.moderator_details, channel_profile_details.to_json),
+    ),
+  ])
 }

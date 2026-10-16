@@ -1,21 +1,36 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Basic details about rating of a video.
 pub type VideoRating {
-  VideoRating(rating: option.Option(Rating), video_id: option.Option(String))
+  VideoRating(rating: Option(Rating), video_id: Option(String))
 }
 
 pub fn decoder() -> Decoder(VideoRating) {
-  use rating <- optional_field(
+  use rating <- decode.optional_field(
     "rating",
     option.None,
-    optional(rating_decoder()),
+    decode.optional(rating_decoder()),
   )
-  use video_id <- optional_field("videoId", option.None, optional(string))
-  success(VideoRating(rating, video_id))
+  use video_id <- decode.optional_field(
+    "videoId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  decode.success(VideoRating(rating, video_id))
+}
+
+pub fn to_json(value: VideoRating) -> Json {
+  json.object([
+    #(
+      "rating",
+      json.nullable(value.rating, fn(e) { json.string(rating_to_string(e)) }),
+    ),
+    #("videoId", json.nullable(value.video_id, json.string)),
+  ])
 }
 
 /// Rating of a video.
@@ -34,11 +49,11 @@ pub fn rating_to_string(value: Rating) -> String {
 }
 
 pub fn rating_decoder() -> Decoder(Rating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "none" -> success(RatingNone)
-    "like" -> success(RatingLike)
-    "dislike" -> success(RatingDislike)
-    _ -> failure(RatingNone, "a valid Rating")
+    "none" -> decode.success(RatingNone)
+    "like" -> decode.success(RatingLike)
+    "dislike" -> decode.success(RatingDislike)
+    _ -> decode.failure(RatingNone, "a valid Rating")
   }
 }

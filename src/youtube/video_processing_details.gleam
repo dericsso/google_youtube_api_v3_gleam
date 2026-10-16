@@ -1,76 +1,121 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success, then, failure}
-import gleam/option
-import youtube/video_processing_details_processing_progress.{type VideoProcessingDetailsProcessingProgress}
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
+import youtube/video_processing_details_processing_progress.{
+  type VideoProcessingDetailsProcessingProgress,
+}
 
 /// Describes processing status and progress and availability of some other Video resource parts.
 pub type VideoProcessingDetails {
   VideoProcessingDetails(
-    editor_suggestions_availability: option.Option(String),
-    file_details_availability: option.Option(String),
-    processing_failure_reason: option.Option(ProcessingFailureReason),
-    processing_issues_availability: option.Option(String),
-    processing_progress: option.Option(VideoProcessingDetailsProcessingProgress),
-    processing_status: option.Option(ProcessingStatus),
-    tag_suggestions_availability: option.Option(String),
-    thumbnails_availability: option.Option(String),
+    editor_suggestions_availability: Option(String),
+    file_details_availability: Option(String),
+    processing_failure_reason: Option(ProcessingFailureReason),
+    processing_issues_availability: Option(String),
+    processing_progress: Option(VideoProcessingDetailsProcessingProgress),
+    processing_status: Option(ProcessingStatus),
+    tag_suggestions_availability: Option(String),
+    thumbnails_availability: Option(String),
   )
 }
 
 pub fn decoder() -> Decoder(VideoProcessingDetails) {
-  use editor_suggestions_availability <- optional_field(
+  use editor_suggestions_availability <- decode.optional_field(
     "editorSuggestionsAvailability",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use file_details_availability <- optional_field(
+  use file_details_availability <- decode.optional_field(
     "fileDetailsAvailability",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use processing_failure_reason <- optional_field(
+  use processing_failure_reason <- decode.optional_field(
     "processingFailureReason",
     option.None,
-    optional(processing_failure_reason_decoder()),
+    decode.optional(processing_failure_reason_decoder()),
   )
-  use processing_issues_availability <- optional_field(
+  use processing_issues_availability <- decode.optional_field(
     "processingIssuesAvailability",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use processing_progress <- optional_field(
+  use processing_progress <- decode.optional_field(
     "processingProgress",
     option.None,
-    optional(video_processing_details_processing_progress.decoder()),
+    decode.optional(video_processing_details_processing_progress.decoder()),
   )
-  use processing_status <- optional_field(
+  use processing_status <- decode.optional_field(
     "processingStatus",
     option.None,
-    optional(processing_status_decoder()),
+    decode.optional(processing_status_decoder()),
   )
-  use tag_suggestions_availability <- optional_field(
+  use tag_suggestions_availability <- decode.optional_field(
     "tagSuggestionsAvailability",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use thumbnails_availability <- optional_field(
+  use thumbnails_availability <- decode.optional_field(
     "thumbnailsAvailability",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  success(
-    VideoProcessingDetails(
-      editor_suggestions_availability,
-      file_details_availability,
-      processing_failure_reason,
-      processing_issues_availability,
-      processing_progress,
-      processing_status,
-      tag_suggestions_availability,
-      thumbnails_availability,
+  decode.success(VideoProcessingDetails(
+    editor_suggestions_availability,
+    file_details_availability,
+    processing_failure_reason,
+    processing_issues_availability,
+    processing_progress,
+    processing_status,
+    tag_suggestions_availability,
+    thumbnails_availability,
+  ))
+}
+
+pub fn to_json(value: VideoProcessingDetails) -> Json {
+  json.object([
+    #(
+      "editorSuggestionsAvailability",
+      json.nullable(value.editor_suggestions_availability, json.string),
     ),
-  )
+    #(
+      "fileDetailsAvailability",
+      json.nullable(value.file_details_availability, json.string),
+    ),
+    #(
+      "processingFailureReason",
+      json.nullable(value.processing_failure_reason, fn(e) {
+        json.string(processing_failure_reason_to_string(e))
+      }),
+    ),
+    #(
+      "processingIssuesAvailability",
+      json.nullable(value.processing_issues_availability, json.string),
+    ),
+    #(
+      "processingProgress",
+      json.nullable(
+        value.processing_progress,
+        video_processing_details_processing_progress.to_json,
+      ),
+    ),
+    #(
+      "processingStatus",
+      json.nullable(value.processing_status, fn(e) {
+        json.string(processing_status_to_string(e))
+      }),
+    ),
+    #(
+      "tagSuggestionsAvailability",
+      json.nullable(value.tag_suggestions_availability, json.string),
+    ),
+    #(
+      "thumbnailsAvailability",
+      json.nullable(value.thumbnails_availability, json.string),
+    ),
+  ])
 }
 
 /// The reason that YouTube failed to process the video. This property will only have a value if the processingStatus property's value is failed.
@@ -81,9 +126,10 @@ pub type ProcessingFailureReason {
   ProcessingFailureReasonOther
 }
 
-pub fn processing_failure_reason_to_string(value: ProcessingFailureReason) -> String {
-  case value
-  {
+pub fn processing_failure_reason_to_string(
+  value: ProcessingFailureReason,
+) -> String {
+  case value {
     ProcessingFailureReasonUploadFailed -> "uploadFailed"
     ProcessingFailureReasonTranscodeFailed -> "transcodeFailed"
     ProcessingFailureReasonStreamingFailed -> "streamingFailed"
@@ -92,16 +138,17 @@ pub fn processing_failure_reason_to_string(value: ProcessingFailureReason) -> St
 }
 
 pub fn processing_failure_reason_decoder() -> Decoder(ProcessingFailureReason) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "uploadFailed" -> success(ProcessingFailureReasonUploadFailed)
-    "transcodeFailed" -> success(ProcessingFailureReasonTranscodeFailed)
-    "streamingFailed" -> success(ProcessingFailureReasonStreamingFailed)
-    "other" -> success(ProcessingFailureReasonOther)
-    _ -> failure(
-      ProcessingFailureReasonUploadFailed,
-      "a valid ProcessingFailureReason",
-    )
+    "uploadFailed" -> decode.success(ProcessingFailureReasonUploadFailed)
+    "transcodeFailed" -> decode.success(ProcessingFailureReasonTranscodeFailed)
+    "streamingFailed" -> decode.success(ProcessingFailureReasonStreamingFailed)
+    "other" -> decode.success(ProcessingFailureReasonOther)
+    _ ->
+      decode.failure(
+        ProcessingFailureReasonUploadFailed,
+        "a valid ProcessingFailureReason",
+      )
   }
 }
 
@@ -123,12 +170,12 @@ pub fn processing_status_to_string(value: ProcessingStatus) -> String {
 }
 
 pub fn processing_status_decoder() -> Decoder(ProcessingStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "processing" -> success(ProcessingStatusProcessing)
-    "succeeded" -> success(ProcessingStatusSucceeded)
-    "failed" -> success(ProcessingStatusFailed)
-    "terminated" -> success(ProcessingStatusTerminated)
-    _ -> failure(ProcessingStatusProcessing, "a valid ProcessingStatus")
+    "processing" -> decode.success(ProcessingStatusProcessing)
+    "succeeded" -> decode.success(ProcessingStatusSucceeded)
+    "failed" -> decode.success(ProcessingStatusFailed)
+    "terminated" -> decode.success(ProcessingStatusTerminated)
+    _ -> decode.failure(ProcessingStatusProcessing, "a valid ProcessingStatus")
   }
 }

@@ -1,40 +1,63 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/invideo_position.{type InvideoPosition}
 import youtube/invideo_timing.{type InvideoTiming}
 
 /// Describes an invideo branding.
 pub type InvideoBranding {
   InvideoBranding(
-    image_bytes: option.Option(String),
-    image_url: option.Option(String),
-    position: option.Option(InvideoPosition),
-    target_channel_id: option.Option(String),
-    timing: option.Option(InvideoTiming),
+    image_bytes: Option(String),
+    image_url: Option(String),
+    position: Option(InvideoPosition),
+    target_channel_id: Option(String),
+    timing: Option(InvideoTiming),
   )
 }
 
 pub fn decoder() -> Decoder(InvideoBranding) {
-  use image_bytes <- optional_field("imageBytes", option.None, optional(string))
-  use image_url <- optional_field("imageUrl", option.None, optional(string))
-  use position <- optional_field(
+  use image_bytes <- decode.optional_field(
+    "imageBytes",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use image_url <- decode.optional_field(
+    "imageUrl",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use position <- decode.optional_field(
     "position",
     option.None,
-    optional(invideo_position.decoder()),
+    decode.optional(invideo_position.decoder()),
   )
-  use target_channel_id <- optional_field(
+  use target_channel_id <- decode.optional_field(
     "targetChannelId",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use timing <- optional_field(
+  use timing <- decode.optional_field(
     "timing",
     option.None,
-    optional(invideo_timing.decoder()),
+    decode.optional(invideo_timing.decoder()),
   )
-  success(
-    InvideoBranding(image_bytes, image_url, position, target_channel_id, timing),
-  )
+  decode.success(InvideoBranding(
+    image_bytes,
+    image_url,
+    position,
+    target_channel_id,
+    timing,
+  ))
+}
+
+pub fn to_json(value: InvideoBranding) -> Json {
+  json.object([
+    #("imageBytes", json.nullable(value.image_bytes, json.string)),
+    #("imageUrl", json.nullable(value.image_url, json.string)),
+    #("position", json.nullable(value.position, invideo_position.to_json)),
+    #("targetChannelId", json.nullable(value.target_channel_id, json.string)),
+    #("timing", json.nullable(value.timing, invideo_timing.to_json)),
+  ])
 }

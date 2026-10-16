@@ -1,58 +1,100 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
 import gleam/dict.{type Dict}
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, dict, success}
-import gleam/option
-import youtube/channel_section_content_details.{type ChannelSectionContentDetails}
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
+import youtube/channel_section_content_details.{
+  type ChannelSectionContentDetails,
+}
 import youtube/channel_section_localization.{type ChannelSectionLocalization}
 import youtube/channel_section_snippet.{type ChannelSectionSnippet}
 import youtube/channel_section_targeting.{type ChannelSectionTargeting}
 
 pub type ChannelSection {
   ChannelSection(
-    content_details: option.Option(ChannelSectionContentDetails),
-    etag: option.Option(String),
-    id: option.Option(String),
-    kind: option.Option(String),
-    localizations: option.Option(Dict(String, ChannelSectionLocalization)),
-    snippet: option.Option(ChannelSectionSnippet),
-    targeting: option.Option(ChannelSectionTargeting),
+    content_details: Option(ChannelSectionContentDetails),
+    etag: Option(String),
+    id: Option(String),
+    kind: Option(String),
+    localizations: Option(Dict(String, ChannelSectionLocalization)),
+    snippet: Option(ChannelSectionSnippet),
+    targeting: Option(ChannelSectionTargeting),
   )
 }
 
 pub fn decoder() -> Decoder(ChannelSection) {
-  use content_details <- optional_field(
+  use content_details <- decode.optional_field(
     "contentDetails",
     option.None,
-    optional(channel_section_content_details.decoder()),
+    decode.optional(channel_section_content_details.decoder()),
   )
-  use etag <- optional_field("etag", option.None, optional(string))
-  use id <- optional_field("id", option.None, optional(string))
-  use kind <- optional_field("kind", option.None, optional(string))
-  use localizations <- optional_field(
+  use etag <- decode.optional_field(
+    "etag",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use id <- decode.optional_field(
+    "id",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use kind <- decode.optional_field(
+    "kind",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use localizations <- decode.optional_field(
     "localizations",
     option.None,
-    optional(dict(string, channel_section_localization.decoder())),
+    decode.optional(decode.dict(
+      decode.string,
+      channel_section_localization.decoder(),
+    )),
   )
-  use snippet <- optional_field(
+  use snippet <- decode.optional_field(
     "snippet",
     option.None,
-    optional(channel_section_snippet.decoder()),
+    decode.optional(channel_section_snippet.decoder()),
   )
-  use targeting <- optional_field(
+  use targeting <- decode.optional_field(
     "targeting",
     option.None,
-    optional(channel_section_targeting.decoder()),
+    decode.optional(channel_section_targeting.decoder()),
   )
-  success(
-    ChannelSection(
-      content_details,
-      etag,
-      id,
-      kind,
-      localizations,
-      snippet,
-      targeting,
+  decode.success(ChannelSection(
+    content_details,
+    etag,
+    id,
+    kind,
+    localizations,
+    snippet,
+    targeting,
+  ))
+}
+
+pub fn to_json(value: ChannelSection) -> Json {
+  json.object([
+    #(
+      "contentDetails",
+      json.nullable(
+        value.content_details,
+        channel_section_content_details.to_json,
+      ),
     ),
-  )
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "localizations",
+      json.nullable(value.localizations, fn(d) {
+        json.dict(d, fn(k) { k }, channel_section_localization.to_json)
+      }),
+    ),
+    #("snippet", json.nullable(value.snippet, channel_section_snippet.to_json)),
+    #(
+      "targeting",
+      json.nullable(value.targeting, channel_section_targeting.to_json),
+    ),
+  ])
 }

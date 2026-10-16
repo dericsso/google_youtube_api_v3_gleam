@@ -1,20 +1,32 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Information about the playlist item's privacy status.
 pub type PlaylistItemStatus {
-  PlaylistItemStatus(privacy_status: option.Option(PrivacyStatus))
+  PlaylistItemStatus(privacy_status: Option(PrivacyStatus))
 }
 
 pub fn decoder() -> Decoder(PlaylistItemStatus) {
-  use privacy_status <- optional_field(
+  use privacy_status <- decode.optional_field(
     "privacyStatus",
     option.None,
-    optional(privacy_status_decoder()),
+    decode.optional(privacy_status_decoder()),
   )
-  success(PlaylistItemStatus(privacy_status))
+  decode.success(PlaylistItemStatus(privacy_status))
+}
+
+pub fn to_json(value: PlaylistItemStatus) -> Json {
+  json.object([
+    #(
+      "privacyStatus",
+      json.nullable(value.privacy_status, fn(e) {
+        json.string(privacy_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// This resource's privacy status.
@@ -33,11 +45,11 @@ pub fn privacy_status_to_string(value: PrivacyStatus) -> String {
 }
 
 pub fn privacy_status_decoder() -> Decoder(PrivacyStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "public" -> success(PrivacyStatusPublic)
-    "unlisted" -> success(PrivacyStatusUnlisted)
-    "private" -> success(PrivacyStatusPrivate)
-    _ -> failure(PrivacyStatusPublic, "a valid PrivacyStatus")
+    "public" -> decode.success(PrivacyStatusPublic)
+    "unlisted" -> decode.success(PrivacyStatusUnlisted)
+    "private" -> decode.success(PrivacyStatusPrivate)
+    _ -> decode.failure(PrivacyStatusPublic, "a valid PrivacyStatus")
   }
 }

@@ -1,28 +1,39 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Pings that the app shall fire (authenticated by biscotti cookie). Each ping has a context, in which the app must fire the ping, and a url identifying the ping.
 pub type ChannelConversionPing {
   ChannelConversionPing(
-    context: option.Option(Context),
-    conversion_url: option.Option(String),
+    context: Option(Context),
+    conversion_url: Option(String),
   )
 }
 
 pub fn decoder() -> Decoder(ChannelConversionPing) {
-  use context <- optional_field(
+  use context <- decode.optional_field(
     "context",
     option.None,
-    optional(context_decoder()),
+    decode.optional(context_decoder()),
   )
-  use conversion_url <- optional_field(
+  use conversion_url <- decode.optional_field(
     "conversionUrl",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  success(ChannelConversionPing(context, conversion_url))
+  decode.success(ChannelConversionPing(context, conversion_url))
+}
+
+pub fn to_json(value: ChannelConversionPing) -> Json {
+  json.object([
+    #(
+      "context",
+      json.nullable(value.context, fn(e) { json.string(context_to_string(e)) }),
+    ),
+    #("conversionUrl", json.nullable(value.conversion_url, json.string)),
+  ])
 }
 
 /// Defines the context of the ping.
@@ -41,11 +52,11 @@ pub fn context_to_string(value: Context) -> String {
 }
 
 pub fn context_decoder() -> Decoder(Context) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "subscribe" -> success(ContextSubscribe)
-    "unsubscribe" -> success(ContextUnsubscribe)
-    "cview" -> success(ContextCview)
-    _ -> failure(ContextSubscribe, "a valid Context")
+    "subscribe" -> decode.success(ContextSubscribe)
+    "unsubscribe" -> decode.success(ContextUnsubscribe)
+    "cview" -> decode.success(ContextCview)
+    _ -> decode.failure(ContextSubscribe, "a valid Context")
   }
 }

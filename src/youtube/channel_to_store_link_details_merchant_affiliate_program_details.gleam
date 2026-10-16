@@ -1,24 +1,38 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Information specific to merchant affiliate program.
 pub type ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails {
   ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails(
-    status: option.Option(Status),
+    status: Option(Status),
   )
 }
 
 pub fn decoder() -> Decoder(
   ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails,
 ) {
-  use status <- optional_field(
+  use status <- decode.optional_field(
     "status",
     option.None,
-    optional(status_decoder()),
+    decode.optional(status_decoder()),
   )
-  success(ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails(status))
+  decode.success(ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails(
+    status,
+  ))
+}
+
+pub fn to_json(
+  value: ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails,
+) -> Json {
+  json.object([
+    #(
+      "status",
+      json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
+    ),
+  ])
 }
 
 /// The current merchant affiliate program status.
@@ -31,31 +45,32 @@ pub type Status {
 
 pub fn status_to_string(value: Status) -> String {
   case value {
-    StatusMerchantAffiliateProgramStatusUnspecified -> "merchantAffiliateProgramStatusUnspecified"
-    StatusMerchantAffiliateProgramStatusEligible -> "merchantAffiliateProgramStatusEligible"
-    StatusMerchantAffiliateProgramStatusActive -> "merchantAffiliateProgramStatusActive"
-    StatusMerchantAffiliateProgramStatusPaused -> "merchantAffiliateProgramStatusPaused"
+    StatusMerchantAffiliateProgramStatusUnspecified ->
+      "merchantAffiliateProgramStatusUnspecified"
+    StatusMerchantAffiliateProgramStatusEligible ->
+      "merchantAffiliateProgramStatusEligible"
+    StatusMerchantAffiliateProgramStatusActive ->
+      "merchantAffiliateProgramStatusActive"
+    StatusMerchantAffiliateProgramStatusPaused ->
+      "merchantAffiliateProgramStatusPaused"
   }
 }
 
 pub fn status_decoder() -> Decoder(Status) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "merchantAffiliateProgramStatusUnspecified" -> success(
-      StatusMerchantAffiliateProgramStatusUnspecified,
-    )
-    "merchantAffiliateProgramStatusEligible" -> success(
-      StatusMerchantAffiliateProgramStatusEligible,
-    )
-    "merchantAffiliateProgramStatusActive" -> success(
-      StatusMerchantAffiliateProgramStatusActive,
-    )
-    "merchantAffiliateProgramStatusPaused" -> success(
-      StatusMerchantAffiliateProgramStatusPaused,
-    )
-    _ -> failure(
-      StatusMerchantAffiliateProgramStatusUnspecified,
-      "a valid Status",
-    )
+    "merchantAffiliateProgramStatusUnspecified" ->
+      decode.success(StatusMerchantAffiliateProgramStatusUnspecified)
+    "merchantAffiliateProgramStatusEligible" ->
+      decode.success(StatusMerchantAffiliateProgramStatusEligible)
+    "merchantAffiliateProgramStatusActive" ->
+      decode.success(StatusMerchantAffiliateProgramStatusActive)
+    "merchantAffiliateProgramStatusPaused" ->
+      decode.success(StatusMerchantAffiliateProgramStatusPaused)
+    _ ->
+      decode.failure(
+        StatusMerchantAffiliateProgramStatusUnspecified,
+        "a valid Status",
+      )
   }
 }

@@ -1,27 +1,49 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/live_chat_ban_snippet.{type LiveChatBanSnippet}
 
 /// A `__liveChatBan__` resource represents a ban for a YouTube live chat.
 pub type LiveChatBan {
   LiveChatBan(
-    etag: option.Option(String),
-    id: option.Option(String),
-    kind: option.Option(String),
-    snippet: option.Option(LiveChatBanSnippet),
+    etag: Option(String),
+    id: Option(String),
+    kind: Option(String),
+    snippet: Option(LiveChatBanSnippet),
   )
 }
 
 pub fn decoder() -> Decoder(LiveChatBan) {
-  use etag <- optional_field("etag", option.None, optional(string))
-  use id <- optional_field("id", option.None, optional(string))
-  use kind <- optional_field("kind", option.None, optional(string))
-  use snippet <- optional_field(
+  use etag <- decode.optional_field(
+    "etag",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use id <- decode.optional_field(
+    "id",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use kind <- decode.optional_field(
+    "kind",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use snippet <- decode.optional_field(
     "snippet",
     option.None,
-    optional(live_chat_ban_snippet.decoder()),
+    decode.optional(live_chat_ban_snippet.decoder()),
   )
-  success(LiveChatBan(etag, id, kind, snippet))
+  decode.success(LiveChatBan(etag, id, kind, snippet))
+}
+
+pub fn to_json(value: LiveChatBan) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, live_chat_ban_snippet.to_json)),
+  ])
 }

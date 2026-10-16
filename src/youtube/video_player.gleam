@@ -1,24 +1,41 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Player to be used for a video playback.
 pub type VideoPlayer {
   VideoPlayer(
-    embed_height: option.Option(String),
-    embed_html: option.Option(String),
-    embed_width: option.Option(String),
+    embed_height: Option(String),
+    embed_html: Option(String),
+    embed_width: Option(String),
   )
 }
 
 pub fn decoder() -> Decoder(VideoPlayer) {
-  use embed_height <- optional_field(
+  use embed_height <- decode.optional_field(
     "embedHeight",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use embed_html <- optional_field("embedHtml", option.None, optional(string))
-  use embed_width <- optional_field("embedWidth", option.None, optional(string))
-  success(VideoPlayer(embed_height, embed_html, embed_width))
+  use embed_html <- decode.optional_field(
+    "embedHtml",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use embed_width <- decode.optional_field(
+    "embedWidth",
+    option.None,
+    decode.optional(decode.string),
+  )
+  decode.success(VideoPlayer(embed_height, embed_html, embed_width))
+}
+
+pub fn to_json(value: VideoPlayer) -> Json {
+  json.object([
+    #("embedHeight", json.nullable(value.embed_height, json.string)),
+    #("embedHtml", json.nullable(value.embed_html, json.string)),
+    #("embedWidth", json.nullable(value.embed_width, json.string)),
+  ])
 }

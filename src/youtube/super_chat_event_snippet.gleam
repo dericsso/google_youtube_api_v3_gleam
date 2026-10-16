@@ -1,72 +1,114 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, int, bool, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/channel_profile_details.{type ChannelProfileDetails}
 import youtube/super_sticker_metadata.{type SuperStickerMetadata}
 
 pub type SuperChatEventSnippet {
   SuperChatEventSnippet(
-    amount_micros: option.Option(String),
-    channel_id: option.Option(String),
-    comment_text: option.Option(String),
-    created_at: option.Option(String),
-    currency: option.Option(String),
-    display_string: option.Option(String),
-    is_super_sticker_event: option.Option(Bool),
-    message_type: option.Option(Int),
-    super_sticker_metadata: option.Option(SuperStickerMetadata),
-    supporter_details: option.Option(ChannelProfileDetails),
+    amount_micros: Option(String),
+    channel_id: Option(String),
+    comment_text: Option(String),
+    created_at: Option(String),
+    currency: Option(String),
+    display_string: Option(String),
+    is_super_sticker_event: Option(Bool),
+    message_type: Option(Int),
+    super_sticker_metadata: Option(SuperStickerMetadata),
+    supporter_details: Option(ChannelProfileDetails),
   )
 }
 
 pub fn decoder() -> Decoder(SuperChatEventSnippet) {
-  use amount_micros <- optional_field(
+  use amount_micros <- decode.optional_field(
     "amountMicros",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use channel_id <- optional_field("channelId", option.None, optional(string))
-  use comment_text <- optional_field(
+  use channel_id <- decode.optional_field(
+    "channelId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use comment_text <- decode.optional_field(
     "commentText",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use created_at <- optional_field("createdAt", option.None, optional(string))
-  use currency <- optional_field("currency", option.None, optional(string))
-  use display_string <- optional_field(
+  use created_at <- decode.optional_field(
+    "createdAt",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use currency <- decode.optional_field(
+    "currency",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use display_string <- decode.optional_field(
     "displayString",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use is_super_sticker_event <- optional_field(
+  use is_super_sticker_event <- decode.optional_field(
     "isSuperStickerEvent",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use message_type <- optional_field("messageType", option.None, optional(int))
-  use super_sticker_metadata <- optional_field(
+  use message_type <- decode.optional_field(
+    "messageType",
+    option.None,
+    decode.optional(decode.int),
+  )
+  use super_sticker_metadata <- decode.optional_field(
     "superStickerMetadata",
     option.None,
-    optional(super_sticker_metadata.decoder()),
+    decode.optional(super_sticker_metadata.decoder()),
   )
-  use supporter_details <- optional_field(
+  use supporter_details <- decode.optional_field(
     "supporterDetails",
     option.None,
-    optional(channel_profile_details.decoder()),
+    decode.optional(channel_profile_details.decoder()),
   )
-  success(
-    SuperChatEventSnippet(
-      amount_micros,
-      channel_id,
-      comment_text,
-      created_at,
-      currency,
-      display_string,
-      is_super_sticker_event,
-      message_type,
-      super_sticker_metadata,
-      supporter_details,
+  decode.success(SuperChatEventSnippet(
+    amount_micros,
+    channel_id,
+    comment_text,
+    created_at,
+    currency,
+    display_string,
+    is_super_sticker_event,
+    message_type,
+    super_sticker_metadata,
+    supporter_details,
+  ))
+}
+
+pub fn to_json(value: SuperChatEventSnippet) -> Json {
+  json.object([
+    #("amountMicros", json.nullable(value.amount_micros, json.string)),
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("commentText", json.nullable(value.comment_text, json.string)),
+    #("createdAt", json.nullable(value.created_at, json.string)),
+    #("currency", json.nullable(value.currency, json.string)),
+    #("displayString", json.nullable(value.display_string, json.string)),
+    #(
+      "isSuperStickerEvent",
+      json.nullable(value.is_super_sticker_event, json.bool),
     ),
-  )
+    #("messageType", json.nullable(value.message_type, json.int)),
+    #(
+      "superStickerMetadata",
+      json.nullable(
+        value.super_sticker_metadata,
+        super_sticker_metadata.to_json,
+      ),
+    ),
+    #(
+      "supporterDetails",
+      json.nullable(value.supporter_details, channel_profile_details.to_json),
+    ),
+  ])
 }

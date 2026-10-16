@@ -1,19 +1,31 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, list, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/comment.{type Comment}
 
 /// Comments written in (direct or indirect) reply to the top level comment.
 pub type CommentThreadReplies {
-  CommentThreadReplies(comments: option.Option(List(Comment)))
+  CommentThreadReplies(comments: Option(List(Comment)))
 }
 
 pub fn decoder() -> Decoder(CommentThreadReplies) {
-  use comments <- optional_field(
+  use comments <- decode.optional_field(
     "comments",
     option.None,
-    optional(list(comment.decoder())),
+    decode.optional(decode.list(comment.decoder())),
   )
-  success(CommentThreadReplies(comments))
+  decode.success(CommentThreadReplies(comments))
+}
+
+pub fn to_json(value: CommentThreadReplies) -> Json {
+  json.object([
+    #(
+      "comments",
+      json.nullable(value.comments, fn(items) {
+        json.array(items, comment.to_json)
+      }),
+    ),
+  ])
 }

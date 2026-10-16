@@ -1,516 +1,948 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Ratings schemes. The country-specific ratings are mostly for movies and shows. LINT.IfChange
 pub type ContentRating {
   ContentRating(
-    acb_rating: option.Option(AcbRating),
-    agcom_rating: option.Option(AgcomRating),
-    anatel_rating: option.Option(AnatelRating),
-    bbfc_rating: option.Option(BbfcRating),
-    bfvc_rating: option.Option(BfvcRating),
-    bmukk_rating: option.Option(BmukkRating),
-    catv_rating: option.Option(CatvRating),
-    catvfr_rating: option.Option(CatvfrRating),
-    cbfc_rating: option.Option(CbfcRating),
-    ccc_rating: option.Option(CccRating),
-    cce_rating: option.Option(CceRating),
-    chfilm_rating: option.Option(ChfilmRating),
-    chvrs_rating: option.Option(ChvrsRating),
-    cicf_rating: option.Option(CicfRating),
-    cna_rating: option.Option(CnaRating),
-    cnc_rating: option.Option(CncRating),
-    csa_rating: option.Option(CsaRating),
-    cscf_rating: option.Option(CscfRating),
-    czfilm_rating: option.Option(CzfilmRating),
-    djctq_rating: option.Option(DjctqRating),
-    djctq_rating_reasons: option.Option(List(DjctqRatingReasons)),
-    ecbmct_rating: option.Option(EcbmctRating),
-    eefilm_rating: option.Option(EefilmRating),
-    egfilm_rating: option.Option(EgfilmRating),
-    eirin_rating: option.Option(EirinRating),
-    fcbm_rating: option.Option(FcbmRating),
-    fco_rating: option.Option(FcoRating),
-    fmoc_rating: option.Option(FmocRating),
-    fpb_rating: option.Option(FpbRating),
-    fpb_rating_reasons: option.Option(List(FpbRatingReasons)),
-    fsk_rating: option.Option(FskRating),
-    grfilm_rating: option.Option(GrfilmRating),
-    icaa_rating: option.Option(IcaaRating),
-    ifco_rating: option.Option(IfcoRating),
-    ilfilm_rating: option.Option(IlfilmRating),
-    incaa_rating: option.Option(IncaaRating),
-    kfcb_rating: option.Option(KfcbRating),
-    kijkwijzer_rating: option.Option(KijkwijzerRating),
-    kmrb_rating: option.Option(KmrbRating),
-    lsf_rating: option.Option(LsfRating),
-    mccaa_rating: option.Option(MccaaRating),
-    mccyp_rating: option.Option(MccypRating),
-    mcst_rating: option.Option(McstRating),
-    mda_rating: option.Option(MdaRating),
-    medietilsynet_rating: option.Option(MedietilsynetRating),
-    meku_rating: option.Option(MekuRating),
-    mena_mpaa_rating: option.Option(MenaMpaaRating),
-    mibac_rating: option.Option(MibacRating),
-    moc_rating: option.Option(MocRating),
-    moctw_rating: option.Option(MoctwRating),
-    mpaa_rating: option.Option(MpaaRating),
-    mpaat_rating: option.Option(MpaatRating),
-    mtrcb_rating: option.Option(MtrcbRating),
-    nbc_rating: option.Option(NbcRating),
-    nbcpl_rating: option.Option(NbcplRating),
-    nfrc_rating: option.Option(NfrcRating),
-    nfvcb_rating: option.Option(NfvcbRating),
-    nkclv_rating: option.Option(NkclvRating),
-    nmc_rating: option.Option(NmcRating),
-    oflc_rating: option.Option(OflcRating),
-    pefilm_rating: option.Option(PefilmRating),
-    rcnof_rating: option.Option(RcnofRating),
-    resorteviolencia_rating: option.Option(ResorteviolenciaRating),
-    rtc_rating: option.Option(RtcRating),
-    rte_rating: option.Option(RteRating),
-    russia_rating: option.Option(RussiaRating),
-    skfilm_rating: option.Option(SkfilmRating),
-    smais_rating: option.Option(SmaisRating),
-    smsa_rating: option.Option(SmsaRating),
-    tvpg_rating: option.Option(TvpgRating),
-    yt_rating: option.Option(YtRating),
+    acb_rating: Option(AcbRating),
+    agcom_rating: Option(AgcomRating),
+    anatel_rating: Option(AnatelRating),
+    bbfc_rating: Option(BbfcRating),
+    bfvc_rating: Option(BfvcRating),
+    bmukk_rating: Option(BmukkRating),
+    catv_rating: Option(CatvRating),
+    catvfr_rating: Option(CatvfrRating),
+    cbfc_rating: Option(CbfcRating),
+    ccc_rating: Option(CccRating),
+    cce_rating: Option(CceRating),
+    chfilm_rating: Option(ChfilmRating),
+    chvrs_rating: Option(ChvrsRating),
+    cicf_rating: Option(CicfRating),
+    cna_rating: Option(CnaRating),
+    cnc_rating: Option(CncRating),
+    csa_rating: Option(CsaRating),
+    cscf_rating: Option(CscfRating),
+    czfilm_rating: Option(CzfilmRating),
+    djctq_rating: Option(DjctqRating),
+    djctq_rating_reasons: Option(List(DjctqRatingReasons)),
+    ecbmct_rating: Option(EcbmctRating),
+    eefilm_rating: Option(EefilmRating),
+    egfilm_rating: Option(EgfilmRating),
+    eirin_rating: Option(EirinRating),
+    fcbm_rating: Option(FcbmRating),
+    fco_rating: Option(FcoRating),
+    fmoc_rating: Option(FmocRating),
+    fpb_rating: Option(FpbRating),
+    fpb_rating_reasons: Option(List(FpbRatingReasons)),
+    fsk_rating: Option(FskRating),
+    grfilm_rating: Option(GrfilmRating),
+    icaa_rating: Option(IcaaRating),
+    ifco_rating: Option(IfcoRating),
+    ilfilm_rating: Option(IlfilmRating),
+    incaa_rating: Option(IncaaRating),
+    kfcb_rating: Option(KfcbRating),
+    kijkwijzer_rating: Option(KijkwijzerRating),
+    kmrb_rating: Option(KmrbRating),
+    lsf_rating: Option(LsfRating),
+    mccaa_rating: Option(MccaaRating),
+    mccyp_rating: Option(MccypRating),
+    mcst_rating: Option(McstRating),
+    mda_rating: Option(MdaRating),
+    medietilsynet_rating: Option(MedietilsynetRating),
+    meku_rating: Option(MekuRating),
+    mena_mpaa_rating: Option(MenaMpaaRating),
+    mibac_rating: Option(MibacRating),
+    moc_rating: Option(MocRating),
+    moctw_rating: Option(MoctwRating),
+    mpaa_rating: Option(MpaaRating),
+    mpaat_rating: Option(MpaatRating),
+    mtrcb_rating: Option(MtrcbRating),
+    nbc_rating: Option(NbcRating),
+    nbcpl_rating: Option(NbcplRating),
+    nfrc_rating: Option(NfrcRating),
+    nfvcb_rating: Option(NfvcbRating),
+    nkclv_rating: Option(NkclvRating),
+    nmc_rating: Option(NmcRating),
+    oflc_rating: Option(OflcRating),
+    pefilm_rating: Option(PefilmRating),
+    rcnof_rating: Option(RcnofRating),
+    resorteviolencia_rating: Option(ResorteviolenciaRating),
+    rtc_rating: Option(RtcRating),
+    rte_rating: Option(RteRating),
+    russia_rating: Option(RussiaRating),
+    skfilm_rating: Option(SkfilmRating),
+    smais_rating: Option(SmaisRating),
+    smsa_rating: Option(SmsaRating),
+    tvpg_rating: Option(TvpgRating),
+    yt_rating: Option(YtRating),
   )
 }
 
 pub fn decoder() -> Decoder(ContentRating) {
-  use acb_rating <- optional_field(
+  use acb_rating <- decode.optional_field(
     "acbRating",
     option.None,
-    optional(acb_rating_decoder()),
+    decode.optional(acb_rating_decoder()),
   )
-  use agcom_rating <- optional_field(
+  use agcom_rating <- decode.optional_field(
     "agcomRating",
     option.None,
-    optional(agcom_rating_decoder()),
+    decode.optional(agcom_rating_decoder()),
   )
-  use anatel_rating <- optional_field(
+  use anatel_rating <- decode.optional_field(
     "anatelRating",
     option.None,
-    optional(anatel_rating_decoder()),
+    decode.optional(anatel_rating_decoder()),
   )
-  use bbfc_rating <- optional_field(
+  use bbfc_rating <- decode.optional_field(
     "bbfcRating",
     option.None,
-    optional(bbfc_rating_decoder()),
+    decode.optional(bbfc_rating_decoder()),
   )
-  use bfvc_rating <- optional_field(
+  use bfvc_rating <- decode.optional_field(
     "bfvcRating",
     option.None,
-    optional(bfvc_rating_decoder()),
+    decode.optional(bfvc_rating_decoder()),
   )
-  use bmukk_rating <- optional_field(
+  use bmukk_rating <- decode.optional_field(
     "bmukkRating",
     option.None,
-    optional(bmukk_rating_decoder()),
+    decode.optional(bmukk_rating_decoder()),
   )
-  use catv_rating <- optional_field(
+  use catv_rating <- decode.optional_field(
     "catvRating",
     option.None,
-    optional(catv_rating_decoder()),
+    decode.optional(catv_rating_decoder()),
   )
-  use catvfr_rating <- optional_field(
+  use catvfr_rating <- decode.optional_field(
     "catvfrRating",
     option.None,
-    optional(catvfr_rating_decoder()),
+    decode.optional(catvfr_rating_decoder()),
   )
-  use cbfc_rating <- optional_field(
+  use cbfc_rating <- decode.optional_field(
     "cbfcRating",
     option.None,
-    optional(cbfc_rating_decoder()),
+    decode.optional(cbfc_rating_decoder()),
   )
-  use ccc_rating <- optional_field(
+  use ccc_rating <- decode.optional_field(
     "cccRating",
     option.None,
-    optional(ccc_rating_decoder()),
+    decode.optional(ccc_rating_decoder()),
   )
-  use cce_rating <- optional_field(
+  use cce_rating <- decode.optional_field(
     "cceRating",
     option.None,
-    optional(cce_rating_decoder()),
+    decode.optional(cce_rating_decoder()),
   )
-  use chfilm_rating <- optional_field(
+  use chfilm_rating <- decode.optional_field(
     "chfilmRating",
     option.None,
-    optional(chfilm_rating_decoder()),
+    decode.optional(chfilm_rating_decoder()),
   )
-  use chvrs_rating <- optional_field(
+  use chvrs_rating <- decode.optional_field(
     "chvrsRating",
     option.None,
-    optional(chvrs_rating_decoder()),
+    decode.optional(chvrs_rating_decoder()),
   )
-  use cicf_rating <- optional_field(
+  use cicf_rating <- decode.optional_field(
     "cicfRating",
     option.None,
-    optional(cicf_rating_decoder()),
+    decode.optional(cicf_rating_decoder()),
   )
-  use cna_rating <- optional_field(
+  use cna_rating <- decode.optional_field(
     "cnaRating",
     option.None,
-    optional(cna_rating_decoder()),
+    decode.optional(cna_rating_decoder()),
   )
-  use cnc_rating <- optional_field(
+  use cnc_rating <- decode.optional_field(
     "cncRating",
     option.None,
-    optional(cnc_rating_decoder()),
+    decode.optional(cnc_rating_decoder()),
   )
-  use csa_rating <- optional_field(
+  use csa_rating <- decode.optional_field(
     "csaRating",
     option.None,
-    optional(csa_rating_decoder()),
+    decode.optional(csa_rating_decoder()),
   )
-  use cscf_rating <- optional_field(
+  use cscf_rating <- decode.optional_field(
     "cscfRating",
     option.None,
-    optional(cscf_rating_decoder()),
+    decode.optional(cscf_rating_decoder()),
   )
-  use czfilm_rating <- optional_field(
+  use czfilm_rating <- decode.optional_field(
     "czfilmRating",
     option.None,
-    optional(czfilm_rating_decoder()),
+    decode.optional(czfilm_rating_decoder()),
   )
-  use djctq_rating <- optional_field(
+  use djctq_rating <- decode.optional_field(
     "djctqRating",
     option.None,
-    optional(djctq_rating_decoder()),
+    decode.optional(djctq_rating_decoder()),
   )
-  use djctq_rating_reasons <- optional_field(
+  use djctq_rating_reasons <- decode.optional_field(
     "djctqRatingReasons",
     option.None,
-    optional(list(djctq_rating_reasons_decoder())),
+    decode.optional(decode.list(djctq_rating_reasons_decoder())),
   )
-  use ecbmct_rating <- optional_field(
+  use ecbmct_rating <- decode.optional_field(
     "ecbmctRating",
     option.None,
-    optional(ecbmct_rating_decoder()),
+    decode.optional(ecbmct_rating_decoder()),
   )
-  use eefilm_rating <- optional_field(
+  use eefilm_rating <- decode.optional_field(
     "eefilmRating",
     option.None,
-    optional(eefilm_rating_decoder()),
+    decode.optional(eefilm_rating_decoder()),
   )
-  use egfilm_rating <- optional_field(
+  use egfilm_rating <- decode.optional_field(
     "egfilmRating",
     option.None,
-    optional(egfilm_rating_decoder()),
+    decode.optional(egfilm_rating_decoder()),
   )
-  use eirin_rating <- optional_field(
+  use eirin_rating <- decode.optional_field(
     "eirinRating",
     option.None,
-    optional(eirin_rating_decoder()),
+    decode.optional(eirin_rating_decoder()),
   )
-  use fcbm_rating <- optional_field(
+  use fcbm_rating <- decode.optional_field(
     "fcbmRating",
     option.None,
-    optional(fcbm_rating_decoder()),
+    decode.optional(fcbm_rating_decoder()),
   )
-  use fco_rating <- optional_field(
+  use fco_rating <- decode.optional_field(
     "fcoRating",
     option.None,
-    optional(fco_rating_decoder()),
+    decode.optional(fco_rating_decoder()),
   )
-  use fmoc_rating <- optional_field(
+  use fmoc_rating <- decode.optional_field(
     "fmocRating",
     option.None,
-    optional(fmoc_rating_decoder()),
+    decode.optional(fmoc_rating_decoder()),
   )
-  use fpb_rating <- optional_field(
+  use fpb_rating <- decode.optional_field(
     "fpbRating",
     option.None,
-    optional(fpb_rating_decoder()),
+    decode.optional(fpb_rating_decoder()),
   )
-  use fpb_rating_reasons <- optional_field(
+  use fpb_rating_reasons <- decode.optional_field(
     "fpbRatingReasons",
     option.None,
-    optional(list(fpb_rating_reasons_decoder())),
+    decode.optional(decode.list(fpb_rating_reasons_decoder())),
   )
-  use fsk_rating <- optional_field(
+  use fsk_rating <- decode.optional_field(
     "fskRating",
     option.None,
-    optional(fsk_rating_decoder()),
+    decode.optional(fsk_rating_decoder()),
   )
-  use grfilm_rating <- optional_field(
+  use grfilm_rating <- decode.optional_field(
     "grfilmRating",
     option.None,
-    optional(grfilm_rating_decoder()),
+    decode.optional(grfilm_rating_decoder()),
   )
-  use icaa_rating <- optional_field(
+  use icaa_rating <- decode.optional_field(
     "icaaRating",
     option.None,
-    optional(icaa_rating_decoder()),
+    decode.optional(icaa_rating_decoder()),
   )
-  use ifco_rating <- optional_field(
+  use ifco_rating <- decode.optional_field(
     "ifcoRating",
     option.None,
-    optional(ifco_rating_decoder()),
+    decode.optional(ifco_rating_decoder()),
   )
-  use ilfilm_rating <- optional_field(
+  use ilfilm_rating <- decode.optional_field(
     "ilfilmRating",
     option.None,
-    optional(ilfilm_rating_decoder()),
+    decode.optional(ilfilm_rating_decoder()),
   )
-  use incaa_rating <- optional_field(
+  use incaa_rating <- decode.optional_field(
     "incaaRating",
     option.None,
-    optional(incaa_rating_decoder()),
+    decode.optional(incaa_rating_decoder()),
   )
-  use kfcb_rating <- optional_field(
+  use kfcb_rating <- decode.optional_field(
     "kfcbRating",
     option.None,
-    optional(kfcb_rating_decoder()),
+    decode.optional(kfcb_rating_decoder()),
   )
-  use kijkwijzer_rating <- optional_field(
+  use kijkwijzer_rating <- decode.optional_field(
     "kijkwijzerRating",
     option.None,
-    optional(kijkwijzer_rating_decoder()),
+    decode.optional(kijkwijzer_rating_decoder()),
   )
-  use kmrb_rating <- optional_field(
+  use kmrb_rating <- decode.optional_field(
     "kmrbRating",
     option.None,
-    optional(kmrb_rating_decoder()),
+    decode.optional(kmrb_rating_decoder()),
   )
-  use lsf_rating <- optional_field(
+  use lsf_rating <- decode.optional_field(
     "lsfRating",
     option.None,
-    optional(lsf_rating_decoder()),
+    decode.optional(lsf_rating_decoder()),
   )
-  use mccaa_rating <- optional_field(
+  use mccaa_rating <- decode.optional_field(
     "mccaaRating",
     option.None,
-    optional(mccaa_rating_decoder()),
+    decode.optional(mccaa_rating_decoder()),
   )
-  use mccyp_rating <- optional_field(
+  use mccyp_rating <- decode.optional_field(
     "mccypRating",
     option.None,
-    optional(mccyp_rating_decoder()),
+    decode.optional(mccyp_rating_decoder()),
   )
-  use mcst_rating <- optional_field(
+  use mcst_rating <- decode.optional_field(
     "mcstRating",
     option.None,
-    optional(mcst_rating_decoder()),
+    decode.optional(mcst_rating_decoder()),
   )
-  use mda_rating <- optional_field(
+  use mda_rating <- decode.optional_field(
     "mdaRating",
     option.None,
-    optional(mda_rating_decoder()),
+    decode.optional(mda_rating_decoder()),
   )
-  use medietilsynet_rating <- optional_field(
+  use medietilsynet_rating <- decode.optional_field(
     "medietilsynetRating",
     option.None,
-    optional(medietilsynet_rating_decoder()),
+    decode.optional(medietilsynet_rating_decoder()),
   )
-  use meku_rating <- optional_field(
+  use meku_rating <- decode.optional_field(
     "mekuRating",
     option.None,
-    optional(meku_rating_decoder()),
+    decode.optional(meku_rating_decoder()),
   )
-  use mena_mpaa_rating <- optional_field(
+  use mena_mpaa_rating <- decode.optional_field(
     "menaMpaaRating",
     option.None,
-    optional(mena_mpaa_rating_decoder()),
+    decode.optional(mena_mpaa_rating_decoder()),
   )
-  use mibac_rating <- optional_field(
+  use mibac_rating <- decode.optional_field(
     "mibacRating",
     option.None,
-    optional(mibac_rating_decoder()),
+    decode.optional(mibac_rating_decoder()),
   )
-  use moc_rating <- optional_field(
+  use moc_rating <- decode.optional_field(
     "mocRating",
     option.None,
-    optional(moc_rating_decoder()),
+    decode.optional(moc_rating_decoder()),
   )
-  use moctw_rating <- optional_field(
+  use moctw_rating <- decode.optional_field(
     "moctwRating",
     option.None,
-    optional(moctw_rating_decoder()),
+    decode.optional(moctw_rating_decoder()),
   )
-  use mpaa_rating <- optional_field(
+  use mpaa_rating <- decode.optional_field(
     "mpaaRating",
     option.None,
-    optional(mpaa_rating_decoder()),
+    decode.optional(mpaa_rating_decoder()),
   )
-  use mpaat_rating <- optional_field(
+  use mpaat_rating <- decode.optional_field(
     "mpaatRating",
     option.None,
-    optional(mpaat_rating_decoder()),
+    decode.optional(mpaat_rating_decoder()),
   )
-  use mtrcb_rating <- optional_field(
+  use mtrcb_rating <- decode.optional_field(
     "mtrcbRating",
     option.None,
-    optional(mtrcb_rating_decoder()),
+    decode.optional(mtrcb_rating_decoder()),
   )
-  use nbc_rating <- optional_field(
+  use nbc_rating <- decode.optional_field(
     "nbcRating",
     option.None,
-    optional(nbc_rating_decoder()),
+    decode.optional(nbc_rating_decoder()),
   )
-  use nbcpl_rating <- optional_field(
+  use nbcpl_rating <- decode.optional_field(
     "nbcplRating",
     option.None,
-    optional(nbcpl_rating_decoder()),
+    decode.optional(nbcpl_rating_decoder()),
   )
-  use nfrc_rating <- optional_field(
+  use nfrc_rating <- decode.optional_field(
     "nfrcRating",
     option.None,
-    optional(nfrc_rating_decoder()),
+    decode.optional(nfrc_rating_decoder()),
   )
-  use nfvcb_rating <- optional_field(
+  use nfvcb_rating <- decode.optional_field(
     "nfvcbRating",
     option.None,
-    optional(nfvcb_rating_decoder()),
+    decode.optional(nfvcb_rating_decoder()),
   )
-  use nkclv_rating <- optional_field(
+  use nkclv_rating <- decode.optional_field(
     "nkclvRating",
     option.None,
-    optional(nkclv_rating_decoder()),
+    decode.optional(nkclv_rating_decoder()),
   )
-  use nmc_rating <- optional_field(
+  use nmc_rating <- decode.optional_field(
     "nmcRating",
     option.None,
-    optional(nmc_rating_decoder()),
+    decode.optional(nmc_rating_decoder()),
   )
-  use oflc_rating <- optional_field(
+  use oflc_rating <- decode.optional_field(
     "oflcRating",
     option.None,
-    optional(oflc_rating_decoder()),
+    decode.optional(oflc_rating_decoder()),
   )
-  use pefilm_rating <- optional_field(
+  use pefilm_rating <- decode.optional_field(
     "pefilmRating",
     option.None,
-    optional(pefilm_rating_decoder()),
+    decode.optional(pefilm_rating_decoder()),
   )
-  use rcnof_rating <- optional_field(
+  use rcnof_rating <- decode.optional_field(
     "rcnofRating",
     option.None,
-    optional(rcnof_rating_decoder()),
+    decode.optional(rcnof_rating_decoder()),
   )
-  use resorteviolencia_rating <- optional_field(
+  use resorteviolencia_rating <- decode.optional_field(
     "resorteviolenciaRating",
     option.None,
-    optional(resorteviolencia_rating_decoder()),
+    decode.optional(resorteviolencia_rating_decoder()),
   )
-  use rtc_rating <- optional_field(
+  use rtc_rating <- decode.optional_field(
     "rtcRating",
     option.None,
-    optional(rtc_rating_decoder()),
+    decode.optional(rtc_rating_decoder()),
   )
-  use rte_rating <- optional_field(
+  use rte_rating <- decode.optional_field(
     "rteRating",
     option.None,
-    optional(rte_rating_decoder()),
+    decode.optional(rte_rating_decoder()),
   )
-  use russia_rating <- optional_field(
+  use russia_rating <- decode.optional_field(
     "russiaRating",
     option.None,
-    optional(russia_rating_decoder()),
+    decode.optional(russia_rating_decoder()),
   )
-  use skfilm_rating <- optional_field(
+  use skfilm_rating <- decode.optional_field(
     "skfilmRating",
     option.None,
-    optional(skfilm_rating_decoder()),
+    decode.optional(skfilm_rating_decoder()),
   )
-  use smais_rating <- optional_field(
+  use smais_rating <- decode.optional_field(
     "smaisRating",
     option.None,
-    optional(smais_rating_decoder()),
+    decode.optional(smais_rating_decoder()),
   )
-  use smsa_rating <- optional_field(
+  use smsa_rating <- decode.optional_field(
     "smsaRating",
     option.None,
-    optional(smsa_rating_decoder()),
+    decode.optional(smsa_rating_decoder()),
   )
-  use tvpg_rating <- optional_field(
+  use tvpg_rating <- decode.optional_field(
     "tvpgRating",
     option.None,
-    optional(tvpg_rating_decoder()),
+    decode.optional(tvpg_rating_decoder()),
   )
-  use yt_rating <- optional_field(
+  use yt_rating <- decode.optional_field(
     "ytRating",
     option.None,
-    optional(yt_rating_decoder()),
+    decode.optional(yt_rating_decoder()),
   )
-  success(
-    ContentRating(
-      acb_rating,
-      agcom_rating,
-      anatel_rating,
-      bbfc_rating,
-      bfvc_rating,
-      bmukk_rating,
-      catv_rating,
-      catvfr_rating,
-      cbfc_rating,
-      ccc_rating,
-      cce_rating,
-      chfilm_rating,
-      chvrs_rating,
-      cicf_rating,
-      cna_rating,
-      cnc_rating,
-      csa_rating,
-      cscf_rating,
-      czfilm_rating,
-      djctq_rating,
-      djctq_rating_reasons,
-      ecbmct_rating,
-      eefilm_rating,
-      egfilm_rating,
-      eirin_rating,
-      fcbm_rating,
-      fco_rating,
-      fmoc_rating,
-      fpb_rating,
-      fpb_rating_reasons,
-      fsk_rating,
-      grfilm_rating,
-      icaa_rating,
-      ifco_rating,
-      ilfilm_rating,
-      incaa_rating,
-      kfcb_rating,
-      kijkwijzer_rating,
-      kmrb_rating,
-      lsf_rating,
-      mccaa_rating,
-      mccyp_rating,
-      mcst_rating,
-      mda_rating,
-      medietilsynet_rating,
-      meku_rating,
-      mena_mpaa_rating,
-      mibac_rating,
-      moc_rating,
-      moctw_rating,
-      mpaa_rating,
-      mpaat_rating,
-      mtrcb_rating,
-      nbc_rating,
-      nbcpl_rating,
-      nfrc_rating,
-      nfvcb_rating,
-      nkclv_rating,
-      nmc_rating,
-      oflc_rating,
-      pefilm_rating,
-      rcnof_rating,
-      resorteviolencia_rating,
-      rtc_rating,
-      rte_rating,
-      russia_rating,
-      skfilm_rating,
-      smais_rating,
-      smsa_rating,
-      tvpg_rating,
-      yt_rating,
+  decode.success(ContentRating(
+    acb_rating,
+    agcom_rating,
+    anatel_rating,
+    bbfc_rating,
+    bfvc_rating,
+    bmukk_rating,
+    catv_rating,
+    catvfr_rating,
+    cbfc_rating,
+    ccc_rating,
+    cce_rating,
+    chfilm_rating,
+    chvrs_rating,
+    cicf_rating,
+    cna_rating,
+    cnc_rating,
+    csa_rating,
+    cscf_rating,
+    czfilm_rating,
+    djctq_rating,
+    djctq_rating_reasons,
+    ecbmct_rating,
+    eefilm_rating,
+    egfilm_rating,
+    eirin_rating,
+    fcbm_rating,
+    fco_rating,
+    fmoc_rating,
+    fpb_rating,
+    fpb_rating_reasons,
+    fsk_rating,
+    grfilm_rating,
+    icaa_rating,
+    ifco_rating,
+    ilfilm_rating,
+    incaa_rating,
+    kfcb_rating,
+    kijkwijzer_rating,
+    kmrb_rating,
+    lsf_rating,
+    mccaa_rating,
+    mccyp_rating,
+    mcst_rating,
+    mda_rating,
+    medietilsynet_rating,
+    meku_rating,
+    mena_mpaa_rating,
+    mibac_rating,
+    moc_rating,
+    moctw_rating,
+    mpaa_rating,
+    mpaat_rating,
+    mtrcb_rating,
+    nbc_rating,
+    nbcpl_rating,
+    nfrc_rating,
+    nfvcb_rating,
+    nkclv_rating,
+    nmc_rating,
+    oflc_rating,
+    pefilm_rating,
+    rcnof_rating,
+    resorteviolencia_rating,
+    rtc_rating,
+    rte_rating,
+    russia_rating,
+    skfilm_rating,
+    smais_rating,
+    smsa_rating,
+    tvpg_rating,
+    yt_rating,
+  ))
+}
+
+pub fn to_json(value: ContentRating) -> Json {
+  json.object([
+    #(
+      "acbRating",
+      json.nullable(value.acb_rating, fn(e) {
+        json.string(acb_rating_to_string(e))
+      }),
     ),
-  )
+    #(
+      "agcomRating",
+      json.nullable(value.agcom_rating, fn(e) {
+        json.string(agcom_rating_to_string(e))
+      }),
+    ),
+    #(
+      "anatelRating",
+      json.nullable(value.anatel_rating, fn(e) {
+        json.string(anatel_rating_to_string(e))
+      }),
+    ),
+    #(
+      "bbfcRating",
+      json.nullable(value.bbfc_rating, fn(e) {
+        json.string(bbfc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "bfvcRating",
+      json.nullable(value.bfvc_rating, fn(e) {
+        json.string(bfvc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "bmukkRating",
+      json.nullable(value.bmukk_rating, fn(e) {
+        json.string(bmukk_rating_to_string(e))
+      }),
+    ),
+    #(
+      "catvRating",
+      json.nullable(value.catv_rating, fn(e) {
+        json.string(catv_rating_to_string(e))
+      }),
+    ),
+    #(
+      "catvfrRating",
+      json.nullable(value.catvfr_rating, fn(e) {
+        json.string(catvfr_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cbfcRating",
+      json.nullable(value.cbfc_rating, fn(e) {
+        json.string(cbfc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cccRating",
+      json.nullable(value.ccc_rating, fn(e) {
+        json.string(ccc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cceRating",
+      json.nullable(value.cce_rating, fn(e) {
+        json.string(cce_rating_to_string(e))
+      }),
+    ),
+    #(
+      "chfilmRating",
+      json.nullable(value.chfilm_rating, fn(e) {
+        json.string(chfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "chvrsRating",
+      json.nullable(value.chvrs_rating, fn(e) {
+        json.string(chvrs_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cicfRating",
+      json.nullable(value.cicf_rating, fn(e) {
+        json.string(cicf_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cnaRating",
+      json.nullable(value.cna_rating, fn(e) {
+        json.string(cna_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cncRating",
+      json.nullable(value.cnc_rating, fn(e) {
+        json.string(cnc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "csaRating",
+      json.nullable(value.csa_rating, fn(e) {
+        json.string(csa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cscfRating",
+      json.nullable(value.cscf_rating, fn(e) {
+        json.string(cscf_rating_to_string(e))
+      }),
+    ),
+    #(
+      "czfilmRating",
+      json.nullable(value.czfilm_rating, fn(e) {
+        json.string(czfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "djctqRating",
+      json.nullable(value.djctq_rating, fn(e) {
+        json.string(djctq_rating_to_string(e))
+      }),
+    ),
+    #(
+      "djctqRatingReasons",
+      json.nullable(value.djctq_rating_reasons, fn(items) {
+        json.array(items, fn(e) {
+          json.string(djctq_rating_reasons_to_string(e))
+        })
+      }),
+    ),
+    #(
+      "ecbmctRating",
+      json.nullable(value.ecbmct_rating, fn(e) {
+        json.string(ecbmct_rating_to_string(e))
+      }),
+    ),
+    #(
+      "eefilmRating",
+      json.nullable(value.eefilm_rating, fn(e) {
+        json.string(eefilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "egfilmRating",
+      json.nullable(value.egfilm_rating, fn(e) {
+        json.string(egfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "eirinRating",
+      json.nullable(value.eirin_rating, fn(e) {
+        json.string(eirin_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fcbmRating",
+      json.nullable(value.fcbm_rating, fn(e) {
+        json.string(fcbm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fcoRating",
+      json.nullable(value.fco_rating, fn(e) {
+        json.string(fco_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fmocRating",
+      json.nullable(value.fmoc_rating, fn(e) {
+        json.string(fmoc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fpbRating",
+      json.nullable(value.fpb_rating, fn(e) {
+        json.string(fpb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fpbRatingReasons",
+      json.nullable(value.fpb_rating_reasons, fn(items) {
+        json.array(items, fn(e) { json.string(fpb_rating_reasons_to_string(e)) })
+      }),
+    ),
+    #(
+      "fskRating",
+      json.nullable(value.fsk_rating, fn(e) {
+        json.string(fsk_rating_to_string(e))
+      }),
+    ),
+    #(
+      "grfilmRating",
+      json.nullable(value.grfilm_rating, fn(e) {
+        json.string(grfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "icaaRating",
+      json.nullable(value.icaa_rating, fn(e) {
+        json.string(icaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "ifcoRating",
+      json.nullable(value.ifco_rating, fn(e) {
+        json.string(ifco_rating_to_string(e))
+      }),
+    ),
+    #(
+      "ilfilmRating",
+      json.nullable(value.ilfilm_rating, fn(e) {
+        json.string(ilfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "incaaRating",
+      json.nullable(value.incaa_rating, fn(e) {
+        json.string(incaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "kfcbRating",
+      json.nullable(value.kfcb_rating, fn(e) {
+        json.string(kfcb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "kijkwijzerRating",
+      json.nullable(value.kijkwijzer_rating, fn(e) {
+        json.string(kijkwijzer_rating_to_string(e))
+      }),
+    ),
+    #(
+      "kmrbRating",
+      json.nullable(value.kmrb_rating, fn(e) {
+        json.string(kmrb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "lsfRating",
+      json.nullable(value.lsf_rating, fn(e) {
+        json.string(lsf_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mccaaRating",
+      json.nullable(value.mccaa_rating, fn(e) {
+        json.string(mccaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mccypRating",
+      json.nullable(value.mccyp_rating, fn(e) {
+        json.string(mccyp_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mcstRating",
+      json.nullable(value.mcst_rating, fn(e) {
+        json.string(mcst_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mdaRating",
+      json.nullable(value.mda_rating, fn(e) {
+        json.string(mda_rating_to_string(e))
+      }),
+    ),
+    #(
+      "medietilsynetRating",
+      json.nullable(value.medietilsynet_rating, fn(e) {
+        json.string(medietilsynet_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mekuRating",
+      json.nullable(value.meku_rating, fn(e) {
+        json.string(meku_rating_to_string(e))
+      }),
+    ),
+    #(
+      "menaMpaaRating",
+      json.nullable(value.mena_mpaa_rating, fn(e) {
+        json.string(mena_mpaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mibacRating",
+      json.nullable(value.mibac_rating, fn(e) {
+        json.string(mibac_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mocRating",
+      json.nullable(value.moc_rating, fn(e) {
+        json.string(moc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "moctwRating",
+      json.nullable(value.moctw_rating, fn(e) {
+        json.string(moctw_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mpaaRating",
+      json.nullable(value.mpaa_rating, fn(e) {
+        json.string(mpaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mpaatRating",
+      json.nullable(value.mpaat_rating, fn(e) {
+        json.string(mpaat_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mtrcbRating",
+      json.nullable(value.mtrcb_rating, fn(e) {
+        json.string(mtrcb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nbcRating",
+      json.nullable(value.nbc_rating, fn(e) {
+        json.string(nbc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nbcplRating",
+      json.nullable(value.nbcpl_rating, fn(e) {
+        json.string(nbcpl_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nfrcRating",
+      json.nullable(value.nfrc_rating, fn(e) {
+        json.string(nfrc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nfvcbRating",
+      json.nullable(value.nfvcb_rating, fn(e) {
+        json.string(nfvcb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nkclvRating",
+      json.nullable(value.nkclv_rating, fn(e) {
+        json.string(nkclv_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nmcRating",
+      json.nullable(value.nmc_rating, fn(e) {
+        json.string(nmc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "oflcRating",
+      json.nullable(value.oflc_rating, fn(e) {
+        json.string(oflc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "pefilmRating",
+      json.nullable(value.pefilm_rating, fn(e) {
+        json.string(pefilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "rcnofRating",
+      json.nullable(value.rcnof_rating, fn(e) {
+        json.string(rcnof_rating_to_string(e))
+      }),
+    ),
+    #(
+      "resorteviolenciaRating",
+      json.nullable(value.resorteviolencia_rating, fn(e) {
+        json.string(resorteviolencia_rating_to_string(e))
+      }),
+    ),
+    #(
+      "rtcRating",
+      json.nullable(value.rtc_rating, fn(e) {
+        json.string(rtc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "rteRating",
+      json.nullable(value.rte_rating, fn(e) {
+        json.string(rte_rating_to_string(e))
+      }),
+    ),
+    #(
+      "russiaRating",
+      json.nullable(value.russia_rating, fn(e) {
+        json.string(russia_rating_to_string(e))
+      }),
+    ),
+    #(
+      "skfilmRating",
+      json.nullable(value.skfilm_rating, fn(e) {
+        json.string(skfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "smaisRating",
+      json.nullable(value.smais_rating, fn(e) {
+        json.string(smais_rating_to_string(e))
+      }),
+    ),
+    #(
+      "smsaRating",
+      json.nullable(value.smsa_rating, fn(e) {
+        json.string(smsa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "tvpgRating",
+      json.nullable(value.tvpg_rating, fn(e) {
+        json.string(tvpg_rating_to_string(e))
+      }),
+    ),
+    #(
+      "ytRating",
+      json.nullable(value.yt_rating, fn(e) {
+        json.string(yt_rating_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The video's Australian Classification Board (ACB) or Australian Communications and Media Authority (ACMA) rating. ACMA ratings are used to classify children's television programming.
@@ -543,19 +975,19 @@ pub fn acb_rating_to_string(value: AcbRating) -> String {
 }
 
 pub fn acb_rating_decoder() -> Decoder(AcbRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "acbUnspecified" -> success(AcbRatingAcbUnspecified)
-    "acbE" -> success(AcbRatingAcbE)
-    "acbP" -> success(AcbRatingAcbP)
-    "acbC" -> success(AcbRatingAcbC)
-    "acbG" -> success(AcbRatingAcbG)
-    "acbPg" -> success(AcbRatingAcbPg)
-    "acbM" -> success(AcbRatingAcbM)
-    "acbMa15plus" -> success(AcbRatingAcbMa15plus)
-    "acbR18plus" -> success(AcbRatingAcbR18plus)
-    "acbUnrated" -> success(AcbRatingAcbUnrated)
-    _ -> failure(AcbRatingAcbUnspecified, "a valid AcbRating")
+    "acbUnspecified" -> decode.success(AcbRatingAcbUnspecified)
+    "acbE" -> decode.success(AcbRatingAcbE)
+    "acbP" -> decode.success(AcbRatingAcbP)
+    "acbC" -> decode.success(AcbRatingAcbC)
+    "acbG" -> decode.success(AcbRatingAcbG)
+    "acbPg" -> decode.success(AcbRatingAcbPg)
+    "acbM" -> decode.success(AcbRatingAcbM)
+    "acbMa15plus" -> decode.success(AcbRatingAcbMa15plus)
+    "acbR18plus" -> decode.success(AcbRatingAcbR18plus)
+    "acbUnrated" -> decode.success(AcbRatingAcbUnrated)
+    _ -> decode.failure(AcbRatingAcbUnspecified, "a valid AcbRating")
   }
 }
 
@@ -579,14 +1011,14 @@ pub fn agcom_rating_to_string(value: AgcomRating) -> String {
 }
 
 pub fn agcom_rating_decoder() -> Decoder(AgcomRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "agcomUnspecified" -> success(AgcomRatingAgcomUnspecified)
-    "agcomT" -> success(AgcomRatingAgcomT)
-    "agcomVm14" -> success(AgcomRatingAgcomVm14)
-    "agcomVm18" -> success(AgcomRatingAgcomVm18)
-    "agcomUnrated" -> success(AgcomRatingAgcomUnrated)
-    _ -> failure(AgcomRatingAgcomUnspecified, "a valid AgcomRating")
+    "agcomUnspecified" -> decode.success(AgcomRatingAgcomUnspecified)
+    "agcomT" -> decode.success(AgcomRatingAgcomT)
+    "agcomVm14" -> decode.success(AgcomRatingAgcomVm14)
+    "agcomVm18" -> decode.success(AgcomRatingAgcomVm18)
+    "agcomUnrated" -> decode.success(AgcomRatingAgcomUnrated)
+    _ -> decode.failure(AgcomRatingAgcomUnspecified, "a valid AgcomRating")
   }
 }
 
@@ -618,18 +1050,18 @@ pub fn anatel_rating_to_string(value: AnatelRating) -> String {
 }
 
 pub fn anatel_rating_decoder() -> Decoder(AnatelRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "anatelUnspecified" -> success(AnatelRatingAnatelUnspecified)
-    "anatelF" -> success(AnatelRatingAnatelF)
-    "anatelI" -> success(AnatelRatingAnatelI)
-    "anatelI7" -> success(AnatelRatingAnatelI7)
-    "anatelI10" -> success(AnatelRatingAnatelI10)
-    "anatelI12" -> success(AnatelRatingAnatelI12)
-    "anatelR" -> success(AnatelRatingAnatelR)
-    "anatelA" -> success(AnatelRatingAnatelA)
-    "anatelUnrated" -> success(AnatelRatingAnatelUnrated)
-    _ -> failure(AnatelRatingAnatelUnspecified, "a valid AnatelRating")
+    "anatelUnspecified" -> decode.success(AnatelRatingAnatelUnspecified)
+    "anatelF" -> decode.success(AnatelRatingAnatelF)
+    "anatelI" -> decode.success(AnatelRatingAnatelI)
+    "anatelI7" -> decode.success(AnatelRatingAnatelI7)
+    "anatelI10" -> decode.success(AnatelRatingAnatelI10)
+    "anatelI12" -> decode.success(AnatelRatingAnatelI12)
+    "anatelR" -> decode.success(AnatelRatingAnatelR)
+    "anatelA" -> decode.success(AnatelRatingAnatelA)
+    "anatelUnrated" -> decode.success(AnatelRatingAnatelUnrated)
+    _ -> decode.failure(AnatelRatingAnatelUnspecified, "a valid AnatelRating")
   }
 }
 
@@ -661,18 +1093,18 @@ pub fn bbfc_rating_to_string(value: BbfcRating) -> String {
 }
 
 pub fn bbfc_rating_decoder() -> Decoder(BbfcRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "bbfcUnspecified" -> success(BbfcRatingBbfcUnspecified)
-    "bbfcU" -> success(BbfcRatingBbfcU)
-    "bbfcPg" -> success(BbfcRatingBbfcPg)
-    "bbfc12a" -> success(BbfcRatingBbfc12a)
-    "bbfc12" -> success(BbfcRatingBbfc12)
-    "bbfc15" -> success(BbfcRatingBbfc15)
-    "bbfc18" -> success(BbfcRatingBbfc18)
-    "bbfcR18" -> success(BbfcRatingBbfcR18)
-    "bbfcUnrated" -> success(BbfcRatingBbfcUnrated)
-    _ -> failure(BbfcRatingBbfcUnspecified, "a valid BbfcRating")
+    "bbfcUnspecified" -> decode.success(BbfcRatingBbfcUnspecified)
+    "bbfcU" -> decode.success(BbfcRatingBbfcU)
+    "bbfcPg" -> decode.success(BbfcRatingBbfcPg)
+    "bbfc12a" -> decode.success(BbfcRatingBbfc12a)
+    "bbfc12" -> decode.success(BbfcRatingBbfc12)
+    "bbfc15" -> decode.success(BbfcRatingBbfc15)
+    "bbfc18" -> decode.success(BbfcRatingBbfc18)
+    "bbfcR18" -> decode.success(BbfcRatingBbfcR18)
+    "bbfcUnrated" -> decode.success(BbfcRatingBbfcUnrated)
+    _ -> decode.failure(BbfcRatingBbfcUnspecified, "a valid BbfcRating")
   }
 }
 
@@ -704,18 +1136,18 @@ pub fn bfvc_rating_to_string(value: BfvcRating) -> String {
 }
 
 pub fn bfvc_rating_decoder() -> Decoder(BfvcRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "bfvcUnspecified" -> success(BfvcRatingBfvcUnspecified)
-    "bfvcG" -> success(BfvcRatingBfvcG)
-    "bfvcE" -> success(BfvcRatingBfvcE)
-    "bfvc13" -> success(BfvcRatingBfvc13)
-    "bfvc15" -> success(BfvcRatingBfvc15)
-    "bfvc18" -> success(BfvcRatingBfvc18)
-    "bfvc20" -> success(BfvcRatingBfvc20)
-    "bfvcB" -> success(BfvcRatingBfvcB)
-    "bfvcUnrated" -> success(BfvcRatingBfvcUnrated)
-    _ -> failure(BfvcRatingBfvcUnspecified, "a valid BfvcRating")
+    "bfvcUnspecified" -> decode.success(BfvcRatingBfvcUnspecified)
+    "bfvcG" -> decode.success(BfvcRatingBfvcG)
+    "bfvcE" -> decode.success(BfvcRatingBfvcE)
+    "bfvc13" -> decode.success(BfvcRatingBfvc13)
+    "bfvc15" -> decode.success(BfvcRatingBfvc15)
+    "bfvc18" -> decode.success(BfvcRatingBfvc18)
+    "bfvc20" -> decode.success(BfvcRatingBfvc20)
+    "bfvcB" -> decode.success(BfvcRatingBfvcB)
+    "bfvcUnrated" -> decode.success(BfvcRatingBfvcUnrated)
+    _ -> decode.failure(BfvcRatingBfvcUnspecified, "a valid BfvcRating")
   }
 }
 
@@ -747,18 +1179,18 @@ pub fn bmukk_rating_to_string(value: BmukkRating) -> String {
 }
 
 pub fn bmukk_rating_decoder() -> Decoder(BmukkRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "bmukkUnspecified" -> success(BmukkRatingBmukkUnspecified)
-    "bmukkAa" -> success(BmukkRatingBmukkAa)
-    "bmukk6" -> success(BmukkRatingBmukk6)
-    "bmukk8" -> success(BmukkRatingBmukk8)
-    "bmukk10" -> success(BmukkRatingBmukk10)
-    "bmukk12" -> success(BmukkRatingBmukk12)
-    "bmukk14" -> success(BmukkRatingBmukk14)
-    "bmukk16" -> success(BmukkRatingBmukk16)
-    "bmukkUnrated" -> success(BmukkRatingBmukkUnrated)
-    _ -> failure(BmukkRatingBmukkUnspecified, "a valid BmukkRating")
+    "bmukkUnspecified" -> decode.success(BmukkRatingBmukkUnspecified)
+    "bmukkAa" -> decode.success(BmukkRatingBmukkAa)
+    "bmukk6" -> decode.success(BmukkRatingBmukk6)
+    "bmukk8" -> decode.success(BmukkRatingBmukk8)
+    "bmukk10" -> decode.success(BmukkRatingBmukk10)
+    "bmukk12" -> decode.success(BmukkRatingBmukk12)
+    "bmukk14" -> decode.success(BmukkRatingBmukk14)
+    "bmukk16" -> decode.success(BmukkRatingBmukk16)
+    "bmukkUnrated" -> decode.success(BmukkRatingBmukkUnrated)
+    _ -> decode.failure(BmukkRatingBmukkUnspecified, "a valid BmukkRating")
   }
 }
 
@@ -790,18 +1222,18 @@ pub fn catv_rating_to_string(value: CatvRating) -> String {
 }
 
 pub fn catv_rating_decoder() -> Decoder(CatvRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "catvUnspecified" -> success(CatvRatingCatvUnspecified)
-    "catvC" -> success(CatvRatingCatvC)
-    "catvC8" -> success(CatvRatingCatvC8)
-    "catvG" -> success(CatvRatingCatvG)
-    "catvPg" -> success(CatvRatingCatvPg)
-    "catv14plus" -> success(CatvRatingCatv14plus)
-    "catv18plus" -> success(CatvRatingCatv18plus)
-    "catvUnrated" -> success(CatvRatingCatvUnrated)
-    "catvE" -> success(CatvRatingCatvE)
-    _ -> failure(CatvRatingCatvUnspecified, "a valid CatvRating")
+    "catvUnspecified" -> decode.success(CatvRatingCatvUnspecified)
+    "catvC" -> decode.success(CatvRatingCatvC)
+    "catvC8" -> decode.success(CatvRatingCatvC8)
+    "catvG" -> decode.success(CatvRatingCatvG)
+    "catvPg" -> decode.success(CatvRatingCatvPg)
+    "catv14plus" -> decode.success(CatvRatingCatv14plus)
+    "catv18plus" -> decode.success(CatvRatingCatv18plus)
+    "catvUnrated" -> decode.success(CatvRatingCatvUnrated)
+    "catvE" -> decode.success(CatvRatingCatvE)
+    _ -> decode.failure(CatvRatingCatvUnspecified, "a valid CatvRating")
   }
 }
 
@@ -831,17 +1263,17 @@ pub fn catvfr_rating_to_string(value: CatvfrRating) -> String {
 }
 
 pub fn catvfr_rating_decoder() -> Decoder(CatvfrRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "catvfrUnspecified" -> success(CatvfrRatingCatvfrUnspecified)
-    "catvfrG" -> success(CatvfrRatingCatvfrG)
-    "catvfr8plus" -> success(CatvfrRatingCatvfr8plus)
-    "catvfr13plus" -> success(CatvfrRatingCatvfr13plus)
-    "catvfr16plus" -> success(CatvfrRatingCatvfr16plus)
-    "catvfr18plus" -> success(CatvfrRatingCatvfr18plus)
-    "catvfrUnrated" -> success(CatvfrRatingCatvfrUnrated)
-    "catvfrE" -> success(CatvfrRatingCatvfrE)
-    _ -> failure(CatvfrRatingCatvfrUnspecified, "a valid CatvfrRating")
+    "catvfrUnspecified" -> decode.success(CatvfrRatingCatvfrUnspecified)
+    "catvfrG" -> decode.success(CatvfrRatingCatvfrG)
+    "catvfr8plus" -> decode.success(CatvfrRatingCatvfr8plus)
+    "catvfr13plus" -> decode.success(CatvfrRatingCatvfr13plus)
+    "catvfr16plus" -> decode.success(CatvfrRatingCatvfr16plus)
+    "catvfr18plus" -> decode.success(CatvfrRatingCatvfr18plus)
+    "catvfrUnrated" -> decode.success(CatvfrRatingCatvfrUnrated)
+    "catvfrE" -> decode.success(CatvfrRatingCatvfrE)
+    _ -> decode.failure(CatvfrRatingCatvfrUnspecified, "a valid CatvfrRating")
   }
 }
 
@@ -873,18 +1305,18 @@ pub fn cbfc_rating_to_string(value: CbfcRating) -> String {
 }
 
 pub fn cbfc_rating_decoder() -> Decoder(CbfcRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "cbfcUnspecified" -> success(CbfcRatingCbfcUnspecified)
-    "cbfcU" -> success(CbfcRatingCbfcU)
-    "cbfcUA" -> success(CbfcRatingCbfcUa)
-    "cbfcUA7plus" -> success(CbfcRatingCbfcUa7plus)
-    "cbfcUA13plus" -> success(CbfcRatingCbfcUa13plus)
-    "cbfcUA16plus" -> success(CbfcRatingCbfcUa16plus)
-    "cbfcA" -> success(CbfcRatingCbfcA)
-    "cbfcS" -> success(CbfcRatingCbfcS)
-    "cbfcUnrated" -> success(CbfcRatingCbfcUnrated)
-    _ -> failure(CbfcRatingCbfcUnspecified, "a valid CbfcRating")
+    "cbfcUnspecified" -> decode.success(CbfcRatingCbfcUnspecified)
+    "cbfcU" -> decode.success(CbfcRatingCbfcU)
+    "cbfcUA" -> decode.success(CbfcRatingCbfcUa)
+    "cbfcUA7plus" -> decode.success(CbfcRatingCbfcUa7plus)
+    "cbfcUA13plus" -> decode.success(CbfcRatingCbfcUa13plus)
+    "cbfcUA16plus" -> decode.success(CbfcRatingCbfcUa16plus)
+    "cbfcA" -> decode.success(CbfcRatingCbfcA)
+    "cbfcS" -> decode.success(CbfcRatingCbfcS)
+    "cbfcUnrated" -> decode.success(CbfcRatingCbfcUnrated)
+    _ -> decode.failure(CbfcRatingCbfcUnspecified, "a valid CbfcRating")
   }
 }
 
@@ -914,17 +1346,17 @@ pub fn ccc_rating_to_string(value: CccRating) -> String {
 }
 
 pub fn ccc_rating_decoder() -> Decoder(CccRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "cccUnspecified" -> success(CccRatingCccUnspecified)
-    "cccTe" -> success(CccRatingCccTe)
-    "ccc6" -> success(CccRatingCcc6)
-    "ccc14" -> success(CccRatingCcc14)
-    "ccc18" -> success(CccRatingCcc18)
-    "ccc18v" -> success(CccRatingCcc18v)
-    "ccc18s" -> success(CccRatingCcc18s)
-    "cccUnrated" -> success(CccRatingCccUnrated)
-    _ -> failure(CccRatingCccUnspecified, "a valid CccRating")
+    "cccUnspecified" -> decode.success(CccRatingCccUnspecified)
+    "cccTe" -> decode.success(CccRatingCccTe)
+    "ccc6" -> decode.success(CccRatingCcc6)
+    "ccc14" -> decode.success(CccRatingCcc14)
+    "ccc18" -> decode.success(CccRatingCcc18)
+    "ccc18v" -> decode.success(CccRatingCcc18v)
+    "ccc18s" -> decode.success(CccRatingCcc18s)
+    "cccUnrated" -> decode.success(CccRatingCccUnrated)
+    _ -> decode.failure(CccRatingCccUnspecified, "a valid CccRating")
   }
 }
 
@@ -954,17 +1386,17 @@ pub fn cce_rating_to_string(value: CceRating) -> String {
 }
 
 pub fn cce_rating_decoder() -> Decoder(CceRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "cceUnspecified" -> success(CceRatingCceUnspecified)
-    "cceM4" -> success(CceRatingCceM4)
-    "cceM6" -> success(CceRatingCceM6)
-    "cceM12" -> success(CceRatingCceM12)
-    "cceM16" -> success(CceRatingCceM16)
-    "cceM18" -> success(CceRatingCceM18)
-    "cceUnrated" -> success(CceRatingCceUnrated)
-    "cceM14" -> success(CceRatingCceM14)
-    _ -> failure(CceRatingCceUnspecified, "a valid CceRating")
+    "cceUnspecified" -> decode.success(CceRatingCceUnspecified)
+    "cceM4" -> decode.success(CceRatingCceM4)
+    "cceM6" -> decode.success(CceRatingCceM6)
+    "cceM12" -> decode.success(CceRatingCceM12)
+    "cceM16" -> decode.success(CceRatingCceM16)
+    "cceM18" -> decode.success(CceRatingCceM18)
+    "cceUnrated" -> decode.success(CceRatingCceUnrated)
+    "cceM14" -> decode.success(CceRatingCceM14)
+    _ -> decode.failure(CceRatingCceUnspecified, "a valid CceRating")
   }
 }
 
@@ -992,16 +1424,16 @@ pub fn chfilm_rating_to_string(value: ChfilmRating) -> String {
 }
 
 pub fn chfilm_rating_decoder() -> Decoder(ChfilmRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "chfilmUnspecified" -> success(ChfilmRatingChfilmUnspecified)
-    "chfilm0" -> success(ChfilmRatingChfilm0)
-    "chfilm6" -> success(ChfilmRatingChfilm6)
-    "chfilm12" -> success(ChfilmRatingChfilm12)
-    "chfilm16" -> success(ChfilmRatingChfilm16)
-    "chfilm18" -> success(ChfilmRatingChfilm18)
-    "chfilmUnrated" -> success(ChfilmRatingChfilmUnrated)
-    _ -> failure(ChfilmRatingChfilmUnspecified, "a valid ChfilmRating")
+    "chfilmUnspecified" -> decode.success(ChfilmRatingChfilmUnspecified)
+    "chfilm0" -> decode.success(ChfilmRatingChfilm0)
+    "chfilm6" -> decode.success(ChfilmRatingChfilm6)
+    "chfilm12" -> decode.success(ChfilmRatingChfilm12)
+    "chfilm16" -> decode.success(ChfilmRatingChfilm16)
+    "chfilm18" -> decode.success(ChfilmRatingChfilm18)
+    "chfilmUnrated" -> decode.success(ChfilmRatingChfilmUnrated)
+    _ -> decode.failure(ChfilmRatingChfilmUnspecified, "a valid ChfilmRating")
   }
 }
 
@@ -1031,17 +1463,17 @@ pub fn chvrs_rating_to_string(value: ChvrsRating) -> String {
 }
 
 pub fn chvrs_rating_decoder() -> Decoder(ChvrsRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "chvrsUnspecified" -> success(ChvrsRatingChvrsUnspecified)
-    "chvrsG" -> success(ChvrsRatingChvrsG)
-    "chvrsPg" -> success(ChvrsRatingChvrsPg)
-    "chvrs14a" -> success(ChvrsRatingChvrs14a)
-    "chvrs18a" -> success(ChvrsRatingChvrs18a)
-    "chvrsR" -> success(ChvrsRatingChvrsR)
-    "chvrsE" -> success(ChvrsRatingChvrsE)
-    "chvrsUnrated" -> success(ChvrsRatingChvrsUnrated)
-    _ -> failure(ChvrsRatingChvrsUnspecified, "a valid ChvrsRating")
+    "chvrsUnspecified" -> decode.success(ChvrsRatingChvrsUnspecified)
+    "chvrsG" -> decode.success(ChvrsRatingChvrsG)
+    "chvrsPg" -> decode.success(ChvrsRatingChvrsPg)
+    "chvrs14a" -> decode.success(ChvrsRatingChvrs14a)
+    "chvrs18a" -> decode.success(ChvrsRatingChvrs18a)
+    "chvrsR" -> decode.success(ChvrsRatingChvrsR)
+    "chvrsE" -> decode.success(ChvrsRatingChvrsE)
+    "chvrsUnrated" -> decode.success(ChvrsRatingChvrsUnrated)
+    _ -> decode.failure(ChvrsRatingChvrsUnspecified, "a valid ChvrsRating")
   }
 }
 
@@ -1065,14 +1497,14 @@ pub fn cicf_rating_to_string(value: CicfRating) -> String {
 }
 
 pub fn cicf_rating_decoder() -> Decoder(CicfRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "cicfUnspecified" -> success(CicfRatingCicfUnspecified)
-    "cicfE" -> success(CicfRatingCicfE)
-    "cicfKtEa" -> success(CicfRatingCicfKtEa)
-    "cicfKntEna" -> success(CicfRatingCicfKntEna)
-    "cicfUnrated" -> success(CicfRatingCicfUnrated)
-    _ -> failure(CicfRatingCicfUnspecified, "a valid CicfRating")
+    "cicfUnspecified" -> decode.success(CicfRatingCicfUnspecified)
+    "cicfE" -> decode.success(CicfRatingCicfE)
+    "cicfKtEa" -> decode.success(CicfRatingCicfKtEa)
+    "cicfKntEna" -> decode.success(CicfRatingCicfKntEna)
+    "cicfUnrated" -> decode.success(CicfRatingCicfUnrated)
+    _ -> decode.failure(CicfRatingCicfUnspecified, "a valid CicfRating")
   }
 }
 
@@ -1100,16 +1532,16 @@ pub fn cna_rating_to_string(value: CnaRating) -> String {
 }
 
 pub fn cna_rating_decoder() -> Decoder(CnaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "cnaUnspecified" -> success(CnaRatingCnaUnspecified)
-    "cnaAp" -> success(CnaRatingCnaAp)
-    "cna12" -> success(CnaRatingCna12)
-    "cna15" -> success(CnaRatingCna15)
-    "cna18" -> success(CnaRatingCna18)
-    "cna18plus" -> success(CnaRatingCna18plus)
-    "cnaUnrated" -> success(CnaRatingCnaUnrated)
-    _ -> failure(CnaRatingCnaUnspecified, "a valid CnaRating")
+    "cnaUnspecified" -> decode.success(CnaRatingCnaUnspecified)
+    "cnaAp" -> decode.success(CnaRatingCnaAp)
+    "cna12" -> decode.success(CnaRatingCna12)
+    "cna15" -> decode.success(CnaRatingCna15)
+    "cna18" -> decode.success(CnaRatingCna18)
+    "cna18plus" -> decode.success(CnaRatingCna18plus)
+    "cnaUnrated" -> decode.success(CnaRatingCnaUnrated)
+    _ -> decode.failure(CnaRatingCnaUnspecified, "a valid CnaRating")
   }
 }
 
@@ -1141,18 +1573,18 @@ pub fn cnc_rating_to_string(value: CncRating) -> String {
 }
 
 pub fn cnc_rating_decoder() -> Decoder(CncRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "cncUnspecified" -> success(CncRatingCncUnspecified)
-    "cncT" -> success(CncRatingCncT)
-    "cnc10" -> success(CncRatingCnc10)
-    "cnc12" -> success(CncRatingCnc12)
-    "cnc16" -> success(CncRatingCnc16)
-    "cnc18" -> success(CncRatingCnc18)
-    "cncE" -> success(CncRatingCncE)
-    "cncInterdiction" -> success(CncRatingCncInterdiction)
-    "cncUnrated" -> success(CncRatingCncUnrated)
-    _ -> failure(CncRatingCncUnspecified, "a valid CncRating")
+    "cncUnspecified" -> decode.success(CncRatingCncUnspecified)
+    "cncT" -> decode.success(CncRatingCncT)
+    "cnc10" -> decode.success(CncRatingCnc10)
+    "cnc12" -> decode.success(CncRatingCnc12)
+    "cnc16" -> decode.success(CncRatingCnc16)
+    "cnc18" -> decode.success(CncRatingCnc18)
+    "cncE" -> decode.success(CncRatingCncE)
+    "cncInterdiction" -> decode.success(CncRatingCncInterdiction)
+    "cncUnrated" -> decode.success(CncRatingCncUnrated)
+    _ -> decode.failure(CncRatingCncUnspecified, "a valid CncRating")
   }
 }
 
@@ -1182,17 +1614,17 @@ pub fn csa_rating_to_string(value: CsaRating) -> String {
 }
 
 pub fn csa_rating_decoder() -> Decoder(CsaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "csaUnspecified" -> success(CsaRatingCsaUnspecified)
-    "csaT" -> success(CsaRatingCsaT)
-    "csa10" -> success(CsaRatingCsa10)
-    "csa12" -> success(CsaRatingCsa12)
-    "csa16" -> success(CsaRatingCsa16)
-    "csa18" -> success(CsaRatingCsa18)
-    "csaInterdiction" -> success(CsaRatingCsaInterdiction)
-    "csaUnrated" -> success(CsaRatingCsaUnrated)
-    _ -> failure(CsaRatingCsaUnspecified, "a valid CsaRating")
+    "csaUnspecified" -> decode.success(CsaRatingCsaUnspecified)
+    "csaT" -> decode.success(CsaRatingCsaT)
+    "csa10" -> decode.success(CsaRatingCsa10)
+    "csa12" -> decode.success(CsaRatingCsa12)
+    "csa16" -> decode.success(CsaRatingCsa16)
+    "csa18" -> decode.success(CsaRatingCsa18)
+    "csaInterdiction" -> decode.success(CsaRatingCsaInterdiction)
+    "csaUnrated" -> decode.success(CsaRatingCsaUnrated)
+    _ -> decode.failure(CsaRatingCsaUnspecified, "a valid CsaRating")
   }
 }
 
@@ -1224,18 +1656,18 @@ pub fn cscf_rating_to_string(value: CscfRating) -> String {
 }
 
 pub fn cscf_rating_decoder() -> Decoder(CscfRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "cscfUnspecified" -> success(CscfRatingCscfUnspecified)
-    "cscfAl" -> success(CscfRatingCscfAl)
-    "cscfA" -> success(CscfRatingCscfA)
-    "cscf6" -> success(CscfRatingCscf6)
-    "cscf9" -> success(CscfRatingCscf9)
-    "cscf12" -> success(CscfRatingCscf12)
-    "cscf16" -> success(CscfRatingCscf16)
-    "cscf18" -> success(CscfRatingCscf18)
-    "cscfUnrated" -> success(CscfRatingCscfUnrated)
-    _ -> failure(CscfRatingCscfUnspecified, "a valid CscfRating")
+    "cscfUnspecified" -> decode.success(CscfRatingCscfUnspecified)
+    "cscfAl" -> decode.success(CscfRatingCscfAl)
+    "cscfA" -> decode.success(CscfRatingCscfA)
+    "cscf6" -> decode.success(CscfRatingCscf6)
+    "cscf9" -> decode.success(CscfRatingCscf9)
+    "cscf12" -> decode.success(CscfRatingCscf12)
+    "cscf16" -> decode.success(CscfRatingCscf16)
+    "cscf18" -> decode.success(CscfRatingCscf18)
+    "cscfUnrated" -> decode.success(CscfRatingCscfUnrated)
+    _ -> decode.failure(CscfRatingCscfUnspecified, "a valid CscfRating")
   }
 }
 
@@ -1261,15 +1693,15 @@ pub fn czfilm_rating_to_string(value: CzfilmRating) -> String {
 }
 
 pub fn czfilm_rating_decoder() -> Decoder(CzfilmRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "czfilmUnspecified" -> success(CzfilmRatingCzfilmUnspecified)
-    "czfilmU" -> success(CzfilmRatingCzfilmU)
-    "czfilm12" -> success(CzfilmRatingCzfilm12)
-    "czfilm14" -> success(CzfilmRatingCzfilm14)
-    "czfilm18" -> success(CzfilmRatingCzfilm18)
-    "czfilmUnrated" -> success(CzfilmRatingCzfilmUnrated)
-    _ -> failure(CzfilmRatingCzfilmUnspecified, "a valid CzfilmRating")
+    "czfilmUnspecified" -> decode.success(CzfilmRatingCzfilmUnspecified)
+    "czfilmU" -> decode.success(CzfilmRatingCzfilmU)
+    "czfilm12" -> decode.success(CzfilmRatingCzfilm12)
+    "czfilm14" -> decode.success(CzfilmRatingCzfilm14)
+    "czfilm18" -> decode.success(CzfilmRatingCzfilm18)
+    "czfilmUnrated" -> decode.success(CzfilmRatingCzfilmUnrated)
+    _ -> decode.failure(CzfilmRatingCzfilmUnspecified, "a valid CzfilmRating")
   }
 }
 
@@ -1331,33 +1763,33 @@ pub fn djctq_rating_to_string(value: DjctqRating) -> String {
 }
 
 pub fn djctq_rating_decoder() -> Decoder(DjctqRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "djctqUnspecified" -> success(DjctqRatingDjctqUnspecified)
-    "djctqL" -> success(DjctqRatingDjctqL)
-    "djctq10" -> success(DjctqRatingDjctq10)
-    "djctq12" -> success(DjctqRatingDjctq12)
-    "djctq14" -> success(DjctqRatingDjctq14)
-    "djctq16" -> success(DjctqRatingDjctq16)
-    "djctq18" -> success(DjctqRatingDjctq18)
-    "djctqEr" -> success(DjctqRatingDjctqEr)
-    "djctqL10" -> success(DjctqRatingDjctqL10)
-    "djctqL12" -> success(DjctqRatingDjctqL12)
-    "djctqL14" -> success(DjctqRatingDjctqL14)
-    "djctqL16" -> success(DjctqRatingDjctqL16)
-    "djctqL18" -> success(DjctqRatingDjctqL18)
-    "djctq1012" -> success(DjctqRatingDjctq1012)
-    "djctq1014" -> success(DjctqRatingDjctq1014)
-    "djctq1016" -> success(DjctqRatingDjctq1016)
-    "djctq1018" -> success(DjctqRatingDjctq1018)
-    "djctq1214" -> success(DjctqRatingDjctq1214)
-    "djctq1216" -> success(DjctqRatingDjctq1216)
-    "djctq1218" -> success(DjctqRatingDjctq1218)
-    "djctq1416" -> success(DjctqRatingDjctq1416)
-    "djctq1418" -> success(DjctqRatingDjctq1418)
-    "djctq1618" -> success(DjctqRatingDjctq1618)
-    "djctqUnrated" -> success(DjctqRatingDjctqUnrated)
-    _ -> failure(DjctqRatingDjctqUnspecified, "a valid DjctqRating")
+    "djctqUnspecified" -> decode.success(DjctqRatingDjctqUnspecified)
+    "djctqL" -> decode.success(DjctqRatingDjctqL)
+    "djctq10" -> decode.success(DjctqRatingDjctq10)
+    "djctq12" -> decode.success(DjctqRatingDjctq12)
+    "djctq14" -> decode.success(DjctqRatingDjctq14)
+    "djctq16" -> decode.success(DjctqRatingDjctq16)
+    "djctq18" -> decode.success(DjctqRatingDjctq18)
+    "djctqEr" -> decode.success(DjctqRatingDjctqEr)
+    "djctqL10" -> decode.success(DjctqRatingDjctqL10)
+    "djctqL12" -> decode.success(DjctqRatingDjctqL12)
+    "djctqL14" -> decode.success(DjctqRatingDjctqL14)
+    "djctqL16" -> decode.success(DjctqRatingDjctqL16)
+    "djctqL18" -> decode.success(DjctqRatingDjctqL18)
+    "djctq1012" -> decode.success(DjctqRatingDjctq1012)
+    "djctq1014" -> decode.success(DjctqRatingDjctq1014)
+    "djctq1016" -> decode.success(DjctqRatingDjctq1016)
+    "djctq1018" -> decode.success(DjctqRatingDjctq1018)
+    "djctq1214" -> decode.success(DjctqRatingDjctq1214)
+    "djctq1216" -> decode.success(DjctqRatingDjctq1216)
+    "djctq1218" -> decode.success(DjctqRatingDjctq1218)
+    "djctq1416" -> decode.success(DjctqRatingDjctq1416)
+    "djctq1418" -> decode.success(DjctqRatingDjctq1418)
+    "djctq1618" -> decode.success(DjctqRatingDjctq1618)
+    "djctqUnrated" -> decode.success(DjctqRatingDjctqUnrated)
+    _ -> decode.failure(DjctqRatingDjctqUnspecified, "a valid DjctqRating")
   }
 }
 
@@ -1384,7 +1816,8 @@ pub type DjctqRatingReasons {
 
 pub fn djctq_rating_reasons_to_string(value: DjctqRatingReasons) -> String {
   case value {
-    DjctqRatingReasonsDjctqRatingReasonUnspecified -> "djctqRatingReasonUnspecified"
+    DjctqRatingReasonsDjctqRatingReasonUnspecified ->
+      "djctqRatingReasonUnspecified"
     DjctqRatingReasonsDjctqViolence -> "djctqViolence"
     DjctqRatingReasonsDjctqExtremeViolence -> "djctqExtremeViolence"
     DjctqRatingReasonsDjctqSexualContent -> "djctqSexualContent"
@@ -1405,35 +1838,37 @@ pub fn djctq_rating_reasons_to_string(value: DjctqRatingReasons) -> String {
 }
 
 pub fn djctq_rating_reasons_decoder() -> Decoder(DjctqRatingReasons) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "djctqRatingReasonUnspecified" -> success(
-      DjctqRatingReasonsDjctqRatingReasonUnspecified,
-    )
-    "djctqViolence" -> success(DjctqRatingReasonsDjctqViolence)
-    "djctqExtremeViolence" -> success(DjctqRatingReasonsDjctqExtremeViolence)
-    "djctqSexualContent" -> success(DjctqRatingReasonsDjctqSexualContent)
-    "djctqNudity" -> success(DjctqRatingReasonsDjctqNudity)
-    "djctqSex" -> success(DjctqRatingReasonsDjctqSex)
-    "djctqExplicitSex" -> success(DjctqRatingReasonsDjctqExplicitSex)
-    "djctqDrugs" -> success(DjctqRatingReasonsDjctqDrugs)
-    "djctqLegalDrugs" -> success(DjctqRatingReasonsDjctqLegalDrugs)
-    "djctqIllegalDrugs" -> success(DjctqRatingReasonsDjctqIllegalDrugs)
-    "djctqInappropriateLanguage" -> success(
-      DjctqRatingReasonsDjctqInappropriateLanguage,
-    )
-    "djctqCriminalActs" -> success(DjctqRatingReasonsDjctqCriminalActs)
-    "djctqImpactingContent" -> success(DjctqRatingReasonsDjctqImpactingContent)
-    "djctqFear" -> success(DjctqRatingReasonsDjctqFear)
-    "djctqMedicalProcedures" -> success(
-      DjctqRatingReasonsDjctqMedicalProcedures,
-    )
-    "djctqSensitiveTopics" -> success(DjctqRatingReasonsDjctqSensitiveTopics)
-    "djctqFantasyViolence" -> success(DjctqRatingReasonsDjctqFantasyViolence)
-    _ -> failure(
-      DjctqRatingReasonsDjctqRatingReasonUnspecified,
-      "a valid DjctqRatingReasons",
-    )
+    "djctqRatingReasonUnspecified" ->
+      decode.success(DjctqRatingReasonsDjctqRatingReasonUnspecified)
+    "djctqViolence" -> decode.success(DjctqRatingReasonsDjctqViolence)
+    "djctqExtremeViolence" ->
+      decode.success(DjctqRatingReasonsDjctqExtremeViolence)
+    "djctqSexualContent" -> decode.success(DjctqRatingReasonsDjctqSexualContent)
+    "djctqNudity" -> decode.success(DjctqRatingReasonsDjctqNudity)
+    "djctqSex" -> decode.success(DjctqRatingReasonsDjctqSex)
+    "djctqExplicitSex" -> decode.success(DjctqRatingReasonsDjctqExplicitSex)
+    "djctqDrugs" -> decode.success(DjctqRatingReasonsDjctqDrugs)
+    "djctqLegalDrugs" -> decode.success(DjctqRatingReasonsDjctqLegalDrugs)
+    "djctqIllegalDrugs" -> decode.success(DjctqRatingReasonsDjctqIllegalDrugs)
+    "djctqInappropriateLanguage" ->
+      decode.success(DjctqRatingReasonsDjctqInappropriateLanguage)
+    "djctqCriminalActs" -> decode.success(DjctqRatingReasonsDjctqCriminalActs)
+    "djctqImpactingContent" ->
+      decode.success(DjctqRatingReasonsDjctqImpactingContent)
+    "djctqFear" -> decode.success(DjctqRatingReasonsDjctqFear)
+    "djctqMedicalProcedures" ->
+      decode.success(DjctqRatingReasonsDjctqMedicalProcedures)
+    "djctqSensitiveTopics" ->
+      decode.success(DjctqRatingReasonsDjctqSensitiveTopics)
+    "djctqFantasyViolence" ->
+      decode.success(DjctqRatingReasonsDjctqFantasyViolence)
+    _ ->
+      decode.failure(
+        DjctqRatingReasonsDjctqRatingReasonUnspecified,
+        "a valid DjctqRatingReasons",
+      )
   }
 }
 
@@ -1467,19 +1902,19 @@ pub fn ecbmct_rating_to_string(value: EcbmctRating) -> String {
 }
 
 pub fn ecbmct_rating_decoder() -> Decoder(EcbmctRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "ecbmctUnspecified" -> success(EcbmctRatingEcbmctUnspecified)
-    "ecbmctG" -> success(EcbmctRatingEcbmctG)
-    "ecbmct7a" -> success(EcbmctRatingEcbmct7a)
-    "ecbmct7plus" -> success(EcbmctRatingEcbmct7plus)
-    "ecbmct13a" -> success(EcbmctRatingEcbmct13a)
-    "ecbmct13plus" -> success(EcbmctRatingEcbmct13plus)
-    "ecbmct15a" -> success(EcbmctRatingEcbmct15a)
-    "ecbmct15plus" -> success(EcbmctRatingEcbmct15plus)
-    "ecbmct18plus" -> success(EcbmctRatingEcbmct18plus)
-    "ecbmctUnrated" -> success(EcbmctRatingEcbmctUnrated)
-    _ -> failure(EcbmctRatingEcbmctUnspecified, "a valid EcbmctRating")
+    "ecbmctUnspecified" -> decode.success(EcbmctRatingEcbmctUnspecified)
+    "ecbmctG" -> decode.success(EcbmctRatingEcbmctG)
+    "ecbmct7a" -> decode.success(EcbmctRatingEcbmct7a)
+    "ecbmct7plus" -> decode.success(EcbmctRatingEcbmct7plus)
+    "ecbmct13a" -> decode.success(EcbmctRatingEcbmct13a)
+    "ecbmct13plus" -> decode.success(EcbmctRatingEcbmct13plus)
+    "ecbmct15a" -> decode.success(EcbmctRatingEcbmct15a)
+    "ecbmct15plus" -> decode.success(EcbmctRatingEcbmct15plus)
+    "ecbmct18plus" -> decode.success(EcbmctRatingEcbmct18plus)
+    "ecbmctUnrated" -> decode.success(EcbmctRatingEcbmctUnrated)
+    _ -> decode.failure(EcbmctRatingEcbmctUnspecified, "a valid EcbmctRating")
   }
 }
 
@@ -1513,19 +1948,19 @@ pub fn eefilm_rating_to_string(value: EefilmRating) -> String {
 }
 
 pub fn eefilm_rating_decoder() -> Decoder(EefilmRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "eefilmUnspecified" -> success(EefilmRatingEefilmUnspecified)
-    "eefilmPere" -> success(EefilmRatingEefilmPere)
-    "eefilmL" -> success(EefilmRatingEefilmL)
-    "eefilmMs6" -> success(EefilmRatingEefilmMs6)
-    "eefilmK6" -> success(EefilmRatingEefilmK6)
-    "eefilmMs12" -> success(EefilmRatingEefilmMs12)
-    "eefilmK12" -> success(EefilmRatingEefilmK12)
-    "eefilmK14" -> success(EefilmRatingEefilmK14)
-    "eefilmK16" -> success(EefilmRatingEefilmK16)
-    "eefilmUnrated" -> success(EefilmRatingEefilmUnrated)
-    _ -> failure(EefilmRatingEefilmUnspecified, "a valid EefilmRating")
+    "eefilmUnspecified" -> decode.success(EefilmRatingEefilmUnspecified)
+    "eefilmPere" -> decode.success(EefilmRatingEefilmPere)
+    "eefilmL" -> decode.success(EefilmRatingEefilmL)
+    "eefilmMs6" -> decode.success(EefilmRatingEefilmMs6)
+    "eefilmK6" -> decode.success(EefilmRatingEefilmK6)
+    "eefilmMs12" -> decode.success(EefilmRatingEefilmMs12)
+    "eefilmK12" -> decode.success(EefilmRatingEefilmK12)
+    "eefilmK14" -> decode.success(EefilmRatingEefilmK14)
+    "eefilmK16" -> decode.success(EefilmRatingEefilmK16)
+    "eefilmUnrated" -> decode.success(EefilmRatingEefilmUnrated)
+    _ -> decode.failure(EefilmRatingEefilmUnspecified, "a valid EefilmRating")
   }
 }
 
@@ -1549,14 +1984,14 @@ pub fn egfilm_rating_to_string(value: EgfilmRating) -> String {
 }
 
 pub fn egfilm_rating_decoder() -> Decoder(EgfilmRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "egfilmUnspecified" -> success(EgfilmRatingEgfilmUnspecified)
-    "egfilmGn" -> success(EgfilmRatingEgfilmGn)
-    "egfilm18" -> success(EgfilmRatingEgfilm18)
-    "egfilmBn" -> success(EgfilmRatingEgfilmBn)
-    "egfilmUnrated" -> success(EgfilmRatingEgfilmUnrated)
-    _ -> failure(EgfilmRatingEgfilmUnspecified, "a valid EgfilmRating")
+    "egfilmUnspecified" -> decode.success(EgfilmRatingEgfilmUnspecified)
+    "egfilmGn" -> decode.success(EgfilmRatingEgfilmGn)
+    "egfilm18" -> decode.success(EgfilmRatingEgfilm18)
+    "egfilmBn" -> decode.success(EgfilmRatingEgfilmBn)
+    "egfilmUnrated" -> decode.success(EgfilmRatingEgfilmUnrated)
+    _ -> decode.failure(EgfilmRatingEgfilmUnspecified, "a valid EgfilmRating")
   }
 }
 
@@ -1582,15 +2017,15 @@ pub fn eirin_rating_to_string(value: EirinRating) -> String {
 }
 
 pub fn eirin_rating_decoder() -> Decoder(EirinRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "eirinUnspecified" -> success(EirinRatingEirinUnspecified)
-    "eirinG" -> success(EirinRatingEirinG)
-    "eirinPg12" -> success(EirinRatingEirinPg12)
-    "eirinR15plus" -> success(EirinRatingEirinR15plus)
-    "eirinR18plus" -> success(EirinRatingEirinR18plus)
-    "eirinUnrated" -> success(EirinRatingEirinUnrated)
-    _ -> failure(EirinRatingEirinUnspecified, "a valid EirinRating")
+    "eirinUnspecified" -> decode.success(EirinRatingEirinUnspecified)
+    "eirinG" -> decode.success(EirinRatingEirinG)
+    "eirinPg12" -> decode.success(EirinRatingEirinPg12)
+    "eirinR15plus" -> decode.success(EirinRatingEirinR15plus)
+    "eirinR18plus" -> decode.success(EirinRatingEirinR18plus)
+    "eirinUnrated" -> decode.success(EirinRatingEirinUnrated)
+    _ -> decode.failure(EirinRatingEirinUnspecified, "a valid EirinRating")
   }
 }
 
@@ -1624,19 +2059,19 @@ pub fn fcbm_rating_to_string(value: FcbmRating) -> String {
 }
 
 pub fn fcbm_rating_decoder() -> Decoder(FcbmRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "fcbmUnspecified" -> success(FcbmRatingFcbmUnspecified)
-    "fcbmU" -> success(FcbmRatingFcbmU)
-    "fcbmPg13" -> success(FcbmRatingFcbmPg13)
-    "fcbmP13" -> success(FcbmRatingFcbmP13)
-    "fcbm18" -> success(FcbmRatingFcbm18)
-    "fcbm18sx" -> success(FcbmRatingFcbm18sx)
-    "fcbm18pa" -> success(FcbmRatingFcbm18pa)
-    "fcbm18sg" -> success(FcbmRatingFcbm18sg)
-    "fcbm18pl" -> success(FcbmRatingFcbm18pl)
-    "fcbmUnrated" -> success(FcbmRatingFcbmUnrated)
-    _ -> failure(FcbmRatingFcbmUnspecified, "a valid FcbmRating")
+    "fcbmUnspecified" -> decode.success(FcbmRatingFcbmUnspecified)
+    "fcbmU" -> decode.success(FcbmRatingFcbmU)
+    "fcbmPg13" -> decode.success(FcbmRatingFcbmPg13)
+    "fcbmP13" -> decode.success(FcbmRatingFcbmP13)
+    "fcbm18" -> decode.success(FcbmRatingFcbm18)
+    "fcbm18sx" -> decode.success(FcbmRatingFcbm18sx)
+    "fcbm18pa" -> decode.success(FcbmRatingFcbm18pa)
+    "fcbm18sg" -> decode.success(FcbmRatingFcbm18sg)
+    "fcbm18pl" -> decode.success(FcbmRatingFcbm18pl)
+    "fcbmUnrated" -> decode.success(FcbmRatingFcbmUnrated)
+    _ -> decode.failure(FcbmRatingFcbmUnspecified, "a valid FcbmRating")
   }
 }
 
@@ -1664,16 +2099,16 @@ pub fn fco_rating_to_string(value: FcoRating) -> String {
 }
 
 pub fn fco_rating_decoder() -> Decoder(FcoRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "fcoUnspecified" -> success(FcoRatingFcoUnspecified)
-    "fcoI" -> success(FcoRatingFcoI)
-    "fcoIia" -> success(FcoRatingFcoIia)
-    "fcoIib" -> success(FcoRatingFcoIib)
-    "fcoIi" -> success(FcoRatingFcoIi)
-    "fcoIii" -> success(FcoRatingFcoIii)
-    "fcoUnrated" -> success(FcoRatingFcoUnrated)
-    _ -> failure(FcoRatingFcoUnspecified, "a valid FcoRating")
+    "fcoUnspecified" -> decode.success(FcoRatingFcoUnspecified)
+    "fcoI" -> decode.success(FcoRatingFcoI)
+    "fcoIia" -> decode.success(FcoRatingFcoIia)
+    "fcoIib" -> decode.success(FcoRatingFcoIib)
+    "fcoIi" -> decode.success(FcoRatingFcoIi)
+    "fcoIii" -> decode.success(FcoRatingFcoIii)
+    "fcoUnrated" -> decode.success(FcoRatingFcoUnrated)
+    _ -> decode.failure(FcoRatingFcoUnspecified, "a valid FcoRating")
   }
 }
 
@@ -1703,17 +2138,17 @@ pub fn fmoc_rating_to_string(value: FmocRating) -> String {
 }
 
 pub fn fmoc_rating_decoder() -> Decoder(FmocRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "fmocUnspecified" -> success(FmocRatingFmocUnspecified)
-    "fmocU" -> success(FmocRatingFmocU)
-    "fmoc10" -> success(FmocRatingFmoc10)
-    "fmoc12" -> success(FmocRatingFmoc12)
-    "fmoc16" -> success(FmocRatingFmoc16)
-    "fmoc18" -> success(FmocRatingFmoc18)
-    "fmocE" -> success(FmocRatingFmocE)
-    "fmocUnrated" -> success(FmocRatingFmocUnrated)
-    _ -> failure(FmocRatingFmocUnspecified, "a valid FmocRating")
+    "fmocUnspecified" -> decode.success(FmocRatingFmocUnspecified)
+    "fmocU" -> decode.success(FmocRatingFmocU)
+    "fmoc10" -> decode.success(FmocRatingFmoc10)
+    "fmoc12" -> decode.success(FmocRatingFmoc12)
+    "fmoc16" -> decode.success(FmocRatingFmoc16)
+    "fmoc18" -> decode.success(FmocRatingFmoc18)
+    "fmocE" -> decode.success(FmocRatingFmocE)
+    "fmocUnrated" -> decode.success(FmocRatingFmocUnrated)
+    _ -> decode.failure(FmocRatingFmocUnspecified, "a valid FmocRating")
   }
 }
 
@@ -1751,21 +2186,21 @@ pub fn fpb_rating_to_string(value: FpbRating) -> String {
 }
 
 pub fn fpb_rating_decoder() -> Decoder(FpbRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "fpbUnspecified" -> success(FpbRatingFpbUnspecified)
-    "fpbA" -> success(FpbRatingFpbA)
-    "fpbPg" -> success(FpbRatingFpbPg)
-    "fpb79Pg" -> success(FpbRatingFpb79Pg)
-    "fpb1012Pg" -> success(FpbRatingFpb1012Pg)
-    "fpb13" -> success(FpbRatingFpb13)
-    "fpb16" -> success(FpbRatingFpb16)
-    "fpb18" -> success(FpbRatingFpb18)
-    "fpbX18" -> success(FpbRatingFpbX18)
-    "fpbXx" -> success(FpbRatingFpbXx)
-    "fpbUnrated" -> success(FpbRatingFpbUnrated)
-    "fpb10" -> success(FpbRatingFpb10)
-    _ -> failure(FpbRatingFpbUnspecified, "a valid FpbRating")
+    "fpbUnspecified" -> decode.success(FpbRatingFpbUnspecified)
+    "fpbA" -> decode.success(FpbRatingFpbA)
+    "fpbPg" -> decode.success(FpbRatingFpbPg)
+    "fpb79Pg" -> decode.success(FpbRatingFpb79Pg)
+    "fpb1012Pg" -> decode.success(FpbRatingFpb1012Pg)
+    "fpb13" -> decode.success(FpbRatingFpb13)
+    "fpb16" -> decode.success(FpbRatingFpb16)
+    "fpb18" -> decode.success(FpbRatingFpb18)
+    "fpbX18" -> decode.success(FpbRatingFpbX18)
+    "fpbXx" -> decode.success(FpbRatingFpbXx)
+    "fpbUnrated" -> decode.success(FpbRatingFpbUnrated)
+    "fpb10" -> decode.success(FpbRatingFpb10)
+    _ -> decode.failure(FpbRatingFpbUnspecified, "a valid FpbRating")
   }
 }
 
@@ -1803,28 +2238,28 @@ pub fn fpb_rating_reasons_to_string(value: FpbRatingReasons) -> String {
 }
 
 pub fn fpb_rating_reasons_decoder() -> Decoder(FpbRatingReasons) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "fpbRatingReasonUnspecified" -> success(
-      FpbRatingReasonsFpbRatingReasonUnspecified,
-    )
-    "fpbBlasphemy" -> success(FpbRatingReasonsFpbBlasphemy)
-    "fpbLanguage" -> success(FpbRatingReasonsFpbLanguage)
-    "fpbNudity" -> success(FpbRatingReasonsFpbNudity)
-    "fpbPrejudice" -> success(FpbRatingReasonsFpbPrejudice)
-    "fpbSex" -> success(FpbRatingReasonsFpbSex)
-    "fpbViolence" -> success(FpbRatingReasonsFpbViolence)
-    "fpbDrugs" -> success(FpbRatingReasonsFpbDrugs)
-    "fpbSexualViolence" -> success(FpbRatingReasonsFpbSexualViolence)
-    "fpbHorror" -> success(FpbRatingReasonsFpbHorror)
-    "fpbCriminalTechniques" -> success(FpbRatingReasonsFpbCriminalTechniques)
-    "fpbImitativeActsTechniques" -> success(
-      FpbRatingReasonsFpbImitativeActsTechniques,
-    )
-    _ -> failure(
-      FpbRatingReasonsFpbRatingReasonUnspecified,
-      "a valid FpbRatingReasons",
-    )
+    "fpbRatingReasonUnspecified" ->
+      decode.success(FpbRatingReasonsFpbRatingReasonUnspecified)
+    "fpbBlasphemy" -> decode.success(FpbRatingReasonsFpbBlasphemy)
+    "fpbLanguage" -> decode.success(FpbRatingReasonsFpbLanguage)
+    "fpbNudity" -> decode.success(FpbRatingReasonsFpbNudity)
+    "fpbPrejudice" -> decode.success(FpbRatingReasonsFpbPrejudice)
+    "fpbSex" -> decode.success(FpbRatingReasonsFpbSex)
+    "fpbViolence" -> decode.success(FpbRatingReasonsFpbViolence)
+    "fpbDrugs" -> decode.success(FpbRatingReasonsFpbDrugs)
+    "fpbSexualViolence" -> decode.success(FpbRatingReasonsFpbSexualViolence)
+    "fpbHorror" -> decode.success(FpbRatingReasonsFpbHorror)
+    "fpbCriminalTechniques" ->
+      decode.success(FpbRatingReasonsFpbCriminalTechniques)
+    "fpbImitativeActsTechniques" ->
+      decode.success(FpbRatingReasonsFpbImitativeActsTechniques)
+    _ ->
+      decode.failure(
+        FpbRatingReasonsFpbRatingReasonUnspecified,
+        "a valid FpbRatingReasons",
+      )
   }
 }
 
@@ -1852,16 +2287,16 @@ pub fn fsk_rating_to_string(value: FskRating) -> String {
 }
 
 pub fn fsk_rating_decoder() -> Decoder(FskRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "fskUnspecified" -> success(FskRatingFskUnspecified)
-    "fsk0" -> success(FskRatingFsk0)
-    "fsk6" -> success(FskRatingFsk6)
-    "fsk12" -> success(FskRatingFsk12)
-    "fsk16" -> success(FskRatingFsk16)
-    "fsk18" -> success(FskRatingFsk18)
-    "fskUnrated" -> success(FskRatingFskUnrated)
-    _ -> failure(FskRatingFskUnspecified, "a valid FskRating")
+    "fskUnspecified" -> decode.success(FskRatingFskUnspecified)
+    "fsk0" -> decode.success(FskRatingFsk0)
+    "fsk6" -> decode.success(FskRatingFsk6)
+    "fsk12" -> decode.success(FskRatingFsk12)
+    "fsk16" -> decode.success(FskRatingFsk16)
+    "fsk18" -> decode.success(FskRatingFsk18)
+    "fskUnrated" -> decode.success(FskRatingFskUnrated)
+    _ -> decode.failure(FskRatingFskUnspecified, "a valid FskRating")
   }
 }
 
@@ -1893,18 +2328,18 @@ pub fn grfilm_rating_to_string(value: GrfilmRating) -> String {
 }
 
 pub fn grfilm_rating_decoder() -> Decoder(GrfilmRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "grfilmUnspecified" -> success(GrfilmRatingGrfilmUnspecified)
-    "grfilmK" -> success(GrfilmRatingGrfilmK)
-    "grfilmE" -> success(GrfilmRatingGrfilmE)
-    "grfilmK12" -> success(GrfilmRatingGrfilmK12)
-    "grfilmK13" -> success(GrfilmRatingGrfilmK13)
-    "grfilmK15" -> success(GrfilmRatingGrfilmK15)
-    "grfilmK17" -> success(GrfilmRatingGrfilmK17)
-    "grfilmK18" -> success(GrfilmRatingGrfilmK18)
-    "grfilmUnrated" -> success(GrfilmRatingGrfilmUnrated)
-    _ -> failure(GrfilmRatingGrfilmUnspecified, "a valid GrfilmRating")
+    "grfilmUnspecified" -> decode.success(GrfilmRatingGrfilmUnspecified)
+    "grfilmK" -> decode.success(GrfilmRatingGrfilmK)
+    "grfilmE" -> decode.success(GrfilmRatingGrfilmE)
+    "grfilmK12" -> decode.success(GrfilmRatingGrfilmK12)
+    "grfilmK13" -> decode.success(GrfilmRatingGrfilmK13)
+    "grfilmK15" -> decode.success(GrfilmRatingGrfilmK15)
+    "grfilmK17" -> decode.success(GrfilmRatingGrfilmK17)
+    "grfilmK18" -> decode.success(GrfilmRatingGrfilmK18)
+    "grfilmUnrated" -> decode.success(GrfilmRatingGrfilmUnrated)
+    _ -> decode.failure(GrfilmRatingGrfilmUnspecified, "a valid GrfilmRating")
   }
 }
 
@@ -1936,18 +2371,18 @@ pub fn icaa_rating_to_string(value: IcaaRating) -> String {
 }
 
 pub fn icaa_rating_decoder() -> Decoder(IcaaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "icaaUnspecified" -> success(IcaaRatingIcaaUnspecified)
-    "icaaApta" -> success(IcaaRatingIcaaApta)
-    "icaa7" -> success(IcaaRatingIcaa7)
-    "icaa12" -> success(IcaaRatingIcaa12)
-    "icaa13" -> success(IcaaRatingIcaa13)
-    "icaa16" -> success(IcaaRatingIcaa16)
-    "icaa18" -> success(IcaaRatingIcaa18)
-    "icaaX" -> success(IcaaRatingIcaaX)
-    "icaaUnrated" -> success(IcaaRatingIcaaUnrated)
-    _ -> failure(IcaaRatingIcaaUnspecified, "a valid IcaaRating")
+    "icaaUnspecified" -> decode.success(IcaaRatingIcaaUnspecified)
+    "icaaApta" -> decode.success(IcaaRatingIcaaApta)
+    "icaa7" -> decode.success(IcaaRatingIcaa7)
+    "icaa12" -> decode.success(IcaaRatingIcaa12)
+    "icaa13" -> decode.success(IcaaRatingIcaa13)
+    "icaa16" -> decode.success(IcaaRatingIcaa16)
+    "icaa18" -> decode.success(IcaaRatingIcaa18)
+    "icaaX" -> decode.success(IcaaRatingIcaaX)
+    "icaaUnrated" -> decode.success(IcaaRatingIcaaUnrated)
+    _ -> decode.failure(IcaaRatingIcaaUnspecified, "a valid IcaaRating")
   }
 }
 
@@ -1981,19 +2416,19 @@ pub fn ifco_rating_to_string(value: IfcoRating) -> String {
 }
 
 pub fn ifco_rating_decoder() -> Decoder(IfcoRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "ifcoUnspecified" -> success(IfcoRatingIfcoUnspecified)
-    "ifcoG" -> success(IfcoRatingIfcoG)
-    "ifcoPg" -> success(IfcoRatingIfcoPg)
-    "ifco12" -> success(IfcoRatingIfco12)
-    "ifco12a" -> success(IfcoRatingIfco12a)
-    "ifco15" -> success(IfcoRatingIfco15)
-    "ifco15a" -> success(IfcoRatingIfco15a)
-    "ifco16" -> success(IfcoRatingIfco16)
-    "ifco18" -> success(IfcoRatingIfco18)
-    "ifcoUnrated" -> success(IfcoRatingIfcoUnrated)
-    _ -> failure(IfcoRatingIfcoUnspecified, "a valid IfcoRating")
+    "ifcoUnspecified" -> decode.success(IfcoRatingIfcoUnspecified)
+    "ifcoG" -> decode.success(IfcoRatingIfcoG)
+    "ifcoPg" -> decode.success(IfcoRatingIfcoPg)
+    "ifco12" -> decode.success(IfcoRatingIfco12)
+    "ifco12a" -> decode.success(IfcoRatingIfco12a)
+    "ifco15" -> decode.success(IfcoRatingIfco15)
+    "ifco15a" -> decode.success(IfcoRatingIfco15a)
+    "ifco16" -> decode.success(IfcoRatingIfco16)
+    "ifco18" -> decode.success(IfcoRatingIfco18)
+    "ifcoUnrated" -> decode.success(IfcoRatingIfcoUnrated)
+    _ -> decode.failure(IfcoRatingIfcoUnspecified, "a valid IfcoRating")
   }
 }
 
@@ -2021,16 +2456,16 @@ pub fn ilfilm_rating_to_string(value: IlfilmRating) -> String {
 }
 
 pub fn ilfilm_rating_decoder() -> Decoder(IlfilmRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "ilfilmUnspecified" -> success(IlfilmRatingIlfilmUnspecified)
-    "ilfilmAa" -> success(IlfilmRatingIlfilmAa)
-    "ilfilm12" -> success(IlfilmRatingIlfilm12)
-    "ilfilm14" -> success(IlfilmRatingIlfilm14)
-    "ilfilm16" -> success(IlfilmRatingIlfilm16)
-    "ilfilm18" -> success(IlfilmRatingIlfilm18)
-    "ilfilmUnrated" -> success(IlfilmRatingIlfilmUnrated)
-    _ -> failure(IlfilmRatingIlfilmUnspecified, "a valid IlfilmRating")
+    "ilfilmUnspecified" -> decode.success(IlfilmRatingIlfilmUnspecified)
+    "ilfilmAa" -> decode.success(IlfilmRatingIlfilmAa)
+    "ilfilm12" -> decode.success(IlfilmRatingIlfilm12)
+    "ilfilm14" -> decode.success(IlfilmRatingIlfilm14)
+    "ilfilm16" -> decode.success(IlfilmRatingIlfilm16)
+    "ilfilm18" -> decode.success(IlfilmRatingIlfilm18)
+    "ilfilmUnrated" -> decode.success(IlfilmRatingIlfilmUnrated)
+    _ -> decode.failure(IlfilmRatingIlfilmUnspecified, "a valid IlfilmRating")
   }
 }
 
@@ -2058,16 +2493,16 @@ pub fn incaa_rating_to_string(value: IncaaRating) -> String {
 }
 
 pub fn incaa_rating_decoder() -> Decoder(IncaaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "incaaUnspecified" -> success(IncaaRatingIncaaUnspecified)
-    "incaaAtp" -> success(IncaaRatingIncaaAtp)
-    "incaaSam13" -> success(IncaaRatingIncaaSam13)
-    "incaaSam16" -> success(IncaaRatingIncaaSam16)
-    "incaaSam18" -> success(IncaaRatingIncaaSam18)
-    "incaaC" -> success(IncaaRatingIncaaC)
-    "incaaUnrated" -> success(IncaaRatingIncaaUnrated)
-    _ -> failure(IncaaRatingIncaaUnspecified, "a valid IncaaRating")
+    "incaaUnspecified" -> decode.success(IncaaRatingIncaaUnspecified)
+    "incaaAtp" -> decode.success(IncaaRatingIncaaAtp)
+    "incaaSam13" -> decode.success(IncaaRatingIncaaSam13)
+    "incaaSam16" -> decode.success(IncaaRatingIncaaSam16)
+    "incaaSam18" -> decode.success(IncaaRatingIncaaSam18)
+    "incaaC" -> decode.success(IncaaRatingIncaaC)
+    "incaaUnrated" -> decode.success(IncaaRatingIncaaUnrated)
+    _ -> decode.failure(IncaaRatingIncaaUnspecified, "a valid IncaaRating")
   }
 }
 
@@ -2093,15 +2528,15 @@ pub fn kfcb_rating_to_string(value: KfcbRating) -> String {
 }
 
 pub fn kfcb_rating_decoder() -> Decoder(KfcbRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "kfcbUnspecified" -> success(KfcbRatingKfcbUnspecified)
-    "kfcbG" -> success(KfcbRatingKfcbG)
-    "kfcbPg" -> success(KfcbRatingKfcbPg)
-    "kfcb16plus" -> success(KfcbRatingKfcb16plus)
-    "kfcbR" -> success(KfcbRatingKfcbR)
-    "kfcbUnrated" -> success(KfcbRatingKfcbUnrated)
-    _ -> failure(KfcbRatingKfcbUnspecified, "a valid KfcbRating")
+    "kfcbUnspecified" -> decode.success(KfcbRatingKfcbUnspecified)
+    "kfcbG" -> decode.success(KfcbRatingKfcbG)
+    "kfcbPg" -> decode.success(KfcbRatingKfcbPg)
+    "kfcb16plus" -> decode.success(KfcbRatingKfcb16plus)
+    "kfcbR" -> decode.success(KfcbRatingKfcbR)
+    "kfcbUnrated" -> decode.success(KfcbRatingKfcbUnrated)
+    _ -> decode.failure(KfcbRatingKfcbUnspecified, "a valid KfcbRating")
   }
 }
 
@@ -2131,20 +2566,22 @@ pub fn kijkwijzer_rating_to_string(value: KijkwijzerRating) -> String {
 }
 
 pub fn kijkwijzer_rating_decoder() -> Decoder(KijkwijzerRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "kijkwijzerUnspecified" -> success(KijkwijzerRatingKijkwijzerUnspecified)
-    "kijkwijzerAl" -> success(KijkwijzerRatingKijkwijzerAl)
-    "kijkwijzer6" -> success(KijkwijzerRatingKijkwijzer6)
-    "kijkwijzer9" -> success(KijkwijzerRatingKijkwijzer9)
-    "kijkwijzer12" -> success(KijkwijzerRatingKijkwijzer12)
-    "kijkwijzer16" -> success(KijkwijzerRatingKijkwijzer16)
-    "kijkwijzer18" -> success(KijkwijzerRatingKijkwijzer18)
-    "kijkwijzerUnrated" -> success(KijkwijzerRatingKijkwijzerUnrated)
-    _ -> failure(
-      KijkwijzerRatingKijkwijzerUnspecified,
-      "a valid KijkwijzerRating",
-    )
+    "kijkwijzerUnspecified" ->
+      decode.success(KijkwijzerRatingKijkwijzerUnspecified)
+    "kijkwijzerAl" -> decode.success(KijkwijzerRatingKijkwijzerAl)
+    "kijkwijzer6" -> decode.success(KijkwijzerRatingKijkwijzer6)
+    "kijkwijzer9" -> decode.success(KijkwijzerRatingKijkwijzer9)
+    "kijkwijzer12" -> decode.success(KijkwijzerRatingKijkwijzer12)
+    "kijkwijzer16" -> decode.success(KijkwijzerRatingKijkwijzer16)
+    "kijkwijzer18" -> decode.success(KijkwijzerRatingKijkwijzer18)
+    "kijkwijzerUnrated" -> decode.success(KijkwijzerRatingKijkwijzerUnrated)
+    _ ->
+      decode.failure(
+        KijkwijzerRatingKijkwijzerUnspecified,
+        "a valid KijkwijzerRating",
+      )
   }
 }
 
@@ -2172,16 +2609,16 @@ pub fn kmrb_rating_to_string(value: KmrbRating) -> String {
 }
 
 pub fn kmrb_rating_decoder() -> Decoder(KmrbRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "kmrbUnspecified" -> success(KmrbRatingKmrbUnspecified)
-    "kmrbAll" -> success(KmrbRatingKmrbAll)
-    "kmrb12plus" -> success(KmrbRatingKmrb12plus)
-    "kmrb15plus" -> success(KmrbRatingKmrb15plus)
-    "kmrbTeenr" -> success(KmrbRatingKmrbTeenr)
-    "kmrbR" -> success(KmrbRatingKmrbR)
-    "kmrbUnrated" -> success(KmrbRatingKmrbUnrated)
-    _ -> failure(KmrbRatingKmrbUnspecified, "a valid KmrbRating")
+    "kmrbUnspecified" -> decode.success(KmrbRatingKmrbUnspecified)
+    "kmrbAll" -> decode.success(KmrbRatingKmrbAll)
+    "kmrb12plus" -> decode.success(KmrbRatingKmrb12plus)
+    "kmrb15plus" -> decode.success(KmrbRatingKmrb15plus)
+    "kmrbTeenr" -> decode.success(KmrbRatingKmrbTeenr)
+    "kmrbR" -> decode.success(KmrbRatingKmrbR)
+    "kmrbUnrated" -> decode.success(KmrbRatingKmrbUnrated)
+    _ -> decode.failure(KmrbRatingKmrbUnspecified, "a valid KmrbRating")
   }
 }
 
@@ -2215,19 +2652,19 @@ pub fn lsf_rating_to_string(value: LsfRating) -> String {
 }
 
 pub fn lsf_rating_decoder() -> Decoder(LsfRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "lsfUnspecified" -> success(LsfRatingLsfUnspecified)
-    "lsfSu" -> success(LsfRatingLsfSu)
-    "lsfA" -> success(LsfRatingLsfA)
-    "lsfBo" -> success(LsfRatingLsfBo)
-    "lsf13" -> success(LsfRatingLsf13)
-    "lsfR" -> success(LsfRatingLsfR)
-    "lsf17" -> success(LsfRatingLsf17)
-    "lsfD" -> success(LsfRatingLsfD)
-    "lsf21" -> success(LsfRatingLsf21)
-    "lsfUnrated" -> success(LsfRatingLsfUnrated)
-    _ -> failure(LsfRatingLsfUnspecified, "a valid LsfRating")
+    "lsfUnspecified" -> decode.success(LsfRatingLsfUnspecified)
+    "lsfSu" -> decode.success(LsfRatingLsfSu)
+    "lsfA" -> decode.success(LsfRatingLsfA)
+    "lsfBo" -> decode.success(LsfRatingLsfBo)
+    "lsf13" -> decode.success(LsfRatingLsf13)
+    "lsfR" -> decode.success(LsfRatingLsfR)
+    "lsf17" -> decode.success(LsfRatingLsf17)
+    "lsfD" -> decode.success(LsfRatingLsfD)
+    "lsf21" -> decode.success(LsfRatingLsf21)
+    "lsfUnrated" -> decode.success(LsfRatingLsfUnrated)
+    _ -> decode.failure(LsfRatingLsfUnspecified, "a valid LsfRating")
   }
 }
 
@@ -2261,19 +2698,19 @@ pub fn mccaa_rating_to_string(value: MccaaRating) -> String {
 }
 
 pub fn mccaa_rating_decoder() -> Decoder(MccaaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mccaaUnspecified" -> success(MccaaRatingMccaaUnspecified)
-    "mccaaU" -> success(MccaaRatingMccaaU)
-    "mccaaPg" -> success(MccaaRatingMccaaPg)
-    "mccaa12a" -> success(MccaaRatingMccaa12a)
-    "mccaa12" -> success(MccaaRatingMccaa12)
-    "mccaa14" -> success(MccaaRatingMccaa14)
-    "mccaa15" -> success(MccaaRatingMccaa15)
-    "mccaa16" -> success(MccaaRatingMccaa16)
-    "mccaa18" -> success(MccaaRatingMccaa18)
-    "mccaaUnrated" -> success(MccaaRatingMccaaUnrated)
-    _ -> failure(MccaaRatingMccaaUnspecified, "a valid MccaaRating")
+    "mccaaUnspecified" -> decode.success(MccaaRatingMccaaUnspecified)
+    "mccaaU" -> decode.success(MccaaRatingMccaaU)
+    "mccaaPg" -> decode.success(MccaaRatingMccaaPg)
+    "mccaa12a" -> decode.success(MccaaRatingMccaa12a)
+    "mccaa12" -> decode.success(MccaaRatingMccaa12)
+    "mccaa14" -> decode.success(MccaaRatingMccaa14)
+    "mccaa15" -> decode.success(MccaaRatingMccaa15)
+    "mccaa16" -> decode.success(MccaaRatingMccaa16)
+    "mccaa18" -> decode.success(MccaaRatingMccaa18)
+    "mccaaUnrated" -> decode.success(MccaaRatingMccaaUnrated)
+    _ -> decode.failure(MccaaRatingMccaaUnspecified, "a valid MccaaRating")
   }
 }
 
@@ -2299,15 +2736,15 @@ pub fn mccyp_rating_to_string(value: MccypRating) -> String {
 }
 
 pub fn mccyp_rating_decoder() -> Decoder(MccypRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mccypUnspecified" -> success(MccypRatingMccypUnspecified)
-    "mccypA" -> success(MccypRatingMccypA)
-    "mccyp7" -> success(MccypRatingMccyp7)
-    "mccyp11" -> success(MccypRatingMccyp11)
-    "mccyp15" -> success(MccypRatingMccyp15)
-    "mccypUnrated" -> success(MccypRatingMccypUnrated)
-    _ -> failure(MccypRatingMccypUnspecified, "a valid MccypRating")
+    "mccypUnspecified" -> decode.success(MccypRatingMccypUnspecified)
+    "mccypA" -> decode.success(MccypRatingMccypA)
+    "mccyp7" -> decode.success(MccypRatingMccyp7)
+    "mccyp11" -> decode.success(MccypRatingMccyp11)
+    "mccyp15" -> decode.success(MccypRatingMccyp15)
+    "mccypUnrated" -> decode.success(MccypRatingMccypUnrated)
+    _ -> decode.failure(MccypRatingMccypUnspecified, "a valid MccypRating")
   }
 }
 
@@ -2339,18 +2776,18 @@ pub fn mcst_rating_to_string(value: McstRating) -> String {
 }
 
 pub fn mcst_rating_decoder() -> Decoder(McstRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mcstUnspecified" -> success(McstRatingMcstUnspecified)
-    "mcstP" -> success(McstRatingMcstP)
-    "mcst0" -> success(McstRatingMcst0)
-    "mcstC13" -> success(McstRatingMcstC13)
-    "mcstC16" -> success(McstRatingMcstC16)
-    "mcst16plus" -> success(McstRatingMcst16plus)
-    "mcstC18" -> success(McstRatingMcstC18)
-    "mcstGPg" -> success(McstRatingMcstGpg)
-    "mcstUnrated" -> success(McstRatingMcstUnrated)
-    _ -> failure(McstRatingMcstUnspecified, "a valid McstRating")
+    "mcstUnspecified" -> decode.success(McstRatingMcstUnspecified)
+    "mcstP" -> decode.success(McstRatingMcstP)
+    "mcst0" -> decode.success(McstRatingMcst0)
+    "mcstC13" -> decode.success(McstRatingMcstC13)
+    "mcstC16" -> decode.success(McstRatingMcstC16)
+    "mcst16plus" -> decode.success(McstRatingMcst16plus)
+    "mcstC18" -> decode.success(McstRatingMcstC18)
+    "mcstGPg" -> decode.success(McstRatingMcstGpg)
+    "mcstUnrated" -> decode.success(McstRatingMcstUnrated)
+    _ -> decode.failure(McstRatingMcstUnspecified, "a valid McstRating")
   }
 }
 
@@ -2380,17 +2817,17 @@ pub fn mda_rating_to_string(value: MdaRating) -> String {
 }
 
 pub fn mda_rating_decoder() -> Decoder(MdaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mdaUnspecified" -> success(MdaRatingMdaUnspecified)
-    "mdaG" -> success(MdaRatingMdaG)
-    "mdaPg" -> success(MdaRatingMdaPg)
-    "mdaPg13" -> success(MdaRatingMdaPg13)
-    "mdaNc16" -> success(MdaRatingMdaNc16)
-    "mdaM18" -> success(MdaRatingMdaM18)
-    "mdaR21" -> success(MdaRatingMdaR21)
-    "mdaUnrated" -> success(MdaRatingMdaUnrated)
-    _ -> failure(MdaRatingMdaUnspecified, "a valid MdaRating")
+    "mdaUnspecified" -> decode.success(MdaRatingMdaUnspecified)
+    "mdaG" -> decode.success(MdaRatingMdaG)
+    "mdaPg" -> decode.success(MdaRatingMdaPg)
+    "mdaPg13" -> decode.success(MdaRatingMdaPg13)
+    "mdaNc16" -> decode.success(MdaRatingMdaNc16)
+    "mdaM18" -> decode.success(MdaRatingMdaM18)
+    "mdaR21" -> decode.success(MdaRatingMdaR21)
+    "mdaUnrated" -> decode.success(MdaRatingMdaUnrated)
+    _ -> decode.failure(MdaRatingMdaUnspecified, "a valid MdaRating")
   }
 }
 
@@ -2424,24 +2861,25 @@ pub fn medietilsynet_rating_to_string(value: MedietilsynetRating) -> String {
 }
 
 pub fn medietilsynet_rating_decoder() -> Decoder(MedietilsynetRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "medietilsynetUnspecified" -> success(
-      MedietilsynetRatingMedietilsynetUnspecified,
-    )
-    "medietilsynetA" -> success(MedietilsynetRatingMedietilsynetA)
-    "medietilsynet6" -> success(MedietilsynetRatingMedietilsynet6)
-    "medietilsynet7" -> success(MedietilsynetRatingMedietilsynet7)
-    "medietilsynet9" -> success(MedietilsynetRatingMedietilsynet9)
-    "medietilsynet11" -> success(MedietilsynetRatingMedietilsynet11)
-    "medietilsynet12" -> success(MedietilsynetRatingMedietilsynet12)
-    "medietilsynet15" -> success(MedietilsynetRatingMedietilsynet15)
-    "medietilsynet18" -> success(MedietilsynetRatingMedietilsynet18)
-    "medietilsynetUnrated" -> success(MedietilsynetRatingMedietilsynetUnrated)
-    _ -> failure(
-      MedietilsynetRatingMedietilsynetUnspecified,
-      "a valid MedietilsynetRating",
-    )
+    "medietilsynetUnspecified" ->
+      decode.success(MedietilsynetRatingMedietilsynetUnspecified)
+    "medietilsynetA" -> decode.success(MedietilsynetRatingMedietilsynetA)
+    "medietilsynet6" -> decode.success(MedietilsynetRatingMedietilsynet6)
+    "medietilsynet7" -> decode.success(MedietilsynetRatingMedietilsynet7)
+    "medietilsynet9" -> decode.success(MedietilsynetRatingMedietilsynet9)
+    "medietilsynet11" -> decode.success(MedietilsynetRatingMedietilsynet11)
+    "medietilsynet12" -> decode.success(MedietilsynetRatingMedietilsynet12)
+    "medietilsynet15" -> decode.success(MedietilsynetRatingMedietilsynet15)
+    "medietilsynet18" -> decode.success(MedietilsynetRatingMedietilsynet18)
+    "medietilsynetUnrated" ->
+      decode.success(MedietilsynetRatingMedietilsynetUnrated)
+    _ ->
+      decode.failure(
+        MedietilsynetRatingMedietilsynetUnspecified,
+        "a valid MedietilsynetRating",
+      )
   }
 }
 
@@ -2469,16 +2907,16 @@ pub fn meku_rating_to_string(value: MekuRating) -> String {
 }
 
 pub fn meku_rating_decoder() -> Decoder(MekuRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mekuUnspecified" -> success(MekuRatingMekuUnspecified)
-    "mekuS" -> success(MekuRatingMekuS)
-    "meku7" -> success(MekuRatingMeku7)
-    "meku12" -> success(MekuRatingMeku12)
-    "meku16" -> success(MekuRatingMeku16)
-    "meku18" -> success(MekuRatingMeku18)
-    "mekuUnrated" -> success(MekuRatingMekuUnrated)
-    _ -> failure(MekuRatingMekuUnspecified, "a valid MekuRating")
+    "mekuUnspecified" -> decode.success(MekuRatingMekuUnspecified)
+    "mekuS" -> decode.success(MekuRatingMekuS)
+    "meku7" -> decode.success(MekuRatingMeku7)
+    "meku12" -> decode.success(MekuRatingMeku12)
+    "meku16" -> decode.success(MekuRatingMeku16)
+    "meku18" -> decode.success(MekuRatingMeku18)
+    "mekuUnrated" -> decode.success(MekuRatingMekuUnrated)
+    _ -> decode.failure(MekuRatingMekuUnspecified, "a valid MekuRating")
   }
 }
 
@@ -2504,15 +2942,19 @@ pub fn mena_mpaa_rating_to_string(value: MenaMpaaRating) -> String {
 }
 
 pub fn mena_mpaa_rating_decoder() -> Decoder(MenaMpaaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "menaMpaaUnspecified" -> success(MenaMpaaRatingMenaMpaaUnspecified)
-    "menaMpaaG" -> success(MenaMpaaRatingMenaMpaaG)
-    "menaMpaaPg" -> success(MenaMpaaRatingMenaMpaaPg)
-    "menaMpaaPg13" -> success(MenaMpaaRatingMenaMpaaPg13)
-    "menaMpaaR" -> success(MenaMpaaRatingMenaMpaaR)
-    "menaMpaaUnrated" -> success(MenaMpaaRatingMenaMpaaUnrated)
-    _ -> failure(MenaMpaaRatingMenaMpaaUnspecified, "a valid MenaMpaaRating")
+    "menaMpaaUnspecified" -> decode.success(MenaMpaaRatingMenaMpaaUnspecified)
+    "menaMpaaG" -> decode.success(MenaMpaaRatingMenaMpaaG)
+    "menaMpaaPg" -> decode.success(MenaMpaaRatingMenaMpaaPg)
+    "menaMpaaPg13" -> decode.success(MenaMpaaRatingMenaMpaaPg13)
+    "menaMpaaR" -> decode.success(MenaMpaaRatingMenaMpaaR)
+    "menaMpaaUnrated" -> decode.success(MenaMpaaRatingMenaMpaaUnrated)
+    _ ->
+      decode.failure(
+        MenaMpaaRatingMenaMpaaUnspecified,
+        "a valid MenaMpaaRating",
+      )
   }
 }
 
@@ -2544,18 +2986,18 @@ pub fn mibac_rating_to_string(value: MibacRating) -> String {
 }
 
 pub fn mibac_rating_decoder() -> Decoder(MibacRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mibacUnspecified" -> success(MibacRatingMibacUnspecified)
-    "mibacT" -> success(MibacRatingMibacT)
-    "mibacVap" -> success(MibacRatingMibacVap)
-    "mibacVm6" -> success(MibacRatingMibacVm6)
-    "mibacVm12" -> success(MibacRatingMibacVm12)
-    "mibacVm14" -> success(MibacRatingMibacVm14)
-    "mibacVm16" -> success(MibacRatingMibacVm16)
-    "mibacVm18" -> success(MibacRatingMibacVm18)
-    "mibacUnrated" -> success(MibacRatingMibacUnrated)
-    _ -> failure(MibacRatingMibacUnspecified, "a valid MibacRating")
+    "mibacUnspecified" -> decode.success(MibacRatingMibacUnspecified)
+    "mibacT" -> decode.success(MibacRatingMibacT)
+    "mibacVap" -> decode.success(MibacRatingMibacVap)
+    "mibacVm6" -> decode.success(MibacRatingMibacVm6)
+    "mibacVm12" -> decode.success(MibacRatingMibacVm12)
+    "mibacVm14" -> decode.success(MibacRatingMibacVm14)
+    "mibacVm16" -> decode.success(MibacRatingMibacVm16)
+    "mibacVm18" -> decode.success(MibacRatingMibacVm18)
+    "mibacUnrated" -> decode.success(MibacRatingMibacUnrated)
+    _ -> decode.failure(MibacRatingMibacUnspecified, "a valid MibacRating")
   }
 }
 
@@ -2589,19 +3031,19 @@ pub fn moc_rating_to_string(value: MocRating) -> String {
 }
 
 pub fn moc_rating_decoder() -> Decoder(MocRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mocUnspecified" -> success(MocRatingMocUnspecified)
-    "mocE" -> success(MocRatingMocE)
-    "mocT" -> success(MocRatingMocT)
-    "moc7" -> success(MocRatingMoc7)
-    "moc12" -> success(MocRatingMoc12)
-    "moc15" -> success(MocRatingMoc15)
-    "moc18" -> success(MocRatingMoc18)
-    "mocX" -> success(MocRatingMocX)
-    "mocBanned" -> success(MocRatingMocBanned)
-    "mocUnrated" -> success(MocRatingMocUnrated)
-    _ -> failure(MocRatingMocUnspecified, "a valid MocRating")
+    "mocUnspecified" -> decode.success(MocRatingMocUnspecified)
+    "mocE" -> decode.success(MocRatingMocE)
+    "mocT" -> decode.success(MocRatingMocT)
+    "moc7" -> decode.success(MocRatingMoc7)
+    "moc12" -> decode.success(MocRatingMoc12)
+    "moc15" -> decode.success(MocRatingMoc15)
+    "moc18" -> decode.success(MocRatingMoc18)
+    "mocX" -> decode.success(MocRatingMocX)
+    "mocBanned" -> decode.success(MocRatingMocBanned)
+    "mocUnrated" -> decode.success(MocRatingMocUnrated)
+    _ -> decode.failure(MocRatingMocUnspecified, "a valid MocRating")
   }
 }
 
@@ -2631,17 +3073,17 @@ pub fn moctw_rating_to_string(value: MoctwRating) -> String {
 }
 
 pub fn moctw_rating_decoder() -> Decoder(MoctwRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "moctwUnspecified" -> success(MoctwRatingMoctwUnspecified)
-    "moctwG" -> success(MoctwRatingMoctwG)
-    "moctwP" -> success(MoctwRatingMoctwP)
-    "moctwPg" -> success(MoctwRatingMoctwPg)
-    "moctwR" -> success(MoctwRatingMoctwR)
-    "moctwUnrated" -> success(MoctwRatingMoctwUnrated)
-    "moctwR12" -> success(MoctwRatingMoctwR12)
-    "moctwR15" -> success(MoctwRatingMoctwR15)
-    _ -> failure(MoctwRatingMoctwUnspecified, "a valid MoctwRating")
+    "moctwUnspecified" -> decode.success(MoctwRatingMoctwUnspecified)
+    "moctwG" -> decode.success(MoctwRatingMoctwG)
+    "moctwP" -> decode.success(MoctwRatingMoctwP)
+    "moctwPg" -> decode.success(MoctwRatingMoctwPg)
+    "moctwR" -> decode.success(MoctwRatingMoctwR)
+    "moctwUnrated" -> decode.success(MoctwRatingMoctwUnrated)
+    "moctwR12" -> decode.success(MoctwRatingMoctwR12)
+    "moctwR15" -> decode.success(MoctwRatingMoctwR15)
+    _ -> decode.failure(MoctwRatingMoctwUnspecified, "a valid MoctwRating")
   }
 }
 
@@ -2671,17 +3113,17 @@ pub fn mpaa_rating_to_string(value: MpaaRating) -> String {
 }
 
 pub fn mpaa_rating_decoder() -> Decoder(MpaaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mpaaUnspecified" -> success(MpaaRatingMpaaUnspecified)
-    "mpaaG" -> success(MpaaRatingMpaaG)
-    "mpaaPg" -> success(MpaaRatingMpaaPg)
-    "mpaaPg13" -> success(MpaaRatingMpaaPg13)
-    "mpaaR" -> success(MpaaRatingMpaaR)
-    "mpaaNc17" -> success(MpaaRatingMpaaNc17)
-    "mpaaX" -> success(MpaaRatingMpaaX)
-    "mpaaUnrated" -> success(MpaaRatingMpaaUnrated)
-    _ -> failure(MpaaRatingMpaaUnspecified, "a valid MpaaRating")
+    "mpaaUnspecified" -> decode.success(MpaaRatingMpaaUnspecified)
+    "mpaaG" -> decode.success(MpaaRatingMpaaG)
+    "mpaaPg" -> decode.success(MpaaRatingMpaaPg)
+    "mpaaPg13" -> decode.success(MpaaRatingMpaaPg13)
+    "mpaaR" -> decode.success(MpaaRatingMpaaR)
+    "mpaaNc17" -> decode.success(MpaaRatingMpaaNc17)
+    "mpaaX" -> decode.success(MpaaRatingMpaaX)
+    "mpaaUnrated" -> decode.success(MpaaRatingMpaaUnrated)
+    _ -> decode.failure(MpaaRatingMpaaUnspecified, "a valid MpaaRating")
   }
 }
 
@@ -2701,12 +3143,12 @@ pub fn mpaat_rating_to_string(value: MpaatRating) -> String {
 }
 
 pub fn mpaat_rating_decoder() -> Decoder(MpaatRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mpaatUnspecified" -> success(MpaatRatingMpaatUnspecified)
-    "mpaatGb" -> success(MpaatRatingMpaatGb)
-    "mpaatRb" -> success(MpaatRatingMpaatRb)
-    _ -> failure(MpaatRatingMpaatUnspecified, "a valid MpaatRating")
+    "mpaatUnspecified" -> decode.success(MpaatRatingMpaatUnspecified)
+    "mpaatGb" -> decode.success(MpaatRatingMpaatGb)
+    "mpaatRb" -> decode.success(MpaatRatingMpaatRb)
+    _ -> decode.failure(MpaatRatingMpaatUnspecified, "a valid MpaatRating")
   }
 }
 
@@ -2736,17 +3178,17 @@ pub fn mtrcb_rating_to_string(value: MtrcbRating) -> String {
 }
 
 pub fn mtrcb_rating_decoder() -> Decoder(MtrcbRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "mtrcbUnspecified" -> success(MtrcbRatingMtrcbUnspecified)
-    "mtrcbG" -> success(MtrcbRatingMtrcbG)
-    "mtrcbPg" -> success(MtrcbRatingMtrcbPg)
-    "mtrcbR13" -> success(MtrcbRatingMtrcbR13)
-    "mtrcbR16" -> success(MtrcbRatingMtrcbR16)
-    "mtrcbR18" -> success(MtrcbRatingMtrcbR18)
-    "mtrcbX" -> success(MtrcbRatingMtrcbX)
-    "mtrcbUnrated" -> success(MtrcbRatingMtrcbUnrated)
-    _ -> failure(MtrcbRatingMtrcbUnspecified, "a valid MtrcbRating")
+    "mtrcbUnspecified" -> decode.success(MtrcbRatingMtrcbUnspecified)
+    "mtrcbG" -> decode.success(MtrcbRatingMtrcbG)
+    "mtrcbPg" -> decode.success(MtrcbRatingMtrcbPg)
+    "mtrcbR13" -> decode.success(MtrcbRatingMtrcbR13)
+    "mtrcbR16" -> decode.success(MtrcbRatingMtrcbR16)
+    "mtrcbR18" -> decode.success(MtrcbRatingMtrcbR18)
+    "mtrcbX" -> decode.success(MtrcbRatingMtrcbX)
+    "mtrcbUnrated" -> decode.success(MtrcbRatingMtrcbUnrated)
+    _ -> decode.failure(MtrcbRatingMtrcbUnspecified, "a valid MtrcbRating")
   }
 }
 
@@ -2778,18 +3220,18 @@ pub fn nbc_rating_to_string(value: NbcRating) -> String {
 }
 
 pub fn nbc_rating_decoder() -> Decoder(NbcRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "nbcUnspecified" -> success(NbcRatingNbcUnspecified)
-    "nbcG" -> success(NbcRatingNbcG)
-    "nbcPg" -> success(NbcRatingNbcPg)
-    "nbc12plus" -> success(NbcRatingNbc12plus)
-    "nbc15plus" -> success(NbcRatingNbc15plus)
-    "nbc18plus" -> success(NbcRatingNbc18plus)
-    "nbc18plusr" -> success(NbcRatingNbc18plusr)
-    "nbcPu" -> success(NbcRatingNbcPu)
-    "nbcUnrated" -> success(NbcRatingNbcUnrated)
-    _ -> failure(NbcRatingNbcUnspecified, "a valid NbcRating")
+    "nbcUnspecified" -> decode.success(NbcRatingNbcUnspecified)
+    "nbcG" -> decode.success(NbcRatingNbcG)
+    "nbcPg" -> decode.success(NbcRatingNbcPg)
+    "nbc12plus" -> decode.success(NbcRatingNbc12plus)
+    "nbc15plus" -> decode.success(NbcRatingNbc15plus)
+    "nbc18plus" -> decode.success(NbcRatingNbc18plus)
+    "nbc18plusr" -> decode.success(NbcRatingNbc18plusr)
+    "nbcPu" -> decode.success(NbcRatingNbcPu)
+    "nbcUnrated" -> decode.success(NbcRatingNbcUnrated)
+    _ -> decode.failure(NbcRatingNbcUnspecified, "a valid NbcRating")
   }
 }
 
@@ -2817,16 +3259,16 @@ pub fn nbcpl_rating_to_string(value: NbcplRating) -> String {
 }
 
 pub fn nbcpl_rating_decoder() -> Decoder(NbcplRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "nbcplUnspecified" -> success(NbcplRatingNbcplUnspecified)
-    "nbcplI" -> success(NbcplRatingNbcplI)
-    "nbcplIi" -> success(NbcplRatingNbcplIi)
-    "nbcplIii" -> success(NbcplRatingNbcplIii)
-    "nbcplIv" -> success(NbcplRatingNbcplIv)
-    "nbcpl18plus" -> success(NbcplRatingNbcpl18plus)
-    "nbcplUnrated" -> success(NbcplRatingNbcplUnrated)
-    _ -> failure(NbcplRatingNbcplUnspecified, "a valid NbcplRating")
+    "nbcplUnspecified" -> decode.success(NbcplRatingNbcplUnspecified)
+    "nbcplI" -> decode.success(NbcplRatingNbcplI)
+    "nbcplIi" -> decode.success(NbcplRatingNbcplIi)
+    "nbcplIii" -> decode.success(NbcplRatingNbcplIii)
+    "nbcplIv" -> decode.success(NbcplRatingNbcplIv)
+    "nbcpl18plus" -> decode.success(NbcplRatingNbcpl18plus)
+    "nbcplUnrated" -> decode.success(NbcplRatingNbcplUnrated)
+    _ -> decode.failure(NbcplRatingNbcplUnspecified, "a valid NbcplRating")
   }
 }
 
@@ -2854,16 +3296,16 @@ pub fn nfrc_rating_to_string(value: NfrcRating) -> String {
 }
 
 pub fn nfrc_rating_decoder() -> Decoder(NfrcRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "nfrcUnspecified" -> success(NfrcRatingNfrcUnspecified)
-    "nfrcA" -> success(NfrcRatingNfrcA)
-    "nfrcB" -> success(NfrcRatingNfrcB)
-    "nfrcC" -> success(NfrcRatingNfrcC)
-    "nfrcD" -> success(NfrcRatingNfrcD)
-    "nfrcX" -> success(NfrcRatingNfrcX)
-    "nfrcUnrated" -> success(NfrcRatingNfrcUnrated)
-    _ -> failure(NfrcRatingNfrcUnspecified, "a valid NfrcRating")
+    "nfrcUnspecified" -> decode.success(NfrcRatingNfrcUnspecified)
+    "nfrcA" -> decode.success(NfrcRatingNfrcA)
+    "nfrcB" -> decode.success(NfrcRatingNfrcB)
+    "nfrcC" -> decode.success(NfrcRatingNfrcC)
+    "nfrcD" -> decode.success(NfrcRatingNfrcD)
+    "nfrcX" -> decode.success(NfrcRatingNfrcX)
+    "nfrcUnrated" -> decode.success(NfrcRatingNfrcUnrated)
+    _ -> decode.failure(NfrcRatingNfrcUnspecified, "a valid NfrcRating")
   }
 }
 
@@ -2895,18 +3337,18 @@ pub fn nfvcb_rating_to_string(value: NfvcbRating) -> String {
 }
 
 pub fn nfvcb_rating_decoder() -> Decoder(NfvcbRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "nfvcbUnspecified" -> success(NfvcbRatingNfvcbUnspecified)
-    "nfvcbG" -> success(NfvcbRatingNfvcbG)
-    "nfvcbPg" -> success(NfvcbRatingNfvcbPg)
-    "nfvcb12" -> success(NfvcbRatingNfvcb12)
-    "nfvcb12a" -> success(NfvcbRatingNfvcb12a)
-    "nfvcb15" -> success(NfvcbRatingNfvcb15)
-    "nfvcb18" -> success(NfvcbRatingNfvcb18)
-    "nfvcbRe" -> success(NfvcbRatingNfvcbRe)
-    "nfvcbUnrated" -> success(NfvcbRatingNfvcbUnrated)
-    _ -> failure(NfvcbRatingNfvcbUnspecified, "a valid NfvcbRating")
+    "nfvcbUnspecified" -> decode.success(NfvcbRatingNfvcbUnspecified)
+    "nfvcbG" -> decode.success(NfvcbRatingNfvcbG)
+    "nfvcbPg" -> decode.success(NfvcbRatingNfvcbPg)
+    "nfvcb12" -> decode.success(NfvcbRatingNfvcb12)
+    "nfvcb12a" -> decode.success(NfvcbRatingNfvcb12a)
+    "nfvcb15" -> decode.success(NfvcbRatingNfvcb15)
+    "nfvcb18" -> decode.success(NfvcbRatingNfvcb18)
+    "nfvcbRe" -> decode.success(NfvcbRatingNfvcbRe)
+    "nfvcbUnrated" -> decode.success(NfvcbRatingNfvcbUnrated)
+    _ -> decode.failure(NfvcbRatingNfvcbUnspecified, "a valid NfvcbRating")
   }
 }
 
@@ -2934,16 +3376,16 @@ pub fn nkclv_rating_to_string(value: NkclvRating) -> String {
 }
 
 pub fn nkclv_rating_decoder() -> Decoder(NkclvRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "nkclvUnspecified" -> success(NkclvRatingNkclvUnspecified)
-    "nkclvU" -> success(NkclvRatingNkclvU)
-    "nkclv7plus" -> success(NkclvRatingNkclv7plus)
-    "nkclv12plus" -> success(NkclvRatingNkclv12plus)
-    "nkclv16plus" -> success(NkclvRatingNkclv16plus)
-    "nkclv18plus" -> success(NkclvRatingNkclv18plus)
-    "nkclvUnrated" -> success(NkclvRatingNkclvUnrated)
-    _ -> failure(NkclvRatingNkclvUnspecified, "a valid NkclvRating")
+    "nkclvUnspecified" -> decode.success(NkclvRatingNkclvUnspecified)
+    "nkclvU" -> decode.success(NkclvRatingNkclvU)
+    "nkclv7plus" -> decode.success(NkclvRatingNkclv7plus)
+    "nkclv12plus" -> decode.success(NkclvRatingNkclv12plus)
+    "nkclv16plus" -> decode.success(NkclvRatingNkclv16plus)
+    "nkclv18plus" -> decode.success(NkclvRatingNkclv18plus)
+    "nkclvUnrated" -> decode.success(NkclvRatingNkclvUnrated)
+    _ -> decode.failure(NkclvRatingNkclvUnspecified, "a valid NkclvRating")
   }
 }
 
@@ -2975,18 +3417,18 @@ pub fn nmc_rating_to_string(value: NmcRating) -> String {
 }
 
 pub fn nmc_rating_decoder() -> Decoder(NmcRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "nmcUnspecified" -> success(NmcRatingNmcUnspecified)
-    "nmcG" -> success(NmcRatingNmcG)
-    "nmcPg" -> success(NmcRatingNmcPg)
-    "nmcPg13" -> success(NmcRatingNmcPg13)
-    "nmcPg15" -> success(NmcRatingNmcPg15)
-    "nmc15plus" -> success(NmcRatingNmc15plus)
-    "nmc18plus" -> success(NmcRatingNmc18plus)
-    "nmc18tc" -> success(NmcRatingNmc18tc)
-    "nmcUnrated" -> success(NmcRatingNmcUnrated)
-    _ -> failure(NmcRatingNmcUnspecified, "a valid NmcRating")
+    "nmcUnspecified" -> decode.success(NmcRatingNmcUnspecified)
+    "nmcG" -> decode.success(NmcRatingNmcG)
+    "nmcPg" -> decode.success(NmcRatingNmcPg)
+    "nmcPg13" -> decode.success(NmcRatingNmcPg13)
+    "nmcPg15" -> decode.success(NmcRatingNmcPg15)
+    "nmc15plus" -> decode.success(NmcRatingNmc15plus)
+    "nmc18plus" -> decode.success(NmcRatingNmc18plus)
+    "nmc18tc" -> decode.success(NmcRatingNmc18tc)
+    "nmcUnrated" -> decode.success(NmcRatingNmcUnrated)
+    _ -> decode.failure(NmcRatingNmcUnspecified, "a valid NmcRating")
   }
 }
 
@@ -3024,21 +3466,21 @@ pub fn oflc_rating_to_string(value: OflcRating) -> String {
 }
 
 pub fn oflc_rating_decoder() -> Decoder(OflcRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "oflcUnspecified" -> success(OflcRatingOflcUnspecified)
-    "oflcG" -> success(OflcRatingOflcG)
-    "oflcPg" -> success(OflcRatingOflcPg)
-    "oflcM" -> success(OflcRatingOflcM)
-    "oflcR13" -> success(OflcRatingOflcR13)
-    "oflcR15" -> success(OflcRatingOflcR15)
-    "oflcR16" -> success(OflcRatingOflcR16)
-    "oflcR18" -> success(OflcRatingOflcR18)
-    "oflcUnrated" -> success(OflcRatingOflcUnrated)
-    "oflcRp13" -> success(OflcRatingOflcRp13)
-    "oflcRp16" -> success(OflcRatingOflcRp16)
-    "oflcRp18" -> success(OflcRatingOflcRp18)
-    _ -> failure(OflcRatingOflcUnspecified, "a valid OflcRating")
+    "oflcUnspecified" -> decode.success(OflcRatingOflcUnspecified)
+    "oflcG" -> decode.success(OflcRatingOflcG)
+    "oflcPg" -> decode.success(OflcRatingOflcPg)
+    "oflcM" -> decode.success(OflcRatingOflcM)
+    "oflcR13" -> decode.success(OflcRatingOflcR13)
+    "oflcR15" -> decode.success(OflcRatingOflcR15)
+    "oflcR16" -> decode.success(OflcRatingOflcR16)
+    "oflcR18" -> decode.success(OflcRatingOflcR18)
+    "oflcUnrated" -> decode.success(OflcRatingOflcUnrated)
+    "oflcRp13" -> decode.success(OflcRatingOflcRp13)
+    "oflcRp16" -> decode.success(OflcRatingOflcRp16)
+    "oflcRp18" -> decode.success(OflcRatingOflcRp18)
+    _ -> decode.failure(OflcRatingOflcUnspecified, "a valid OflcRating")
   }
 }
 
@@ -3064,15 +3506,15 @@ pub fn pefilm_rating_to_string(value: PefilmRating) -> String {
 }
 
 pub fn pefilm_rating_decoder() -> Decoder(PefilmRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "pefilmUnspecified" -> success(PefilmRatingPefilmUnspecified)
-    "pefilmPt" -> success(PefilmRatingPefilmPt)
-    "pefilmPg" -> success(PefilmRatingPefilmPg)
-    "pefilm14" -> success(PefilmRatingPefilm14)
-    "pefilm18" -> success(PefilmRatingPefilm18)
-    "pefilmUnrated" -> success(PefilmRatingPefilmUnrated)
-    _ -> failure(PefilmRatingPefilmUnspecified, "a valid PefilmRating")
+    "pefilmUnspecified" -> decode.success(PefilmRatingPefilmUnspecified)
+    "pefilmPt" -> decode.success(PefilmRatingPefilmPt)
+    "pefilmPg" -> decode.success(PefilmRatingPefilmPg)
+    "pefilm14" -> decode.success(PefilmRatingPefilm14)
+    "pefilm18" -> decode.success(PefilmRatingPefilm18)
+    "pefilmUnrated" -> decode.success(PefilmRatingPefilmUnrated)
+    _ -> decode.failure(PefilmRatingPefilmUnspecified, "a valid PefilmRating")
   }
 }
 
@@ -3102,17 +3544,17 @@ pub fn rcnof_rating_to_string(value: RcnofRating) -> String {
 }
 
 pub fn rcnof_rating_decoder() -> Decoder(RcnofRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "rcnofUnspecified" -> success(RcnofRatingRcnofUnspecified)
-    "rcnofI" -> success(RcnofRatingRcnofI)
-    "rcnofIi" -> success(RcnofRatingRcnofIi)
-    "rcnofIii" -> success(RcnofRatingRcnofIii)
-    "rcnofIv" -> success(RcnofRatingRcnofIv)
-    "rcnofV" -> success(RcnofRatingRcnofV)
-    "rcnofVi" -> success(RcnofRatingRcnofVi)
-    "rcnofUnrated" -> success(RcnofRatingRcnofUnrated)
-    _ -> failure(RcnofRatingRcnofUnspecified, "a valid RcnofRating")
+    "rcnofUnspecified" -> decode.success(RcnofRatingRcnofUnspecified)
+    "rcnofI" -> decode.success(RcnofRatingRcnofI)
+    "rcnofIi" -> decode.success(RcnofRatingRcnofIi)
+    "rcnofIii" -> decode.success(RcnofRatingRcnofIii)
+    "rcnofIv" -> decode.success(RcnofRatingRcnofIv)
+    "rcnofV" -> decode.success(RcnofRatingRcnofV)
+    "rcnofVi" -> decode.success(RcnofRatingRcnofVi)
+    "rcnofUnrated" -> decode.success(RcnofRatingRcnofUnrated)
+    _ -> decode.failure(RcnofRatingRcnofUnspecified, "a valid RcnofRating")
   }
 }
 
@@ -3127,10 +3569,12 @@ pub type ResorteviolenciaRating {
   ResorteviolenciaRatingResorteviolenciaUnrated
 }
 
-pub fn resorteviolencia_rating_to_string(value: ResorteviolenciaRating) -> String {
-  case value
-  {
-    ResorteviolenciaRatingResorteviolenciaUnspecified -> "resorteviolenciaUnspecified"
+pub fn resorteviolencia_rating_to_string(
+  value: ResorteviolenciaRating,
+) -> String {
+  case value {
+    ResorteviolenciaRatingResorteviolenciaUnspecified ->
+      "resorteviolenciaUnspecified"
     ResorteviolenciaRatingResorteviolenciaA -> "resorteviolenciaA"
     ResorteviolenciaRatingResorteviolenciaB -> "resorteviolenciaB"
     ResorteviolenciaRatingResorteviolenciaC -> "resorteviolenciaC"
@@ -3141,23 +3585,27 @@ pub fn resorteviolencia_rating_to_string(value: ResorteviolenciaRating) -> Strin
 }
 
 pub fn resorteviolencia_rating_decoder() -> Decoder(ResorteviolenciaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "resorteviolenciaUnspecified" -> success(
-      ResorteviolenciaRatingResorteviolenciaUnspecified,
-    )
-    "resorteviolenciaA" -> success(ResorteviolenciaRatingResorteviolenciaA)
-    "resorteviolenciaB" -> success(ResorteviolenciaRatingResorteviolenciaB)
-    "resorteviolenciaC" -> success(ResorteviolenciaRatingResorteviolenciaC)
-    "resorteviolenciaD" -> success(ResorteviolenciaRatingResorteviolenciaD)
-    "resorteviolenciaE" -> success(ResorteviolenciaRatingResorteviolenciaE)
-    "resorteviolenciaUnrated" -> success(
-      ResorteviolenciaRatingResorteviolenciaUnrated,
-    )
-    _ -> failure(
-      ResorteviolenciaRatingResorteviolenciaUnspecified,
-      "a valid ResorteviolenciaRating",
-    )
+    "resorteviolenciaUnspecified" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaUnspecified)
+    "resorteviolenciaA" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaA)
+    "resorteviolenciaB" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaB)
+    "resorteviolenciaC" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaC)
+    "resorteviolenciaD" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaD)
+    "resorteviolenciaE" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaE)
+    "resorteviolenciaUnrated" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaUnrated)
+    _ ->
+      decode.failure(
+        ResorteviolenciaRatingResorteviolenciaUnspecified,
+        "a valid ResorteviolenciaRating",
+      )
   }
 }
 
@@ -3187,17 +3635,17 @@ pub fn rtc_rating_to_string(value: RtcRating) -> String {
 }
 
 pub fn rtc_rating_decoder() -> Decoder(RtcRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "rtcUnspecified" -> success(RtcRatingRtcUnspecified)
-    "rtcAa" -> success(RtcRatingRtcAa)
-    "rtcA" -> success(RtcRatingRtcA)
-    "rtcB" -> success(RtcRatingRtcB)
-    "rtcB15" -> success(RtcRatingRtcB15)
-    "rtcC" -> success(RtcRatingRtcC)
-    "rtcD" -> success(RtcRatingRtcD)
-    "rtcUnrated" -> success(RtcRatingRtcUnrated)
-    _ -> failure(RtcRatingRtcUnspecified, "a valid RtcRating")
+    "rtcUnspecified" -> decode.success(RtcRatingRtcUnspecified)
+    "rtcAa" -> decode.success(RtcRatingRtcAa)
+    "rtcA" -> decode.success(RtcRatingRtcA)
+    "rtcB" -> decode.success(RtcRatingRtcB)
+    "rtcB15" -> decode.success(RtcRatingRtcB15)
+    "rtcC" -> decode.success(RtcRatingRtcC)
+    "rtcD" -> decode.success(RtcRatingRtcD)
+    "rtcUnrated" -> decode.success(RtcRatingRtcUnrated)
+    _ -> decode.failure(RtcRatingRtcUnspecified, "a valid RtcRating")
   }
 }
 
@@ -3223,15 +3671,15 @@ pub fn rte_rating_to_string(value: RteRating) -> String {
 }
 
 pub fn rte_rating_decoder() -> Decoder(RteRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "rteUnspecified" -> success(RteRatingRteUnspecified)
-    "rteGa" -> success(RteRatingRteGa)
-    "rteCh" -> success(RteRatingRteCh)
-    "rtePs" -> success(RteRatingRtePs)
-    "rteMa" -> success(RteRatingRteMa)
-    "rteUnrated" -> success(RteRatingRteUnrated)
-    _ -> failure(RteRatingRteUnspecified, "a valid RteRating")
+    "rteUnspecified" -> decode.success(RteRatingRteUnspecified)
+    "rteGa" -> decode.success(RteRatingRteGa)
+    "rteCh" -> decode.success(RteRatingRteCh)
+    "rtePs" -> decode.success(RteRatingRtePs)
+    "rteMa" -> decode.success(RteRatingRteMa)
+    "rteUnrated" -> decode.success(RteRatingRteUnrated)
+    _ -> decode.failure(RteRatingRteUnspecified, "a valid RteRating")
   }
 }
 
@@ -3259,16 +3707,16 @@ pub fn russia_rating_to_string(value: RussiaRating) -> String {
 }
 
 pub fn russia_rating_decoder() -> Decoder(RussiaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "russiaUnspecified" -> success(RussiaRatingRussiaUnspecified)
-    "russia0" -> success(RussiaRatingRussia0)
-    "russia6" -> success(RussiaRatingRussia6)
-    "russia12" -> success(RussiaRatingRussia12)
-    "russia16" -> success(RussiaRatingRussia16)
-    "russia18" -> success(RussiaRatingRussia18)
-    "russiaUnrated" -> success(RussiaRatingRussiaUnrated)
-    _ -> failure(RussiaRatingRussiaUnspecified, "a valid RussiaRating")
+    "russiaUnspecified" -> decode.success(RussiaRatingRussiaUnspecified)
+    "russia0" -> decode.success(RussiaRatingRussia0)
+    "russia6" -> decode.success(RussiaRatingRussia6)
+    "russia12" -> decode.success(RussiaRatingRussia12)
+    "russia16" -> decode.success(RussiaRatingRussia16)
+    "russia18" -> decode.success(RussiaRatingRussia18)
+    "russiaUnrated" -> decode.success(RussiaRatingRussiaUnrated)
+    _ -> decode.failure(RussiaRatingRussiaUnspecified, "a valid RussiaRating")
   }
 }
 
@@ -3294,15 +3742,15 @@ pub fn skfilm_rating_to_string(value: SkfilmRating) -> String {
 }
 
 pub fn skfilm_rating_decoder() -> Decoder(SkfilmRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "skfilmUnspecified" -> success(SkfilmRatingSkfilmUnspecified)
-    "skfilmG" -> success(SkfilmRatingSkfilmG)
-    "skfilmP2" -> success(SkfilmRatingSkfilmP2)
-    "skfilmP5" -> success(SkfilmRatingSkfilmP5)
-    "skfilmP8" -> success(SkfilmRatingSkfilmP8)
-    "skfilmUnrated" -> success(SkfilmRatingSkfilmUnrated)
-    _ -> failure(SkfilmRatingSkfilmUnspecified, "a valid SkfilmRating")
+    "skfilmUnspecified" -> decode.success(SkfilmRatingSkfilmUnspecified)
+    "skfilmG" -> decode.success(SkfilmRatingSkfilmG)
+    "skfilmP2" -> decode.success(SkfilmRatingSkfilmP2)
+    "skfilmP5" -> decode.success(SkfilmRatingSkfilmP5)
+    "skfilmP8" -> decode.success(SkfilmRatingSkfilmP8)
+    "skfilmUnrated" -> decode.success(SkfilmRatingSkfilmUnrated)
+    _ -> decode.failure(SkfilmRatingSkfilmUnspecified, "a valid SkfilmRating")
   }
 }
 
@@ -3332,17 +3780,17 @@ pub fn smais_rating_to_string(value: SmaisRating) -> String {
 }
 
 pub fn smais_rating_decoder() -> Decoder(SmaisRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "smaisUnspecified" -> success(SmaisRatingSmaisUnspecified)
-    "smaisL" -> success(SmaisRatingSmaisL)
-    "smais7" -> success(SmaisRatingSmais7)
-    "smais12" -> success(SmaisRatingSmais12)
-    "smais14" -> success(SmaisRatingSmais14)
-    "smais16" -> success(SmaisRatingSmais16)
-    "smais18" -> success(SmaisRatingSmais18)
-    "smaisUnrated" -> success(SmaisRatingSmaisUnrated)
-    _ -> failure(SmaisRatingSmaisUnspecified, "a valid SmaisRating")
+    "smaisUnspecified" -> decode.success(SmaisRatingSmaisUnspecified)
+    "smaisL" -> decode.success(SmaisRatingSmaisL)
+    "smais7" -> decode.success(SmaisRatingSmais7)
+    "smais12" -> decode.success(SmaisRatingSmais12)
+    "smais14" -> decode.success(SmaisRatingSmais14)
+    "smais16" -> decode.success(SmaisRatingSmais16)
+    "smais18" -> decode.success(SmaisRatingSmais18)
+    "smaisUnrated" -> decode.success(SmaisRatingSmaisUnrated)
+    _ -> decode.failure(SmaisRatingSmaisUnspecified, "a valid SmaisRating")
   }
 }
 
@@ -3368,15 +3816,15 @@ pub fn smsa_rating_to_string(value: SmsaRating) -> String {
 }
 
 pub fn smsa_rating_decoder() -> Decoder(SmsaRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "smsaUnspecified" -> success(SmsaRatingSmsaUnspecified)
-    "smsaA" -> success(SmsaRatingSmsaA)
-    "smsa7" -> success(SmsaRatingSmsa7)
-    "smsa11" -> success(SmsaRatingSmsa11)
-    "smsa15" -> success(SmsaRatingSmsa15)
-    "smsaUnrated" -> success(SmsaRatingSmsaUnrated)
-    _ -> failure(SmsaRatingSmsaUnspecified, "a valid SmsaRating")
+    "smsaUnspecified" -> decode.success(SmsaRatingSmsaUnspecified)
+    "smsaA" -> decode.success(SmsaRatingSmsaA)
+    "smsa7" -> decode.success(SmsaRatingSmsa7)
+    "smsa11" -> decode.success(SmsaRatingSmsa11)
+    "smsa15" -> decode.success(SmsaRatingSmsa15)
+    "smsaUnrated" -> decode.success(SmsaRatingSmsaUnrated)
+    _ -> decode.failure(SmsaRatingSmsaUnspecified, "a valid SmsaRating")
   }
 }
 
@@ -3408,18 +3856,18 @@ pub fn tvpg_rating_to_string(value: TvpgRating) -> String {
 }
 
 pub fn tvpg_rating_decoder() -> Decoder(TvpgRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "tvpgUnspecified" -> success(TvpgRatingTvpgUnspecified)
-    "tvpgY" -> success(TvpgRatingTvpgY)
-    "tvpgY7" -> success(TvpgRatingTvpgY7)
-    "tvpgY7Fv" -> success(TvpgRatingTvpgY7Fv)
-    "tvpgG" -> success(TvpgRatingTvpgG)
-    "tvpgPg" -> success(TvpgRatingTvpgPg)
-    "pg14" -> success(TvpgRatingPg14)
-    "tvpgMa" -> success(TvpgRatingTvpgMa)
-    "tvpgUnrated" -> success(TvpgRatingTvpgUnrated)
-    _ -> failure(TvpgRatingTvpgUnspecified, "a valid TvpgRating")
+    "tvpgUnspecified" -> decode.success(TvpgRatingTvpgUnspecified)
+    "tvpgY" -> decode.success(TvpgRatingTvpgY)
+    "tvpgY7" -> decode.success(TvpgRatingTvpgY7)
+    "tvpgY7Fv" -> decode.success(TvpgRatingTvpgY7Fv)
+    "tvpgG" -> decode.success(TvpgRatingTvpgG)
+    "tvpgPg" -> decode.success(TvpgRatingTvpgPg)
+    "pg14" -> decode.success(TvpgRatingPg14)
+    "tvpgMa" -> decode.success(TvpgRatingTvpgMa)
+    "tvpgUnrated" -> decode.success(TvpgRatingTvpgUnrated)
+    _ -> decode.failure(TvpgRatingTvpgUnspecified, "a valid TvpgRating")
   }
 }
 
@@ -3437,10 +3885,10 @@ pub fn yt_rating_to_string(value: YtRating) -> String {
 }
 
 pub fn yt_rating_decoder() -> Decoder(YtRating) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "ytUnspecified" -> success(YtRatingYtUnspecified)
-    "ytAgeRestricted" -> success(YtRatingYtAgeRestricted)
-    _ -> failure(YtRatingYtUnspecified, "a valid YtRating")
+    "ytUnspecified" -> decode.success(YtRatingYtUnspecified)
+    "ytAgeRestricted" -> decode.success(YtRatingYtAgeRestricted)
+    _ -> decode.failure(YtRatingYtUnspecified, "a valid YtRating")
   }
 }

@@ -1,35 +1,52 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/channel_profile_details.{type ChannelProfileDetails}
 import youtube/memberships_details.{type MembershipsDetails}
 
 pub type MemberSnippet {
   MemberSnippet(
-    creator_channel_id: option.Option(String),
-    member_details: option.Option(ChannelProfileDetails),
-    memberships_details: option.Option(MembershipsDetails),
+    creator_channel_id: Option(String),
+    member_details: Option(ChannelProfileDetails),
+    memberships_details: Option(MembershipsDetails),
   )
 }
 
 pub fn decoder() -> Decoder(MemberSnippet) {
-  use creator_channel_id <- optional_field(
+  use creator_channel_id <- decode.optional_field(
     "creatorChannelId",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use member_details <- optional_field(
+  use member_details <- decode.optional_field(
     "memberDetails",
     option.None,
-    optional(channel_profile_details.decoder()),
+    decode.optional(channel_profile_details.decoder()),
   )
-  use memberships_details <- optional_field(
+  use memberships_details <- decode.optional_field(
     "membershipsDetails",
     option.None,
-    optional(memberships_details.decoder()),
+    decode.optional(memberships_details.decoder()),
   )
-  success(
-    MemberSnippet(creator_channel_id, member_details, memberships_details),
-  )
+  decode.success(MemberSnippet(
+    creator_channel_id,
+    member_details,
+    memberships_details,
+  ))
+}
+
+pub fn to_json(value: MemberSnippet) -> Json {
+  json.object([
+    #("creatorChannelId", json.nullable(value.creator_channel_id, json.string)),
+    #(
+      "memberDetails",
+      json.nullable(value.member_details, channel_profile_details.to_json),
+    ),
+    #(
+      "membershipsDetails",
+      json.nullable(value.memberships_details, memberships_details.to_json),
+    ),
+  ])
 }

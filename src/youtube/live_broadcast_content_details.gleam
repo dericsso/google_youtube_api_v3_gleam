@@ -1,135 +1,204 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, bool, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/availability_config.{type AvailabilityConfig}
 import youtube/monitor_stream_info.{type MonitorStreamInfo}
 
 /// Detailed settings of a broadcast.
 pub type LiveBroadcastContentDetails {
   LiveBroadcastContentDetails(
-    availability_config: option.Option(AvailabilityConfig),
-    bound_stream_id: option.Option(String),
-    bound_stream_last_update_time_ms: option.Option(String),
-    closed_captions_type: option.Option(ClosedCaptionsType),
-    enable_auto_start: option.Option(Bool),
-    enable_auto_stop: option.Option(Bool),
-    enable_closed_captions: option.Option(Bool),
-    enable_content_encryption: option.Option(Bool),
-    enable_dvr: option.Option(Bool),
-    enable_embed: option.Option(Bool),
-    enable_low_latency: option.Option(Bool),
-    latency_preference: option.Option(LatencyPreference),
-    mesh: option.Option(String),
-    monitor_stream: option.Option(MonitorStreamInfo),
-    projection: option.Option(Projection),
-    record_from_start: option.Option(Bool),
-    start_with_slate: option.Option(Bool),
-    stereo_layout: option.Option(StereoLayout),
+    availability_config: Option(AvailabilityConfig),
+    bound_stream_id: Option(String),
+    bound_stream_last_update_time_ms: Option(String),
+    closed_captions_type: Option(ClosedCaptionsType),
+    enable_auto_start: Option(Bool),
+    enable_auto_stop: Option(Bool),
+    enable_closed_captions: Option(Bool),
+    enable_content_encryption: Option(Bool),
+    enable_dvr: Option(Bool),
+    enable_embed: Option(Bool),
+    enable_low_latency: Option(Bool),
+    latency_preference: Option(LatencyPreference),
+    mesh: Option(String),
+    monitor_stream: Option(MonitorStreamInfo),
+    projection: Option(Projection),
+    record_from_start: Option(Bool),
+    start_with_slate: Option(Bool),
+    stereo_layout: Option(StereoLayout),
   )
 }
 
 pub fn decoder() -> Decoder(LiveBroadcastContentDetails) {
-  use availability_config <- optional_field(
+  use availability_config <- decode.optional_field(
     "availabilityConfig",
     option.None,
-    optional(availability_config.decoder()),
+    decode.optional(availability_config.decoder()),
   )
-  use bound_stream_id <- optional_field(
+  use bound_stream_id <- decode.optional_field(
     "boundStreamId",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use bound_stream_last_update_time_ms <- optional_field(
+  use bound_stream_last_update_time_ms <- decode.optional_field(
     "boundStreamLastUpdateTimeMs",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use closed_captions_type <- optional_field(
+  use closed_captions_type <- decode.optional_field(
     "closedCaptionsType",
     option.None,
-    optional(closed_captions_type_decoder()),
+    decode.optional(closed_captions_type_decoder()),
   )
-  use enable_auto_start <- optional_field(
+  use enable_auto_start <- decode.optional_field(
     "enableAutoStart",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use enable_auto_stop <- optional_field(
+  use enable_auto_stop <- decode.optional_field(
     "enableAutoStop",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use enable_closed_captions <- optional_field(
+  use enable_closed_captions <- decode.optional_field(
     "enableClosedCaptions",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use enable_content_encryption <- optional_field(
+  use enable_content_encryption <- decode.optional_field(
     "enableContentEncryption",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use enable_dvr <- optional_field("enableDvr", option.None, optional(bool))
-  use enable_embed <- optional_field("enableEmbed", option.None, optional(bool))
-  use enable_low_latency <- optional_field(
+  use enable_dvr <- decode.optional_field(
+    "enableDvr",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use enable_embed <- decode.optional_field(
+    "enableEmbed",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use enable_low_latency <- decode.optional_field(
     "enableLowLatency",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use latency_preference <- optional_field(
+  use latency_preference <- decode.optional_field(
     "latencyPreference",
     option.None,
-    optional(latency_preference_decoder()),
+    decode.optional(latency_preference_decoder()),
   )
-  use mesh <- optional_field("mesh", option.None, optional(string))
-  use monitor_stream <- optional_field(
+  use mesh <- decode.optional_field(
+    "mesh",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use monitor_stream <- decode.optional_field(
     "monitorStream",
     option.None,
-    optional(monitor_stream_info.decoder()),
+    decode.optional(monitor_stream_info.decoder()),
   )
-  use projection <- optional_field(
+  use projection <- decode.optional_field(
     "projection",
     option.None,
-    optional(projection_decoder()),
+    decode.optional(projection_decoder()),
   )
-  use record_from_start <- optional_field(
+  use record_from_start <- decode.optional_field(
     "recordFromStart",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use start_with_slate <- optional_field(
+  use start_with_slate <- decode.optional_field(
     "startWithSlate",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use stereo_layout <- optional_field(
+  use stereo_layout <- decode.optional_field(
     "stereoLayout",
     option.None,
-    optional(stereo_layout_decoder()),
+    decode.optional(stereo_layout_decoder()),
   )
-  success(
-    LiveBroadcastContentDetails(
-      availability_config,
-      bound_stream_id,
-      bound_stream_last_update_time_ms,
-      closed_captions_type,
-      enable_auto_start,
-      enable_auto_stop,
-      enable_closed_captions,
-      enable_content_encryption,
-      enable_dvr,
-      enable_embed,
-      enable_low_latency,
-      latency_preference,
-      mesh,
-      monitor_stream,
-      projection,
-      record_from_start,
-      start_with_slate,
-      stereo_layout,
+  decode.success(LiveBroadcastContentDetails(
+    availability_config,
+    bound_stream_id,
+    bound_stream_last_update_time_ms,
+    closed_captions_type,
+    enable_auto_start,
+    enable_auto_stop,
+    enable_closed_captions,
+    enable_content_encryption,
+    enable_dvr,
+    enable_embed,
+    enable_low_latency,
+    latency_preference,
+    mesh,
+    monitor_stream,
+    projection,
+    record_from_start,
+    start_with_slate,
+    stereo_layout,
+  ))
+}
+
+pub fn to_json(value: LiveBroadcastContentDetails) -> Json {
+  json.object([
+    #(
+      "availabilityConfig",
+      json.nullable(value.availability_config, availability_config.to_json),
     ),
-  )
+    #("boundStreamId", json.nullable(value.bound_stream_id, json.string)),
+    #(
+      "boundStreamLastUpdateTimeMs",
+      json.nullable(value.bound_stream_last_update_time_ms, json.string),
+    ),
+    #(
+      "closedCaptionsType",
+      json.nullable(value.closed_captions_type, fn(e) {
+        json.string(closed_captions_type_to_string(e))
+      }),
+    ),
+    #("enableAutoStart", json.nullable(value.enable_auto_start, json.bool)),
+    #("enableAutoStop", json.nullable(value.enable_auto_stop, json.bool)),
+    #(
+      "enableClosedCaptions",
+      json.nullable(value.enable_closed_captions, json.bool),
+    ),
+    #(
+      "enableContentEncryption",
+      json.nullable(value.enable_content_encryption, json.bool),
+    ),
+    #("enableDvr", json.nullable(value.enable_dvr, json.bool)),
+    #("enableEmbed", json.nullable(value.enable_embed, json.bool)),
+    #("enableLowLatency", json.nullable(value.enable_low_latency, json.bool)),
+    #(
+      "latencyPreference",
+      json.nullable(value.latency_preference, fn(e) {
+        json.string(latency_preference_to_string(e))
+      }),
+    ),
+    #("mesh", json.nullable(value.mesh, json.string)),
+    #(
+      "monitorStream",
+      json.nullable(value.monitor_stream, monitor_stream_info.to_json),
+    ),
+    #(
+      "projection",
+      json.nullable(value.projection, fn(e) {
+        json.string(projection_to_string(e))
+      }),
+    ),
+    #("recordFromStart", json.nullable(value.record_from_start, json.bool)),
+    #("startWithSlate", json.nullable(value.start_with_slate, json.bool)),
+    #(
+      "stereoLayout",
+      json.nullable(value.stereo_layout, fn(e) {
+        json.string(stereo_layout_to_string(e))
+      }),
+    ),
+  ])
 }
 
 pub type ClosedCaptionsType {
@@ -141,7 +210,8 @@ pub type ClosedCaptionsType {
 
 pub fn closed_captions_type_to_string(value: ClosedCaptionsType) -> String {
   case value {
-    ClosedCaptionsTypeClosedCaptionsTypeUnspecified -> "closedCaptionsTypeUnspecified"
+    ClosedCaptionsTypeClosedCaptionsTypeUnspecified ->
+      "closedCaptionsTypeUnspecified"
     ClosedCaptionsTypeClosedCaptionsDisabled -> "closedCaptionsDisabled"
     ClosedCaptionsTypeClosedCaptionsHttpPost -> "closedCaptionsHttpPost"
     ClosedCaptionsTypeClosedCaptionsEmbedded -> "closedCaptionsEmbedded"
@@ -149,24 +219,21 @@ pub fn closed_captions_type_to_string(value: ClosedCaptionsType) -> String {
 }
 
 pub fn closed_captions_type_decoder() -> Decoder(ClosedCaptionsType) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "closedCaptionsTypeUnspecified" -> success(
-      ClosedCaptionsTypeClosedCaptionsTypeUnspecified,
-    )
-    "closedCaptionsDisabled" -> success(
-      ClosedCaptionsTypeClosedCaptionsDisabled,
-    )
-    "closedCaptionsHttpPost" -> success(
-      ClosedCaptionsTypeClosedCaptionsHttpPost,
-    )
-    "closedCaptionsEmbedded" -> success(
-      ClosedCaptionsTypeClosedCaptionsEmbedded,
-    )
-    _ -> failure(
-      ClosedCaptionsTypeClosedCaptionsTypeUnspecified,
-      "a valid ClosedCaptionsType",
-    )
+    "closedCaptionsTypeUnspecified" ->
+      decode.success(ClosedCaptionsTypeClosedCaptionsTypeUnspecified)
+    "closedCaptionsDisabled" ->
+      decode.success(ClosedCaptionsTypeClosedCaptionsDisabled)
+    "closedCaptionsHttpPost" ->
+      decode.success(ClosedCaptionsTypeClosedCaptionsHttpPost)
+    "closedCaptionsEmbedded" ->
+      decode.success(ClosedCaptionsTypeClosedCaptionsEmbedded)
+    _ ->
+      decode.failure(
+        ClosedCaptionsTypeClosedCaptionsTypeUnspecified,
+        "a valid ClosedCaptionsType",
+      )
   }
 }
 
@@ -180,7 +247,8 @@ pub type LatencyPreference {
 
 pub fn latency_preference_to_string(value: LatencyPreference) -> String {
   case value {
-    LatencyPreferenceLatencyPreferenceUnspecified -> "latencyPreferenceUnspecified"
+    LatencyPreferenceLatencyPreferenceUnspecified ->
+      "latencyPreferenceUnspecified"
     LatencyPreferenceNormal -> "normal"
     LatencyPreferenceLow -> "low"
     LatencyPreferenceUltraLow -> "ultraLow"
@@ -188,18 +256,18 @@ pub fn latency_preference_to_string(value: LatencyPreference) -> String {
 }
 
 pub fn latency_preference_decoder() -> Decoder(LatencyPreference) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "latencyPreferenceUnspecified" -> success(
-      LatencyPreferenceLatencyPreferenceUnspecified,
-    )
-    "normal" -> success(LatencyPreferenceNormal)
-    "low" -> success(LatencyPreferenceLow)
-    "ultraLow" -> success(LatencyPreferenceUltraLow)
-    _ -> failure(
-      LatencyPreferenceLatencyPreferenceUnspecified,
-      "a valid LatencyPreference",
-    )
+    "latencyPreferenceUnspecified" ->
+      decode.success(LatencyPreferenceLatencyPreferenceUnspecified)
+    "normal" -> decode.success(LatencyPreferenceNormal)
+    "low" -> decode.success(LatencyPreferenceLow)
+    "ultraLow" -> decode.success(LatencyPreferenceUltraLow)
+    _ ->
+      decode.failure(
+        LatencyPreferenceLatencyPreferenceUnspecified,
+        "a valid LatencyPreference",
+      )
   }
 }
 
@@ -221,13 +289,13 @@ pub fn projection_to_string(value: Projection) -> String {
 }
 
 pub fn projection_decoder() -> Decoder(Projection) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "projectionUnspecified" -> success(ProjectionProjectionUnspecified)
-    "rectangular" -> success(ProjectionRectangular)
-    "360" -> success(ProjectionValue360)
-    "mesh" -> success(ProjectionMesh)
-    _ -> failure(ProjectionProjectionUnspecified, "a valid Projection")
+    "projectionUnspecified" -> decode.success(ProjectionProjectionUnspecified)
+    "rectangular" -> decode.success(ProjectionRectangular)
+    "360" -> decode.success(ProjectionValue360)
+    "mesh" -> decode.success(ProjectionMesh)
+    _ -> decode.failure(ProjectionProjectionUnspecified, "a valid Projection")
   }
 }
 
@@ -249,12 +317,17 @@ pub fn stereo_layout_to_string(value: StereoLayout) -> String {
 }
 
 pub fn stereo_layout_decoder() -> Decoder(StereoLayout) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "stereoLayoutUnspecified" -> success(StereoLayoutStereoLayoutUnspecified)
-    "mono" -> success(StereoLayoutMono)
-    "leftRight" -> success(StereoLayoutLeftRight)
-    "topBottom" -> success(StereoLayoutTopBottom)
-    _ -> failure(StereoLayoutStereoLayoutUnspecified, "a valid StereoLayout")
+    "stereoLayoutUnspecified" ->
+      decode.success(StereoLayoutStereoLayoutUnspecified)
+    "mono" -> decode.success(StereoLayoutMono)
+    "leftRight" -> decode.success(StereoLayoutLeftRight)
+    "topBottom" -> decode.success(StereoLayoutTopBottom)
+    _ ->
+      decode.failure(
+        StereoLayoutStereoLayoutUnspecified,
+        "a valid StereoLayout",
+      )
   }
 }

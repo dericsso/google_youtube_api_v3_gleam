@@ -1,40 +1,65 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/abuse_type.{type AbuseType}
 import youtube/entity.{type Entity}
 import youtube/related_entity.{type RelatedEntity}
 
 pub type AbuseReport {
   AbuseReport(
-    abuse_types: option.Option(List(AbuseType)),
-    description: option.Option(String),
-    related_entities: option.Option(List(RelatedEntity)),
-    subject: option.Option(Entity),
+    abuse_types: Option(List(AbuseType)),
+    description: Option(String),
+    related_entities: Option(List(RelatedEntity)),
+    subject: Option(Entity),
   )
 }
 
 pub fn decoder() -> Decoder(AbuseReport) {
-  use abuse_types <- optional_field(
+  use abuse_types <- decode.optional_field(
     "abuseTypes",
     option.None,
-    optional(list(abuse_type.decoder())),
+    decode.optional(decode.list(abuse_type.decoder())),
   )
-  use description <- optional_field(
+  use description <- decode.optional_field(
     "description",
     option.None,
-    optional(string),
+    decode.optional(decode.string),
   )
-  use related_entities <- optional_field(
+  use related_entities <- decode.optional_field(
     "relatedEntities",
     option.None,
-    optional(list(related_entity.decoder())),
+    decode.optional(decode.list(related_entity.decoder())),
   )
-  use subject <- optional_field(
+  use subject <- decode.optional_field(
     "subject",
     option.None,
-    optional(entity.decoder()),
+    decode.optional(entity.decoder()),
   )
-  success(AbuseReport(abuse_types, description, related_entities, subject))
+  decode.success(AbuseReport(
+    abuse_types,
+    description,
+    related_entities,
+    subject,
+  ))
+}
+
+pub fn to_json(value: AbuseReport) -> Json {
+  json.object([
+    #(
+      "abuseTypes",
+      json.nullable(value.abuse_types, fn(items) {
+        json.array(items, abuse_type.to_json)
+      }),
+    ),
+    #("description", json.nullable(value.description, json.string)),
+    #(
+      "relatedEntities",
+      json.nullable(value.related_entities, fn(items) {
+        json.array(items, related_entity.to_json)
+      }),
+    ),
+    #("subject", json.nullable(value.subject, entity.to_json)),
+  ])
 }

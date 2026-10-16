@@ -1,18 +1,40 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// DEPRECATED Region restriction of the video.
 pub type VideoContentDetailsRegionRestriction {
   VideoContentDetailsRegionRestriction(
-    allowed: option.Option(List(String)),
-    blocked: option.Option(List(String)),
+    allowed: Option(List(String)),
+    blocked: Option(List(String)),
   )
 }
 
 pub fn decoder() -> Decoder(VideoContentDetailsRegionRestriction) {
-  use allowed <- optional_field("allowed", option.None, optional(list(string)))
-  use blocked <- optional_field("blocked", option.None, optional(list(string)))
-  success(VideoContentDetailsRegionRestriction(allowed, blocked))
+  use allowed <- decode.optional_field(
+    "allowed",
+    option.None,
+    decode.optional(decode.list(decode.string)),
+  )
+  use blocked <- decode.optional_field(
+    "blocked",
+    option.None,
+    decode.optional(decode.list(decode.string)),
+  )
+  decode.success(VideoContentDetailsRegionRestriction(allowed, blocked))
+}
+
+pub fn to_json(value: VideoContentDetailsRegionRestriction) -> Json {
+  json.object([
+    #(
+      "allowed",
+      json.nullable(value.allowed, fn(items) { json.array(items, json.string) }),
+    ),
+    #(
+      "blocked",
+      json.nullable(value.blocked, fn(items) { json.array(items, json.string) }),
+    ),
+  ])
 }

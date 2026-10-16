@@ -1,34 +1,60 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 import youtube/activity_content_details.{type ActivityContentDetails}
 import youtube/activity_snippet.{type ActivitySnippet}
 
 /// An `activity` resource contains information about an action that a particular channel, or user, has taken on YouTube. The actions reported in activity feeds include sharing a video, uploading a video, and so forth. Each `activity` resource identifies the type of action, the channel associated with the action, and the resource(s) associated with the action, such as the video that was rated or uploaded.
 pub type Activity {
   Activity(
-    content_details: option.Option(ActivityContentDetails),
-    etag: option.Option(String),
-    id: option.Option(String),
-    kind: option.Option(String),
-    snippet: option.Option(ActivitySnippet),
+    content_details: Option(ActivityContentDetails),
+    etag: Option(String),
+    id: Option(String),
+    kind: Option(String),
+    snippet: Option(ActivitySnippet),
   )
 }
 
 pub fn decoder() -> Decoder(Activity) {
-  use content_details <- optional_field(
+  use content_details <- decode.optional_field(
     "contentDetails",
     option.None,
-    optional(activity_content_details.decoder()),
+    decode.optional(activity_content_details.decoder()),
   )
-  use etag <- optional_field("etag", option.None, optional(string))
-  use id <- optional_field("id", option.None, optional(string))
-  use kind <- optional_field("kind", option.None, optional(string))
-  use snippet <- optional_field(
+  use etag <- decode.optional_field(
+    "etag",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use id <- decode.optional_field(
+    "id",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use kind <- decode.optional_field(
+    "kind",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use snippet <- decode.optional_field(
     "snippet",
     option.None,
-    optional(activity_snippet.decoder()),
+    decode.optional(activity_snippet.decoder()),
   )
-  success(Activity(content_details, etag, id, kind, snippet))
+  decode.success(Activity(content_details, etag, id, kind, snippet))
+}
+
+pub fn to_json(value: Activity) -> Json {
+  json.object([
+    #(
+      "contentDetails",
+      json.nullable(value.content_details, activity_content_details.to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, activity_snippet.to_json)),
+  ])
 }

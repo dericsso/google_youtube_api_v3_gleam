@@ -1,57 +1,87 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, bool, success, then, failure}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// JSON template for the status part of a channel.
 pub type ChannelStatus {
   ChannelStatus(
-    is_channel_monetization_enabled: option.Option(Bool),
-    is_linked: option.Option(Bool),
-    long_uploads_status: option.Option(LongUploadsStatus),
-    made_for_kids: option.Option(Bool),
-    privacy_status: option.Option(PrivacyStatus),
-    self_declared_made_for_kids: option.Option(Bool),
+    is_channel_monetization_enabled: Option(Bool),
+    is_linked: Option(Bool),
+    long_uploads_status: Option(LongUploadsStatus),
+    made_for_kids: Option(Bool),
+    privacy_status: Option(PrivacyStatus),
+    self_declared_made_for_kids: Option(Bool),
   )
 }
 
 pub fn decoder() -> Decoder(ChannelStatus) {
-  use is_channel_monetization_enabled <- optional_field(
+  use is_channel_monetization_enabled <- decode.optional_field(
     "isChannelMonetizationEnabled",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use is_linked <- optional_field("isLinked", option.None, optional(bool))
-  use long_uploads_status <- optional_field(
+  use is_linked <- decode.optional_field(
+    "isLinked",
+    option.None,
+    decode.optional(decode.bool),
+  )
+  use long_uploads_status <- decode.optional_field(
     "longUploadsStatus",
     option.None,
-    optional(long_uploads_status_decoder()),
+    decode.optional(long_uploads_status_decoder()),
   )
-  use made_for_kids <- optional_field(
+  use made_for_kids <- decode.optional_field(
     "madeForKids",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  use privacy_status <- optional_field(
+  use privacy_status <- decode.optional_field(
     "privacyStatus",
     option.None,
-    optional(privacy_status_decoder()),
+    decode.optional(privacy_status_decoder()),
   )
-  use self_declared_made_for_kids <- optional_field(
+  use self_declared_made_for_kids <- decode.optional_field(
     "selfDeclaredMadeForKids",
     option.None,
-    optional(bool),
+    decode.optional(decode.bool),
   )
-  success(
-    ChannelStatus(
-      is_channel_monetization_enabled,
-      is_linked,
-      long_uploads_status,
-      made_for_kids,
-      privacy_status,
-      self_declared_made_for_kids,
+  decode.success(ChannelStatus(
+    is_channel_monetization_enabled,
+    is_linked,
+    long_uploads_status,
+    made_for_kids,
+    privacy_status,
+    self_declared_made_for_kids,
+  ))
+}
+
+pub fn to_json(value: ChannelStatus) -> Json {
+  json.object([
+    #(
+      "isChannelMonetizationEnabled",
+      json.nullable(value.is_channel_monetization_enabled, json.bool),
     ),
-  )
+    #("isLinked", json.nullable(value.is_linked, json.bool)),
+    #(
+      "longUploadsStatus",
+      json.nullable(value.long_uploads_status, fn(e) {
+        json.string(long_uploads_status_to_string(e))
+      }),
+    ),
+    #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
+    #(
+      "privacyStatus",
+      json.nullable(value.privacy_status, fn(e) {
+        json.string(privacy_status_to_string(e))
+      }),
+    ),
+    #(
+      "selfDeclaredMadeForKids",
+      json.nullable(value.self_declared_made_for_kids, json.bool),
+    ),
+  ])
 }
 
 /// The long uploads status of this channel. See https://support.google.com/youtube/answer/71673 for more information.
@@ -72,16 +102,18 @@ pub fn long_uploads_status_to_string(value: LongUploadsStatus) -> String {
 }
 
 pub fn long_uploads_status_decoder() -> Decoder(LongUploadsStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "longUploadsUnspecified" -> success(LongUploadsStatusLongUploadsUnspecified)
-    "allowed" -> success(LongUploadsStatusAllowed)
-    "eligible" -> success(LongUploadsStatusEligible)
-    "disallowed" -> success(LongUploadsStatusDisallowed)
-    _ -> failure(
-      LongUploadsStatusLongUploadsUnspecified,
-      "a valid LongUploadsStatus",
-    )
+    "longUploadsUnspecified" ->
+      decode.success(LongUploadsStatusLongUploadsUnspecified)
+    "allowed" -> decode.success(LongUploadsStatusAllowed)
+    "eligible" -> decode.success(LongUploadsStatusEligible)
+    "disallowed" -> decode.success(LongUploadsStatusDisallowed)
+    _ ->
+      decode.failure(
+        LongUploadsStatusLongUploadsUnspecified,
+        "a valid LongUploadsStatus",
+      )
   }
 }
 
@@ -101,11 +133,11 @@ pub fn privacy_status_to_string(value: PrivacyStatus) -> String {
 }
 
 pub fn privacy_status_decoder() -> Decoder(PrivacyStatus) {
-  use value <- then(string)
+  use value <- decode.then(decode.string)
   case value {
-    "public" -> success(PrivacyStatusPublic)
-    "unlisted" -> success(PrivacyStatusUnlisted)
-    "private" -> success(PrivacyStatusPrivate)
-    _ -> failure(PrivacyStatusPublic, "a valid PrivacyStatus")
+    "public" -> decode.success(PrivacyStatusPublic)
+    "unlisted" -> decode.success(PrivacyStatusUnlisted)
+    "private" -> decode.success(PrivacyStatusPrivate)
+    _ -> decode.failure(PrivacyStatusPublic, "a valid PrivacyStatus")
   }
 }

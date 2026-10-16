@@ -12,11 +12,11 @@ import gleamgen/expression/block
 import gleamgen/expression/case_
 import gleamgen/expression/constructor
 import gleamgen/function
-import gleamgen/parameter
-import gleamgen/pattern
 import gleamgen/import_.{type ImportReference}
 import gleamgen/module.{type Module}
 import gleamgen/module/definition.{type Definition}
+import gleamgen/parameter
+import gleamgen/pattern
 import gleamgen/render
 import gleamgen/type_.{type GeneratedType}
 import gleamgen/type_/custom
@@ -124,6 +124,7 @@ fn run() -> Result(Discovery, DiscoveryError) {
   )
   use discovery <- result.try(parse_discovery(content))
   use _ <- result.try(generate_code(discovery, "src/youtube"))
+  use _ <- result.try(generate_requests(discovery, "src/youtube/api"))
   Ok(discovery)
 }
 
@@ -183,11 +184,7 @@ pub fn method_decoder() -> decode.Decoder(Method) {
     None,
     decode.optional(decode.at(["$ref"], decode.string)),
   )
-  use scopes <- decode.optional_field(
-    "scopes",
-    [],
-    decode.list(decode.string),
-  )
+  use scopes <- decode.optional_field("scopes", [], decode.list(decode.string))
   use media_upload <- decode.optional_field(
     "mediaUpload",
     None,
@@ -231,11 +228,7 @@ fn http_method_decoder() -> decode.Decoder(HttpMethod) {
 }
 
 pub fn media_upload_decoder() -> decode.Decoder(MediaUpload) {
-  use accept <- decode.optional_field(
-    "accept",
-    [],
-    decode.list(decode.string),
-  )
+  use accept <- decode.optional_field("accept", [], decode.list(decode.string))
   use max_size <- decode.optional_field(
     "maxSize",
     None,
@@ -315,7 +308,8 @@ fn param_type_decoder() -> decode.Decoder(ParamType) {
     "string" -> decode.success(ParamString)
     "integer" -> decode.success(ParamInteger)
     "boolean" -> decode.success(ParamBoolean)
-    other -> decode.failure(ParamString, "a known parameter type, got " <> other)
+    other ->
+      decode.failure(ParamString, "a known parameter type, got " <> other)
   }
 }
 
@@ -407,8 +401,780 @@ fn generate_code(
   Ok(Nil)
 }
 
+// ---------------------------------------------------------------------------
+// Request builders: one fluent module per API resource under youtube/api
+// ---------------------------------------------------------------------------
+
+fn generate_requests(
+  discovery: Discovery,
+  base_path: String,
+) -> Result(Nil, DiscoveryError) {
+  use _ <- result.try(
+    initialize_directory(base_path) |> result.map_error(WriteFailed),
+  )
+
+  use item <- list.try_each(flatten_resources(discovery.resources))
+
+  let #(module_name, methods) = item
+  let file_path = base_path <> "/" <> module_name <> ".gleam"
+  let code = build_request_module(methods)
+  echo code
+
+  use _ <- result.try(
+    simplifile.write(file_path, code) |> result.map_error(WriteFailed),
+  )
+
+  Ok(Nil)
+}
+
+/// Every resource with methods, top-level and nested. Nested paths join
+/// with underscores: `youtube/v3/liveChat/messages` becomes
+/// `youtube_v3_live_chat_messages`.
+pub fn flatten_resources(
+  resources: Dict(String, Resource),
+) -> List(#(String, List(#(String, Method)))) {
+  dict.to_list(resources)
+  |> list.flat_map(fn(item) { flatten_resource([item.0], item.1) })
+  |> list.sort(fn(a, b) { string.compare(a.0, b.0) })
+}
+
+fn flatten_resource(
+  path: List(String),
+  resource: Resource,
+) -> List(#(String, List(#(String, Method)))) {
+  let here = case dict.is_empty(resource.methods) {
+    True -> []
+    False -> [
+      #(
+        string.join(list.map(path, justin.snake_case), with: "_"),
+        resource.methods
+          |> dict.to_list
+          |> list.sort(fn(a, b) { string.compare(a.0, b.0) }),
+      ),
+    ]
+  }
+  list.flatten([
+    here,
+    dict.to_list(resource.nested)
+      |> list.flat_map(fn(item) {
+        flatten_resource(list.append(path, [item.0]), item.1)
+      }),
+  ])
+}
+
+/// One method's worth of builder inputs, computed up front.
+type MethodSpec {
+  MethodSpec(
+    method_snake: String,
+    method_pascal: String,
+    method: Method,
+    required: List(#(String, Parameter)),
+    optional: List(#(String, Parameter)),
+    enums: List(#(String, EnumSpec, Option(String))),
+    body: Option(String),
+  )
+}
+
+type BuilderCtx {
+  BuilderCtx(
+    runtime_ref: ImportReference,
+    decode_ref: ImportReference,
+    option_ref: ImportReference,
+    int_ref: ImportReference,
+    bool_ref: ImportReference,
+    list_ref: ImportReference,
+    json_ref: ImportReference,
+    body_lookup: Dict(String, ImportReference),
+  )
+}
+
+fn to_method_spec(name: String, method: Method) -> MethodSpec {
+  let params =
+    method.parameters
+    |> dict.to_list
+    |> list.sort(fn(a, b) { string.compare(a.0, b.0) })
+  let is_required = fn(item: #(String, Parameter)) { item.1.required }
+  let ordered_required =
+    list.filter_map(method.parameter_order, fn(key) {
+      case list.find(params, fn(item) { item.0 == key }) {
+        Ok(item) ->
+          case is_required(item) {
+            True -> Ok(item)
+            False -> Error(Nil)
+          }
+        Error(Nil) -> Error(Nil)
+      }
+    })
+  let ordered_keys = list.map(ordered_required, fn(item) { item.0 })
+  let extra_required =
+    list.filter(params, fn(item) {
+      is_required(item) && !list.contains(ordered_keys, item.0)
+    })
+  let required = list.append(ordered_required, extra_required)
+  let optional = list.filter(params, fn(item) { !is_required(item) })
+  let method_pascal = justin.pascal_case(name)
+  let enums =
+    list.filter_map(params, fn(item) {
+      case method_param_enum(method_pascal, item.0, item.1) {
+        Some(spec) -> Ok(#(item.0, spec, item.1.description))
+        None -> Error(Nil)
+      }
+    })
+  MethodSpec(
+    method_snake: justin.snake_case(name),
+    method_pascal:,
+    method:,
+    required:,
+    optional:,
+    enums:,
+    body: method.request,
+  )
+}
+
+/// The string-enum type for one method parameter, prefixed with the method
+/// name so constructors stay unique across the module.
+fn method_param_enum(
+  method_pascal: String,
+  json_key: String,
+  param: Parameter,
+) -> Option(EnumSpec) {
+  case param.enum {
+    [] -> None
+    [_, ..] as values -> {
+      let type_name = method_pascal <> justin.pascal_case(json_key)
+      let stem = justin.snake_case(type_name)
+      Some(EnumSpec(
+        type_name:,
+        to_string_name: stem <> "_to_string",
+        decoder_name: stem <> "_decoder",
+        variants: list.map(values, fn(value) {
+          #(type_name <> enum_variant_stem(value), value)
+        }),
+      ))
+    }
+  }
+}
+
+fn enum_for(
+  enums: List(#(String, EnumSpec, Option(String))),
+  json_key: String,
+) -> Option(EnumSpec) {
+  case list.find(enums, fn(item) { item.0 == json_key }) {
+    Ok(#(_, spec, _)) -> Some(spec)
+    Error(Nil) -> None
+  }
+}
+
+/// Build one `youtube/api/*` module: a fluent params builder per method.
+fn build_request_module(methods: List(#(String, Method))) -> String {
+  let specs = list.map(methods, fn(item) { to_method_spec(item.0, item.1) })
+  let all_params =
+    list.flat_map(specs, fn(spec) { list.append(spec.required, spec.optional) })
+  let param_types = list.map(all_params, fn(item) { item.1.param_type })
+  let has_enums = list.any(specs, fn(spec) { !list.is_empty(spec.enums) })
+  let has_optional = list.any(specs, fn(spec) { !list.is_empty(spec.optional) })
+  let bodies =
+    list.filter_map(specs, fn(spec) {
+      case spec.body {
+        Some(body) -> Ok(body)
+        None -> Error(Nil)
+      }
+    })
+    |> list.unique
+  let runtime_import =
+    import_.new(["google_youtube_api_v3", "request"])
+    |> import_.with_unqualified_items([
+      import_.unqualified_type("Request"),
+      import_.unqualified_value("Request"),
+    ])
+  let tagged: List(#(String, import_.ImportedModule)) =
+    list.flatten([
+      [#("runtime", runtime_import)],
+      case has_enums {
+        True -> [
+          #(
+            "decode",
+            import_.new(["gleam", "dynamic", "decode"])
+              |> import_.with_unqualified_items([
+                import_.unqualified_type("Decoder"),
+              ]),
+          ),
+        ]
+        False -> []
+      },
+      case has_optional {
+        True -> [
+          #(
+            "option",
+            import_.new(["gleam", "option"])
+              |> import_.with_unqualified_items([
+                import_.unqualified_type("Option"),
+              ]),
+          ),
+        ]
+        False -> []
+      },
+      list.map(bodies, fn(body) {
+        #(
+          "body:" <> body,
+          import_.new(["youtube", justin.snake_case(body)])
+            |> import_.with_unqualified_items([import_.unqualified_type(body)]),
+        )
+      }),
+      case list.contains(param_types, ParamInteger) {
+        True -> [#("int", import_.new(["gleam", "int"]))]
+        False -> []
+      },
+      case list.contains(param_types, ParamBoolean) {
+        True -> [#("bool", import_.new(["gleam", "bool"]))]
+        False -> []
+      },
+      // Query segments always combine with `list.flatten`.
+      [#("list", import_.new(["gleam", "list"]))],
+      case bodies {
+        [] -> []
+        _ -> [#("json", import_.new(["gleam", "json"]))]
+      },
+    ])
+  let mod =
+    module.with_module_documentation_comments([generated_notice], fn() {
+      use imported <- module.with_dynamic_imports(
+        list.map(tagged, fn(t) { t.1 }),
+      )
+      let refs =
+        list.zip(
+          list.map(tagged, fn(t) { t.0 }),
+          list.map(imported, import_.import_to_reference),
+        )
+        |> dict.from_list
+      let ctx =
+        BuilderCtx(
+          runtime_ref: ref_or(refs, "runtime", [
+            "google_youtube_api_v3",
+            "request",
+          ]),
+          decode_ref: ref_or(refs, "decode", ["gleam", "dynamic", "decode"]),
+          option_ref: ref_or(refs, "option", ["gleam", "option"]),
+          int_ref: ref_or(refs, "int", ["gleam", "int"]),
+          bool_ref: ref_or(refs, "bool", ["gleam", "bool"]),
+          list_ref: ref_or(refs, "list", ["gleam", "list"]),
+          json_ref: ref_or(refs, "json", ["gleam", "json"]),
+          body_lookup: dict.from_list(
+            list.filter_map(dict.to_list(refs), fn(item) {
+              case string.split_once(item.0, "body:") {
+                Ok(#(_, body)) -> Ok(#(body, item.1))
+                Error(Nil) -> Error(Nil)
+              }
+            }),
+          ),
+        )
+      with_request_methods(specs, ctx, fn() {
+        with_enums(
+          list.flat_map(specs, fn(spec) {
+            list.map(spec.enums, fn(item) { #(item.1, item.2) })
+          }),
+          ctx.decode_ref,
+          module.eof,
+        )
+      })
+    })
+
+  mod |> module.render(render.default_context()) |> render.to_string()
+}
+
+fn ref_or(
+  refs: Dict(String, ImportReference),
+  tag: String,
+  path: List(String),
+) -> ImportReference {
+  case dict.get(refs, tag) {
+    Ok(ref) -> ref
+    Error(Nil) -> import_.import_to_reference(import_.new(path))
+  }
+}
+
+fn with_request_methods(
+  specs: List(MethodSpec),
+  ctx: BuilderCtx,
+  handler: fn() -> Module,
+) -> Module {
+  case specs {
+    [] -> handler()
+    [spec, ..rest] ->
+      with_request_method(spec, ctx, fn() {
+        with_request_methods(rest, ctx, handler)
+      })
+  }
+}
+
+/// The params record, its constructor, fluent setters, and `to_request`.
+fn with_request_method(
+  spec: MethodSpec,
+  ctx: BuilderCtx,
+  handler: fn() -> Module,
+) -> Module {
+  let params_type = spec.method_pascal <> "Params"
+  let ordered =
+    list.append(
+      list.map(spec.required, fn(item) { #(item, True) }),
+      list.map(spec.optional, fn(item) { #(item, False) }),
+    )
+  let field_of = fn(item: #(String, Parameter)) {
+    #(sanitize_field(justin.snake_case(item.0)), item.1)
+  }
+  let fields =
+    list.map(ordered, fn(pair) {
+      let #(_item, is_required) = pair
+      let #(field_name, param) = field_of(pair.0)
+      let inner = param_value_type(param, enum_for(spec.enums, pair.0.0))
+      let wrapped = case is_required {
+        True -> inner
+        False ->
+          import_.raw_type(ctx.option_ref, "Option")
+          |> custom.to_type1(inner)
+          |> type_.to_dynamic
+      }
+      #(Some(field_name), wrapped)
+    })
+  let details =
+    definition.new(params_type)
+    |> definition.with_publicity(True)
+    |> with_description(spec.method.description)
+  use _type, constructors <- module.with_custom_type_dynamic(
+    details,
+    custom.new_dynamic(
+      [
+        variant.new(params_type)
+        |> variant.with_arguments_dynamic(fields)
+        |> variant.to_dynamic,
+      ],
+      [],
+    ),
+  )
+  let ctor_expr = case constructors {
+    [ctor, ..] ->
+      constructor.to_expression_dynamic(ctor) |> expression.to_dynamic
+    [] -> expression.raw("Nil") |> expression.to_dynamic
+  }
+  // Constructor takes the required params; optionals start empty.
+  let required_args =
+    list.map(spec.required, fn(item) {
+      parameter.new(
+        sanitize_field(justin.snake_case(item.0)),
+        param_value_type(item.1, enum_for(spec.enums, item.0))
+          |> type_.to_dynamic,
+      )
+    })
+  let init_for = fn(item: #(String, Parameter), is_required: Bool) {
+    case is_required {
+      True ->
+        expression.raw(sanitize_field(justin.snake_case(item.0)))
+        |> expression.to_dynamic
+      False -> expression.option_none() |> expression.to_dynamic
+    }
+  }
+  let ctor_body =
+    expression.call_dynamic(
+      ctor_expr,
+      list.map(ordered, fn(pair) { init_for(pair.0, pair.1) }),
+    )
+  use _ctor <- module.with_function(
+    definition.new(spec.method_snake) |> definition.with_publicity(True),
+    function.new_dynamic(
+      parameters: required_args,
+      returns: type_.raw(params_type) |> type_.to_dynamic,
+      handler: fn(_) { ctor_body },
+    ),
+  )
+  with_setters(spec, ctx, ctor_expr, ordered, fn() {
+    with_to_request(spec, ctx, handler)
+  })
+}
+
+/// Render one method call as a runtime `Request`: verb, path, query
+/// segments, scopes, and an optional JSON body.
+fn with_to_request(
+  spec: MethodSpec,
+  ctx: BuilderCtx,
+  handler: fn() -> Module,
+) -> Module {
+  let params_type = spec.method_pascal <> "Params"
+  let params = list.append(spec.required, spec.optional)
+  // Segments combine with one `flatten`: an empty `[]` literal would
+  // misrender as `[ , ]` once glam breaks the line, so empties below
+  // always go through `empty_list()`.
+  let query =
+    expression.call_dynamic(qualified(ctx.list_ref, "flatten"), [
+      expression.list(
+        list.map(params, fn(item) {
+          query_segment(item.0, item.1, enum_for(spec.enums, item.0), ctx)
+        }),
+      )
+      |> expression.to_dynamic,
+    ])
+  let body_expr = case spec.body {
+    None -> expression.option_none() |> expression.to_dynamic
+    Some(body_name) -> {
+      let assert Ok(body_ref) = dict.get(ctx.body_lookup, body_name)
+      some_expr(
+        expression.call_dynamic(qualified(ctx.json_ref, "to_string"), [
+          expression.call_dynamic(qualified(body_ref, "to_json"), [
+            raw_expr("body"),
+          ]),
+        ]),
+      )
+    }
+  }
+  let http_method = case spec.method.http_method {
+    Get -> "Get"
+    Post -> "Post"
+    Put -> "Put"
+    Delete -> "Delete"
+  }
+  let request_call =
+    expression.call_dynamic(
+      constructor.to_expression_dynamic(constructor.new(
+        option.Some(ctx.runtime_ref),
+        variant.new("Request") |> variant.to_dynamic,
+      ))
+        |> expression.to_dynamic,
+      [
+        qualified(ctx.runtime_ref, http_method),
+        path_expr(spec.method.path),
+        query,
+        empty_list(),
+        expression.list(
+          list.map(spec.method.scopes, fn(scope) {
+            expression.string(scope) |> expression.to_dynamic
+          }),
+        )
+          |> expression.to_dynamic,
+        body_expr,
+      ],
+    )
+  let returns =
+    import_.raw_type(ctx.runtime_ref, "Request")
+    |> custom.to_type
+    |> type_.to_dynamic
+  let func = case spec.body {
+    None ->
+      function.new1(
+        param1: parameter.new(
+          "params",
+          type_.raw(params_type) |> type_.to_dynamic,
+        ),
+        returns:,
+        handler: fn(_) { request_call },
+      )
+      |> function.to_dynamic
+    Some(body_name) ->
+      function.new2(
+        param1: parameter.new(
+          "params",
+          type_.raw(params_type) |> type_.to_dynamic,
+        ),
+        param2: parameter.new("body", type_.raw(body_name) |> type_.to_dynamic),
+        returns:,
+        handler: fn(_, _) { request_call },
+      )
+      |> function.to_dynamic
+  }
+  use _fn <- module.with_function(
+    definition.new(spec.method_snake <> "_request")
+      |> definition.with_publicity(True),
+    func,
+  )
+  handler()
+}
+
+/// One query parameter as a list of pairs: repeated params contribute one
+/// pair per value, optional params contribute nothing when `None`.
+fn query_segment(
+  json_key: String,
+  param: Parameter,
+  field_enum: Option(EnumSpec),
+  ctx: BuilderCtx,
+) -> expression.Expression(type_.Dynamic) {
+  let field_name = sanitize_field(justin.snake_case(json_key))
+  let pair = fn(value) {
+    expression.tuple2(
+      expression.string(json_key) |> expression.to_dynamic,
+      query_value(value, param, field_enum, ctx),
+    )
+    |> expression.to_dynamic
+  }
+  case param.required, param.repeated {
+    True, False ->
+      expression.list([pair(access_field("params", field_name))])
+      |> expression.to_dynamic
+    True, True ->
+      expression.call_dynamic(qualified(ctx.list_ref, "map"), [
+        access_field("params", field_name),
+        closure1("v", pair(raw_expr("v"))),
+      ])
+    False, _ ->
+      case_.new(option_subject(access_field("params", field_name)))
+      |> case_.with_pattern(pattern.option_some(pattern.variable("v")), fn(v) {
+        case param.repeated {
+          True ->
+            expression.call_dynamic(qualified(ctx.list_ref, "map"), [
+              v |> expression.to_dynamic,
+              closure1("w", pair(raw_expr("w"))),
+            ])
+          False ->
+            expression.list([pair(v |> expression.to_dynamic)])
+            |> expression.to_dynamic
+        }
+      })
+      |> case_.with_pattern(pattern.option_none(), fn(_) { empty_list() })
+      |> case_.build_expression
+      |> expression.to_dynamic
+  }
+}
+
+/// An empty list literal. Built raw because glam misrenders a broken
+/// empty pretty-list as `[ , ]`.
+fn empty_list() -> expression.Expression(type_.Dynamic) {
+  expression.raw("[]") |> expression.to_dynamic
+}
+
+/// Render one query value as a string.
+fn query_value(
+  value: expression.Expression(type_.Dynamic),
+  param: Parameter,
+  field_enum: Option(EnumSpec),
+  ctx: BuilderCtx,
+) -> expression.Expression(type_.Dynamic) {
+  case param.param_type {
+    ParamString ->
+      case field_enum {
+        Some(spec) ->
+          expression.call_dynamic(
+            expression.raw(spec.to_string_name) |> expression.to_dynamic,
+            [value],
+          )
+        None -> value
+      }
+    ParamInteger ->
+      expression.call_dynamic(qualified(ctx.int_ref, "to_string"), [value])
+    ParamBoolean ->
+      expression.call_dynamic(qualified(ctx.bool_ref, "to_string"), [value])
+  }
+}
+
+/// A path with `{placeholders}` becomes string concatenations.
+/// Only `captions.download` uses one, but this handles the general case.
+fn path_expr(path: String) -> expression.Expression(type_.Dynamic) {
+  let parts = parse_path_template(path)
+  let exprs =
+    list.map(parts, fn(part) {
+      case part {
+        #(False, literal) -> expression.string(literal)
+        #(True, name) ->
+          access_field("params", sanitize_field(justin.snake_case(name)))
+          |> expression.coerce_dynamic_unsafe
+      }
+    })
+  case exprs {
+    [] -> expression.string("")
+    [first, ..rest] ->
+      list.fold(rest, first, fn(acc, part) {
+        expression.concat_string(acc, part)
+      })
+  }
+  |> expression.to_dynamic
+}
+
+fn parse_path_template(path: String) -> List(#(Bool, String)) {
+  case string.split(path, on: "{") {
+    [] -> []
+    [head, ..tail] -> {
+      let parts =
+        list.flat_map(tail, fn(chunk) {
+          case string.split_once(chunk, on: "}") {
+            Ok(#(var, after)) -> [#(True, var), #(False, after)]
+            Error(Nil) -> [#(False, "{" <> chunk)]
+          }
+        })
+      [#(False, head), ..parts]
+      |> list.filter(fn(part) { part.1 != "" || part.0 })
+    }
+  }
+}
+
+/// `with_*` replaces one optional param, `add_*` appends one repeated value.
+fn with_setters(
+  spec: MethodSpec,
+  ctx: BuilderCtx,
+  ctor_expr: expression.Expression(type_.Dynamic),
+  ordered: List(#(#(String, Parameter), Bool)),
+  handler: fn() -> Module,
+) -> Module {
+  list.fold(spec.optional, handler(), fn(acc, item) {
+    with_setter(spec, ctx, ctor_expr, ordered, "with", item, fn() {
+      case item.1.repeated {
+        True ->
+          with_setter(spec, ctx, ctor_expr, ordered, "add", item, fn() { acc })
+        False -> acc
+      }
+    })
+  })
+  |> fn(acc) {
+    // Required repeated params (e.g. `part`) only get `add_*`.
+    list.fold(spec.required, acc, fn(inner, item) {
+      case item.1.repeated {
+        True ->
+          with_setter(spec, ctx, ctor_expr, ordered, "add", item, fn() { inner })
+        False -> inner
+      }
+    })
+  }
+}
+
+fn with_setter(
+  spec: MethodSpec,
+  ctx: BuilderCtx,
+  ctor_expr: expression.Expression(type_.Dynamic),
+  ordered: List(#(#(String, Parameter), Bool)),
+  kind: String,
+  item: #(String, Parameter),
+  handler: fn() -> Module,
+) -> Module {
+  let #(json_key, param) = item
+  let field_name = sanitize_field(justin.snake_case(json_key))
+  let field_enum = enum_for(spec.enums, json_key)
+  let params_type = spec.method_pascal <> "Params"
+  let is_required = param_required(spec, json_key)
+  let arg_type = case kind {
+    // `add_*` takes a single element, not the whole list.
+    "add" -> param_base_type(param, field_enum)
+    _ -> param_value_type(param, field_enum)
+  }
+  let single = expression.list([raw_expr("value")]) |> expression.to_dynamic
+  let appended =
+    expression.call_dynamic(qualified(ctx.list_ref, "append"), [
+      access_field("params", field_name),
+      single,
+    ])
+  let new_value = case kind, is_required {
+    "add", True -> appended
+    "add", False ->
+      case_.new(option_subject(access_field("params", field_name)))
+      |> case_.with_pattern(pattern.option_some(pattern.variable("vs")), fn(vs) {
+        some_expr(
+          expression.call_dynamic(qualified(ctx.list_ref, "append"), [
+            vs |> expression.to_dynamic,
+            single,
+          ]),
+        )
+      })
+      |> case_.with_pattern(pattern.option_none(), fn(_) { some_expr(single) })
+      |> case_.build_expression
+      |> expression.to_dynamic
+    _, _ -> some_expr(raw_expr("value"))
+  }
+  let rebuilt =
+    expression.call_dynamic(
+      ctor_expr,
+      list.map(ordered, fn(pair) {
+        let target = sanitize_field(justin.snake_case(pair.0.0)) == field_name
+        case target {
+          True -> new_value
+          False ->
+            access_field("params", sanitize_field(justin.snake_case(pair.0.0)))
+        }
+      }),
+    )
+  // Setters are prefixed with the method name: several methods in one
+  // module can share parameter names.
+  let setter_name = spec.method_snake <> "_" <> kind <> "_" <> field_name
+  // A single-field record rebuild never reads `params`.
+  let params_arg = case ordered {
+    [_] if kind == "with" -> "_params"
+    _ -> "params"
+  }
+  use _fn <- module.with_function(
+    definition.new(setter_name) |> definition.with_publicity(True),
+    function.new2(
+      param1: parameter.new(
+        params_arg,
+        type_.raw(params_type) |> type_.to_dynamic,
+      ),
+      param2: parameter.new("value", arg_type |> type_.to_dynamic),
+      returns: type_.raw(params_type) |> type_.to_dynamic,
+      handler: fn(_, _) { rebuilt },
+    ),
+  )
+  handler()
+}
+
+/// The plain (possibly listed) value type of one method parameter.
+fn param_value_type(
+  param: Parameter,
+  field_enum: Option(EnumSpec),
+) -> type_.GeneratedType(type_.Dynamic) {
+  let base = param_base_type(param, field_enum)
+  case param.repeated {
+    True -> type_.list(base) |> type_.to_dynamic
+    False -> base
+  }
+}
+
+/// The single-element type of one method parameter.
+fn param_base_type(
+  param: Parameter,
+  field_enum: Option(EnumSpec),
+) -> type_.GeneratedType(type_.Dynamic) {
+  case param.param_type {
+    ParamString ->
+      case field_enum {
+        Some(spec) -> type_.raw(spec.type_name) |> type_.to_dynamic
+        None -> type_.string |> type_.to_dynamic
+      }
+    ParamInteger -> type_.int |> type_.to_dynamic
+    ParamBoolean -> type_.bool |> type_.to_dynamic
+  }
+}
+
+fn param_required(spec: MethodSpec, json_key: String) -> Bool {
+  list.any(spec.required, fn(item) { item.0 == json_key })
+}
+
+fn raw_expr(name: String) -> expression.Expression(type_.Dynamic) {
+  expression.raw(name) |> expression.to_dynamic
+}
+
+/// Re-type an expression so `case_` patterns can unify against it
+/// (e.g. matching `option_some` on an `Option` field).
+fn option_subject(
+  value: expression.Expression(type_.Dynamic),
+) -> expression.Expression(Option(a)) {
+  expression.coerce_dynamic_unsafe(value)
+}
+
+fn some_expr(
+  value: expression.Expression(type_.Dynamic),
+) -> expression.Expression(type_.Dynamic) {
+  expression.option_some(value) |> expression.to_dynamic
+}
+
+fn access_field(
+  record: String,
+  field: String,
+) -> expression.Expression(type_.Dynamic) {
+  expression.field(expression.raw(record), field) |> expression.to_dynamic
+}
+
+fn qualified(
+  ref: ImportReference,
+  name: String,
+) -> expression.Expression(type_.Dynamic) {
+  expression.imported_ident(ref, name) |> expression.to_dynamic
+}
+
 /// Marker rendered as a `////` comment on top of every generated file.
-pub const generated_notice: String = "DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`"
+pub const generated_notice: String =
+  "DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`"
 
 /// Build the full source text for a single schema file.
 pub fn build_module(type_name: String, schema: Schema) -> String {
@@ -438,9 +1204,20 @@ pub fn build_module(type_name: String, schema: Schema) -> String {
     True -> [dict_import]
     False -> []
   }
-  // Decode helpers are imported unqualified for the same reason: the
-  // generated `decoder()` calls them bare (`optional_field`, `string`, …).
-  // Only the helpers actually used are imported to avoid unused warnings.
+  // Convention: types unqualified (`Option`, `Dict`, `Decoder`),
+  // functions qualified (`decode.optional_field`, `option.None`,
+  // `video_snippet.decoder`). Unqualified imports are never dropped by
+  // gleamgen; plain imports survive only when used from expression
+  // position, which is exactly how the qualified calls below use them.
+  let decode_import =
+    import_.new(["gleam", "dynamic", "decode"])
+    |> import_.with_unqualified_items([import_.unqualified_type("Decoder")])
+  let json_import =
+    import_.new(["gleam", "json"])
+    |> import_.with_unqualified_items([import_.unqualified_type("Json")])
+  let option_import =
+    import_.new(["gleam", "option"])
+    |> import_.with_unqualified_items([import_.unqualified_type("Option")])
   let props = case schema.kind {
     Object(properties:, ..) ->
       properties
@@ -463,132 +1240,88 @@ pub fn build_module(type_name: String, schema: Schema) -> String {
         None -> Error(Nil)
       }
     })
-  let used_helpers =
-    list.flat_map(props, fn(prop) {
-      decoder_primitives(prop.2, prop.3)
-    })
-  let used_helpers = case enums {
-    [] -> used_helpers
-    _ -> list.flatten([used_helpers, ["string", "then", "failure"]])
+  let option_needed = !list.is_empty(props)
+  let option_imports = case option_needed {
+    True -> [option_import]
+    False -> []
   }
-  let decode_import =
-    import_.new(["gleam", "dynamic", "decode"])
-    |> import_.with_unqualified_items([
-      import_.unqualified_type("Decoder"),
-      ..list.filter_map(decode_helper_order(), fn(name) {
-        case list.contains(used_helpers, name) {
-          True -> Ok(import_.unqualified_value(name))
-          False -> Error(Nil)
-        }
-      })
-    ])
   let all_imports =
-    list.flatten([[decode_import], dict_imports, ref_imports])
+    list.flatten([
+      [decode_import],
+      [json_import],
+      dict_imports,
+      option_imports,
+      ref_imports,
+    ])
 
   let mod =
-    module.with_module_documentation_comments([generated_notice],
-      fn() {
-        use imported <- module.with_dynamic_imports(all_imports)
-        let assert [decode_mod, ..rest1] = imported
-        let decode_ref = import_.import_to_reference(decode_mod)
-        let #(dict_mods, ref_modules) =
-          list.split(rest1, case dict_needed {
-            True -> 1
-            False -> 0
-          })
-        let dict_ref = case dict_mods {
-          [dict_mod, ..] -> import_.import_to_reference(dict_mod)
-          [] -> import_.import_to_reference(dict_import)
-        }
-        let ref_lookup =
-          list.zip(deps, list.map(ref_modules, import_.import_to_reference))
-          |> dict.from_list
+    module.with_module_documentation_comments([generated_notice], fn() {
+      use imported <- module.with_dynamic_imports(all_imports)
+      let assert [decode_mod, json_mod, ..rest1] = imported
+      let decode_ref = import_.import_to_reference(decode_mod)
+      let json_ref = import_.import_to_reference(json_mod)
+      let #(dict_mods, rest2) =
+        list.split(rest1, case dict_needed {
+          True -> 1
+          False -> 0
+        })
+      let dict_ref = case dict_mods {
+        [dict_mod, ..] -> import_.import_to_reference(dict_mod)
+        [] -> import_.import_to_reference(dict_import)
+      }
+      let #(option_mods, ref_modules) =
+        list.split(rest2, case option_needed {
+          True -> 1
+          False -> 0
+        })
+      let option_ref = case option_mods {
+        [option_mod, ..] -> import_.import_to_reference(option_mod)
+        [] -> import_.import_to_reference(option_import)
+      }
+      let ref_lookup =
+        list.zip(deps, list.map(ref_modules, import_.import_to_reference))
+        |> dict.from_list
 
-        let fields =
-          list.map(props, fn(prop) {
-            let #(_, field_name, prop_schema, field_enum) = prop
-            let inner =
-              schema_to_type(prop_schema, ref_lookup, dict_ref, field_enum)
-            #(Some(field_name), type_.option(inner) |> type_.to_dynamic)
-          })
+      let fields =
+        list.map(props, fn(prop) {
+          let #(_, field_name, prop_schema, field_enum) = prop
+          let inner =
+            schema_to_type(prop_schema, ref_lookup, dict_ref, field_enum)
+          let wrapped =
+            import_.raw_type(option_ref, "Option")
+            |> custom.to_type1(inner)
+            |> type_.to_dynamic
+          #(Some(field_name), wrapped)
+        })
 
-        let details =
-          definition.new(type_name)
-          |> definition.with_publicity(True)
-          |> with_description(schema.description)
+      let details =
+        definition.new(type_name)
+        |> definition.with_publicity(True)
+        |> with_description(schema.description)
 
-        let variant =
-          variant.new(type_name)
-          |> variant.with_arguments_dynamic(fields)
-        let builder = custom.new_dynamic([variant], [])
+      let variant =
+        variant.new(type_name)
+        |> variant.with_arguments_dynamic(fields)
+      let builder = custom.new_dynamic([variant], [])
 
-        use _type, constructors <- module.with_custom_type_dynamic(
-          details,
-          builder,
-        )
-        use _decoder_fn <- module.with_function(
-          definition.new("decoder") |> definition.with_publicity(True),
-          decoder_function(type_name, props, constructors, decode_ref, ref_lookup),
-        )
-        with_enums(enums, decode_ref, module.eof)
-      },
-    )
+      use _type, constructors <- module.with_custom_type_dynamic(
+        details,
+        builder,
+      )
+      use _decoder_fn <- module.with_function(
+        definition.new("decoder") |> definition.with_publicity(True),
+        decoder_function(type_name, props, constructors, decode_ref, ref_lookup),
+      )
+      use _encoder_fn <- module.with_function(
+        definition.new("to_json") |> definition.with_publicity(True),
+        encoder_function(type_name, props, json_ref, ref_lookup),
+      )
+      with_enums(enums, decode_ref, module.eof)
+    })
 
   mod |> module.render(render.default_context()) |> render.to_string()
 }
 
-/// Canonical order of decode helpers in generated import lines.
-fn decode_helper_order() -> List(String) {
-  [
-    "optional_field",
-    "optional",
-    "string",
-    "int",
-    "float",
-    "bool",
-    "list",
-    "dict",
-    "success",
-    "then",
-    "failure",
-  ]
-}
-
-/// Decode helpers used by one schema's `decoder()`, so the import line
-/// stays minimal. `optional_field`/`optional`/`success` are always used.
-fn decoder_primitives(
-  schema: Schema,
-  field_enum: Option(EnumSpec),
-) -> List(String) {
-  let base = ["optional_field", "optional", "success"]
-  list.flatten([base, primitives_of(schema, field_enum)])
-}
-
-fn primitives_of(schema: Schema, field_enum: Option(EnumSpec)) -> List(String) {
-  case schema.kind {
-    Str(_, []) -> ["string"]
-    Str(_, [_, ..]) ->
-      case field_enum {
-        Some(_) -> []
-        None -> ["string"]
-      }
-    Integer(_) -> ["int"]
-    Number -> ["float"]
-    Boolean -> ["bool"]
-    Any -> ["string"]
-    Array(items:) -> ["list", ..primitives_of(items, field_enum)]
-    Ref(_) -> []
-    Object(properties:, additional:) ->
-      case dict.is_empty(properties), additional {
-        True, Some(extra) -> [
-          "dict",
-          "string",
-          ..primitives_of(extra, None)
-        ]
-        _, _ -> ["dict", "string"]
-      }
-  }
-}
 /// Build the `decoder()` function body for one schema type:
 /// `use field <- optional_field("jsonKey", None, optional(<inner>))`
 /// chains ending in `success(TypeName(..))`.
@@ -619,22 +1352,26 @@ fn decoder_function(
       )
   }
   let body =
-    list.fold(list.reverse(props), expression.call_dynamic(d("success"), [
-      ctor_call,
-    ]    ), fn(acc, prop) {
-      let #(json_key, field_name, prop_schema, field_enum) = prop
-      let inner =
-        call("optional", [
-          value_decoder(prop_schema, decode_ref, ref_lookup, field_enum),
-        ])
-      let use_fn =
-        block.use_function_dynamic(d("optional_field"), [
-          expression.string(json_key) |> expression.to_dynamic,
-          expression.option_none() |> expression.to_dynamic,
-          inner,
-        ])
-      block.with_use_dynamic(use_fn, [field_name], fn(_) { acc })
-    })
+    list.fold(
+      list.reverse(props),
+      expression.call_dynamic(d("success"), [
+        ctor_call,
+      ]),
+      fn(acc, prop) {
+        let #(json_key, field_name, prop_schema, field_enum) = prop
+        let inner =
+          call("optional", [
+            value_decoder(prop_schema, decode_ref, ref_lookup, field_enum),
+          ])
+        let use_fn =
+          block.use_function_dynamic(d("optional_field"), [
+            expression.string(json_key) |> expression.to_dynamic,
+            expression.option_none() |> expression.to_dynamic,
+            inner,
+          ])
+        block.with_use_dynamic(use_fn, [field_name], fn(_) { acc })
+      },
+    )
   function.new0(
     returns: import_.raw_type(decode_ref, "Decoder")
       |> custom.to_type1(type_.raw(type_name))
@@ -681,15 +1418,13 @@ fn value_decoder(
           expression.imported_ident(ref, "decoder")
           |> expression.to_dynamic
         // Self-reference: the local `decoder()` being defined.
-        Error(Nil) ->
-          expression.raw("decoder") |> expression.to_dynamic
+        Error(Nil) -> expression.raw("decoder") |> expression.to_dynamic
       }
       expression.call_dynamic(callee, [])
     }
     Object(properties:, additional:) -> {
       let value = case dict.is_empty(properties), additional {
-        True, Some(extra) ->
-          value_decoder(extra, decode_ref, ref_lookup, None)
+        True, Some(extra) -> value_decoder(extra, decode_ref, ref_lookup, None)
         _, _ -> d("string")
       }
       call("dict", [d("string"), value])
@@ -793,9 +1528,11 @@ fn enum_to_string_fn(
       case_.new(expression.raw("value")),
       fn(acc, pair) {
         let #(#(_, original), ctor) = pair
-        case_.with_pattern(acc, pattern.from_constructor_dynamic(ctor, []), fn(
-          _,
-        ) { expression.string(original) })
+        case_.with_pattern(
+          acc,
+          pattern.from_constructor_dynamic(ctor, []),
+          fn(_) { expression.string(original) },
+        )
       },
     )
     |> case_.build_expression
@@ -829,10 +1566,9 @@ fn enum_decoder_fn(
       fn(acc, pair) {
         let #(#(variant_name, original), _) = pair
         case_.with_pattern(acc, pattern.string_literal(original), fn(_) {
-          expression.call_dynamic(
-            d("success"),
-            [expression.raw(variant_name) |> expression.to_dynamic],
-          )
+          expression.call_dynamic(d("success"), [
+            expression.raw(variant_name) |> expression.to_dynamic,
+          ])
         })
       },
     )
@@ -866,6 +1602,153 @@ fn sorted_properties(
   properties
   |> dict.to_list
   |> list.sort(fn(a, b) { string.compare(a.0, b.0) })
+}
+
+/// Build the `to_json()` function: `json.object` of one entry per field,
+/// each `json.nullable(value.field, <inner>)` so missing fields encode
+/// as explicit nulls.
+fn encoder_function(
+  type_name: String,
+  props: List(#(String, String, Schema, Option(EnumSpec))),
+  json_ref: ImportReference,
+  ref_lookup: Dict(String, ImportReference),
+) -> function.Function(fn(type_.Dynamic) -> type_.Dynamic, type_.Dynamic) {
+  let j = fn(name) {
+    import_.raw_ident(json_ref, name) |> expression.to_dynamic
+  }
+  let value_param = case props {
+    [] -> "_value"
+    _ -> "value"
+  }
+  let entries =
+    list.map(props, fn(prop) {
+      let #(json_key, field_name, prop_schema, field_enum) = prop
+      let field_access =
+        expression.field(expression.raw(value_param), field_name)
+        |> expression.to_dynamic
+      expression.tuple2(
+        expression.string(json_key) |> expression.to_dynamic,
+        expression.call_dynamic(j("nullable"), [
+          field_access,
+          value_to_json_fn(prop_schema, json_ref, ref_lookup, field_enum),
+        ]),
+      )
+      |> expression.to_dynamic
+    })
+  let body =
+    expression.call_dynamic(j("object"), [
+      case entries {
+        [] -> empty_list()
+        _ -> expression.list(entries) |> expression.to_dynamic
+      },
+    ])
+  function.new1(
+    param1: parameter.new(value_param, type_.raw(type_name) |> type_.to_dynamic),
+    returns: import_.raw_type(json_ref, "Json")
+      |> custom.to_type
+      |> type_.to_dynamic,
+    handler: fn(_) { body },
+  )
+}
+
+/// A `fn(a) -> json.Json` expression encoding one (non-optional) value.
+/// Either a direct function reference or a small closure.
+fn value_to_json_fn(
+  schema: Schema,
+  json_ref: ImportReference,
+  ref_lookup: Dict(String, ImportReference),
+  field_enum: Option(EnumSpec),
+) -> expression.Expression(type_.Dynamic) {
+  let j = fn(name) {
+    import_.raw_ident(json_ref, name) |> expression.to_dynamic
+  }
+  case schema.kind {
+    Str(_, []) -> j("string")
+    Str(_, [_, ..]) ->
+      element_to_json_fn(schema, json_ref, ref_lookup, field_enum)
+    Integer(_) -> j("int")
+    Number -> j("float")
+    Boolean -> j("bool")
+    Any -> j("string")
+    Array(items:) ->
+      closure1(
+        "items",
+        expression.call_dynamic(j("array"), [
+          expression.raw("items") |> expression.to_dynamic,
+          element_to_json_fn(items, json_ref, ref_lookup, field_enum),
+        ]),
+      )
+    Ref(name) -> {
+      let callee = case dict.get(ref_lookup, name) {
+        Ok(ref) ->
+          expression.imported_ident(ref, "to_json")
+          |> expression.to_dynamic
+        Error(Nil) -> expression.raw("to_json") |> expression.to_dynamic
+      }
+      callee
+    }
+    Object(properties:, additional:) -> {
+      let #(key_fn, value_fn) = case dict.is_empty(properties), additional {
+        True, Some(extra) -> #(
+          closure1("k", expression.raw("k") |> expression.to_dynamic),
+          element_to_json_fn(extra, json_ref, ref_lookup, None),
+        )
+        _, _ -> #(
+          closure1("k", expression.raw("k") |> expression.to_dynamic),
+          j("string"),
+        )
+      }
+      closure1(
+        "d",
+        expression.call_dynamic(j("dict"), [
+          expression.raw("d") |> expression.to_dynamic,
+          key_fn,
+          value_fn,
+        ]),
+      )
+    }
+  }
+}
+
+/// The element encoder inside arrays: primitives and sibling types are
+/// direct references, enum elements need a closure.
+fn element_to_json_fn(
+  schema: Schema,
+  json_ref: ImportReference,
+  ref_lookup: Dict(String, ImportReference),
+  field_enum: Option(EnumSpec),
+) -> expression.Expression(type_.Dynamic) {
+  case schema.kind, field_enum {
+    Str(_, [_, ..]), Some(spec) -> {
+      let j = fn(name) {
+        import_.raw_ident(json_ref, name) |> expression.to_dynamic
+      }
+      closure1(
+        "e",
+        expression.call_dynamic(j("string"), [
+          expression.call_dynamic(
+            expression.raw(spec.to_string_name) |> expression.to_dynamic,
+            [expression.raw("e") |> expression.to_dynamic],
+          ),
+        ]),
+      )
+    }
+    _, _ -> value_to_json_fn(schema, json_ref, ref_lookup, None)
+  }
+}
+
+/// A one-argument anonymous function expression.
+fn closure1(
+  param_name: String,
+  body: expression.Expression(type_.Dynamic),
+) -> expression.Expression(type_.Dynamic) {
+  function.new1(
+    param1: parameter.new(param_name, type_.dynamic() |> type_.to_dynamic),
+    returns: type_.dynamic() |> type_.to_dynamic,
+    handler: fn(_) { body },
+  )
+  |> function.anonymous
+  |> expression.to_dynamic
 }
 
 fn with_description(
@@ -904,12 +1787,15 @@ fn sanitize_field(name: String) -> String {
     | "type"
     | "use"
     | "bool"
+    | "decode"
     | "decoder"
     | "dict"
     | "dynamic"
     | "float"
     | "int"
+    | "json"
     | "list"
+    | "option"
     | "optional"
     | "optional_field"
     | "string"

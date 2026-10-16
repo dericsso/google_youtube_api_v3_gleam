@@ -1,14 +1,30 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 pub type LocalizedString {
-  LocalizedString(language: option.Option(String), value: option.Option(String))
+  LocalizedString(language: Option(String), value: Option(String))
 }
 
 pub fn decoder() -> Decoder(LocalizedString) {
-  use language <- optional_field("language", option.None, optional(string))
-  use value <- optional_field("value", option.None, optional(string))
-  success(LocalizedString(language, value))
+  use language <- decode.optional_field(
+    "language",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use value <- decode.optional_field(
+    "value",
+    option.None,
+    decode.optional(decode.string),
+  )
+  decode.success(LocalizedString(language, value))
+}
+
+pub fn to_json(value: LocalizedString) -> Json {
+  json.object([
+    #("language", json.nullable(value.language, json.string)),
+    #("value", json.nullable(value.value, json.string)),
+  ])
 }

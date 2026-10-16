@@ -1,26 +1,42 @@
 //// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
 
-import gleam/dynamic/decode.{type Decoder, optional_field, optional, string, list, success}
-import gleam/option
+import gleam/dynamic/decode.{type Decoder}
+import gleam/json.{type Json}
+import gleam/option.{type Option}
 
 /// Details about a channelsection, including playlists and channels.
 pub type ChannelSectionContentDetails {
   ChannelSectionContentDetails(
-    channels: option.Option(List(String)),
-    playlists: option.Option(List(String)),
+    channels: Option(List(String)),
+    playlists: Option(List(String)),
   )
 }
 
 pub fn decoder() -> Decoder(ChannelSectionContentDetails) {
-  use channels <- optional_field(
+  use channels <- decode.optional_field(
     "channels",
     option.None,
-    optional(list(string)),
+    decode.optional(decode.list(decode.string)),
   )
-  use playlists <- optional_field(
+  use playlists <- decode.optional_field(
     "playlists",
     option.None,
-    optional(list(string)),
+    decode.optional(decode.list(decode.string)),
   )
-  success(ChannelSectionContentDetails(channels, playlists))
+  decode.success(ChannelSectionContentDetails(channels, playlists))
+}
+
+pub fn to_json(value: ChannelSectionContentDetails) -> Json {
+  json.object([
+    #(
+      "channels",
+      json.nullable(value.channels, fn(items) { json.array(items, json.string) }),
+    ),
+    #(
+      "playlists",
+      json.nullable(value.playlists, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+  ])
 }

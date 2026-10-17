@@ -9,7 +9,7 @@ import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
 import google_youtube_api_v3/youtube/cuepoint.{type Cuepoint}
-import google_youtube_api_v3/youtube/live_broadcast.{type LiveBroadcast}
+import google_youtube_api_v3/youtube/live.{type LiveBroadcast}
 
 /// Bind a broadcast to a stream.
 pub type BindParams {
@@ -221,7 +221,7 @@ pub fn insert_request(params: InsertParams, body: LiveBroadcast) -> Request {
       "https://www.googleapis.com/auth/youtube",
       "https://www.googleapis.com/auth/youtube.force-ssl",
     ],
-    option.Some(json.to_string(live_broadcast.to_json(body))),
+    option.Some(json.to_string(live.live_broadcast_to_json(body))),
   )
 }
 
@@ -320,7 +320,7 @@ pub fn insert_cuepoint_request(params: InsertCuepointParams, body: Cuepoint) -> 
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(cuepoint.to_json(body))),
+    option.Some(json.to_string(cuepoint.cuepoint_to_json(body))),
   )
 }
 
@@ -723,7 +723,7 @@ pub fn update_request(params: UpdateParams, body: LiveBroadcast) -> Request {
       "https://www.googleapis.com/auth/youtube",
       "https://www.googleapis.com/auth/youtube.force-ssl",
     ],
-    option.Some(json.to_string(live_broadcast.to_json(body))),
+    option.Some(json.to_string(live.live_broadcast_to_json(body))),
   )
 }
 

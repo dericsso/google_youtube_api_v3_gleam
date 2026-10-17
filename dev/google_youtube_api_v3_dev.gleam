@@ -6,6 +6,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/result
+import gleam/set.{type Set}
 import gleam/string
 import gleamgen/expression
 import gleamgen/expression/block
@@ -25,6 +26,97 @@ import justin
 import simplifile.{type FileError}
 
 const discovery_file_path = "discovery/2026-10-16_discovery_document.json"
+
+// ---------------------------------------------------------------------------
+// Schema grouping: 209 discovery schemas share 21 domain modules (video,
+// live, channel, ...) plus three universally-shared pagination primitives
+// that stay in their own modules.
+// ---------------------------------------------------------------------------
+
+/// Types used by so many different groups that they keep their own module.
+const standalone_schemas = [
+  "page_info",
+  "token_pagination",
+  "resource_id",
+]
+
+/// One-family types that don't share a first token with anything: they
+/// merge into the group that actually references them. Placement was
+/// checked against the generated import graph to stay acyclic.
+fn singleton_owner(name: String) -> Result(String, Nil) {
+  case name {
+    "batch_get_stats_response"
+    | "content_rating"
+    | "geo_point"
+    | "access_policy"
+    | "brand_partner" -> Ok("video")
+    "image_settings" | "watch_settings" | "property_value" -> Ok("channel")
+    "cdn_settings" | "monitor_stream_info" | "ingestion_info" -> Ok("live")
+    "interval" -> Ok("availability")
+    "level_details" -> Ok("memberships")
+    "entity" | "related_entity" -> Ok("abuse")
+    "language_tag" -> Ok("localized")
+    _ -> Error(Nil)
+  }
+}
+
+fn first_token(name: String) -> String {
+  case string.split(name, "_") {
+    [head, ..] -> head
+    [] -> name
+  }
+}
+
+/// The module hosting the named schema, snake_case.
+pub fn group_of(name: String) -> String {
+  case list.contains(standalone_schemas, name) {
+    True -> name
+    False ->
+      case singleton_owner(name) {
+        Ok(group) -> group
+        Error(Nil) -> rename_group(first_token(name))
+      }
+  }
+}
+
+/// Gleam reserves `test` for upcoming test syntax; the TestItem domain's
+/// group takes the plural name instead (matching its `api/tests` module).
+fn rename_group(token: String) -> String {
+  case token {
+    "test" -> "tests"
+    other -> other
+  }
+}
+
+/// The group hosting a discovery (camelCase) schema name.
+pub fn schema_group_of(schema_name: String) -> String {
+  group_of(justin.snake_case(schema_name))
+}
+
+/// Every schema name mapped to its host module, snake_case.
+pub fn group_map(schemas: Dict(String, a)) -> Dict(String, String) {
+  schemas
+  |> dict.to_list
+  |> list.map(fn(kv) { #(kv.0, group_of(justin.snake_case(kv.0))) })
+  |> dict.from_list
+}
+
+/// Group schemas by host module; each list sorted by schema name.
+fn group_schemas(
+  schemas: Dict(String, Schema),
+) -> Dict(String, List(#(String, Schema))) {
+  schemas
+  |> dict.to_list
+  |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) })
+  |> list.fold(dict.new(), fn(acc, kv) {
+    let group = group_of(justin.snake_case(kv.0))
+    let current = case dict.get(acc, group) {
+      Ok(existing) -> existing
+      Error(Nil) -> []
+    }
+    dict.insert(acc, group, list.append(current, [kv]))
+  })
+}
 
 pub type DiscoveryError {
   ReadFailed(FileError)
@@ -392,12 +484,16 @@ fn generate_code(
     initialize_directory(base_path) |> result.map_error(WriteFailed),
   )
 
-  use item <- list.try_each(discovery.schemas |> dict.to_list)
+  let groups = group_map(discovery.schemas)
+  use item <- list.try_each(
+    group_schemas(discovery.schemas)
+    |> dict.to_list
+    |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) }),
+  )
 
-  let #(key, schema) = item
-  let file_name = justin.snake_case(key)
-  let file_path = base_path <> "/" <> file_name <> ".gleam"
-  let code = build_module(key, schema)
+  let #(group, schemas) = item
+  let file_path = base_path <> "/" <> group <> ".gleam"
+  let code = build_group_module(group, schemas, groups)
 
   use _ <- result.try(
     simplifile.write(file_path, code) |> result.map_error(WriteFailed),
@@ -586,6 +682,16 @@ fn build_request_module(methods: List(#(String, Method))) -> String {
       }
     })
     |> list.unique
+  // Map each body schema to its host group module for import dedup.
+  let body_hosts =
+    list.fold(bodies, dict.new(), fn(acc, body) {
+      let host = group_of(justin.snake_case(body))
+      let current = case dict.get(acc, host) {
+        Ok(existing) -> existing
+        Error(Nil) -> []
+      }
+      dict.insert(acc, host, list.append(current, [body]))
+    })
   let runtime_import =
     import_.new(["google_youtube_api_v3", "request"])
     |> import_.with_unqualified_items([
@@ -622,17 +728,21 @@ fn build_request_module(methods: List(#(String, Method))) -> String {
         ]
         False -> []
       },
-      list.map(bodies, fn(body) {
-        #(
-          "body:" <> body,
-          import_.new([
-            "google_youtube_api_v3",
-            "youtube",
-            justin.snake_case(body),
-          ])
-            |> import_.with_unqualified_items([import_.unqualified_type(body)]),
-        )
-      }),
+      // Body schemas share their group's module: one import per host
+      // group, with an unqualified type item per schema.
+      list.map(
+        dict.to_list(body_hosts)
+        |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) }),
+        fn(entry) {
+          #(
+            "body:" <> entry.0,
+            import_.new(["google_youtube_api_v3", "youtube", entry.0])
+              |> import_.with_unqualified_items(
+                list.map(entry.1, import_.unqualified_type),
+              ),
+          )
+        },
+      ),
       case list.contains(param_types, ParamInteger) {
         True -> [#("int", import_.new(["gleam", "int"]))]
         False -> []
@@ -672,14 +782,18 @@ fn build_request_module(methods: List(#(String, Method))) -> String {
           bool_ref: ref_or(refs, "bool", ["gleam", "bool"]),
           list_ref: ref_or(refs, "list", ["gleam", "list"]),
           json_ref: ref_or(refs, "json", ["gleam", "json"]),
-          body_lookup: dict.from_list(
-            list.filter_map(dict.to_list(refs), fn(item) {
-              case string.split_once(item.0, "body:") {
-                Ok(#(_, body)) -> Ok(#(body, item.1))
+          body_lookup:
+            dict.to_list(body_hosts)
+            |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) })
+            |> list.filter_map(fn(entry) {
+              case dict.get(refs, "body:" <> entry.0) {
+                Ok(ref) ->
+                  Ok(entry.1 |> list.map(fn(body) { #(body, ref) }))
                 Error(Nil) -> Error(Nil)
               }
-            }),
-          ),
+            })
+            |> list.flatten
+            |> dict.from_list,
         )
       with_request_methods(specs, ctx, fn() {
         with_enums(
@@ -692,7 +806,10 @@ fn build_request_module(methods: List(#(String, Method))) -> String {
       })
     })
 
-  mod |> module.render(render.default_context()) |> render.to_string()
+  mod
+  |> module.render(render.default_context())
+  |> render.to_string()
+  |> fix_empty_param_break()
 }
 
 fn ref_or(
@@ -831,9 +948,13 @@ fn with_to_request(
       let assert Ok(body_ref) = dict.get(ctx.body_lookup, body_name)
       some_expr(
         expression.call_dynamic(qualified(ctx.json_ref, "to_string"), [
-          expression.call_dynamic(qualified(body_ref, "to_json"), [
-            raw_expr("body"),
-          ]),
+          expression.call_dynamic(
+            qualified(
+              body_ref,
+              justin.snake_case(body_name) <> "_to_json",
+            ),
+            [raw_expr("body")],
+          ),
         ]),
       )
     }
@@ -1190,52 +1311,179 @@ pub const generated_notice: String =
   "DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`"
 
 /// Build the full source text for a single schema file.
-pub fn build_module(type_name: String, schema: Schema) -> String {
+/// Build the full source text for one schema group: every schema of the
+/// group becomes a custom type plus `<schema>_decoder` and
+/// `<schema>_to_json`, followed by its field enums.
+pub fn build_group_module(
+  group: String,
+  schemas: List(#(String, Schema)),
+  groups: Dict(String, String),
+) -> String {
   let deps =
-    collect_refs(schema)
+    schemas
+    |> list.flat_map(fn(item) { collect_refs(item.1) })
+    |> list.filter(fn(dep) { dict.get(groups, dep) != Ok(group) })
     |> list.unique
-    |> list.filter(fn(dep) { dep != type_name })
     |> list.sort(by: string.compare)
-
-  let ref_imports =
-    list.map(deps, fn(dep) {
+  // One import per host module, collecting every type we share with it.
+  // Unqualified type imports are never dropped by gleamgen and survive
+  // type-position usage.
+  let dep_hosts =
+    list.fold(deps, dict.new(), fn(acc, dep) {
+      let assert Ok(host) = dict.get(groups, dep)
+      let current = case dict.get(acc, host) {
+        Ok(existing) -> existing
+        Error(Nil) -> []
+      }
+      dict.insert(acc, host, list.append(current, [dep]))
+    })
+  let host_imports =
+    dict.to_list(dep_hosts)
+    |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) })
+    |> list.map(fn(entry) {
       import_.new([
         "google_youtube_api_v3",
         "youtube",
-        justin.snake_case(dep),
+        entry.0,
       ])
-      |> import_.with_unqualified_items([import_.unqualified_type(dep)])
+      |> import_.with_unqualified_items(
+        list.map(entry.1, import_.unqualified_type),
+      )
     })
-  let dict_needed = case schema.kind {
-    Object(properties:, ..) ->
-      dict.values(properties) |> list.any(contains_object)
-    _ -> False
-  }
-  let dict_import =
-    import_.new(["gleam", "dict"])
-    |> import_.with_unqualified_items([import_.unqualified_type("Dict")])
-  // Unqualified `Dict` keeps the import line only when actually used,
-  // so only add it when a nested object requires a map type. Plain
-  // qualified imports would be dropped by gleamgen's unused-import pass.
-  let dict_imports = case dict_needed {
-    True -> [dict_import]
-    False -> []
-  }
-  // Convention: types unqualified (`Option`, `Dict`, `Decoder`),
-  // functions qualified (`decode.optional_field`, `option.None`,
-  // `video_snippet.decoder`). Unqualified imports are never dropped by
-  // gleamgen; plain imports survive only when used from expression
-  // position, which is exactly how the qualified calls below use them.
+  let dict_needed =
+    list.any(schemas, fn(item) {
+      case item.1.kind {
+        Object(properties:, ..) -> dict.values(properties) |> list.any(contains_object)
+        _ -> False
+      }
+    })
+  // Raw (unprefixed) enum specs first; then rename the ones whose type
+  // name collides with a sibling enum inside this group.
+  let props_raw = list.map(schemas, fn(item) { #(item.0, base_props(item.1)) })
+  let colliding =
+    list.flat_map(props_raw, fn(entry) {
+      list.filter_map(entry.1, fn(prop) {
+        case prop.3 {
+          Some(spec) -> Ok(spec.type_name)
+          None -> Error(Nil)
+        }
+      })
+    })
+    |> count_list
+    |> dict.filter(fn(_key, count) { count > 1 })
+    |> dict.to_list
+    |> list.map(fn(entry) { entry.0 })
+    |> set.from_list
+  let props =
+    list.map(props_raw, fn(entry) {
+      let host = justin.pascal_case(entry.0)
+      #(
+        entry.0,
+        list.map(entry.1, fn(prop) {
+          #(prop.0, prop.1, prop.2, prefix_enum(prop.3, host, colliding))
+        }),
+      )
+    })
+  let items =
+    list.zip(schemas, props)
+    |> list.map(fn(pair) {
+      let #(#(name, schema), #(_, schema_props)) = pair
+      #(name, schema, schema_props)
+    })
+  let needs_option = list.any(items, fn(item) { !list.is_empty(item.2) })
   let decode_import =
     import_.new(["gleam", "dynamic", "decode"])
     |> import_.with_unqualified_items([import_.unqualified_type("Decoder")])
   let json_import =
     import_.new(["gleam", "json"])
     |> import_.with_unqualified_items([import_.unqualified_type("Json")])
+  let dict_import =
+    import_.new(["gleam", "dict"])
+    |> import_.with_unqualified_items([import_.unqualified_type("Dict")])
   let option_import =
     import_.new(["gleam", "option"])
     |> import_.with_unqualified_items([import_.unqualified_type("Option")])
-  let props = case schema.kind {
+  let all_imports =
+    list.flatten([
+      [decode_import],
+      [json_import],
+      case dict_needed {
+        True -> [dict_import]
+        False -> []
+      },
+      case needs_option {
+        True -> [option_import]
+        False -> []
+      },
+      host_imports,
+    ])
+
+  module.with_module_documentation_comments([generated_notice], fn() {
+    use imported <- module.with_dynamic_imports(all_imports)
+    let assert [decode_mod, json_mod, ..rest] = imported
+    let #(dict_mods, rest2) =
+      list.split(rest, case dict_needed {
+        True -> 1
+        False -> 0
+      })
+    let #(option_mods, host_mods) =
+      list.split(rest2, case needs_option {
+        True -> 1
+        False -> 0
+      })
+    let dict_ref = case dict_mods {
+      [dict_mod, ..] -> import_.import_to_reference(dict_mod)
+      [] -> import_.import_to_reference(dict_import)
+    }
+    let option_ref = case option_mods {
+      [option_mod, ..] -> import_.import_to_reference(option_mod)
+      [] -> import_.import_to_reference(option_import)
+    }
+    // host_mods match host_imports in construction order; flatten each
+    // host's dep list against its reference.
+    let ref_lookup =
+      list.zip(
+        dict.to_list(dep_hosts)
+        |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) }),
+        host_mods,
+      )
+      |> list.flat_map(fn(pair) {
+        let #(entry, host_mod) = pair
+        let host_ref = import_.import_to_reference(host_mod)
+        list.map(entry.1, fn(dep) { #(dep, host_ref) })
+      })
+      |> dict.from_list
+    let ctx =
+      GroupCtx(
+        decode_ref: import_.import_to_reference(decode_mod),
+        json_ref: import_.import_to_reference(json_mod),
+        dict_ref:,
+        option_ref:,
+        ref_lookup:,
+      )
+    with_schema_items(items, ctx, module.eof)
+  })
+  |> module.render(render.default_context())
+  |> render.to_string()
+  |> fix_empty_param_break()
+}
+
+/// Everything a group's decoder/encoder builders need.
+type GroupCtx {
+  GroupCtx(
+    decode_ref: ImportReference,
+    json_ref: ImportReference,
+    dict_ref: ImportReference,
+    option_ref: ImportReference,
+    ref_lookup: Dict(String, ImportReference),
+  )
+}
+
+/// Sorted properties of one schema, with raw enum specs.
+fn base_props(
+  schema: Schema,
+) -> List(#(String, String, Schema, Option(EnumSpec))) {
+  case schema.kind {
     Object(properties:, ..) ->
       properties
       |> sorted_properties
@@ -1250,93 +1498,98 @@ pub fn build_module(type_name: String, schema: Schema) -> String {
       })
     _ -> []
   }
-  let enums =
-    list.filter_map(props, fn(prop) {
-      case prop.3 {
-        Some(spec) -> Ok(#(spec, prop.2.description))
-        None -> Error(Nil)
+}
+
+/// Prefix an enum type name with its host schema when siblings collide.
+/// Variant names follow the type, keeping them module-unique.
+fn prefix_enum(
+  base: Option(EnumSpec),
+  host: String,
+  colliding: Set(String),
+) -> Option(EnumSpec) {
+  case base {
+    Some(spec) ->
+      case set.contains(colliding, spec.type_name) {
+        True -> {
+          let type_name = justin.pascal_case(host) <> spec.type_name
+          Some(EnumSpec(
+            type_name:,
+            to_string_name: justin.snake_case(type_name) <> "_to_string",
+            decoder_name: justin.snake_case(type_name) <> "_decoder",
+            variants: list.map(spec.variants, fn(v) {
+              #(type_name <> enum_variant_stem(v.1), v.1)
+            }),
+          ))
+        }
+        False -> base
       }
-    })
-  let option_needed = !list.is_empty(props)
-  let option_imports = case option_needed {
-    True -> [option_import]
-    False -> []
+    None -> None
   }
-  let all_imports =
-    list.flatten([
-      [decode_import],
-      [json_import],
-      dict_imports,
-      option_imports,
-      ref_imports,
-    ])
+}
 
-  let mod =
-    module.with_module_documentation_comments([generated_notice], fn() {
-      use imported <- module.with_dynamic_imports(all_imports)
-      let assert [decode_mod, json_mod, ..rest1] = imported
-      let decode_ref = import_.import_to_reference(decode_mod)
-      let json_ref = import_.import_to_reference(json_mod)
-      let #(dict_mods, rest2) =
-        list.split(rest1, case dict_needed {
-          True -> 1
-          False -> 0
-        })
-      let dict_ref = case dict_mods {
-        [dict_mod, ..] -> import_.import_to_reference(dict_mod)
-        [] -> import_.import_to_reference(dict_import)
-      }
-      let #(option_mods, ref_modules) =
-        list.split(rest2, case option_needed {
-          True -> 1
-          False -> 0
-        })
-      let option_ref = case option_mods {
-        [option_mod, ..] -> import_.import_to_reference(option_mod)
-        [] -> import_.import_to_reference(option_import)
-      }
-      let ref_lookup =
-        list.zip(deps, list.map(ref_modules, import_.import_to_reference))
-        |> dict.from_list
-
+/// Emit every schema in a group: type, decoder, encoder, field enums.
+fn with_schema_items(
+  items: List(#(String, Schema, List(#(String, String, Schema, Option(EnumSpec))))),
+  ctx: GroupCtx,
+  handler: fn() -> Module,
+) -> Module {
+  case items {
+    [] -> handler()
+    [#(name, schema, props), ..rest] -> {
+      let snake = justin.snake_case(name)
       let fields =
         list.map(props, fn(prop) {
           let #(_, field_name, prop_schema, field_enum) = prop
           let inner =
-            schema_to_type(prop_schema, ref_lookup, dict_ref, field_enum)
+            schema_to_type(prop_schema, ctx.ref_lookup, ctx.dict_ref, field_enum)
           let wrapped =
-            import_.raw_type(option_ref, "Option")
+            import_.raw_type(ctx.option_ref, "Option")
             |> custom.to_type1(inner)
             |> type_.to_dynamic
           #(Some(field_name), wrapped)
         })
-
       let details =
-        definition.new(type_name)
+        definition.new(name)
         |> definition.with_publicity(True)
         |> with_description(schema.description)
-
       let variant =
-        variant.new(type_name)
+        variant.new(name)
         |> variant.with_arguments_dynamic(fields)
-      let builder = custom.new_dynamic([variant], [])
-
       use _type, constructors <- module.with_custom_type_dynamic(
         details,
-        builder,
+        custom.new_dynamic([variant], []),
       )
-      use _decoder_fn <- module.with_function(
-        definition.new("decoder") |> definition.with_publicity(True),
-        decoder_function(type_name, props, constructors, decode_ref, ref_lookup),
+      use _decoder <- module.with_function(
+        definition.new(snake <> "_decoder") |> definition.with_publicity(True),
+        decoder_function(name, props, constructors, ctx.decode_ref, ctx.ref_lookup),
       )
-      use _encoder_fn <- module.with_function(
-        definition.new("to_json") |> definition.with_publicity(True),
-        encoder_function(type_name, props, json_ref, ref_lookup),
+      use _encoder <- module.with_function(
+        definition.new(snake <> "_to_json") |> definition.with_publicity(True),
+        encoder_function(name, props, ctx.json_ref, ctx.ref_lookup),
       )
-      with_enums(enums, decode_ref, module.eof)
-    })
+      with_enums(
+        list.filter_map(props, fn(prop) {
+          case prop.3 {
+            Some(spec) -> Ok(#(spec, prop.2.description))
+            None -> Error(Nil)
+          }
+        }),
+        ctx.decode_ref,
+        fn() { with_schema_items(rest, ctx, handler) },
+      )
+    }
+  }
+}
 
-  mod |> module.render(render.default_context()) |> render.to_string()
+/// Count occurrences of each distinct string.
+fn count_list(items: List(String)) -> Dict(String, Int) {
+  list.fold(items, dict.new(), fn(acc, item) {
+    let count = case dict.get(acc, item) {
+      Ok(n) -> n + 1
+      Error(Nil) -> 1
+    }
+    dict.insert(acc, item, count)
+  })
 }
 
 /// Build the `decoder()` function body for one schema type:
@@ -1428,14 +1681,15 @@ fn value_decoder(
         value_decoder(items, decode_ref, ref_lookup, field_enum),
       ])
     Ref(name) -> {
+      let callee_name = justin.snake_case(name) <> "_decoder"
       let callee = case dict.get(ref_lookup, name) {
         // Qualified call through the sibling's type import:
-        // `video_snippet.decoder()`.
+        // `channel.channel_decoder()`.
         Ok(ref) ->
-          expression.imported_ident(ref, "decoder")
-          |> expression.to_dynamic
-        // Self-reference: the local `decoder()` being defined.
-        Error(Nil) -> expression.raw("decoder") |> expression.to_dynamic
+          expression.imported_ident(ref, callee_name) |> expression.to_dynamic
+        // Same-group reference: the local function being defined.
+        Error(Nil) ->
+          expression.raw(callee_name) |> expression.to_dynamic
       }
       expression.call_dynamic(callee, [])
     }
@@ -1696,11 +1950,11 @@ fn value_to_json_fn(
         ]),
       )
     Ref(name) -> {
+      let callee_name = justin.snake_case(name) <> "_to_json"
       let callee = case dict.get(ref_lookup, name) {
         Ok(ref) ->
-          expression.imported_ident(ref, "to_json")
-          |> expression.to_dynamic
-        Error(Nil) -> expression.raw("to_json") |> expression.to_dynamic
+          expression.imported_ident(ref, callee_name) |> expression.to_dynamic
+        Error(Nil) -> expression.raw(callee_name) |> expression.to_dynamic
       }
       callee
     }
@@ -1776,6 +2030,16 @@ fn with_description(
     Some(doc) -> definition.with_documentation_comments(details, [doc])
     None -> details
   }
+}
+
+/// glam breaks a zero-parameter list that doesn't fit a line as
+/// `(" ," )` — collapse it back to `()` (same renderer quirk family as
+/// the `[ , ]` empty-list misrender, which the `empty_list()` helper
+/// avoids the same way).
+fn fix_empty_param_break(code: String) -> String {
+  code
+  |> string.replace("(\n  ,\n)", "()")
+  |> string.replace("(\n    ,\n  )", "()")
 }
 
 /// Gleam keywords can't be used as labelled-argument names. Decoder helper

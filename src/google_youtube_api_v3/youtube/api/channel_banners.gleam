@@ -5,7 +5,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/channel_banner_resource.{type ChannelBannerResource}
+import google_youtube_api_v3/youtube/channel.{type ChannelBannerResource}
 
 /// Inserts a new resource into this collection.
 pub type InsertParams {
@@ -70,6 +70,6 @@ pub fn insert_request(params: InsertParams, body: ChannelBannerResource) -> Requ
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtube.upload",
     ],
-    option.Some(json.to_string(channel_banner_resource.to_json(body))),
+    option.Some(json.to_string(channel.channel_banner_resource_to_json(body))),
   )
 }

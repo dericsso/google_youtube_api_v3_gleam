@@ -5,7 +5,7 @@ import gleam/json
 import gleam/list
 import gleam/option
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/live_chat_ban.{type LiveChatBan}
+import google_youtube_api_v3/youtube/live.{type LiveChatBan}
 
 /// Deletes a chat ban.
 pub type DeleteParams {
@@ -53,6 +53,6 @@ pub fn insert_request(params: InsertParams, body: LiveChatBan) -> Request {
       "https://www.googleapis.com/auth/youtube",
       "https://www.googleapis.com/auth/youtube.force-ssl",
     ],
-    option.Some(json.to_string(live_chat_ban.to_json(body))),
+    option.Some(json.to_string(live.live_chat_ban_to_json(body))),
   )
 }

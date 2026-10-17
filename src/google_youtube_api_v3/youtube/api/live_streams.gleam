@@ -7,7 +7,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/live_stream.{type LiveStream}
+import google_youtube_api_v3/youtube/live.{type LiveStream}
 
 /// Deletes an existing stream for the authenticated user.
 pub type DeleteParams {
@@ -127,7 +127,7 @@ pub fn insert_request(params: InsertParams, body: LiveStream) -> Request {
       "https://www.googleapis.com/auth/youtube",
       "https://www.googleapis.com/auth/youtube.force-ssl",
     ],
-    option.Some(json.to_string(live_stream.to_json(body))),
+    option.Some(json.to_string(live.live_stream_to_json(body))),
   )
 }
 
@@ -352,6 +352,6 @@ pub fn update_request(params: UpdateParams, body: LiveStream) -> Request {
       "https://www.googleapis.com/auth/youtube",
       "https://www.googleapis.com/auth/youtube.force-ssl",
     ],
-    option.Some(json.to_string(live_stream.to_json(body))),
+    option.Some(json.to_string(live.live_stream_to_json(body))),
   )
 }

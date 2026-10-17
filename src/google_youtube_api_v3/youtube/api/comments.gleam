@@ -50,7 +50,7 @@ pub fn insert_request(params: InsertParams, body: Comment) -> Request {
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],
     ["https://www.googleapis.com/auth/youtube.force-ssl"],
-    option.Some(json.to_string(comment.to_json(body))),
+    option.Some(json.to_string(comment.comment_to_json(body))),
   )
 }
 
@@ -288,7 +288,7 @@ pub fn update_request(params: UpdateParams, body: Comment) -> Request {
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],
     ["https://www.googleapis.com/auth/youtube.force-ssl"],
-    option.Some(json.to_string(comment.to_json(body))),
+    option.Some(json.to_string(comment.comment_to_json(body))),
   )
 }
 

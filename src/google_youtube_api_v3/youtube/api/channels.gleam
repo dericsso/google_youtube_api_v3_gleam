@@ -364,6 +364,6 @@ pub fn update_request(params: UpdateParams, body: Channel) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(channel.to_json(body))),
+    option.Some(json.to_string(channel.channel_to_json(body))),
   )
 }

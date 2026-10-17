@@ -58,7 +58,7 @@ pub fn insert_request(params: InsertParams, body: Subscription) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(subscription.to_json(body))),
+    option.Some(json.to_string(subscription.subscription_to_json(body))),
   )
 }
 

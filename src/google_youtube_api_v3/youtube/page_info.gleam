@@ -9,7 +9,7 @@ pub type PageInfo {
   PageInfo(results_per_page: Option(Int), total_results: Option(Int))
 }
 
-pub fn decoder() -> Decoder(PageInfo) {
+pub fn page_info_decoder() -> Decoder(PageInfo) {
   use results_per_page <- decode.optional_field(
     "resultsPerPage",
     option.None,
@@ -23,7 +23,7 @@ pub fn decoder() -> Decoder(PageInfo) {
   decode.success(PageInfo(results_per_page, total_results))
 }
 
-pub fn to_json(value: PageInfo) -> Json {
+pub fn page_info_to_json(value: PageInfo) -> Json {
   json.object(
     [
       #("resultsPerPage", json.nullable(value.results_per_page, json.int)),

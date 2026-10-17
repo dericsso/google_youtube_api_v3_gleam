@@ -8,10 +8,10 @@ pub type TokenPagination {
   TokenPagination
 }
 
-pub fn decoder() -> Decoder(TokenPagination) {
+pub fn token_pagination_decoder() -> Decoder(TokenPagination) {
   decode.success(TokenPagination)
 }
 
-pub fn to_json(_value: TokenPagination) -> Json {
+pub fn token_pagination_to_json(_value: TokenPagination) -> Json {
   json.object([])
 }

@@ -6,21 +6,20 @@ import gleam/option.{None, Some}
 import gleam/set
 import gleam/string
 import gleeunit/should
-import google_youtube_api_v3_dev.{
-  type Discovery, type Kind, type Method, type Parameter, type Resource,
-  type Schema, Array, Boolean, Delete, Discovery, Get, Integer, Method, Number,
-  Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path, Post, Put,
-  Query, Ref, Resource, Schema, Str,
-}
 import google_youtube_api_v3/request as api_request
 import google_youtube_api_v3/youtube/api/captions as captions_api
 import google_youtube_api_v3/youtube/api/playlists as playlists_api
 import google_youtube_api_v3/youtube/api/videos as videos_api
 import google_youtube_api_v3/youtube/page_info
 import google_youtube_api_v3/youtube/playlist
-import google_youtube_api_v3/youtube/playlist_item_status
-import google_youtube_api_v3/youtube/video_snippet
-import google_youtube_api_v3/youtube/video_suggestions
+import google_youtube_api_v3/youtube/video
+import google_youtube_api_v3_dev.{
+  type Discovery, type Kind, type Method, type Parameter, type Resource,
+  type Schema, Array, Boolean, Delete, Discovery, Get, Integer, Method, Number,
+  Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path, Post, Put,
+  Query, Ref, Resource, Schema, Str,
+}
+import justin
 import simplifile
 
 const discovery_file_path = "discovery/2026-10-16_discovery_document.json"
@@ -35,6 +34,25 @@ fn load_discovery() -> Discovery {
   let assert Ok(discovery) = google_youtube_api_v3_dev.parse_discovery(content)
     as "discovery document must parse with the current decoders"
   discovery
+}
+
+/// Render the group module hosting the named discovery schema, exactly as
+/// `gleam dev` would.
+fn render_group(schema_name: String) -> String {
+  let Discovery(schemas:, ..) = load_discovery()
+  let groups = google_youtube_api_v3_dev.group_map(schemas)
+  let group = google_youtube_api_v3_dev.schema_group_of(schema_name)
+  let members =
+    dict.to_list(schemas)
+    |> list.filter(fn(item) {
+      google_youtube_api_v3_dev.schema_group_of(item.0) == group
+    })
+    |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) })
+  google_youtube_api_v3_dev.build_group_module(group, members, groups)
+}
+
+fn camel_to_snake(name: String) -> String {
+  justin.snake_case(name)
 }
 
 /// Walk every schema reachable from the top-level map, including nested
@@ -57,7 +75,12 @@ fn descendants(schema: Schema) -> List(Schema) {
       }
       list.flatten([wrapped_props, from_props, from_additional])
     }
-    Ref(_) | Str(_, _) | Integer(_) | Number | Boolean | google_youtube_api_v3_dev.Any -> []
+    Ref(_)
+    | Str(_, _)
+    | Integer(_)
+    | Number
+    | Boolean
+    | google_youtube_api_v3_dev.Any -> []
   }
 }
 
@@ -329,7 +352,8 @@ pub fn array_items_variants_are_decoded_test() {
 // ---------------------------------------------------------------------------
 
 fn parse_schema(raw: String) -> Schema {
-  let assert Ok(schema) = json.parse(raw, google_youtube_api_v3_dev.schema_decoder())
+  let assert Ok(schema) =
+    json.parse(raw, google_youtube_api_v3_dev.schema_decoder())
     as "inline schema snippet must decode"
   schema
 }
@@ -422,13 +446,13 @@ pub fn description_is_optional_test() {
 // ---------------------------------------------------------------------------
 
 pub fn generated_module_carries_do_not_change_header_test() {
-  let Discovery(schemas:, ..) = load_discovery()
-  let assert Ok(schema) = dict.get(schemas, "Video")
-  google_youtube_api_v3_dev.build_module("Video", schema)
+  render_group("Video")
   |> string.starts_with("//// " <> google_youtube_api_v3_dev.generated_notice)
   |> should.be_true
 }
 
+// ---------------------------------------------------------------------------
+// Method/resource regression tests
 // ---------------------------------------------------------------------------
 // Method/resource regression tests
 // ---------------------------------------------------------------------------
@@ -580,13 +604,15 @@ pub fn media_upload_is_decoded_test() {
 // ---------------------------------------------------------------------------
 
 fn parse_method(raw: String) -> Method {
-  let assert Ok(method) = json.parse(raw, google_youtube_api_v3_dev.method_decoder())
+  let assert Ok(method) =
+    json.parse(raw, google_youtube_api_v3_dev.method_decoder())
     as "inline method snippet must decode"
   method
 }
 
 fn parse_parameter(raw: String) -> Parameter {
-  let assert Ok(parameter) = json.parse(raw, google_youtube_api_v3_dev.parameter_decoder())
+  let assert Ok(parameter) =
+    json.parse(raw, google_youtube_api_v3_dev.parameter_decoder())
     as "inline parameter snippet must decode"
   parameter
 }
@@ -679,13 +705,15 @@ pub fn unknown_parameter_type_fails_test() {
 // ---------------------------------------------------------------------------
 
 pub fn generated_decoder_uses_original_json_keys_test() {
-  let Discovery(schemas:, ..) = load_discovery()
-  let assert Ok(schema) = dict.get(schemas, "PageInfo")
-  let code = google_youtube_api_v3_dev.build_module("PageInfo", schema)
-  // Gleam fields are snake_case but the wire keys stay camelCase.
+  let code = render_group("PageInfo")
+  // Gleam fields are snake_case but the wire keys stay camelCase, and
+  // with grouped modules every function carries its schema's name.
   should.be_true(string.contains(code, "\"resultsPerPage\""))
   should.be_true(string.contains(code, "\"totalResults\""))
-  should.be_true(string.contains(code, "pub fn decoder() -> Decoder(PageInfo)"))
+  should.be_true(string.contains(
+    code,
+    "pub fn page_info_decoder() -> Decoder(PageInfo)",
+  ))
 }
 
 pub fn every_schema_generates_a_decoder_test() {
@@ -694,8 +722,8 @@ pub fn every_schema_generates_a_decoder_test() {
     dict.to_list(schemas)
     |> list.filter(fn(item) {
       !string.contains(
-        google_youtube_api_v3_dev.build_module(item.0, item.1),
-        "pub fn decoder()",
+        render_group(item.0),
+        "pub fn " <> camel_to_snake(item.0) <> "_decoder()",
       )
     })
     |> list.map(fn(item) { item.0 })
@@ -707,7 +735,10 @@ pub fn every_schema_generates_an_encoder_test() {
   let missing =
     dict.to_list(schemas)
     |> list.filter(fn(item) {
-      !string.contains(google_youtube_api_v3_dev.build_module(item.0, item.1), "pub fn to_json(")
+      !string.contains(
+        render_group(item.0),
+        "pub fn " <> camel_to_snake(item.0) <> "_to_json(",
+      )
     })
     |> list.map(fn(item) { item.0 })
   should.equal(missing, [])
@@ -716,37 +747,37 @@ pub fn every_schema_generates_an_encoder_test() {
 pub fn generated_encoder_roundtrip_test() {
   let info = page_info.PageInfo(Some(10), None)
   let assert Ok(back) =
-    page_info.to_json(info)
+    page_info.page_info_to_json(info)
     |> json.to_string
-    |> json.parse(page_info.decoder())
+    |> json.parse(page_info.page_info_decoder())
   should.equal(back, info)
 }
 
 pub fn generated_encoder_handles_enums_and_nesting_test() {
   let status =
-    playlist_item_status.PlaylistItemStatus(Some(
-      playlist_item_status.PrivacyStatusUnlisted,
+    playlist.PlaylistItemStatus(Some(
+      playlist.PlaylistItemStatusPrivacyStatusUnlisted,
     ))
-  playlist_item_status.to_json(status)
+  playlist.playlist_item_status_to_json(status)
   |> json.to_string
   |> should.equal("{\"privacyStatus\":\"unlisted\"}")
   let assert Ok(back) =
-    playlist_item_status.to_json(status)
+    playlist.playlist_item_status_to_json(status)
     |> json.to_string
-    |> json.parse(playlist_item_status.decoder())
+    |> json.parse(playlist.playlist_item_status_decoder())
   should.equal(back, status)
 }
 
 pub fn generated_decoder_decodes_scalars_test() {
   json.parse(
     "{\"totalResults\": 5, \"resultsPerPage\": 10}",
-    page_info.decoder(),
+    page_info.page_info_decoder(),
   )
   |> should.equal(Ok(page_info.PageInfo(Some(10), Some(5))))
 }
 
 pub fn generated_decoder_defaults_missing_fields_to_none_test() {
-  json.parse("{}", page_info.decoder())
+  json.parse("{}", page_info.page_info_decoder())
   |> should.equal(Ok(page_info.PageInfo(None, None)))
 }
 
@@ -754,7 +785,7 @@ pub fn generated_decoder_decodes_nested_refs_and_lists_test() {
   let assert Ok(snippet) =
     json.parse(
       "{\"title\": \"Hello\", \"tags\": [\"a\", \"b\"], \"thumbnails\": {\"default\": {\"url\": \"https://x/y.jpg\"}}}",
-      video_snippet.decoder(),
+      video.video_snippet_decoder(),
     )
   should.equal(snippet.title, Some("Hello"))
   should.equal(snippet.tags, Some(["a", "b"]))
@@ -767,7 +798,7 @@ pub fn generated_decoder_decodes_string_maps_test() {
   let assert Ok(list) =
     json.parse(
       "{\"id\": \"PL1\", \"localizations\": {\"en\": {\"title\": \"Hi\"}}}",
-      playlist.decoder(),
+      playlist.playlist_decoder(),
     )
   should.equal(list.id, Some("PL1"))
   let assert Some(localizations) = list.localizations
@@ -780,29 +811,27 @@ pub fn generated_decoder_decodes_string_maps_test() {
 // ---------------------------------------------------------------------------
 
 pub fn generated_enum_type_and_helpers_test() {
-  let Discovery(schemas:, ..) = load_discovery()
-  let assert Ok(schema) = dict.get(schemas, "PlaylistItemStatus")
-  let code = google_youtube_api_v3_dev.build_module("PlaylistItemStatus", schema)
-  // Field type is the custom enum, not String.
-  should.be_true(string.contains(code, "privacy_status: Option(PrivacyStatus)"))
-  should.be_true(string.contains(code, "pub type PrivacyStatus {"))
+  let code = render_group("PlaylistItemStatus")
+  // Field type is the custom enum, not String. This enum collides with a
+  // sibling `privacy_status` inside the playlist group, so both get a
+  // host-schema prefix.
   should.be_true(string.contains(
     code,
-    "pub fn privacy_status_to_string(value: PrivacyStatus) -> String",
+    "privacy_status: Option(PlaylistItemStatusPrivacyStatus)",
   ))
   should.be_true(string.contains(
     code,
-    "pub fn privacy_status_decoder() -> Decoder(PrivacyStatus)",
+    "pub type PlaylistItemStatusPrivacyStatus {",
   ))
 }
 
 pub fn generated_enum_to_string_test() {
-  playlist_item_status.privacy_status_to_string(
-    playlist_item_status.PrivacyStatusPrivate,
+  playlist.playlist_item_status_privacy_status_to_string(
+    playlist.PlaylistItemStatusPrivacyStatusPrivate,
   )
   |> should.equal("private")
-  playlist_item_status.privacy_status_to_string(
-    playlist_item_status.PrivacyStatusPublic,
+  playlist.playlist_item_status_privacy_status_to_string(
+    playlist.PlaylistItemStatusPrivacyStatusPublic,
   )
   |> should.equal("public")
 }
@@ -811,26 +840,24 @@ pub fn generated_enum_decodes_through_parent_test() {
   let assert Ok(status) =
     json.parse(
       "{\"privacyStatus\": \"private\"}",
-      playlist_item_status.decoder(),
+      playlist.playlist_item_status_decoder(),
     )
   should.equal(
     status.privacy_status,
-    Some(playlist_item_status.PrivacyStatusPrivate),
+    Some(playlist.PlaylistItemStatusPrivacyStatusPrivate),
   )
 }
 
 pub fn generated_enum_rejects_unknown_values_test() {
   json.parse(
     "{\"privacyStatus\": \"sometimes\"}",
-    playlist_item_status.decoder(),
+    playlist.playlist_item_status_decoder(),
   )
   |> should.be_error
 }
 
 pub fn generated_enum_sanitizes_digit_led_values_test() {
-  let Discovery(schemas:, ..) = load_discovery()
-  let assert Ok(schema) = dict.get(schemas, "CdnSettings")
-  let code = google_youtube_api_v3_dev.build_module("CdnSettings", schema)
+  let code = render_group("CdnSettings")
   // `240p` is not a valid constructor name on its own.
   should.be_true(string.contains(code, "ResolutionValue240p"))
   should.be_true(string.contains(code, "FrameRateVariable"))
@@ -840,13 +867,13 @@ pub fn generated_enum_decodes_arrays_test() {
   let assert Ok(suggestions) =
     json.parse(
       "{\"processingWarnings\": [\"hasEditlist\", \"unknownContainer\"]}",
-      video_suggestions.decoder(),
+      video.video_suggestions_decoder(),
     )
   should.equal(
     suggestions.processing_warnings,
     Some([
-      video_suggestions.ProcessingWarningsHasEditlist,
-      video_suggestions.ProcessingWarningsUnknownContainer,
+      video.ProcessingWarningsHasEditlist,
+      video.ProcessingWarningsUnknownContainer,
     ]),
   )
 }
@@ -918,7 +945,7 @@ pub fn fluent_builder_encodes_typed_body_test() {
   should.equal(request.method, http.Post)
   should.equal(request.path, "youtube/v3/playlists")
   let assert Some(raw) = request.body
-  let assert Ok(back) = json.parse(raw, playlist.decoder())
+  let assert Ok(back) = json.parse(raw, playlist.playlist_decoder())
   should.equal(back, body)
 }
 
@@ -946,7 +973,7 @@ pub fn parse_response_decodes_success_test() {
   api_request.parse_response(
     200,
     "{\"totalResults\": 3, \"resultsPerPage\": 1}",
-    page_info.decoder(),
+    page_info.page_info_decoder(),
   )
   |> should.equal(Ok(page_info.PageInfo(Some(1), Some(3))))
 }
@@ -954,7 +981,7 @@ pub fn parse_response_decodes_success_test() {
 pub fn parse_response_maps_api_errors_test() {
   let body =
     "{\"error\": {\"code\": 403, \"message\": \"Access forbidden\", \"errors\": [{\"reason\": \"forbidden\"}]}}"
-  api_request.parse_response(403, body, page_info.decoder())
+  api_request.parse_response(403, body, page_info.page_info_decoder())
   |> should.equal(
     Error(
       api_request.HttpError(api_request.ApiError(403, 403, "Access forbidden")),
@@ -966,7 +993,7 @@ pub fn parse_response_maps_decode_failures_test() {
   api_request.parse_response(
     200,
     "{\"totalResults\": \"many\"}",
-    page_info.decoder(),
+    page_info.page_info_decoder(),
   )
   |> should.be_error
 }

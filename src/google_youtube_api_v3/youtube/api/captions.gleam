@@ -212,7 +212,7 @@ pub fn insert_request(params: InsertParams, body: Caption) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(caption.to_json(body))),
+    option.Some(json.to_string(caption.caption_to_json(body))),
   )
 }
 
@@ -386,6 +386,6 @@ pub fn update_request(params: UpdateParams, body: Caption) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(caption.to_json(body))),
+    option.Some(json.to_string(caption.caption_to_json(body))),
   )
 }

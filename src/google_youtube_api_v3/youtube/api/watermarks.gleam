@@ -5,7 +5,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/invideo_branding.{type InvideoBranding}
+import google_youtube_api_v3/youtube/invideo.{type InvideoBranding}
 
 /// Allows upload of watermark image and setting it for a channel.
 pub type SetParams {
@@ -41,7 +41,7 @@ pub fn set_request(params: SetParams, body: InvideoBranding) -> Request {
       "https://www.googleapis.com/auth/youtube.upload",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(invideo_branding.to_json(body))),
+    option.Some(json.to_string(invideo.invideo_branding_to_json(body))),
   )
 }
 

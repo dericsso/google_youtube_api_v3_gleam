@@ -6,7 +6,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/third_party_link.{type ThirdPartyLink}
+import google_youtube_api_v3/youtube/third.{type ThirdPartyLink}
 
 /// Deletes a resource.
 pub type DeleteParams {
@@ -112,7 +112,7 @@ pub fn insert_request(params: InsertParams, body: ThirdPartyLink) -> Request {
     ),
     [],
     [],
-    option.Some(json.to_string(third_party_link.to_json(body))),
+    option.Some(json.to_string(third.third_party_link_to_json(body))),
   )
 }
 
@@ -229,7 +229,7 @@ pub fn update_request(params: UpdateParams, body: ThirdPartyLink) -> Request {
     ),
     [],
     [],
-    option.Some(json.to_string(third_party_link.to_json(body))),
+    option.Some(json.to_string(third.third_party_link_to_json(body))),
   )
 }
 

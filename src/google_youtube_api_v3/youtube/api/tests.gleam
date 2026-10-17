@@ -5,7 +5,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/test_item.{type TestItem}
+import google_youtube_api_v3/youtube/tests.{type TestItem}
 
 /// POST method.
 pub type InsertParams {
@@ -64,6 +64,6 @@ pub fn insert_request(params: InsertParams, body: TestItem) -> Request {
     ),
     [],
     ["https://www.googleapis.com/auth/youtube.readonly"],
-    option.Some(json.to_string(test_item.to_json(body))),
+    option.Some(json.to_string(tests.test_item_to_json(body))),
   )
 }

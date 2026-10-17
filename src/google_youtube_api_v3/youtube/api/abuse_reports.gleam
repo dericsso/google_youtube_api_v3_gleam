@@ -5,7 +5,7 @@ import gleam/json
 import gleam/list
 import gleam/option
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/abuse_report.{type AbuseReport}
+import google_youtube_api_v3/youtube/abuse.{type AbuseReport}
 
 /// Inserts a new resource into this collection.
 pub type InsertParams {
@@ -30,6 +30,6 @@ pub fn insert_request(params: InsertParams, body: AbuseReport) -> Request {
       "https://www.googleapis.com/auth/youtube",
       "https://www.googleapis.com/auth/youtube.force-ssl",
     ],
-    option.Some(json.to_string(abuse_report.to_json(body))),
+    option.Some(json.to_string(abuse.abuse_report_to_json(body))),
   )
 }

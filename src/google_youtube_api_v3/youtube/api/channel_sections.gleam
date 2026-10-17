@@ -6,7 +6,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/channel_section.{type ChannelSection}
+import google_youtube_api_v3/youtube/channel.{type ChannelSection}
 
 /// Deletes a resource.
 pub type DeleteParams {
@@ -110,7 +110,7 @@ pub fn insert_request(params: InsertParams, body: ChannelSection) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(channel_section.to_json(body))),
+    option.Some(json.to_string(channel.channel_section_to_json(body))),
   )
 }
 
@@ -286,6 +286,6 @@ pub fn update_request(params: UpdateParams, body: ChannelSection) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(channel_section.to_json(body))),
+    option.Some(json.to_string(channel.channel_section_to_json(body))),
   )
 }

@@ -6,7 +6,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/playlist_image.{type PlaylistImage}
+import google_youtube_api_v3/youtube/playlist.{type PlaylistImage}
 
 /// Deletes a resource.
 pub type DeleteParams {
@@ -124,7 +124,7 @@ pub fn insert_request(params: InsertParams, body: PlaylistImage) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(playlist_image.to_json(body))),
+    option.Some(json.to_string(playlist.playlist_image_to_json(body))),
   )
 }
 
@@ -316,6 +316,6 @@ pub fn update_request(params: UpdateParams, body: PlaylistImage) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(playlist_image.to_json(body))),
+    option.Some(json.to_string(playlist.playlist_image_to_json(body))),
   )
 }

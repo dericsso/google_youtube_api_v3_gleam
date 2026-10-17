@@ -7,7 +7,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/live_chat_message.{type LiveChatMessage}
+import google_youtube_api_v3/youtube/live.{type LiveChatMessage}
 
 /// Deletes a chat message. A call to this method has a quota cost of 20 units.
 pub type DeleteParams {
@@ -55,7 +55,7 @@ pub fn insert_request(params: InsertParams, body: LiveChatMessage) -> Request {
       "https://www.googleapis.com/auth/youtube",
       "https://www.googleapis.com/auth/youtube.force-ssl",
     ],
-    option.Some(json.to_string(live_chat_message.to_json(body))),
+    option.Some(json.to_string(live.live_chat_message_to_json(body))),
   )
 }
 

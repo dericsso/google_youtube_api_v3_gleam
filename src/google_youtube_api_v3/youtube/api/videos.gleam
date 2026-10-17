@@ -8,8 +8,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/video.{type Video}
-import google_youtube_api_v3/youtube/video_abuse_report.{type VideoAbuseReport}
+import google_youtube_api_v3/youtube/video.{type Video, type VideoAbuseReport}
 
 /// Retrieves a batch of VideoStat resources, possibly filtered. BatchGetStats is intentionally not atomic to provide a better user experience.
 pub type BatchGetStatsParams {
@@ -300,7 +299,7 @@ pub fn insert_request(params: InsertParams, body: Video) -> Request {
       "https://www.googleapis.com/auth/youtube.upload",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(video.to_json(body))),
+    option.Some(json.to_string(video.video_to_json(body))),
   )
 }
 
@@ -695,7 +694,7 @@ pub fn report_abuse_request(params: ReportAbuseParams, body: VideoAbuseReport) -
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(video_abuse_report.to_json(body))),
+    option.Some(json.to_string(video.video_abuse_report_to_json(body))),
   )
 }
 
@@ -742,7 +741,7 @@ pub fn update_request(params: UpdateParams, body: Video) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(video.to_json(body))),
+    option.Some(json.to_string(video.video_to_json(body))),
   )
 }
 

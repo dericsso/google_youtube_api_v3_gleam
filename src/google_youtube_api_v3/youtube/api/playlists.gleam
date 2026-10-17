@@ -111,7 +111,7 @@ pub fn insert_request(params: InsertParams, body: Playlist) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(playlist.to_json(body))),
+    option.Some(json.to_string(playlist.playlist_to_json(body))),
   )
 }
 
@@ -365,6 +365,6 @@ pub fn update_request(params: UpdateParams, body: Playlist) -> Request {
       "https://www.googleapis.com/auth/youtube.force-ssl",
       "https://www.googleapis.com/auth/youtubepartner",
     ],
-    option.Some(json.to_string(playlist.to_json(body))),
+    option.Some(json.to_string(playlist.playlist_to_json(body))),
   )
 }

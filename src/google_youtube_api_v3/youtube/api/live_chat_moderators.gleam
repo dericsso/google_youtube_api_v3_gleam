@@ -6,7 +6,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/live_chat_moderator.{type LiveChatModerator}
+import google_youtube_api_v3/youtube/live.{type LiveChatModerator}
 
 /// Deletes a chat moderator.
 pub type DeleteParams {
@@ -54,7 +54,7 @@ pub fn insert_request(params: InsertParams, body: LiveChatModerator) -> Request 
       "https://www.googleapis.com/auth/youtube",
       "https://www.googleapis.com/auth/youtube.force-ssl",
     ],
-    option.Some(json.to_string(live_chat_moderator.to_json(body))),
+    option.Some(json.to_string(live.live_chat_moderator_to_json(body))),
   )
 }
 

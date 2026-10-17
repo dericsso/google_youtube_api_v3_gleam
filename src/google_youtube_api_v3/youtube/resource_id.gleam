@@ -14,7 +14,7 @@ pub type ResourceId {
   )
 }
 
-pub fn decoder() -> Decoder(ResourceId) {
+pub fn resource_id_decoder() -> Decoder(ResourceId) {
   use channel_id <- decode.optional_field(
     "channelId",
     option.None,
@@ -38,7 +38,7 @@ pub fn decoder() -> Decoder(ResourceId) {
   decode.success(ResourceId(channel_id, kind, playlist_id, video_id))
 }
 
-pub fn to_json(value: ResourceId) -> Json {
+pub fn resource_id_to_json(value: ResourceId) -> Json {
   json.object(
     [
       #("channelId", json.nullable(value.channel_id, json.string)),

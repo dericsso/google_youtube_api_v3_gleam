@@ -7,7 +7,7 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/comment_thread.{type CommentThread}
+import google_youtube_api_v3/youtube/comment.{type CommentThread}
 
 /// Inserts a new resource into this collection.
 pub type InsertParams {
@@ -29,7 +29,7 @@ pub fn insert_request(params: InsertParams, body: CommentThread) -> Request {
     list.flatten([list.map(params.part, fn(v) { #("part", v) })]),
     [],
     ["https://www.googleapis.com/auth/youtube.force-ssl"],
-    option.Some(json.to_string(comment_thread.to_json(body))),
+    option.Some(json.to_string(comment.comment_thread_to_json(body))),
   )
 }
 

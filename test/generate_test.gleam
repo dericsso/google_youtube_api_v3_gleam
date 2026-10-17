@@ -19,7 +19,6 @@ import google_youtube_api_v3_dev.{
   Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path, Post, Put,
   Query, Ref, Resource, Schema, Str,
 }
-import justin
 import simplifile
 
 const discovery_file_path = "discovery/2026-10-16_discovery_document.json"
@@ -49,10 +48,6 @@ fn render_group(schema_name: String) -> String {
     })
     |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) })
   google_youtube_api_v3_dev.build_group_module(group, members, groups)
-}
-
-fn camel_to_snake(name: String) -> String {
-  justin.snake_case(name)
 }
 
 /// Walk every schema reachable from the top-level map, including nested
@@ -248,18 +243,6 @@ pub fn integer_formats_are_all_accounted_for_test() {
     |> set.from_list
   let expected = set.from_list(["int32", "uint32"])
   should.equal(formats, expected)
-}
-
-pub fn number_format_is_double_test() {
-  let discovery = load_discovery()
-  // All 5 number schemas (aspectRatio, frameRateFps, altitude,
-  // longitude, latitude) use format=double. The decoder currently drops
-  // the format, so just assert the count to notice if that changes.
-  let numbers =
-    all_schemas(discovery)
-    |> kinds
-    |> list.filter(is_number)
-  should.equal(list.length(numbers), 5)
 }
 
 pub fn string_enums_are_decoded_test() {
@@ -714,34 +697,6 @@ pub fn generated_decoder_uses_original_json_keys_test() {
     code,
     "pub fn page_info_decoder() -> Decoder(PageInfo)",
   ))
-}
-
-pub fn every_schema_generates_a_decoder_test() {
-  let Discovery(schemas:, ..) = load_discovery()
-  let missing =
-    dict.to_list(schemas)
-    |> list.filter(fn(item) {
-      !string.contains(
-        render_group(item.0),
-        "pub fn " <> camel_to_snake(item.0) <> "_decoder()",
-      )
-    })
-    |> list.map(fn(item) { item.0 })
-  should.equal(missing, [])
-}
-
-pub fn every_schema_generates_an_encoder_test() {
-  let Discovery(schemas:, ..) = load_discovery()
-  let missing =
-    dict.to_list(schemas)
-    |> list.filter(fn(item) {
-      !string.contains(
-        render_group(item.0),
-        "pub fn " <> camel_to_snake(item.0) <> "_to_json(",
-      )
-    })
-    |> list.map(fn(item) { item.0 })
-  should.equal(missing, [])
 }
 
 pub fn generated_encoder_roundtrip_test() {

@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/video_abuse_report_secondary_reason.{
-  type VideoAbuseReportSecondaryReason,
-}
+import google_youtube_api_v3/youtube/video_abuse_report_secondary_reason.{type VideoAbuseReportSecondaryReason}
 
 /// Basic details about a video category, such as its localized title.
 pub type VideoAbuseReportReasonSnippet {
@@ -30,13 +28,17 @@ pub fn decoder() -> Decoder(VideoAbuseReportReasonSnippet) {
 }
 
 pub fn to_json(value: VideoAbuseReportReasonSnippet) -> Json {
-  json.object([
-    #("label", json.nullable(value.label, json.string)),
-    #(
-      "secondaryReasons",
-      json.nullable(value.secondary_reasons, fn(items) {
-        json.array(items, video_abuse_report_secondary_reason.to_json)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #("label", json.nullable(value.label, json.string)),
+      #(
+        "secondaryReasons",
+        json.nullable(
+          value.secondary_reasons,
+          fn(items)
+          { json.array(items, video_abuse_report_secondary_reason.to_json) },
+        ),
+      ),
+    ],
+  )
 }

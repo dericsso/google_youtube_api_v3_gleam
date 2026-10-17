@@ -26,20 +26,26 @@ pub fn decoder() -> Decoder(PlaylistStatus) {
 }
 
 pub fn to_json(value: PlaylistStatus) -> Json {
-  json.object([
-    #(
-      "podcastStatus",
-      json.nullable(value.podcast_status, fn(e) {
-        json.string(podcast_status_to_string(e))
-      }),
-    ),
-    #(
-      "privacyStatus",
-      json.nullable(value.privacy_status, fn(e) {
-        json.string(privacy_status_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "podcastStatus",
+        json.nullable(
+          value.podcast_status,
+          fn(e)
+          { json.string(podcast_status_to_string(e)) },
+        ),
+      ),
+      #(
+        "privacyStatus",
+        json.nullable(
+          value.privacy_status,
+          fn(e)
+          { json.string(privacy_status_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// The playlist's podcast status.

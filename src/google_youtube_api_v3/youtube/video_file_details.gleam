@@ -3,12 +3,8 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/video_file_details_audio_stream.{
-  type VideoFileDetailsAudioStream,
-}
-import google_youtube_api_v3/youtube/video_file_details_video_stream.{
-  type VideoFileDetailsVideoStream,
-}
+import google_youtube_api_v3/youtube/video_file_details_audio_stream.{type VideoFileDetailsAudioStream}
+import google_youtube_api_v3/youtube/video_file_details_video_stream.{type VideoFileDetailsVideoStream}
 
 /// Describes original video file properties, including technical details about audio and video streams, but also metadata information like content length, digitization time, or geotagging information.
 pub type VideoFileDetails {
@@ -71,46 +67,56 @@ pub fn decoder() -> Decoder(VideoFileDetails) {
     option.None,
     decode.optional(decode.list(video_file_details_video_stream.decoder())),
   )
-  decode.success(VideoFileDetails(
-    audio_streams,
-    bitrate_bps,
-    container,
-    creation_time,
-    duration_ms,
-    file_name,
-    file_size,
-    file_type,
-    video_streams,
-  ))
+  decode.success(
+    VideoFileDetails(
+      audio_streams,
+      bitrate_bps,
+      container,
+      creation_time,
+      duration_ms,
+      file_name,
+      file_size,
+      file_type,
+      video_streams,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoFileDetails) -> Json {
-  json.object([
-    #(
-      "audioStreams",
-      json.nullable(value.audio_streams, fn(items) {
-        json.array(items, video_file_details_audio_stream.to_json)
-      }),
-    ),
-    #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
-    #("container", json.nullable(value.container, json.string)),
-    #("creationTime", json.nullable(value.creation_time, json.string)),
-    #("durationMs", json.nullable(value.duration_ms, json.string)),
-    #("fileName", json.nullable(value.file_name, json.string)),
-    #("fileSize", json.nullable(value.file_size, json.string)),
-    #(
-      "fileType",
-      json.nullable(value.file_type, fn(e) {
-        json.string(file_type_to_string(e))
-      }),
-    ),
-    #(
-      "videoStreams",
-      json.nullable(value.video_streams, fn(items) {
-        json.array(items, video_file_details_video_stream.to_json)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "audioStreams",
+        json.nullable(
+          value.audio_streams,
+          fn(items)
+          { json.array(items, video_file_details_audio_stream.to_json) },
+        ),
+      ),
+      #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
+      #("container", json.nullable(value.container, json.string)),
+      #("creationTime", json.nullable(value.creation_time, json.string)),
+      #("durationMs", json.nullable(value.duration_ms, json.string)),
+      #("fileName", json.nullable(value.file_name, json.string)),
+      #("fileSize", json.nullable(value.file_size, json.string)),
+      #(
+        "fileType",
+        json.nullable(
+          value.file_type,
+          fn(e)
+          { json.string(file_type_to_string(e)) },
+        ),
+      ),
+      #(
+        "videoStreams",
+        json.nullable(
+          value.video_streams,
+          fn(items)
+          { json.array(items, video_file_details_video_stream.to_json) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// The uploaded file's type as detected by YouTube's video processing engine. Currently, YouTube only processes video files, but this field is present whether a video file or another type of file was uploaded.

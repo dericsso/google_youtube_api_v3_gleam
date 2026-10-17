@@ -47,26 +47,39 @@ pub fn decoder() -> Decoder(VideoLiveStreamingDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(VideoLiveStreamingDetails(
-    active_live_chat_id,
-    actual_end_time,
-    actual_start_time,
-    concurrent_viewers,
-    scheduled_end_time,
-    scheduled_start_time,
-  ))
+  decode.success(
+    VideoLiveStreamingDetails(
+      active_live_chat_id,
+      actual_end_time,
+      actual_start_time,
+      concurrent_viewers,
+      scheduled_end_time,
+      scheduled_start_time,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoLiveStreamingDetails) -> Json {
-  json.object([
-    #("activeLiveChatId", json.nullable(value.active_live_chat_id, json.string)),
-    #("actualEndTime", json.nullable(value.actual_end_time, json.string)),
-    #("actualStartTime", json.nullable(value.actual_start_time, json.string)),
-    #("concurrentViewers", json.nullable(value.concurrent_viewers, json.string)),
-    #("scheduledEndTime", json.nullable(value.scheduled_end_time, json.string)),
-    #(
-      "scheduledStartTime",
-      json.nullable(value.scheduled_start_time, json.string),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "activeLiveChatId",
+        json.nullable(value.active_live_chat_id, json.string),
+      ),
+      #("actualEndTime", json.nullable(value.actual_end_time, json.string)),
+      #("actualStartTime", json.nullable(value.actual_start_time, json.string)),
+      #(
+        "concurrentViewers",
+        json.nullable(value.concurrent_viewers, json.string),
+      ),
+      #(
+        "scheduledEndTime",
+        json.nullable(value.scheduled_end_time, json.string),
+      ),
+      #(
+        "scheduledStartTime",
+        json.nullable(value.scheduled_start_time, json.string),
+      ),
+    ],
+  )
 }

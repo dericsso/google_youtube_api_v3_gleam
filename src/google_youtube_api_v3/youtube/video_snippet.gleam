@@ -85,48 +85,57 @@ pub fn decoder() -> Decoder(VideoSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(VideoSnippet(
-    category_id,
-    channel_id,
-    channel_title,
-    default_audio_language,
-    default_language,
-    description,
-    live_broadcast_content,
-    localized,
-    published_at,
-    tags,
-    thumbnails,
-    title,
-  ))
+  decode.success(
+    VideoSnippet(
+      category_id,
+      channel_id,
+      channel_title,
+      default_audio_language,
+      default_language,
+      description,
+      live_broadcast_content,
+      localized,
+      published_at,
+      tags,
+      thumbnails,
+      title,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoSnippet) -> Json {
-  json.object([
-    #("categoryId", json.nullable(value.category_id, json.string)),
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("channelTitle", json.nullable(value.channel_title, json.string)),
-    #(
-      "defaultAudioLanguage",
-      json.nullable(value.default_audio_language, json.string),
-    ),
-    #("defaultLanguage", json.nullable(value.default_language, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #(
-      "liveBroadcastContent",
-      json.nullable(value.live_broadcast_content, fn(e) {
-        json.string(live_broadcast_content_to_string(e))
-      }),
-    ),
-    #("localized", json.nullable(value.localized, video_localization.to_json)),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #(
-      "tags",
-      json.nullable(value.tags, fn(items) { json.array(items, json.string) }),
-    ),
-    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("categoryId", json.nullable(value.category_id, json.string)),
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("channelTitle", json.nullable(value.channel_title, json.string)),
+      #(
+        "defaultAudioLanguage",
+        json.nullable(value.default_audio_language, json.string),
+      ),
+      #("defaultLanguage", json.nullable(value.default_language, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #(
+        "liveBroadcastContent",
+        json.nullable(
+          value.live_broadcast_content,
+          fn(e)
+          { json.string(live_broadcast_content_to_string(e)) },
+        ),
+      ),
+      #("localized", json.nullable(value.localized, video_localization.to_json)),
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #(
+        "tags",
+        json.nullable(value.tags, fn(items) { json.array(items, json.string) }),
+      ),
+      #(
+        "thumbnails",
+        json.nullable(value.thumbnails, thumbnail_details.to_json),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }
 
 /// Indicates if the video is an upcoming/active live broadcast. Or it's "none" if the video is not an upcoming/active live broadcast.
@@ -153,7 +162,9 @@ pub fn live_broadcast_content_decoder() -> Decoder(LiveBroadcastContent) {
     "upcoming" -> decode.success(LiveBroadcastContentUpcoming)
     "live" -> decode.success(LiveBroadcastContentLive)
     "completed" -> decode.success(LiveBroadcastContentCompleted)
-    _ ->
-      decode.failure(LiveBroadcastContentNone, "a valid LiveBroadcastContent")
+    _ -> decode.failure(
+      LiveBroadcastContentNone,
+      "a valid LiveBroadcastContent",
+    )
   }
 }

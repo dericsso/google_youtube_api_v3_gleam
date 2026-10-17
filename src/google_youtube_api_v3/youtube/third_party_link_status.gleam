@@ -19,14 +19,18 @@ pub fn decoder() -> Decoder(ThirdPartyLinkStatus) {
 }
 
 pub fn to_json(value: ThirdPartyLinkStatus) -> Json {
-  json.object([
-    #(
-      "linkStatus",
-      json.nullable(value.link_status, fn(e) {
-        json.string(link_status_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "linkStatus",
+        json.nullable(
+          value.link_status,
+          fn(e)
+          { json.string(link_status_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 pub type LinkStatus {

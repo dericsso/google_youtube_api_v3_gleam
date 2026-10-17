@@ -29,17 +29,21 @@ pub fn decoder() -> Decoder(VideoProcessingDetailsProcessingProgress) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(VideoProcessingDetailsProcessingProgress(
-    parts_processed,
-    parts_total,
-    time_left_ms,
-  ))
+  decode.success(
+    VideoProcessingDetailsProcessingProgress(
+      parts_processed,
+      parts_total,
+      time_left_ms,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoProcessingDetailsProcessingProgress) -> Json {
-  json.object([
-    #("partsProcessed", json.nullable(value.parts_processed, json.string)),
-    #("partsTotal", json.nullable(value.parts_total, json.string)),
-    #("timeLeftMs", json.nullable(value.time_left_ms, json.string)),
-  ])
+  json.object(
+    [
+      #("partsProcessed", json.nullable(value.parts_processed, json.string)),
+      #("partsTotal", json.nullable(value.parts_total, json.string)),
+      #("timeLeftMs", json.nullable(value.time_left_ms, json.string)),
+    ],
+  )
 }

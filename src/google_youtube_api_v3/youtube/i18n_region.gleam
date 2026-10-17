@@ -40,10 +40,12 @@ pub fn decoder() -> Decoder(I18nRegion) {
 }
 
 pub fn to_json(value: I18nRegion) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, i18n_region_snippet.to_json)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("snippet", json.nullable(value.snippet, i18n_region_snippet.to_json)),
+    ],
+  )
 }

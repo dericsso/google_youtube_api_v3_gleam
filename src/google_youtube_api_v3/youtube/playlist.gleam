@@ -4,12 +4,8 @@ import gleam/dict.{type Dict}
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/playlist_content_details.{
-  type PlaylistContentDetails,
-}
-import google_youtube_api_v3/youtube/playlist_localization.{
-  type PlaylistLocalization,
-}
+import google_youtube_api_v3/youtube/playlist_content_details.{type PlaylistContentDetails}
+import google_youtube_api_v3/youtube/playlist_localization.{type PlaylistLocalization}
 import google_youtube_api_v3/youtube/playlist_player.{type PlaylistPlayer}
 import google_youtube_api_v3/youtube/playlist_snippet.{type PlaylistSnippet}
 import google_youtube_api_v3/youtube/playlist_status.{type PlaylistStatus}
@@ -69,35 +65,41 @@ pub fn decoder() -> Decoder(Playlist) {
     option.None,
     decode.optional(playlist_status.decoder()),
   )
-  decode.success(Playlist(
-    content_details,
-    etag,
-    id,
-    kind,
-    localizations,
-    player,
-    snippet,
-    status,
-  ))
+  decode.success(
+    Playlist(
+      content_details,
+      etag,
+      id,
+      kind,
+      localizations,
+      player,
+      snippet,
+      status,
+    ),
+  )
 }
 
 pub fn to_json(value: Playlist) -> Json {
-  json.object([
-    #(
-      "contentDetails",
-      json.nullable(value.content_details, playlist_content_details.to_json),
-    ),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #(
-      "localizations",
-      json.nullable(value.localizations, fn(d) {
-        json.dict(d, fn(k) { k }, playlist_localization.to_json)
-      }),
-    ),
-    #("player", json.nullable(value.player, playlist_player.to_json)),
-    #("snippet", json.nullable(value.snippet, playlist_snippet.to_json)),
-    #("status", json.nullable(value.status, playlist_status.to_json)),
-  ])
+  json.object(
+    [
+      #(
+        "contentDetails",
+        json.nullable(value.content_details, playlist_content_details.to_json),
+      ),
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #(
+        "localizations",
+        json.nullable(
+          value.localizations,
+          fn(d)
+          { json.dict(d, fn(k) { k }, playlist_localization.to_json) },
+        ),
+      ),
+      #("player", json.nullable(value.player, playlist_player.to_json)),
+      #("snippet", json.nullable(value.snippet, playlist_snippet.to_json)),
+      #("status", json.nullable(value.status, playlist_status.to_json)),
+    ],
+  )
 }

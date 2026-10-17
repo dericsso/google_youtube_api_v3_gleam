@@ -95,56 +95,62 @@ pub fn decoder() -> Decoder(ChannelSettings) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(ChannelSettings(
-    country,
-    default_language,
-    default_tab,
-    description,
-    featured_channels_title,
-    featured_channels_urls,
-    keywords,
-    moderate_comments,
-    profile_color,
-    show_browse_view,
-    show_related_channels,
-    title,
-    tracking_analytics_account_id,
-    unsubscribed_trailer,
-  ))
+  decode.success(
+    ChannelSettings(
+      country,
+      default_language,
+      default_tab,
+      description,
+      featured_channels_title,
+      featured_channels_urls,
+      keywords,
+      moderate_comments,
+      profile_color,
+      show_browse_view,
+      show_related_channels,
+      title,
+      tracking_analytics_account_id,
+      unsubscribed_trailer,
+    ),
+  )
 }
 
 pub fn to_json(value: ChannelSettings) -> Json {
-  json.object([
-    #("country", json.nullable(value.country, json.string)),
-    #("defaultLanguage", json.nullable(value.default_language, json.string)),
-    #("defaultTab", json.nullable(value.default_tab, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #(
-      "featuredChannelsTitle",
-      json.nullable(value.featured_channels_title, json.string),
-    ),
-    #(
-      "featuredChannelsUrls",
-      json.nullable(value.featured_channels_urls, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #("keywords", json.nullable(value.keywords, json.string)),
-    #("moderateComments", json.nullable(value.moderate_comments, json.bool)),
-    #("profileColor", json.nullable(value.profile_color, json.string)),
-    #("showBrowseView", json.nullable(value.show_browse_view, json.bool)),
-    #(
-      "showRelatedChannels",
-      json.nullable(value.show_related_channels, json.bool),
-    ),
-    #("title", json.nullable(value.title, json.string)),
-    #(
-      "trackingAnalyticsAccountId",
-      json.nullable(value.tracking_analytics_account_id, json.string),
-    ),
-    #(
-      "unsubscribedTrailer",
-      json.nullable(value.unsubscribed_trailer, json.string),
-    ),
-  ])
+  json.object(
+    [
+      #("country", json.nullable(value.country, json.string)),
+      #("defaultLanguage", json.nullable(value.default_language, json.string)),
+      #("defaultTab", json.nullable(value.default_tab, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #(
+        "featuredChannelsTitle",
+        json.nullable(value.featured_channels_title, json.string),
+      ),
+      #(
+        "featuredChannelsUrls",
+        json.nullable(
+          value.featured_channels_urls,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #("keywords", json.nullable(value.keywords, json.string)),
+      #("moderateComments", json.nullable(value.moderate_comments, json.bool)),
+      #("profileColor", json.nullable(value.profile_color, json.string)),
+      #("showBrowseView", json.nullable(value.show_browse_view, json.bool)),
+      #(
+        "showRelatedChannels",
+        json.nullable(value.show_related_channels, json.bool),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+      #(
+        "trackingAnalyticsAccountId",
+        json.nullable(value.tracking_analytics_account_id, json.string),
+      ),
+      #(
+        "unsubscribedTrailer",
+        json.nullable(value.unsubscribed_trailer, json.string),
+      ),
+    ],
+  )
 }

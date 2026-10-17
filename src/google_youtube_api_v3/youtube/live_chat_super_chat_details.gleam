@@ -40,24 +40,28 @@ pub fn decoder() -> Decoder(LiveChatSuperChatDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(LiveChatSuperChatDetails(
-    amount_display_string,
-    amount_micros,
-    currency,
-    tier,
-    user_comment,
-  ))
+  decode.success(
+    LiveChatSuperChatDetails(
+      amount_display_string,
+      amount_micros,
+      currency,
+      tier,
+      user_comment,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveChatSuperChatDetails) -> Json {
-  json.object([
-    #(
-      "amountDisplayString",
-      json.nullable(value.amount_display_string, json.string),
-    ),
-    #("amountMicros", json.nullable(value.amount_micros, json.string)),
-    #("currency", json.nullable(value.currency, json.string)),
-    #("tier", json.nullable(value.tier, json.int)),
-    #("userComment", json.nullable(value.user_comment, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "amountDisplayString",
+        json.nullable(value.amount_display_string, json.string),
+      ),
+      #("amountMicros", json.nullable(value.amount_micros, json.string)),
+      #("currency", json.nullable(value.currency, json.string)),
+      #("tier", json.nullable(value.tier, json.int)),
+      #("userComment", json.nullable(value.user_comment, json.string)),
+    ],
+  )
 }

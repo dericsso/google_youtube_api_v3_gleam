@@ -24,8 +24,10 @@ pub fn decoder() -> Decoder(ChannelLocalization) {
 }
 
 pub fn to_json(value: ChannelLocalization) -> Json {
-  json.object([
-    #("description", json.nullable(value.description, json.string)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("description", json.nullable(value.description, json.string)),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }

@@ -40,10 +40,12 @@ pub fn decoder() -> Decoder(Comment) {
 }
 
 pub fn to_json(value: Comment) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, comment_snippet.to_json)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("snippet", json.nullable(value.snippet, comment_snippet.to_json)),
+    ],
+  )
 }

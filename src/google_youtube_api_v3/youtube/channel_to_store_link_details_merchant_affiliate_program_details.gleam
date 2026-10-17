@@ -19,20 +19,20 @@ pub fn decoder() -> Decoder(
     option.None,
     decode.optional(status_decoder()),
   )
-  decode.success(ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails(
-    status,
-  ))
+  decode.success(
+    ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails(status),
+  )
 }
 
-pub fn to_json(
-  value: ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails,
-) -> Json {
-  json.object([
-    #(
-      "status",
-      json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
-    ),
-  ])
+pub fn to_json(value: ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails) -> Json {
+  json.object(
+    [
+      #(
+        "status",
+        json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
+      ),
+    ],
+  )
 }
 
 /// The current merchant affiliate program status.
@@ -45,32 +45,31 @@ pub type Status {
 
 pub fn status_to_string(value: Status) -> String {
   case value {
-    StatusMerchantAffiliateProgramStatusUnspecified ->
-      "merchantAffiliateProgramStatusUnspecified"
-    StatusMerchantAffiliateProgramStatusEligible ->
-      "merchantAffiliateProgramStatusEligible"
-    StatusMerchantAffiliateProgramStatusActive ->
-      "merchantAffiliateProgramStatusActive"
-    StatusMerchantAffiliateProgramStatusPaused ->
-      "merchantAffiliateProgramStatusPaused"
+    StatusMerchantAffiliateProgramStatusUnspecified -> "merchantAffiliateProgramStatusUnspecified"
+    StatusMerchantAffiliateProgramStatusEligible -> "merchantAffiliateProgramStatusEligible"
+    StatusMerchantAffiliateProgramStatusActive -> "merchantAffiliateProgramStatusActive"
+    StatusMerchantAffiliateProgramStatusPaused -> "merchantAffiliateProgramStatusPaused"
   }
 }
 
 pub fn status_decoder() -> Decoder(Status) {
   use value <- decode.then(decode.string)
   case value {
-    "merchantAffiliateProgramStatusUnspecified" ->
-      decode.success(StatusMerchantAffiliateProgramStatusUnspecified)
-    "merchantAffiliateProgramStatusEligible" ->
-      decode.success(StatusMerchantAffiliateProgramStatusEligible)
-    "merchantAffiliateProgramStatusActive" ->
-      decode.success(StatusMerchantAffiliateProgramStatusActive)
-    "merchantAffiliateProgramStatusPaused" ->
-      decode.success(StatusMerchantAffiliateProgramStatusPaused)
-    _ ->
-      decode.failure(
-        StatusMerchantAffiliateProgramStatusUnspecified,
-        "a valid Status",
-      )
+    "merchantAffiliateProgramStatusUnspecified" -> decode.success(
+      StatusMerchantAffiliateProgramStatusUnspecified,
+    )
+    "merchantAffiliateProgramStatusEligible" -> decode.success(
+      StatusMerchantAffiliateProgramStatusEligible,
+    )
+    "merchantAffiliateProgramStatusActive" -> decode.success(
+      StatusMerchantAffiliateProgramStatusActive,
+    )
+    "merchantAffiliateProgramStatusPaused" -> decode.success(
+      StatusMerchantAffiliateProgramStatusPaused,
+    )
+    _ -> decode.failure(
+      StatusMerchantAffiliateProgramStatusUnspecified,
+      "a valid Status",
+    )
   }
 }

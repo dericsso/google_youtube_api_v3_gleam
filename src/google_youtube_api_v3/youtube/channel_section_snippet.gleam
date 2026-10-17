@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/channel_section_localization.{
-  type ChannelSectionLocalization,
-}
+import google_youtube_api_v3/youtube/channel_section_localization.{type ChannelSectionLocalization}
 
 /// Basic details about a channel section, including title, style and position.
 pub type ChannelSectionSnippet {
@@ -56,36 +54,40 @@ pub fn decoder() -> Decoder(ChannelSectionSnippet) {
     option.None,
     decode.optional(type_decoder()),
   )
-  decode.success(ChannelSectionSnippet(
-    channel_id,
-    default_language,
-    localized,
-    position,
-    style,
-    title,
-    type_,
-  ))
+  decode.success(
+    ChannelSectionSnippet(
+      channel_id,
+      default_language,
+      localized,
+      position,
+      style,
+      title,
+      type_,
+    ),
+  )
 }
 
 pub fn to_json(value: ChannelSectionSnippet) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("defaultLanguage", json.nullable(value.default_language, json.string)),
-    #(
-      "localized",
-      json.nullable(value.localized, channel_section_localization.to_json),
-    ),
-    #("position", json.nullable(value.position, json.int)),
-    #(
-      "style",
-      json.nullable(value.style, fn(e) { json.string(style_to_string(e)) }),
-    ),
-    #("title", json.nullable(value.title, json.string)),
-    #(
-      "type",
-      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-    ),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("defaultLanguage", json.nullable(value.default_language, json.string)),
+      #(
+        "localized",
+        json.nullable(value.localized, channel_section_localization.to_json),
+      ),
+      #("position", json.nullable(value.position, json.int)),
+      #(
+        "style",
+        json.nullable(value.style, fn(e) { json.string(style_to_string(e)) }),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+      #(
+        "type",
+        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+      ),
+    ],
+  )
 }
 
 /// The style of the channel section.
@@ -106,8 +108,9 @@ pub fn style_to_string(value: Style) -> String {
 pub fn style_decoder() -> Decoder(Style) {
   use value <- decode.then(decode.string)
   case value {
-    "channelsectionStyleUnspecified" ->
-      decode.success(StyleChannelsectionStyleUnspecified)
+    "channelsectionStyleUnspecified" -> decode.success(
+      StyleChannelsectionStyleUnspecified,
+    )
     "horizontalRow" -> decode.success(StyleHorizontalRow)
     "verticalList" -> decode.success(StyleVerticalList)
     _ -> decode.failure(StyleChannelsectionStyleUnspecified, "a valid Style")
@@ -160,8 +163,9 @@ pub fn type_to_string(value: Type) -> String {
 pub fn type_decoder() -> Decoder(Type) {
   use value <- decode.then(decode.string)
   case value {
-    "channelsectionTypeUndefined" ->
-      decode.success(TypeChannelsectionTypeUndefined)
+    "channelsectionTypeUndefined" -> decode.success(
+      TypeChannelsectionTypeUndefined,
+    )
     "singlePlaylist" -> decode.success(TypeSinglePlaylist)
     "multiplePlaylists" -> decode.success(TypeMultiplePlaylists)
     "popularUploads" -> decode.success(TypePopularUploads)

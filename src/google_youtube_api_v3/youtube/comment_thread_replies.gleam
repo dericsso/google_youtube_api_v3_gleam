@@ -20,12 +20,16 @@ pub fn decoder() -> Decoder(CommentThreadReplies) {
 }
 
 pub fn to_json(value: CommentThreadReplies) -> Json {
-  json.object([
-    #(
-      "comments",
-      json.nullable(value.comments, fn(items) {
-        json.array(items, comment.to_json)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "comments",
+        json.nullable(
+          value.comments,
+          fn(items)
+          { json.array(items, comment.to_json) },
+        ),
+      ),
+    ],
+  )
 }

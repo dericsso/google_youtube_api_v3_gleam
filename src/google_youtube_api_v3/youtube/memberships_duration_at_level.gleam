@@ -28,20 +28,24 @@ pub fn decoder() -> Decoder(MembershipsDurationAtLevel) {
     option.None,
     decode.optional(decode.int),
   )
-  decode.success(MembershipsDurationAtLevel(
-    level,
-    member_since,
-    member_total_duration_months,
-  ))
+  decode.success(
+    MembershipsDurationAtLevel(
+      level,
+      member_since,
+      member_total_duration_months,
+    ),
+  )
 }
 
 pub fn to_json(value: MembershipsDurationAtLevel) -> Json {
-  json.object([
-    #("level", json.nullable(value.level, json.string)),
-    #("memberSince", json.nullable(value.member_since, json.string)),
-    #(
-      "memberTotalDurationMonths",
-      json.nullable(value.member_total_duration_months, json.int),
-    ),
-  ])
+  json.object(
+    [
+      #("level", json.nullable(value.level, json.string)),
+      #("memberSince", json.nullable(value.member_since, json.string)),
+      #(
+        "memberTotalDurationMonths",
+        json.nullable(value.member_total_duration_months, json.int),
+      ),
+    ],
+  )
 }

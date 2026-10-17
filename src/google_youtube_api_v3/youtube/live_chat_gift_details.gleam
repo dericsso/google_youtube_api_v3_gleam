@@ -59,27 +59,31 @@ pub fn decoder() -> Decoder(LiveChatGiftDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(LiveChatGiftDetails(
-    alt_text,
-    combo_count,
-    gift_duration,
-    gift_name,
-    gift_url,
-    has_visual_effect,
-    jewels_amount,
-    language,
-  ))
+  decode.success(
+    LiveChatGiftDetails(
+      alt_text,
+      combo_count,
+      gift_duration,
+      gift_name,
+      gift_url,
+      has_visual_effect,
+      jewels_amount,
+      language,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveChatGiftDetails) -> Json {
-  json.object([
-    #("altText", json.nullable(value.alt_text, json.string)),
-    #("comboCount", json.nullable(value.combo_count, json.int)),
-    #("giftDuration", json.nullable(value.gift_duration, json.string)),
-    #("giftName", json.nullable(value.gift_name, json.string)),
-    #("giftUrl", json.nullable(value.gift_url, json.string)),
-    #("hasVisualEffect", json.nullable(value.has_visual_effect, json.bool)),
-    #("jewelsAmount", json.nullable(value.jewels_amount, json.int)),
-    #("language", json.nullable(value.language, json.string)),
-  ])
+  json.object(
+    [
+      #("altText", json.nullable(value.alt_text, json.string)),
+      #("comboCount", json.nullable(value.combo_count, json.int)),
+      #("giftDuration", json.nullable(value.gift_duration, json.string)),
+      #("giftName", json.nullable(value.gift_name, json.string)),
+      #("giftUrl", json.nullable(value.gift_url, json.string)),
+      #("hasVisualEffect", json.nullable(value.has_visual_effect, json.bool)),
+      #("jewelsAmount", json.nullable(value.jewels_amount, json.int)),
+      #("language", json.nullable(value.language, json.string)),
+    ],
+  )
 }

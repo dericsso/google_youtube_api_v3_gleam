@@ -19,14 +19,18 @@ pub fn decoder() -> Decoder(ChannelToStoreLinkDetailsBillingDetails) {
 }
 
 pub fn to_json(value: ChannelToStoreLinkDetailsBillingDetails) -> Json {
-  json.object([
-    #(
-      "billingStatus",
-      json.nullable(value.billing_status, fn(e) {
-        json.string(billing_status_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "billingStatus",
+        json.nullable(
+          value.billing_status,
+          fn(e)
+          { json.string(billing_status_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// The current billing profile status.
@@ -49,16 +53,17 @@ pub fn billing_status_to_string(value: BillingStatus) -> String {
 pub fn billing_status_decoder() -> Decoder(BillingStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "billingStatusUnspecified" ->
-      decode.success(BillingStatusBillingStatusUnspecified)
+    "billingStatusUnspecified" -> decode.success(
+      BillingStatusBillingStatusUnspecified,
+    )
     "billingStatusPending" -> decode.success(BillingStatusBillingStatusPending)
     "billingStatusActive" -> decode.success(BillingStatusBillingStatusActive)
-    "billingStatusInactive" ->
-      decode.success(BillingStatusBillingStatusInactive)
-    _ ->
-      decode.failure(
-        BillingStatusBillingStatusUnspecified,
-        "a valid BillingStatus",
-      )
+    "billingStatusInactive" -> decode.success(
+      BillingStatusBillingStatusInactive,
+    )
+    _ -> decode.failure(
+      BillingStatusBillingStatusUnspecified,
+      "a valid BillingStatus",
+    )
   }
 }

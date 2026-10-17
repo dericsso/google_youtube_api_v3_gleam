@@ -26,13 +26,12 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/i18nLanguages",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.hl {
-        option.Some(v) -> [#("hl", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [list.map(params.part, fn(v) { #("part", v) }), case params.hl {
+          option.Some(v) -> [#("hl", v)]
+          option.None -> []
+        }],
+    ),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

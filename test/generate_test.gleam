@@ -6,7 +6,7 @@ import gleam/option.{None, Some}
 import gleam/set
 import gleam/string
 import gleeunit/should
-import google_youtube_api_v3/generate.{
+import google_youtube_api_v3_dev.{
   type Discovery, type Kind, type Method, type Parameter, type Resource,
   type Schema, Array, Boolean, Delete, Discovery, Get, Integer, Method, Number,
   Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path, Post, Put,
@@ -32,7 +32,7 @@ const discovery_file_path = "discovery/2026-10-16_discovery_document.json"
 fn load_discovery() -> Discovery {
   let assert Ok(content) = simplifile.read(discovery_file_path)
     as "discovery document must be readable"
-  let assert Ok(discovery) = generate.parse_discovery(content)
+  let assert Ok(discovery) = google_youtube_api_v3_dev.parse_discovery(content)
     as "discovery document must parse with the current decoders"
   discovery
 }
@@ -57,7 +57,7 @@ fn descendants(schema: Schema) -> List(Schema) {
       }
       list.flatten([wrapped_props, from_props, from_additional])
     }
-    Ref(_) | Str(_, _) | Integer(_) | Number | Boolean | generate.Any -> []
+    Ref(_) | Str(_, _) | Integer(_) | Number | Boolean | google_youtube_api_v3_dev.Any -> []
   }
 }
 
@@ -73,7 +73,7 @@ fn kinds(schemas: List(Schema)) -> List(Kind) {
 
 pub fn parses_real_discovery_document_test() {
   let assert Ok(content) = simplifile.read(discovery_file_path)
-  let result = generate.parse_discovery(content)
+  let result = google_youtube_api_v3_dev.parse_discovery(content)
   should.be_ok(result)
 }
 
@@ -329,7 +329,7 @@ pub fn array_items_variants_are_decoded_test() {
 // ---------------------------------------------------------------------------
 
 fn parse_schema(raw: String) -> Schema {
-  let assert Ok(schema) = json.parse(raw, generate.schema_decoder())
+  let assert Ok(schema) = json.parse(raw, google_youtube_api_v3_dev.schema_decoder())
     as "inline schema snippet must decode"
   schema
 }
@@ -374,7 +374,7 @@ pub fn boolean_decoder_test() {
 
 pub fn any_decoder_test() {
   parse_schema("{\"type\": \"any\"}")
-  |> should.equal(Schema(None, generate.Any))
+  |> should.equal(Schema(None, google_youtube_api_v3_dev.Any))
 }
 
 pub fn array_of_ref_decoder_test() {
@@ -402,12 +402,12 @@ pub fn object_decoder_test() {
 }
 
 pub fn unknown_type_fails_test() {
-  json.parse("{\"type\": \"null\"}", generate.schema_decoder())
+  json.parse("{\"type\": \"null\"}", google_youtube_api_v3_dev.schema_decoder())
   |> should.be_error
 }
 
 pub fn parse_discovery_error_on_bad_json_test() {
-  generate.parse_discovery("not json")
+  google_youtube_api_v3_dev.parse_discovery("not json")
   |> should.be_error
 }
 
@@ -424,8 +424,8 @@ pub fn description_is_optional_test() {
 pub fn generated_module_carries_do_not_change_header_test() {
   let Discovery(schemas:, ..) = load_discovery()
   let assert Ok(schema) = dict.get(schemas, "Video")
-  generate.build_module("Video", schema)
-  |> string.starts_with("//// " <> generate.generated_notice)
+  google_youtube_api_v3_dev.build_module("Video", schema)
+  |> string.starts_with("//// " <> google_youtube_api_v3_dev.generated_notice)
   |> should.be_true
 }
 
@@ -580,13 +580,13 @@ pub fn media_upload_is_decoded_test() {
 // ---------------------------------------------------------------------------
 
 fn parse_method(raw: String) -> Method {
-  let assert Ok(method) = json.parse(raw, generate.method_decoder())
+  let assert Ok(method) = json.parse(raw, google_youtube_api_v3_dev.method_decoder())
     as "inline method snippet must decode"
   method
 }
 
 fn parse_parameter(raw: String) -> Parameter {
-  let assert Ok(parameter) = json.parse(raw, generate.parameter_decoder())
+  let assert Ok(parameter) = json.parse(raw, google_youtube_api_v3_dev.parameter_decoder())
     as "inline parameter snippet must decode"
   parameter
 }
@@ -614,7 +614,7 @@ pub fn minimal_method_decodes_with_defaults_test() {
 pub fn unknown_http_method_fails_test() {
   json.parse(
     "{\"id\": \"x\", \"path\": \"y\", \"httpMethod\": \"PATCH\"}",
-    generate.method_decoder(),
+    google_youtube_api_v3_dev.method_decoder(),
   )
   |> should.be_error
 }
@@ -660,7 +660,7 @@ pub fn minimal_parameter_decodes_with_defaults_test() {
 pub fn unknown_parameter_location_fails_test() {
   json.parse(
     "{\"location\": \"header\", \"type\": \"string\"}",
-    generate.parameter_decoder(),
+    google_youtube_api_v3_dev.parameter_decoder(),
   )
   |> should.be_error
 }
@@ -668,7 +668,7 @@ pub fn unknown_parameter_location_fails_test() {
 pub fn unknown_parameter_type_fails_test() {
   json.parse(
     "{\"location\": \"query\", \"type\": \"null\"}",
-    generate.parameter_decoder(),
+    google_youtube_api_v3_dev.parameter_decoder(),
   )
   |> should.be_error
 }
@@ -681,7 +681,7 @@ pub fn unknown_parameter_type_fails_test() {
 pub fn generated_decoder_uses_original_json_keys_test() {
   let Discovery(schemas:, ..) = load_discovery()
   let assert Ok(schema) = dict.get(schemas, "PageInfo")
-  let code = generate.build_module("PageInfo", schema)
+  let code = google_youtube_api_v3_dev.build_module("PageInfo", schema)
   // Gleam fields are snake_case but the wire keys stay camelCase.
   should.be_true(string.contains(code, "\"resultsPerPage\""))
   should.be_true(string.contains(code, "\"totalResults\""))
@@ -694,7 +694,7 @@ pub fn every_schema_generates_a_decoder_test() {
     dict.to_list(schemas)
     |> list.filter(fn(item) {
       !string.contains(
-        generate.build_module(item.0, item.1),
+        google_youtube_api_v3_dev.build_module(item.0, item.1),
         "pub fn decoder()",
       )
     })
@@ -707,7 +707,7 @@ pub fn every_schema_generates_an_encoder_test() {
   let missing =
     dict.to_list(schemas)
     |> list.filter(fn(item) {
-      !string.contains(generate.build_module(item.0, item.1), "pub fn to_json(")
+      !string.contains(google_youtube_api_v3_dev.build_module(item.0, item.1), "pub fn to_json(")
     })
     |> list.map(fn(item) { item.0 })
   should.equal(missing, [])
@@ -782,7 +782,7 @@ pub fn generated_decoder_decodes_string_maps_test() {
 pub fn generated_enum_type_and_helpers_test() {
   let Discovery(schemas:, ..) = load_discovery()
   let assert Ok(schema) = dict.get(schemas, "PlaylistItemStatus")
-  let code = generate.build_module("PlaylistItemStatus", schema)
+  let code = google_youtube_api_v3_dev.build_module("PlaylistItemStatus", schema)
   // Field type is the custom enum, not String.
   should.be_true(string.contains(code, "privacy_status: Option(PrivacyStatus)"))
   should.be_true(string.contains(code, "pub type PrivacyStatus {"))
@@ -830,7 +830,7 @@ pub fn generated_enum_rejects_unknown_values_test() {
 pub fn generated_enum_sanitizes_digit_led_values_test() {
   let Discovery(schemas:, ..) = load_discovery()
   let assert Ok(schema) = dict.get(schemas, "CdnSettings")
-  let code = generate.build_module("CdnSettings", schema)
+  let code = google_youtube_api_v3_dev.build_module("CdnSettings", schema)
   // `240p` is not a valid constructor name on its own.
   should.be_true(string.contains(code, "ResolutionValue240p"))
   should.be_true(string.contains(code, "FrameRateVariable"))
@@ -857,7 +857,7 @@ pub fn generated_enum_decodes_arrays_test() {
 
 pub fn resources_flatten_to_32_builder_modules_test() {
   let Discovery(resources:, ..) = load_discovery()
-  let flat = generate.flatten_resources(resources)
+  let flat = google_youtube_api_v3_dev.flatten_resources(resources)
   should.equal(list.length(flat), 32)
   // The only nested resource tree lands in its own module.
   should.be_true(

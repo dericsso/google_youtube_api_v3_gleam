@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/live_chat_poll_details_poll_metadata.{
-  type LiveChatPollDetailsPollMetadata,
-}
+import google_youtube_api_v3/youtube/live_chat_poll_details_poll_metadata.{type LiveChatPollDetailsPollMetadata}
 
 pub type LiveChatPollDetails {
   LiveChatPollDetails(
@@ -29,19 +27,21 @@ pub fn decoder() -> Decoder(LiveChatPollDetails) {
 }
 
 pub fn to_json(value: LiveChatPollDetails) -> Json {
-  json.object([
-    #(
-      "metadata",
-      json.nullable(
-        value.metadata,
-        live_chat_poll_details_poll_metadata.to_json,
+  json.object(
+    [
+      #(
+        "metadata",
+        json.nullable(
+          value.metadata,
+          live_chat_poll_details_poll_metadata.to_json,
+        ),
       ),
-    ),
-    #(
-      "status",
-      json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
-    ),
-  ])
+      #(
+        "status",
+        json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
+      ),
+    ],
+  )
 }
 
 pub type Status {

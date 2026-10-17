@@ -98,10 +98,7 @@ pub fn list_with_video_id(params: ListParams, value: String) -> ListParams {
   )
 }
 
-pub fn list_with_text_format(
-  params: ListParams,
-  value: ListTextFormat,
-) -> ListParams {
+pub fn list_with_text_format(params: ListParams, value: ListTextFormat) -> ListParams {
   ListParams(
     params.part,
     params.all_threads_related_to_channel_id,
@@ -221,7 +218,8 @@ pub fn list_add_id(params: ListParams, value: String) -> ListParams {
     params.part,
     params.all_threads_related_to_channel_id,
     params.channel_id,
-    case params.id {
+    case params.id
+    {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -274,51 +272,63 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/commentThreads",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.all_threads_related_to_channel_id {
-        option.Some(v) -> [#("allThreadsRelatedToChannelId", v)]
-        option.None -> []
-      },
-      case params.channel_id {
-        option.Some(v) -> [#("channelId", v)]
-        option.None -> []
-      },
-      case params.id {
-        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-        option.None -> []
-      },
-      case params.max_results {
-        option.Some(v) -> [#("maxResults", int.to_string(v))]
-        option.None -> []
-      },
-      case params.moderation_status {
-        option.Some(v) -> [
-          #("moderationStatus", list_moderation_status_to_string(v)),
-        ]
-        option.None -> []
-      },
-      case params.order {
-        option.Some(v) -> [#("order", list_order_to_string(v))]
-        option.None -> []
-      },
-      case params.page_token {
-        option.Some(v) -> [#("pageToken", v)]
-        option.None -> []
-      },
-      case params.search_terms {
-        option.Some(v) -> [#("searchTerms", v)]
-        option.None -> []
-      },
-      case params.text_format {
-        option.Some(v) -> [#("textFormat", list_text_format_to_string(v))]
-        option.None -> []
-      },
-      case params.video_id {
-        option.Some(v) -> [#("videoId", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [
+        list.map(params.part, fn(v) { #("part", v) }),
+        case params.all_threads_related_to_channel_id
+        {
+          option.Some(v) -> [#("allThreadsRelatedToChannelId", v)]
+          option.None -> []
+        },
+        case params.channel_id
+        {
+          option.Some(v) -> [#("channelId", v)]
+          option.None -> []
+        },
+        case params.id
+        {
+          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+          option.None -> []
+        },
+        case params.max_results
+        {
+          option.Some(v) -> [#("maxResults", int.to_string(v))]
+          option.None -> []
+        },
+        case params.moderation_status
+        {
+          option.Some(v) -> [
+            #("moderationStatus", list_moderation_status_to_string(v)),
+          ]
+          option.None -> []
+        },
+        case params.order
+        {
+          option.Some(v) -> [#("order", list_order_to_string(v))]
+          option.None -> []
+        },
+        case params.page_token
+        {
+          option.Some(v) -> [#("pageToken", v)]
+          option.None -> []
+        },
+        case params.search_terms
+        {
+          option.Some(v) -> [#("searchTerms", v)]
+          option.None -> []
+        },
+        case params.text_format
+        {
+          option.Some(v) -> [#("textFormat", list_text_format_to_string(v))]
+          option.None -> []
+        },
+        case params.video_id
+        {
+          option.Some(v) -> [#("videoId", v)]
+          option.None -> []
+        },
+      ],
+    ),
     [],
     ["https://www.googleapis.com/auth/youtube.force-ssl"],
     option.None,
@@ -349,11 +359,10 @@ pub fn list_moderation_status_decoder() -> Decoder(ListModerationStatus) {
     "heldForReview" -> decode.success(ListModerationStatusHeldForReview)
     "likelySpam" -> decode.success(ListModerationStatusLikelySpam)
     "rejected" -> decode.success(ListModerationStatusRejected)
-    _ ->
-      decode.failure(
-        ListModerationStatusPublished,
-        "a valid ListModerationStatus",
-      )
+    _ -> decode.failure(
+      ListModerationStatusPublished,
+      "a valid ListModerationStatus",
+    )
   }
 }
 
@@ -399,14 +408,14 @@ pub fn list_text_format_to_string(value: ListTextFormat) -> String {
 pub fn list_text_format_decoder() -> Decoder(ListTextFormat) {
   use value <- decode.then(decode.string)
   case value {
-    "textFormatUnspecified" ->
-      decode.success(ListTextFormatTextFormatUnspecified)
+    "textFormatUnspecified" -> decode.success(
+      ListTextFormatTextFormatUnspecified,
+    )
     "html" -> decode.success(ListTextFormatHtml)
     "plainText" -> decode.success(ListTextFormatPlainText)
-    _ ->
-      decode.failure(
-        ListTextFormatTextFormatUnspecified,
-        "a valid ListTextFormat",
-      )
+    _ -> decode.failure(
+      ListTextFormatTextFormatUnspecified,
+      "a valid ListTextFormat",
+    )
   }
 }

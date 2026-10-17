@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/availability_config.{
-  type AvailabilityConfig,
-}
+import google_youtube_api_v3/youtube/availability_config.{type AvailabilityConfig}
 import google_youtube_api_v3/youtube/monitor_stream_info.{type MonitorStreamInfo}
 
 /// Detailed settings of a broadcast.
@@ -123,84 +121,96 @@ pub fn decoder() -> Decoder(LiveBroadcastContentDetails) {
     option.None,
     decode.optional(stereo_layout_decoder()),
   )
-  decode.success(LiveBroadcastContentDetails(
-    availability_config,
-    bound_stream_id,
-    bound_stream_last_update_time_ms,
-    closed_captions_type,
-    enable_auto_start,
-    enable_auto_stop,
-    enable_closed_captions,
-    enable_content_encryption,
-    enable_dvr,
-    enable_embed,
-    enable_low_latency,
-    latency_preference,
-    mesh,
-    monitor_stream,
-    projection,
-    record_from_start,
-    start_with_slate,
-    stereo_layout,
-  ))
+  decode.success(
+    LiveBroadcastContentDetails(
+      availability_config,
+      bound_stream_id,
+      bound_stream_last_update_time_ms,
+      closed_captions_type,
+      enable_auto_start,
+      enable_auto_stop,
+      enable_closed_captions,
+      enable_content_encryption,
+      enable_dvr,
+      enable_embed,
+      enable_low_latency,
+      latency_preference,
+      mesh,
+      monitor_stream,
+      projection,
+      record_from_start,
+      start_with_slate,
+      stereo_layout,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveBroadcastContentDetails) -> Json {
-  json.object([
-    #(
-      "availabilityConfig",
-      json.nullable(value.availability_config, availability_config.to_json),
-    ),
-    #("boundStreamId", json.nullable(value.bound_stream_id, json.string)),
-    #(
-      "boundStreamLastUpdateTimeMs",
-      json.nullable(value.bound_stream_last_update_time_ms, json.string),
-    ),
-    #(
-      "closedCaptionsType",
-      json.nullable(value.closed_captions_type, fn(e) {
-        json.string(closed_captions_type_to_string(e))
-      }),
-    ),
-    #("enableAutoStart", json.nullable(value.enable_auto_start, json.bool)),
-    #("enableAutoStop", json.nullable(value.enable_auto_stop, json.bool)),
-    #(
-      "enableClosedCaptions",
-      json.nullable(value.enable_closed_captions, json.bool),
-    ),
-    #(
-      "enableContentEncryption",
-      json.nullable(value.enable_content_encryption, json.bool),
-    ),
-    #("enableDvr", json.nullable(value.enable_dvr, json.bool)),
-    #("enableEmbed", json.nullable(value.enable_embed, json.bool)),
-    #("enableLowLatency", json.nullable(value.enable_low_latency, json.bool)),
-    #(
-      "latencyPreference",
-      json.nullable(value.latency_preference, fn(e) {
-        json.string(latency_preference_to_string(e))
-      }),
-    ),
-    #("mesh", json.nullable(value.mesh, json.string)),
-    #(
-      "monitorStream",
-      json.nullable(value.monitor_stream, monitor_stream_info.to_json),
-    ),
-    #(
-      "projection",
-      json.nullable(value.projection, fn(e) {
-        json.string(projection_to_string(e))
-      }),
-    ),
-    #("recordFromStart", json.nullable(value.record_from_start, json.bool)),
-    #("startWithSlate", json.nullable(value.start_with_slate, json.bool)),
-    #(
-      "stereoLayout",
-      json.nullable(value.stereo_layout, fn(e) {
-        json.string(stereo_layout_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "availabilityConfig",
+        json.nullable(value.availability_config, availability_config.to_json),
+      ),
+      #("boundStreamId", json.nullable(value.bound_stream_id, json.string)),
+      #(
+        "boundStreamLastUpdateTimeMs",
+        json.nullable(value.bound_stream_last_update_time_ms, json.string),
+      ),
+      #(
+        "closedCaptionsType",
+        json.nullable(
+          value.closed_captions_type,
+          fn(e)
+          { json.string(closed_captions_type_to_string(e)) },
+        ),
+      ),
+      #("enableAutoStart", json.nullable(value.enable_auto_start, json.bool)),
+      #("enableAutoStop", json.nullable(value.enable_auto_stop, json.bool)),
+      #(
+        "enableClosedCaptions",
+        json.nullable(value.enable_closed_captions, json.bool),
+      ),
+      #(
+        "enableContentEncryption",
+        json.nullable(value.enable_content_encryption, json.bool),
+      ),
+      #("enableDvr", json.nullable(value.enable_dvr, json.bool)),
+      #("enableEmbed", json.nullable(value.enable_embed, json.bool)),
+      #("enableLowLatency", json.nullable(value.enable_low_latency, json.bool)),
+      #(
+        "latencyPreference",
+        json.nullable(
+          value.latency_preference,
+          fn(e)
+          { json.string(latency_preference_to_string(e)) },
+        ),
+      ),
+      #("mesh", json.nullable(value.mesh, json.string)),
+      #(
+        "monitorStream",
+        json.nullable(value.monitor_stream, monitor_stream_info.to_json),
+      ),
+      #(
+        "projection",
+        json.nullable(
+          value.projection,
+          fn(e)
+          { json.string(projection_to_string(e)) },
+        ),
+      ),
+      #("recordFromStart", json.nullable(value.record_from_start, json.bool)),
+      #("startWithSlate", json.nullable(value.start_with_slate, json.bool)),
+      #(
+        "stereoLayout",
+        json.nullable(
+          value.stereo_layout,
+          fn(e)
+          { json.string(stereo_layout_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 pub type ClosedCaptionsType {
@@ -212,8 +222,7 @@ pub type ClosedCaptionsType {
 
 pub fn closed_captions_type_to_string(value: ClosedCaptionsType) -> String {
   case value {
-    ClosedCaptionsTypeClosedCaptionsTypeUnspecified ->
-      "closedCaptionsTypeUnspecified"
+    ClosedCaptionsTypeClosedCaptionsTypeUnspecified -> "closedCaptionsTypeUnspecified"
     ClosedCaptionsTypeClosedCaptionsDisabled -> "closedCaptionsDisabled"
     ClosedCaptionsTypeClosedCaptionsHttpPost -> "closedCaptionsHttpPost"
     ClosedCaptionsTypeClosedCaptionsEmbedded -> "closedCaptionsEmbedded"
@@ -223,19 +232,22 @@ pub fn closed_captions_type_to_string(value: ClosedCaptionsType) -> String {
 pub fn closed_captions_type_decoder() -> Decoder(ClosedCaptionsType) {
   use value <- decode.then(decode.string)
   case value {
-    "closedCaptionsTypeUnspecified" ->
-      decode.success(ClosedCaptionsTypeClosedCaptionsTypeUnspecified)
-    "closedCaptionsDisabled" ->
-      decode.success(ClosedCaptionsTypeClosedCaptionsDisabled)
-    "closedCaptionsHttpPost" ->
-      decode.success(ClosedCaptionsTypeClosedCaptionsHttpPost)
-    "closedCaptionsEmbedded" ->
-      decode.success(ClosedCaptionsTypeClosedCaptionsEmbedded)
-    _ ->
-      decode.failure(
-        ClosedCaptionsTypeClosedCaptionsTypeUnspecified,
-        "a valid ClosedCaptionsType",
-      )
+    "closedCaptionsTypeUnspecified" -> decode.success(
+      ClosedCaptionsTypeClosedCaptionsTypeUnspecified,
+    )
+    "closedCaptionsDisabled" -> decode.success(
+      ClosedCaptionsTypeClosedCaptionsDisabled,
+    )
+    "closedCaptionsHttpPost" -> decode.success(
+      ClosedCaptionsTypeClosedCaptionsHttpPost,
+    )
+    "closedCaptionsEmbedded" -> decode.success(
+      ClosedCaptionsTypeClosedCaptionsEmbedded,
+    )
+    _ -> decode.failure(
+      ClosedCaptionsTypeClosedCaptionsTypeUnspecified,
+      "a valid ClosedCaptionsType",
+    )
   }
 }
 
@@ -249,8 +261,7 @@ pub type LatencyPreference {
 
 pub fn latency_preference_to_string(value: LatencyPreference) -> String {
   case value {
-    LatencyPreferenceLatencyPreferenceUnspecified ->
-      "latencyPreferenceUnspecified"
+    LatencyPreferenceLatencyPreferenceUnspecified -> "latencyPreferenceUnspecified"
     LatencyPreferenceNormal -> "normal"
     LatencyPreferenceLow -> "low"
     LatencyPreferenceUltraLow -> "ultraLow"
@@ -260,16 +271,16 @@ pub fn latency_preference_to_string(value: LatencyPreference) -> String {
 pub fn latency_preference_decoder() -> Decoder(LatencyPreference) {
   use value <- decode.then(decode.string)
   case value {
-    "latencyPreferenceUnspecified" ->
-      decode.success(LatencyPreferenceLatencyPreferenceUnspecified)
+    "latencyPreferenceUnspecified" -> decode.success(
+      LatencyPreferenceLatencyPreferenceUnspecified,
+    )
     "normal" -> decode.success(LatencyPreferenceNormal)
     "low" -> decode.success(LatencyPreferenceLow)
     "ultraLow" -> decode.success(LatencyPreferenceUltraLow)
-    _ ->
-      decode.failure(
-        LatencyPreferenceLatencyPreferenceUnspecified,
-        "a valid LatencyPreference",
-      )
+    _ -> decode.failure(
+      LatencyPreferenceLatencyPreferenceUnspecified,
+      "a valid LatencyPreference",
+    )
   }
 }
 
@@ -321,15 +332,15 @@ pub fn stereo_layout_to_string(value: StereoLayout) -> String {
 pub fn stereo_layout_decoder() -> Decoder(StereoLayout) {
   use value <- decode.then(decode.string)
   case value {
-    "stereoLayoutUnspecified" ->
-      decode.success(StereoLayoutStereoLayoutUnspecified)
+    "stereoLayoutUnspecified" -> decode.success(
+      StereoLayoutStereoLayoutUnspecified,
+    )
     "mono" -> decode.success(StereoLayoutMono)
     "leftRight" -> decode.success(StereoLayoutLeftRight)
     "topBottom" -> decode.success(StereoLayoutTopBottom)
-    _ ->
-      decode.failure(
-        StereoLayoutStereoLayoutUnspecified,
-        "a valid StereoLayout",
-      )
+    _ -> decode.failure(
+      StereoLayoutStereoLayoutUnspecified,
+      "a valid StereoLayout",
+    )
   }
 }

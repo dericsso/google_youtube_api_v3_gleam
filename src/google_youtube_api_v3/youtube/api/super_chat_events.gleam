@@ -50,21 +50,18 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/superChatEvents",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.hl {
-        option.Some(v) -> [#("hl", v)]
-        option.None -> []
-      },
-      case params.max_results {
-        option.Some(v) -> [#("maxResults", int.to_string(v))]
-        option.None -> []
-      },
-      case params.page_token {
-        option.Some(v) -> [#("pageToken", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [list.map(params.part, fn(v) { #("part", v) }), case params.hl {
+          option.Some(v) -> [#("hl", v)]
+          option.None -> []
+        }, case params.max_results {
+          option.Some(v) -> [#("maxResults", int.to_string(v))]
+          option.None -> []
+        }, case params.page_token {
+          option.Some(v) -> [#("pageToken", v)]
+          option.None -> []
+        }],
+    ),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

@@ -84,41 +84,51 @@ pub fn decoder() -> Decoder(LiveBroadcastSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(LiveBroadcastSnippet(
-    actual_end_time,
-    actual_start_time,
-    category_id,
-    channel_id,
-    description,
-    is_default_broadcast,
-    live_chat_id,
-    published_at,
-    scheduled_end_time,
-    scheduled_start_time,
-    thumbnails,
-    title,
-  ))
+  decode.success(
+    LiveBroadcastSnippet(
+      actual_end_time,
+      actual_start_time,
+      category_id,
+      channel_id,
+      description,
+      is_default_broadcast,
+      live_chat_id,
+      published_at,
+      scheduled_end_time,
+      scheduled_start_time,
+      thumbnails,
+      title,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveBroadcastSnippet) -> Json {
-  json.object([
-    #("actualEndTime", json.nullable(value.actual_end_time, json.string)),
-    #("actualStartTime", json.nullable(value.actual_start_time, json.string)),
-    #("categoryId", json.nullable(value.category_id, json.string)),
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #(
-      "isDefaultBroadcast",
-      json.nullable(value.is_default_broadcast, json.bool),
-    ),
-    #("liveChatId", json.nullable(value.live_chat_id, json.string)),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #("scheduledEndTime", json.nullable(value.scheduled_end_time, json.string)),
-    #(
-      "scheduledStartTime",
-      json.nullable(value.scheduled_start_time, json.string),
-    ),
-    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("actualEndTime", json.nullable(value.actual_end_time, json.string)),
+      #("actualStartTime", json.nullable(value.actual_start_time, json.string)),
+      #("categoryId", json.nullable(value.category_id, json.string)),
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #(
+        "isDefaultBroadcast",
+        json.nullable(value.is_default_broadcast, json.bool),
+      ),
+      #("liveChatId", json.nullable(value.live_chat_id, json.string)),
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #(
+        "scheduledEndTime",
+        json.nullable(value.scheduled_end_time, json.string),
+      ),
+      #(
+        "scheduledStartTime",
+        json.nullable(value.scheduled_start_time, json.string),
+      ),
+      #(
+        "thumbnails",
+        json.nullable(value.thumbnails, thumbnail_details.to_json),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }

@@ -37,29 +37,32 @@ pub fn decoder() -> Decoder(AbuseReport) {
     option.None,
     decode.optional(entity.decoder()),
   )
-  decode.success(AbuseReport(
-    abuse_types,
-    description,
-    related_entities,
-    subject,
-  ))
+  decode.success(
+    AbuseReport(abuse_types, description, related_entities, subject),
+  )
 }
 
 pub fn to_json(value: AbuseReport) -> Json {
-  json.object([
-    #(
-      "abuseTypes",
-      json.nullable(value.abuse_types, fn(items) {
-        json.array(items, abuse_type.to_json)
-      }),
-    ),
-    #("description", json.nullable(value.description, json.string)),
-    #(
-      "relatedEntities",
-      json.nullable(value.related_entities, fn(items) {
-        json.array(items, related_entity.to_json)
-      }),
-    ),
-    #("subject", json.nullable(value.subject, entity.to_json)),
-  ])
+  json.object(
+    [
+      #(
+        "abuseTypes",
+        json.nullable(
+          value.abuse_types,
+          fn(items)
+          { json.array(items, abuse_type.to_json) },
+        ),
+      ),
+      #("description", json.nullable(value.description, json.string)),
+      #(
+        "relatedEntities",
+        json.nullable(
+          value.related_entities,
+          fn(items)
+          { json.array(items, related_entity.to_json) },
+        ),
+      ),
+      #("subject", json.nullable(value.subject, entity.to_json)),
+    ],
+  )
 }

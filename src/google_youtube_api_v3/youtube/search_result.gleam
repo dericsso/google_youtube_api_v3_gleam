@@ -4,9 +4,7 @@ import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
 import google_youtube_api_v3/youtube/resource_id.{type ResourceId}
-import google_youtube_api_v3/youtube/search_result_snippet.{
-  type SearchResultSnippet,
-}
+import google_youtube_api_v3/youtube/search_result_snippet.{type SearchResultSnippet}
 
 /// A search result contains information about a YouTube video, channel, or playlist that matches the search parameters specified in an API request. While a search result points to a uniquely identifiable resource, like a video, it does not have its own persistent data.
 pub type SearchResult {
@@ -43,10 +41,12 @@ pub fn decoder() -> Decoder(SearchResult) {
 }
 
 pub fn to_json(value: SearchResult) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, resource_id.to_json)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, search_result_snippet.to_json)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, resource_id.to_json)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("snippet", json.nullable(value.snippet, search_result_snippet.to_json)),
+    ],
+  )
 }

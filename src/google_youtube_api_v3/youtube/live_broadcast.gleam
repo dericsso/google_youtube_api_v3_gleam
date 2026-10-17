@@ -3,21 +3,11 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/live_broadcast_content_details.{
-  type LiveBroadcastContentDetails,
-}
-import google_youtube_api_v3/youtube/live_broadcast_monetization_details.{
-  type LiveBroadcastMonetizationDetails,
-}
-import google_youtube_api_v3/youtube/live_broadcast_snippet.{
-  type LiveBroadcastSnippet,
-}
-import google_youtube_api_v3/youtube/live_broadcast_statistics.{
-  type LiveBroadcastStatistics,
-}
-import google_youtube_api_v3/youtube/live_broadcast_status.{
-  type LiveBroadcastStatus,
-}
+import google_youtube_api_v3/youtube/live_broadcast_content_details.{type LiveBroadcastContentDetails}
+import google_youtube_api_v3/youtube/live_broadcast_monetization_details.{type LiveBroadcastMonetizationDetails}
+import google_youtube_api_v3/youtube/live_broadcast_snippet.{type LiveBroadcastSnippet}
+import google_youtube_api_v3/youtube/live_broadcast_statistics.{type LiveBroadcastStatistics}
+import google_youtube_api_v3/youtube/live_broadcast_status.{type LiveBroadcastStatus}
 
 /// A *liveBroadcast* resource represents an event that will be streamed, via live video, on YouTube.
 pub type LiveBroadcast {
@@ -74,42 +64,46 @@ pub fn decoder() -> Decoder(LiveBroadcast) {
     option.None,
     decode.optional(live_broadcast_status.decoder()),
   )
-  decode.success(LiveBroadcast(
-    content_details,
-    etag,
-    id,
-    kind,
-    monetization_details,
-    snippet,
-    statistics,
-    status,
-  ))
+  decode.success(
+    LiveBroadcast(
+      content_details,
+      etag,
+      id,
+      kind,
+      monetization_details,
+      snippet,
+      statistics,
+      status,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveBroadcast) -> Json {
-  json.object([
-    #(
-      "contentDetails",
-      json.nullable(
-        value.content_details,
-        live_broadcast_content_details.to_json,
+  json.object(
+    [
+      #(
+        "contentDetails",
+        json.nullable(
+          value.content_details,
+          live_broadcast_content_details.to_json,
+        ),
       ),
-    ),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #(
-      "monetizationDetails",
-      json.nullable(
-        value.monetization_details,
-        live_broadcast_monetization_details.to_json,
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #(
+        "monetizationDetails",
+        json.nullable(
+          value.monetization_details,
+          live_broadcast_monetization_details.to_json,
+        ),
       ),
-    ),
-    #("snippet", json.nullable(value.snippet, live_broadcast_snippet.to_json)),
-    #(
-      "statistics",
-      json.nullable(value.statistics, live_broadcast_statistics.to_json),
-    ),
-    #("status", json.nullable(value.status, live_broadcast_status.to_json)),
-  ])
+      #("snippet", json.nullable(value.snippet, live_broadcast_snippet.to_json)),
+      #(
+        "statistics",
+        json.nullable(value.statistics, live_broadcast_statistics.to_json),
+      ),
+      #("status", json.nullable(value.status, live_broadcast_status.to_json)),
+    ],
+  )
 }

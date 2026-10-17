@@ -33,9 +33,11 @@ pub fn decoder() -> Decoder(GeoPoint) {
 }
 
 pub fn to_json(value: GeoPoint) -> Json {
-  json.object([
-    #("altitude", json.nullable(value.altitude, json.float)),
-    #("latitude", json.nullable(value.latitude, json.float)),
-    #("longitude", json.nullable(value.longitude, json.float)),
-  ])
+  json.object(
+    [
+      #("altitude", json.nullable(value.altitude, json.float)),
+      #("latitude", json.nullable(value.latitude, json.float)),
+      #("longitude", json.nullable(value.longitude, json.float)),
+    ],
+  )
 }

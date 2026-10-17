@@ -60,32 +60,39 @@ pub fn decoder() -> Decoder(ActivitySnippet) {
     option.None,
     decode.optional(type_decoder()),
   )
-  decode.success(ActivitySnippet(
-    channel_id,
-    channel_title,
-    description,
-    group_id,
-    published_at,
-    thumbnails,
-    title,
-    type_,
-  ))
+  decode.success(
+    ActivitySnippet(
+      channel_id,
+      channel_title,
+      description,
+      group_id,
+      published_at,
+      thumbnails,
+      title,
+      type_,
+    ),
+  )
 }
 
 pub fn to_json(value: ActivitySnippet) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("channelTitle", json.nullable(value.channel_title, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #("groupId", json.nullable(value.group_id, json.string)),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
-    #("title", json.nullable(value.title, json.string)),
-    #(
-      "type",
-      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-    ),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("channelTitle", json.nullable(value.channel_title, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #("groupId", json.nullable(value.group_id, json.string)),
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #(
+        "thumbnails",
+        json.nullable(value.thumbnails, thumbnail_details.to_json),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+      #(
+        "type",
+        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+      ),
+    ],
+  )
 }
 
 /// The type of activity that the resource describes.

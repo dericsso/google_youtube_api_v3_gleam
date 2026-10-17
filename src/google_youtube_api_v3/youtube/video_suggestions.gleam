@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/video_suggestions_tag_suggestion.{
-  type VideoSuggestionsTagSuggestion,
-}
+import google_youtube_api_v3/youtube/video_suggestions_tag_suggestion.{type VideoSuggestionsTagSuggestion}
 
 /// Specifies suggestions on how to improve video content, including encoding hints, tag suggestions, and editor suggestions.
 pub type VideoSuggestions {
@@ -44,50 +42,86 @@ pub fn decoder() -> Decoder(VideoSuggestions) {
     option.None,
     decode.optional(decode.list(video_suggestions_tag_suggestion.decoder())),
   )
-  decode.success(VideoSuggestions(
-    editor_suggestions,
-    processing_errors,
-    processing_hints,
-    processing_warnings,
-    tag_suggestions,
-  ))
+  decode.success(
+    VideoSuggestions(
+      editor_suggestions,
+      processing_errors,
+      processing_hints,
+      processing_warnings,
+      tag_suggestions,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoSuggestions) -> Json {
-  json.object([
-    #(
-      "editorSuggestions",
-      json.nullable(value.editor_suggestions, fn(items) {
-        json.array(items, fn(e) { json.string(editor_suggestions_to_string(e)) })
-      }),
-    ),
-    #(
-      "processingErrors",
-      json.nullable(value.processing_errors, fn(items) {
-        json.array(items, fn(e) { json.string(processing_errors_to_string(e)) })
-      }),
-    ),
-    #(
-      "processingHints",
-      json.nullable(value.processing_hints, fn(items) {
-        json.array(items, fn(e) { json.string(processing_hints_to_string(e)) })
-      }),
-    ),
-    #(
-      "processingWarnings",
-      json.nullable(value.processing_warnings, fn(items) {
-        json.array(items, fn(e) {
-          json.string(processing_warnings_to_string(e))
-        })
-      }),
-    ),
-    #(
-      "tagSuggestions",
-      json.nullable(value.tag_suggestions, fn(items) {
-        json.array(items, video_suggestions_tag_suggestion.to_json)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "editorSuggestions",
+        json.nullable(
+          value.editor_suggestions,
+          fn(items)
+          {
+            json.array(
+              items,
+              fn(e)
+              { json.string(editor_suggestions_to_string(e)) },
+            )
+          },
+        ),
+      ),
+      #(
+        "processingErrors",
+        json.nullable(
+          value.processing_errors,
+          fn(items)
+          {
+            json.array(
+              items,
+              fn(e)
+              { json.string(processing_errors_to_string(e)) },
+            )
+          },
+        ),
+      ),
+      #(
+        "processingHints",
+        json.nullable(
+          value.processing_hints,
+          fn(items)
+          {
+            json.array(
+              items,
+              fn(e)
+              { json.string(processing_hints_to_string(e)) },
+            )
+          },
+        ),
+      ),
+      #(
+        "processingWarnings",
+        json.nullable(
+          value.processing_warnings,
+          fn(items)
+          {
+            json.array(
+              items,
+              fn(e)
+              { json.string(processing_warnings_to_string(e)) },
+            )
+          },
+        ),
+      ),
+      #(
+        "tagSuggestions",
+        json.nullable(
+          value.tag_suggestions,
+          fn(items)
+          { json.array(items, video_suggestions_tag_suggestion.to_json) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// A list of video editing operations that might improve the video quality or playback experience of the uploaded video.
@@ -113,13 +147,13 @@ pub fn editor_suggestions_decoder() -> Decoder(EditorSuggestions) {
     "videoAutoLevels" -> decode.success(EditorSuggestionsVideoAutoLevels)
     "videoStabilize" -> decode.success(EditorSuggestionsVideoStabilize)
     "videoCrop" -> decode.success(EditorSuggestionsVideoCrop)
-    "audioQuietAudioSwap" ->
-      decode.success(EditorSuggestionsAudioQuietAudioSwap)
-    _ ->
-      decode.failure(
-        EditorSuggestionsVideoAutoLevels,
-        "a valid EditorSuggestions",
-      )
+    "audioQuietAudioSwap" -> decode.success(
+      EditorSuggestionsAudioQuietAudioSwap,
+    )
+    _ -> decode.failure(
+      EditorSuggestionsVideoAutoLevels,
+      "a valid EditorSuggestions",
+    )
   }
 }
 
@@ -142,8 +176,7 @@ pub fn processing_errors_to_string(value: ProcessingErrors) -> String {
     ProcessingErrorsNotAvideoFile -> "notAVideoFile"
     ProcessingErrorsDocFile -> "docFile"
     ProcessingErrorsArchiveFile -> "archiveFile"
-    ProcessingErrorsUnsupportedSpatialAudioLayout ->
-      "unsupportedSpatialAudioLayout"
+    ProcessingErrorsUnsupportedSpatialAudioLayout -> "unsupportedSpatialAudioLayout"
   }
 }
 
@@ -156,8 +189,9 @@ pub fn processing_errors_decoder() -> Decoder(ProcessingErrors) {
     "notAVideoFile" -> decode.success(ProcessingErrorsNotAvideoFile)
     "docFile" -> decode.success(ProcessingErrorsDocFile)
     "archiveFile" -> decode.success(ProcessingErrorsArchiveFile)
-    "unsupportedSpatialAudioLayout" ->
-      decode.success(ProcessingErrorsUnsupportedSpatialAudioLayout)
+    "unsupportedSpatialAudioLayout" -> decode.success(
+      ProcessingErrorsUnsupportedSpatialAudioLayout,
+    )
     _ -> decode.failure(ProcessingErrorsAudioFile, "a valid ProcessingErrors")
   }
 }
@@ -187,14 +221,17 @@ pub fn processing_hints_decoder() -> Decoder(ProcessingHints) {
   use value <- decode.then(decode.string)
   case value {
     "nonStreamableMov" -> decode.success(ProcessingHintsNonStreamableMov)
-    "sendBestQualityVideo" ->
-      decode.success(ProcessingHintsSendBestQualityVideo)
+    "sendBestQualityVideo" -> decode.success(
+      ProcessingHintsSendBestQualityVideo,
+    )
     "sphericalVideo" -> decode.success(ProcessingHintsSphericalVideo)
     "spatialAudio" -> decode.success(ProcessingHintsSpatialAudio)
     "vrVideo" -> decode.success(ProcessingHintsVrVideo)
     "hdrVideo" -> decode.success(ProcessingHintsHdrVideo)
-    _ ->
-      decode.failure(ProcessingHintsNonStreamableMov, "a valid ProcessingHints")
+    _ -> decode.failure(
+      ProcessingHintsNonStreamableMov,
+      "a valid ProcessingHints",
+    )
   }
 }
 
@@ -224,11 +261,9 @@ pub fn processing_warnings_to_string(value: ProcessingWarnings) -> String {
     ProcessingWarningsProblematicVideoCodec -> "problematicVideoCodec"
     ProcessingWarningsProblematicAudioCodec -> "problematicAudioCodec"
     ProcessingWarningsUnsupportedVrStereoMode -> "unsupportedVrStereoMode"
-    ProcessingWarningsUnsupportedSphericalProjectionType ->
-      "unsupportedSphericalProjectionType"
+    ProcessingWarningsUnsupportedSphericalProjectionType -> "unsupportedSphericalProjectionType"
     ProcessingWarningsUnsupportedHdrPixelFormat -> "unsupportedHdrPixelFormat"
-    ProcessingWarningsUnsupportedHdrColorMetadata ->
-      "unsupportedHdrColorMetadata"
+    ProcessingWarningsUnsupportedHdrColorMetadata -> "unsupportedHdrColorMetadata"
     ProcessingWarningsProblematicHdrLookupTable -> "problematicHdrLookupTable"
   }
 }
@@ -239,27 +274,34 @@ pub fn processing_warnings_decoder() -> Decoder(ProcessingWarnings) {
     "unknownContainer" -> decode.success(ProcessingWarningsUnknownContainer)
     "unknownVideoCodec" -> decode.success(ProcessingWarningsUnknownVideoCodec)
     "unknownAudioCodec" -> decode.success(ProcessingWarningsUnknownAudioCodec)
-    "inconsistentResolution" ->
-      decode.success(ProcessingWarningsInconsistentResolution)
+    "inconsistentResolution" -> decode.success(
+      ProcessingWarningsInconsistentResolution,
+    )
     "hasEditlist" -> decode.success(ProcessingWarningsHasEditlist)
-    "problematicVideoCodec" ->
-      decode.success(ProcessingWarningsProblematicVideoCodec)
-    "problematicAudioCodec" ->
-      decode.success(ProcessingWarningsProblematicAudioCodec)
-    "unsupportedVrStereoMode" ->
-      decode.success(ProcessingWarningsUnsupportedVrStereoMode)
-    "unsupportedSphericalProjectionType" ->
-      decode.success(ProcessingWarningsUnsupportedSphericalProjectionType)
-    "unsupportedHdrPixelFormat" ->
-      decode.success(ProcessingWarningsUnsupportedHdrPixelFormat)
-    "unsupportedHdrColorMetadata" ->
-      decode.success(ProcessingWarningsUnsupportedHdrColorMetadata)
-    "problematicHdrLookupTable" ->
-      decode.success(ProcessingWarningsProblematicHdrLookupTable)
-    _ ->
-      decode.failure(
-        ProcessingWarningsUnknownContainer,
-        "a valid ProcessingWarnings",
-      )
+    "problematicVideoCodec" -> decode.success(
+      ProcessingWarningsProblematicVideoCodec,
+    )
+    "problematicAudioCodec" -> decode.success(
+      ProcessingWarningsProblematicAudioCodec,
+    )
+    "unsupportedVrStereoMode" -> decode.success(
+      ProcessingWarningsUnsupportedVrStereoMode,
+    )
+    "unsupportedSphericalProjectionType" -> decode.success(
+      ProcessingWarningsUnsupportedSphericalProjectionType,
+    )
+    "unsupportedHdrPixelFormat" -> decode.success(
+      ProcessingWarningsUnsupportedHdrPixelFormat,
+    )
+    "unsupportedHdrColorMetadata" -> decode.success(
+      ProcessingWarningsUnsupportedHdrColorMetadata,
+    )
+    "problematicHdrLookupTable" -> decode.success(
+      ProcessingWarningsProblematicHdrLookupTable,
+    )
+    _ -> decode.failure(
+      ProcessingWarningsUnknownContainer,
+      "a valid ProcessingWarnings",
+    )
   }
 }

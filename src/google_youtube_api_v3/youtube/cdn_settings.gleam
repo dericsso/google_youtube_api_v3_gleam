@@ -42,41 +42,45 @@ pub fn decoder() -> Decoder(CdnSettings) {
     option.None,
     decode.optional(resolution_decoder()),
   )
-  decode.success(CdnSettings(
-    format,
-    frame_rate,
-    ingestion_info,
-    ingestion_type,
-    resolution,
-  ))
+  decode.success(
+    CdnSettings(format, frame_rate, ingestion_info, ingestion_type, resolution),
+  )
 }
 
 pub fn to_json(value: CdnSettings) -> Json {
-  json.object([
-    #("format", json.nullable(value.format, json.string)),
-    #(
-      "frameRate",
-      json.nullable(value.frame_rate, fn(e) {
-        json.string(frame_rate_to_string(e))
-      }),
-    ),
-    #(
-      "ingestionInfo",
-      json.nullable(value.ingestion_info, ingestion_info.to_json),
-    ),
-    #(
-      "ingestionType",
-      json.nullable(value.ingestion_type, fn(e) {
-        json.string(ingestion_type_to_string(e))
-      }),
-    ),
-    #(
-      "resolution",
-      json.nullable(value.resolution, fn(e) {
-        json.string(resolution_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #("format", json.nullable(value.format, json.string)),
+      #(
+        "frameRate",
+        json.nullable(
+          value.frame_rate,
+          fn(e)
+          { json.string(frame_rate_to_string(e)) },
+        ),
+      ),
+      #(
+        "ingestionInfo",
+        json.nullable(value.ingestion_info, ingestion_info.to_json),
+      ),
+      #(
+        "ingestionType",
+        json.nullable(
+          value.ingestion_type,
+          fn(e)
+          { json.string(ingestion_type_to_string(e)) },
+        ),
+      ),
+      #(
+        "resolution",
+        json.nullable(
+          value.resolution,
+          fn(e)
+          { json.string(resolution_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// The frame rate of the inbound video data.

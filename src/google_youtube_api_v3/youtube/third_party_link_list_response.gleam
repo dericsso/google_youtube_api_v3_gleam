@@ -33,14 +33,18 @@ pub fn decoder() -> Decoder(ThirdPartyLinkListResponse) {
 }
 
 pub fn to_json(value: ThirdPartyLinkListResponse) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #(
-      "items",
-      json.nullable(value.items, fn(items) {
-        json.array(items, third_party_link.to_json)
-      }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, third_party_link.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+    ],
+  )
 }

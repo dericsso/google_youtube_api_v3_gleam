@@ -40,21 +40,28 @@ pub fn decoder() -> Decoder(PlaylistItemContentDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(PlaylistItemContentDetails(
-    end_at,
-    note,
-    start_at,
-    video_id,
-    video_published_at,
-  ))
+  decode.success(
+    PlaylistItemContentDetails(
+      end_at,
+      note,
+      start_at,
+      video_id,
+      video_published_at,
+    ),
+  )
 }
 
 pub fn to_json(value: PlaylistItemContentDetails) -> Json {
-  json.object([
-    #("endAt", json.nullable(value.end_at, json.string)),
-    #("note", json.nullable(value.note, json.string)),
-    #("startAt", json.nullable(value.start_at, json.string)),
-    #("videoId", json.nullable(value.video_id, json.string)),
-    #("videoPublishedAt", json.nullable(value.video_published_at, json.string)),
-  ])
+  json.object(
+    [
+      #("endAt", json.nullable(value.end_at, json.string)),
+      #("note", json.nullable(value.note, json.string)),
+      #("startAt", json.nullable(value.start_at, json.string)),
+      #("videoId", json.nullable(value.video_id, json.string)),
+      #(
+        "videoPublishedAt",
+        json.nullable(value.video_published_at, json.string),
+      ),
+    ],
+  )
 }

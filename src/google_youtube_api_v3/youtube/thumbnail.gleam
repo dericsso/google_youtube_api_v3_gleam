@@ -29,9 +29,11 @@ pub fn decoder() -> Decoder(Thumbnail) {
 }
 
 pub fn to_json(value: Thumbnail) -> Json {
-  json.object([
-    #("height", json.nullable(value.height, json.int)),
-    #("url", json.nullable(value.url, json.string)),
-    #("width", json.nullable(value.width, json.int)),
-  ])
+  json.object(
+    [
+      #("height", json.nullable(value.height, json.int)),
+      #("url", json.nullable(value.url, json.string)),
+      #("width", json.nullable(value.width, json.int)),
+    ],
+  )
 }

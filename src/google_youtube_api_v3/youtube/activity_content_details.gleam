@@ -3,33 +3,15 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/activity_content_details_bulletin.{
-  type ActivityContentDetailsBulletin,
-}
-import google_youtube_api_v3/youtube/activity_content_details_channel_item.{
-  type ActivityContentDetailsChannelItem,
-}
-import google_youtube_api_v3/youtube/activity_content_details_comment.{
-  type ActivityContentDetailsComment,
-}
-import google_youtube_api_v3/youtube/activity_content_details_playlist_item.{
-  type ActivityContentDetailsPlaylistItem,
-}
-import google_youtube_api_v3/youtube/activity_content_details_promoted_item.{
-  type ActivityContentDetailsPromotedItem,
-}
-import google_youtube_api_v3/youtube/activity_content_details_recommendation.{
-  type ActivityContentDetailsRecommendation,
-}
-import google_youtube_api_v3/youtube/activity_content_details_social.{
-  type ActivityContentDetailsSocial,
-}
-import google_youtube_api_v3/youtube/activity_content_details_subscription.{
-  type ActivityContentDetailsSubscription,
-}
-import google_youtube_api_v3/youtube/activity_content_details_upload.{
-  type ActivityContentDetailsUpload,
-}
+import google_youtube_api_v3/youtube/activity_content_details_bulletin.{type ActivityContentDetailsBulletin}
+import google_youtube_api_v3/youtube/activity_content_details_channel_item.{type ActivityContentDetailsChannelItem}
+import google_youtube_api_v3/youtube/activity_content_details_comment.{type ActivityContentDetailsComment}
+import google_youtube_api_v3/youtube/activity_content_details_playlist_item.{type ActivityContentDetailsPlaylistItem}
+import google_youtube_api_v3/youtube/activity_content_details_promoted_item.{type ActivityContentDetailsPromotedItem}
+import google_youtube_api_v3/youtube/activity_content_details_recommendation.{type ActivityContentDetailsRecommendation}
+import google_youtube_api_v3/youtube/activity_content_details_social.{type ActivityContentDetailsSocial}
+import google_youtube_api_v3/youtube/activity_content_details_subscription.{type ActivityContentDetailsSubscription}
+import google_youtube_api_v3/youtube/activity_content_details_upload.{type ActivityContentDetailsUpload}
 
 /// Details about the content of an activity: the video that was shared, the channel that was subscribed to, etc.
 pub type ActivityContentDetails {
@@ -92,71 +74,75 @@ pub fn decoder() -> Decoder(ActivityContentDetails) {
     option.None,
     decode.optional(activity_content_details_upload.decoder()),
   )
-  decode.success(ActivityContentDetails(
-    bulletin,
-    channel_item,
-    comment,
-    playlist_item,
-    promoted_item,
-    recommendation,
-    social,
-    subscription,
-    upload,
-  ))
+  decode.success(
+    ActivityContentDetails(
+      bulletin,
+      channel_item,
+      comment,
+      playlist_item,
+      promoted_item,
+      recommendation,
+      social,
+      subscription,
+      upload,
+    ),
+  )
 }
 
 pub fn to_json(value: ActivityContentDetails) -> Json {
-  json.object([
-    #(
-      "bulletin",
-      json.nullable(value.bulletin, activity_content_details_bulletin.to_json),
-    ),
-    #(
-      "channelItem",
-      json.nullable(
-        value.channel_item,
-        activity_content_details_channel_item.to_json,
+  json.object(
+    [
+      #(
+        "bulletin",
+        json.nullable(value.bulletin, activity_content_details_bulletin.to_json),
       ),
-    ),
-    #(
-      "comment",
-      json.nullable(value.comment, activity_content_details_comment.to_json),
-    ),
-    #(
-      "playlistItem",
-      json.nullable(
-        value.playlist_item,
-        activity_content_details_playlist_item.to_json,
+      #(
+        "channelItem",
+        json.nullable(
+          value.channel_item,
+          activity_content_details_channel_item.to_json,
+        ),
       ),
-    ),
-    #(
-      "promotedItem",
-      json.nullable(
-        value.promoted_item,
-        activity_content_details_promoted_item.to_json,
+      #(
+        "comment",
+        json.nullable(value.comment, activity_content_details_comment.to_json),
       ),
-    ),
-    #(
-      "recommendation",
-      json.nullable(
-        value.recommendation,
-        activity_content_details_recommendation.to_json,
+      #(
+        "playlistItem",
+        json.nullable(
+          value.playlist_item,
+          activity_content_details_playlist_item.to_json,
+        ),
       ),
-    ),
-    #(
-      "social",
-      json.nullable(value.social, activity_content_details_social.to_json),
-    ),
-    #(
-      "subscription",
-      json.nullable(
-        value.subscription,
-        activity_content_details_subscription.to_json,
+      #(
+        "promotedItem",
+        json.nullable(
+          value.promoted_item,
+          activity_content_details_promoted_item.to_json,
+        ),
       ),
-    ),
-    #(
-      "upload",
-      json.nullable(value.upload, activity_content_details_upload.to_json),
-    ),
-  ])
+      #(
+        "recommendation",
+        json.nullable(
+          value.recommendation,
+          activity_content_details_recommendation.to_json,
+        ),
+      ),
+      #(
+        "social",
+        json.nullable(value.social, activity_content_details_social.to_json),
+      ),
+      #(
+        "subscription",
+        json.nullable(
+          value.subscription,
+          activity_content_details_subscription.to_json,
+        ),
+      ),
+      #(
+        "upload",
+        json.nullable(value.upload, activity_content_details_upload.to_json),
+      ),
+    ],
+  )
 }

@@ -54,32 +54,41 @@ pub fn decoder() -> Decoder(SearchResultSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(SearchResultSnippet(
-    channel_id,
-    channel_title,
-    description,
-    live_broadcast_content,
-    published_at,
-    thumbnails,
-    title,
-  ))
+  decode.success(
+    SearchResultSnippet(
+      channel_id,
+      channel_title,
+      description,
+      live_broadcast_content,
+      published_at,
+      thumbnails,
+      title,
+    ),
+  )
 }
 
 pub fn to_json(value: SearchResultSnippet) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("channelTitle", json.nullable(value.channel_title, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #(
-      "liveBroadcastContent",
-      json.nullable(value.live_broadcast_content, fn(e) {
-        json.string(live_broadcast_content_to_string(e))
-      }),
-    ),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("channelTitle", json.nullable(value.channel_title, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #(
+        "liveBroadcastContent",
+        json.nullable(
+          value.live_broadcast_content,
+          fn(e)
+          { json.string(live_broadcast_content_to_string(e)) },
+        ),
+      ),
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #(
+        "thumbnails",
+        json.nullable(value.thumbnails, thumbnail_details.to_json),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }
 
 /// It indicates if the resource (video or channel) has upcoming/active live broadcast content. Or it's "none" if there is not any upcoming/active live broadcasts.
@@ -106,7 +115,9 @@ pub fn live_broadcast_content_decoder() -> Decoder(LiveBroadcastContent) {
     "upcoming" -> decode.success(LiveBroadcastContentUpcoming)
     "live" -> decode.success(LiveBroadcastContentLive)
     "completed" -> decode.success(LiveBroadcastContentCompleted)
-    _ ->
-      decode.failure(LiveBroadcastContentNone, "a valid LiveBroadcastContent")
+    _ -> decode.failure(
+      LiveBroadcastContentNone,
+      "a valid LiveBroadcastContent",
+    )
   }
 }

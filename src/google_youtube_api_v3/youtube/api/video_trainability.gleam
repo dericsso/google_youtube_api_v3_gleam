@@ -22,12 +22,10 @@ pub fn get_request(params: GetParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/videoTrainability",
-    list.flatten([
-      case params.id {
-        option.Some(v) -> [#("id", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten([case params.id {
+          option.Some(v) -> [#("id", v)]
+          option.None -> []
+        }]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

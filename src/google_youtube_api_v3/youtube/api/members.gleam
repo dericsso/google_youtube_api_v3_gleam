@@ -74,10 +74,7 @@ pub fn list_with_max_results(params: ListParams, value: Int) -> ListParams {
   )
 }
 
-pub fn list_with_has_access_to_level(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_has_access_to_level(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.filter_by_member_channel_id,
@@ -88,10 +85,7 @@ pub fn list_with_has_access_to_level(
   )
 }
 
-pub fn list_with_filter_by_member_channel_id(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_filter_by_member_channel_id(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     option.Some(value),
@@ -106,29 +100,36 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/members",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.filter_by_member_channel_id {
-        option.Some(v) -> [#("filterByMemberChannelId", v)]
-        option.None -> []
-      },
-      case params.has_access_to_level {
-        option.Some(v) -> [#("hasAccessToLevel", v)]
-        option.None -> []
-      },
-      case params.max_results {
-        option.Some(v) -> [#("maxResults", int.to_string(v))]
-        option.None -> []
-      },
-      case params.mode {
-        option.Some(v) -> [#("mode", list_mode_to_string(v))]
-        option.None -> []
-      },
-      case params.page_token {
-        option.Some(v) -> [#("pageToken", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [
+        list.map(params.part, fn(v) { #("part", v) }),
+        case params.filter_by_member_channel_id
+        {
+          option.Some(v) -> [#("filterByMemberChannelId", v)]
+          option.None -> []
+        },
+        case params.has_access_to_level
+        {
+          option.Some(v) -> [#("hasAccessToLevel", v)]
+          option.None -> []
+        },
+        case params.max_results
+        {
+          option.Some(v) -> [#("maxResults", int.to_string(v))]
+          option.None -> []
+        },
+        case params.mode
+        {
+          option.Some(v) -> [#("mode", list_mode_to_string(v))]
+          option.None -> []
+        },
+        case params.page_token
+        {
+          option.Some(v) -> [#("pageToken", v)]
+          option.None -> []
+        },
+      ],
+    ),
     [],
     ["https://www.googleapis.com/auth/youtube.channel-memberships.creator"],
     option.None,

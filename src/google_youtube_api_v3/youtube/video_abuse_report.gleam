@@ -40,24 +40,28 @@ pub fn decoder() -> Decoder(VideoAbuseReport) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(VideoAbuseReport(
-    comments,
-    language,
-    reason_id,
-    secondary_reason_id,
-    video_id,
-  ))
+  decode.success(
+    VideoAbuseReport(
+      comments,
+      language,
+      reason_id,
+      secondary_reason_id,
+      video_id,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoAbuseReport) -> Json {
-  json.object([
-    #("comments", json.nullable(value.comments, json.string)),
-    #("language", json.nullable(value.language, json.string)),
-    #("reasonId", json.nullable(value.reason_id, json.string)),
-    #(
-      "secondaryReasonId",
-      json.nullable(value.secondary_reason_id, json.string),
-    ),
-    #("videoId", json.nullable(value.video_id, json.string)),
-  ])
+  json.object(
+    [
+      #("comments", json.nullable(value.comments, json.string)),
+      #("language", json.nullable(value.language, json.string)),
+      #("reasonId", json.nullable(value.reason_id, json.string)),
+      #(
+        "secondaryReasonId",
+        json.nullable(value.secondary_reason_id, json.string),
+      ),
+      #("videoId", json.nullable(value.video_id, json.string)),
+    ],
+  )
 }

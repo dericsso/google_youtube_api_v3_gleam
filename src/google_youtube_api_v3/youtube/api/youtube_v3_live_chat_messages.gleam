@@ -29,10 +29,7 @@ pub fn stream() -> StreamParams {
   )
 }
 
-pub fn stream_with_profile_image_size(
-  params: StreamParams,
-  value: Int,
-) -> StreamParams {
+pub fn stream_with_profile_image_size(params: StreamParams, value: Int) -> StreamParams {
   StreamParams(
     params.hl,
     params.live_chat_id,
@@ -43,10 +40,7 @@ pub fn stream_with_profile_image_size(
   )
 }
 
-pub fn stream_with_part(
-  params: StreamParams,
-  value: List(String),
-) -> StreamParams {
+pub fn stream_with_part(params: StreamParams, value: List(String)) -> StreamParams {
   StreamParams(
     params.hl,
     params.live_chat_id,
@@ -63,7 +57,8 @@ pub fn stream_add_part(params: StreamParams, value: String) -> StreamParams {
     params.live_chat_id,
     params.max_results,
     params.page_token,
-    case params.part {
+    case params.part
+    {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -71,10 +66,7 @@ pub fn stream_add_part(params: StreamParams, value: String) -> StreamParams {
   )
 }
 
-pub fn stream_with_page_token(
-  params: StreamParams,
-  value: String,
-) -> StreamParams {
+pub fn stream_with_page_token(params: StreamParams, value: String) -> StreamParams {
   StreamParams(
     params.hl,
     params.live_chat_id,
@@ -85,10 +77,7 @@ pub fn stream_with_page_token(
   )
 }
 
-pub fn stream_with_max_results(
-  params: StreamParams,
-  value: Int,
-) -> StreamParams {
+pub fn stream_with_max_results(params: StreamParams, value: Int) -> StreamParams {
   StreamParams(
     params.hl,
     params.live_chat_id,
@@ -99,10 +88,7 @@ pub fn stream_with_max_results(
   )
 }
 
-pub fn stream_with_live_chat_id(
-  params: StreamParams,
-  value: String,
-) -> StreamParams {
+pub fn stream_with_live_chat_id(params: StreamParams, value: String) -> StreamParams {
   StreamParams(
     params.hl,
     option.Some(value),
@@ -128,32 +114,25 @@ pub fn stream_request(params: StreamParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/liveChat/messages/stream",
-    list.flatten([
-      case params.hl {
-        option.Some(v) -> [#("hl", v)]
-        option.None -> []
-      },
-      case params.live_chat_id {
-        option.Some(v) -> [#("liveChatId", v)]
-        option.None -> []
-      },
-      case params.max_results {
-        option.Some(v) -> [#("maxResults", int.to_string(v))]
-        option.None -> []
-      },
-      case params.page_token {
-        option.Some(v) -> [#("pageToken", v)]
-        option.None -> []
-      },
-      case params.part {
-        option.Some(v) -> list.map(v, fn(w) { #("part", w) })
-        option.None -> []
-      },
-      case params.profile_image_size {
-        option.Some(v) -> [#("profileImageSize", int.to_string(v))]
-        option.None -> []
-      },
-    ]),
+    list.flatten([case params.hl {
+          option.Some(v) -> [#("hl", v)]
+          option.None -> []
+        }, case params.live_chat_id {
+          option.Some(v) -> [#("liveChatId", v)]
+          option.None -> []
+        }, case params.max_results {
+          option.Some(v) -> [#("maxResults", int.to_string(v))]
+          option.None -> []
+        }, case params.page_token {
+          option.Some(v) -> [#("pageToken", v)]
+          option.None -> []
+        }, case params.part {
+          option.Some(v) -> list.map(v, fn(w) { #("part", w) })
+          option.None -> []
+        }, case params.profile_image_size {
+          option.Some(v) -> [#("profileImageSize", int.to_string(v))]
+          option.None -> []
+        }]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

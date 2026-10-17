@@ -47,48 +47,60 @@ pub fn decoder() -> Decoder(LiveBroadcastStatus) {
     option.None,
     decode.optional(decode.bool),
   )
-  decode.success(LiveBroadcastStatus(
-    life_cycle_status,
-    live_broadcast_priority,
-    made_for_kids,
-    privacy_status,
-    recording_status,
-    self_declared_made_for_kids,
-  ))
+  decode.success(
+    LiveBroadcastStatus(
+      life_cycle_status,
+      live_broadcast_priority,
+      made_for_kids,
+      privacy_status,
+      recording_status,
+      self_declared_made_for_kids,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveBroadcastStatus) -> Json {
-  json.object([
-    #(
-      "lifeCycleStatus",
-      json.nullable(value.life_cycle_status, fn(e) {
-        json.string(life_cycle_status_to_string(e))
-      }),
-    ),
-    #(
-      "liveBroadcastPriority",
-      json.nullable(value.live_broadcast_priority, fn(e) {
-        json.string(live_broadcast_priority_to_string(e))
-      }),
-    ),
-    #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
-    #(
-      "privacyStatus",
-      json.nullable(value.privacy_status, fn(e) {
-        json.string(privacy_status_to_string(e))
-      }),
-    ),
-    #(
-      "recordingStatus",
-      json.nullable(value.recording_status, fn(e) {
-        json.string(recording_status_to_string(e))
-      }),
-    ),
-    #(
-      "selfDeclaredMadeForKids",
-      json.nullable(value.self_declared_made_for_kids, json.bool),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "lifeCycleStatus",
+        json.nullable(
+          value.life_cycle_status,
+          fn(e)
+          { json.string(life_cycle_status_to_string(e)) },
+        ),
+      ),
+      #(
+        "liveBroadcastPriority",
+        json.nullable(
+          value.live_broadcast_priority,
+          fn(e)
+          { json.string(live_broadcast_priority_to_string(e)) },
+        ),
+      ),
+      #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
+      #(
+        "privacyStatus",
+        json.nullable(
+          value.privacy_status,
+          fn(e)
+          { json.string(privacy_status_to_string(e)) },
+        ),
+      ),
+      #(
+        "recordingStatus",
+        json.nullable(
+          value.recording_status,
+          fn(e)
+          { json.string(recording_status_to_string(e)) },
+        ),
+      ),
+      #(
+        "selfDeclaredMadeForKids",
+        json.nullable(value.self_declared_made_for_kids, json.bool),
+      ),
+    ],
+  )
 }
 
 /// The broadcast's status. The status can be updated using the API's liveBroadcasts.transition method.
@@ -121,8 +133,9 @@ pub fn life_cycle_status_to_string(value: LifeCycleStatus) -> String {
 pub fn life_cycle_status_decoder() -> Decoder(LifeCycleStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "lifeCycleStatusUnspecified" ->
-      decode.success(LifeCycleStatusLifeCycleStatusUnspecified)
+    "lifeCycleStatusUnspecified" -> decode.success(
+      LifeCycleStatusLifeCycleStatusUnspecified,
+    )
     "created" -> decode.success(LifeCycleStatusCreated)
     "ready" -> decode.success(LifeCycleStatusReady)
     "testing" -> decode.success(LifeCycleStatusTesting)
@@ -131,11 +144,10 @@ pub fn life_cycle_status_decoder() -> Decoder(LifeCycleStatus) {
     "revoked" -> decode.success(LifeCycleStatusRevoked)
     "testStarting" -> decode.success(LifeCycleStatusTestStarting)
     "liveStarting" -> decode.success(LifeCycleStatusLiveStarting)
-    _ ->
-      decode.failure(
-        LifeCycleStatusLifeCycleStatusUnspecified,
-        "a valid LifeCycleStatus",
-      )
+    _ -> decode.failure(
+      LifeCycleStatusLifeCycleStatusUnspecified,
+      "a valid LifeCycleStatus",
+    )
   }
 }
 
@@ -147,12 +159,10 @@ pub type LiveBroadcastPriority {
   LiveBroadcastPriorityHigh
 }
 
-pub fn live_broadcast_priority_to_string(
-  value: LiveBroadcastPriority,
-) -> String {
-  case value {
-    LiveBroadcastPriorityLiveBroadcastPriorityUnspecified ->
-      "liveBroadcastPriorityUnspecified"
+pub fn live_broadcast_priority_to_string(value: LiveBroadcastPriority) -> String {
+  case value
+  {
+    LiveBroadcastPriorityLiveBroadcastPriorityUnspecified -> "liveBroadcastPriorityUnspecified"
     LiveBroadcastPriorityLow -> "low"
     LiveBroadcastPriorityNormal -> "normal"
     LiveBroadcastPriorityHigh -> "high"
@@ -162,16 +172,16 @@ pub fn live_broadcast_priority_to_string(
 pub fn live_broadcast_priority_decoder() -> Decoder(LiveBroadcastPriority) {
   use value <- decode.then(decode.string)
   case value {
-    "liveBroadcastPriorityUnspecified" ->
-      decode.success(LiveBroadcastPriorityLiveBroadcastPriorityUnspecified)
+    "liveBroadcastPriorityUnspecified" -> decode.success(
+      LiveBroadcastPriorityLiveBroadcastPriorityUnspecified,
+    )
     "low" -> decode.success(LiveBroadcastPriorityLow)
     "normal" -> decode.success(LiveBroadcastPriorityNormal)
     "high" -> decode.success(LiveBroadcastPriorityHigh)
-    _ ->
-      decode.failure(
-        LiveBroadcastPriorityLiveBroadcastPriorityUnspecified,
-        "a valid LiveBroadcastPriority",
-      )
+    _ -> decode.failure(
+      LiveBroadcastPriorityLiveBroadcastPriorityUnspecified,
+      "a valid LiveBroadcastPriority",
+    )
   }
 }
 
@@ -210,8 +220,7 @@ pub type RecordingStatus {
 
 pub fn recording_status_to_string(value: RecordingStatus) -> String {
   case value {
-    RecordingStatusLiveBroadcastRecordingStatusUnspecified ->
-      "liveBroadcastRecordingStatusUnspecified"
+    RecordingStatusLiveBroadcastRecordingStatusUnspecified -> "liveBroadcastRecordingStatusUnspecified"
     RecordingStatusNotRecording -> "notRecording"
     RecordingStatusRecording -> "recording"
     RecordingStatusRecorded -> "recorded"
@@ -221,15 +230,15 @@ pub fn recording_status_to_string(value: RecordingStatus) -> String {
 pub fn recording_status_decoder() -> Decoder(RecordingStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "liveBroadcastRecordingStatusUnspecified" ->
-      decode.success(RecordingStatusLiveBroadcastRecordingStatusUnspecified)
+    "liveBroadcastRecordingStatusUnspecified" -> decode.success(
+      RecordingStatusLiveBroadcastRecordingStatusUnspecified,
+    )
     "notRecording" -> decode.success(RecordingStatusNotRecording)
     "recording" -> decode.success(RecordingStatusRecording)
     "recorded" -> decode.success(RecordingStatusRecorded)
-    _ ->
-      decode.failure(
-        RecordingStatusLiveBroadcastRecordingStatusUnspecified,
-        "a valid RecordingStatus",
-      )
+    _ -> decode.failure(
+      RecordingStatusLiveBroadcastRecordingStatusUnspecified,
+      "a valid RecordingStatus",
+    )
   }
 }

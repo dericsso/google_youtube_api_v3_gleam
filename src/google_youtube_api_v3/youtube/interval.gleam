@@ -24,8 +24,10 @@ pub fn decoder() -> Decoder(Interval) {
 }
 
 pub fn to_json(value: Interval) -> Json {
-  json.object([
-    #("endTime", json.nullable(value.end_time, json.string)),
-    #("startTime", json.nullable(value.start_time, json.string)),
-  ])
+  json.object(
+    [
+      #("endTime", json.nullable(value.end_time, json.string)),
+      #("startTime", json.nullable(value.start_time, json.string)),
+    ],
+  )
 }

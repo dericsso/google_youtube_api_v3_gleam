@@ -3,12 +3,8 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/live_chat_message_author_details.{
-  type LiveChatMessageAuthorDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_message_snippet.{
-  type LiveChatMessageSnippet,
-}
+import google_youtube_api_v3/youtube/live_chat_message_author_details.{type LiveChatMessageAuthorDetails}
+import google_youtube_api_v3/youtube/live_chat_message_snippet.{type LiveChatMessageSnippet}
 
 /// A *liveChatMessage* resource represents a chat message in a YouTube Live Chat.
 pub type LiveChatMessage {
@@ -51,20 +47,22 @@ pub fn decoder() -> Decoder(LiveChatMessage) {
 }
 
 pub fn to_json(value: LiveChatMessage) -> Json {
-  json.object([
-    #(
-      "authorDetails",
-      json.nullable(
-        value.author_details,
-        live_chat_message_author_details.to_json,
+  json.object(
+    [
+      #(
+        "authorDetails",
+        json.nullable(
+          value.author_details,
+          live_chat_message_author_details.to_json,
+        ),
       ),
-    ),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #(
-      "snippet",
-      json.nullable(value.snippet, live_chat_message_snippet.to_json),
-    ),
-  ])
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #(
+        "snippet",
+        json.nullable(value.snippet, live_chat_message_snippet.to_json),
+      ),
+    ],
+  )
 }

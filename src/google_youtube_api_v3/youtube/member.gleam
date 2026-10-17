@@ -34,9 +34,11 @@ pub fn decoder() -> Decoder(Member) {
 }
 
 pub fn to_json(value: Member) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, member_snippet.to_json)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("snippet", json.nullable(value.snippet, member_snippet.to_json)),
+    ],
+  )
 }

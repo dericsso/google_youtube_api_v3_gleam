@@ -3,12 +3,8 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/availability_config_global_config.{
-  type AvailabilityConfigGlobalConfig,
-}
-import google_youtube_api_v3/youtube/availability_config_regions_config.{
-  type AvailabilityConfigRegionsConfig,
-}
+import google_youtube_api_v3/youtube/availability_config_global_config.{type AvailabilityConfigGlobalConfig}
+import google_youtube_api_v3/youtube/availability_config_regions_config.{type AvailabilityConfigRegionsConfig}
 
 /// Common proto for Live and VOD geo-restrictions
 pub type AvailabilityConfig {
@@ -33,20 +29,22 @@ pub fn decoder() -> Decoder(AvailabilityConfig) {
 }
 
 pub fn to_json(value: AvailabilityConfig) -> Json {
-  json.object([
-    #(
-      "globalConfig",
-      json.nullable(
-        value.global_config,
-        availability_config_global_config.to_json,
+  json.object(
+    [
+      #(
+        "globalConfig",
+        json.nullable(
+          value.global_config,
+          availability_config_global_config.to_json,
+        ),
       ),
-    ),
-    #(
-      "regionsConfig",
-      json.nullable(
-        value.regions_config,
-        availability_config_regions_config.to_json,
+      #(
+        "regionsConfig",
+        json.nullable(
+          value.regions_config,
+          availability_config_regions_config.to_json,
+        ),
       ),
-    ),
-  ])
+    ],
+  )
 }

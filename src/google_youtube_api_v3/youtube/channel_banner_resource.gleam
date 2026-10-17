@@ -33,9 +33,11 @@ pub fn decoder() -> Decoder(ChannelBannerResource) {
 }
 
 pub fn to_json(value: ChannelBannerResource) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("url", json.nullable(value.url, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("url", json.nullable(value.url, json.string)),
+    ],
+  )
 }

@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/channel_conversion_ping.{
-  type ChannelConversionPing,
-}
+import google_youtube_api_v3/youtube/channel_conversion_ping.{type ChannelConversionPing}
 
 /// The conversionPings object encapsulates information about conversion pings that need to be respected by the channel.
 pub type ChannelConversionPings {
@@ -22,12 +20,16 @@ pub fn decoder() -> Decoder(ChannelConversionPings) {
 }
 
 pub fn to_json(value: ChannelConversionPings) -> Json {
-  json.object([
-    #(
-      "pings",
-      json.nullable(value.pings, fn(items) {
-        json.array(items, channel_conversion_ping.to_json)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "pings",
+        json.nullable(
+          value.pings,
+          fn(items)
+          { json.array(items, channel_conversion_ping.to_json) },
+        ),
+      ),
+    ],
+  )
 }

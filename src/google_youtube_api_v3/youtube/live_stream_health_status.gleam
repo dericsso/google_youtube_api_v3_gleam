@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/live_stream_configuration_issue.{
-  type LiveStreamConfigurationIssue,
-}
+import google_youtube_api_v3/youtube/live_stream_configuration_issue.{type LiveStreamConfigurationIssue}
 
 pub type LiveStreamHealthStatus {
   LiveStreamHealthStatus(
@@ -31,30 +29,36 @@ pub fn decoder() -> Decoder(LiveStreamHealthStatus) {
     option.None,
     decode.optional(status_decoder()),
   )
-  decode.success(LiveStreamHealthStatus(
-    configuration_issues,
-    last_update_time_seconds,
-    status,
-  ))
+  decode.success(
+    LiveStreamHealthStatus(
+      configuration_issues,
+      last_update_time_seconds,
+      status,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveStreamHealthStatus) -> Json {
-  json.object([
-    #(
-      "configurationIssues",
-      json.nullable(value.configuration_issues, fn(items) {
-        json.array(items, live_stream_configuration_issue.to_json)
-      }),
-    ),
-    #(
-      "lastUpdateTimeSeconds",
-      json.nullable(value.last_update_time_seconds, json.string),
-    ),
-    #(
-      "status",
-      json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "configurationIssues",
+        json.nullable(
+          value.configuration_issues,
+          fn(items)
+          { json.array(items, live_stream_configuration_issue.to_json) },
+        ),
+      ),
+      #(
+        "lastUpdateTimeSeconds",
+        json.nullable(value.last_update_time_seconds, json.string),
+      ),
+      #(
+        "status",
+        json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
+      ),
+    ],
+  )
 }
 
 /// The status code of this stream

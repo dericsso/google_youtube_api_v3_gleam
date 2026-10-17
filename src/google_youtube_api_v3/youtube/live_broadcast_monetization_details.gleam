@@ -20,10 +20,12 @@ pub fn decoder() -> Decoder(LiveBroadcastMonetizationDetails) {
 }
 
 pub fn to_json(value: LiveBroadcastMonetizationDetails) -> Json {
-  json.object([
-    #(
-      "cuepointSchedule",
-      json.nullable(value.cuepoint_schedule, cuepoint_schedule.to_json),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "cuepointSchedule",
+        json.nullable(value.cuepoint_schedule, cuepoint_schedule.to_json),
+      ),
+    ],
+  )
 }

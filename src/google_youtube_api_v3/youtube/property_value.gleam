@@ -24,8 +24,10 @@ pub fn decoder() -> Decoder(PropertyValue) {
 }
 
 pub fn to_json(value: PropertyValue) -> Json {
-  json.object([
-    #("property", json.nullable(value.property, json.string)),
-    #("value", json.nullable(value.value, json.string)),
-  ])
+  json.object(
+    [
+      #("property", json.nullable(value.property, json.string)),
+      #("value", json.nullable(value.value, json.string)),
+    ],
+  )
 }

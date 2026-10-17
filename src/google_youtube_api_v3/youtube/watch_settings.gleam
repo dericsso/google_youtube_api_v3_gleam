@@ -29,20 +29,20 @@ pub fn decoder() -> Decoder(WatchSettings) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(WatchSettings(
-    background_color,
-    featured_playlist_id,
-    text_color,
-  ))
+  decode.success(
+    WatchSettings(background_color, featured_playlist_id, text_color),
+  )
 }
 
 pub fn to_json(value: WatchSettings) -> Json {
-  json.object([
-    #("backgroundColor", json.nullable(value.background_color, json.string)),
-    #(
-      "featuredPlaylistId",
-      json.nullable(value.featured_playlist_id, json.string),
-    ),
-    #("textColor", json.nullable(value.text_color, json.string)),
-  ])
+  json.object(
+    [
+      #("backgroundColor", json.nullable(value.background_color, json.string)),
+      #(
+        "featuredPlaylistId",
+        json.nullable(value.featured_playlist_id, json.string),
+      ),
+      #("textColor", json.nullable(value.text_color, json.string)),
+    ],
+  )
 }

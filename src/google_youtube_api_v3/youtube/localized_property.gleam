@@ -34,17 +34,21 @@ pub fn decoder() -> Decoder(LocalizedProperty) {
 }
 
 pub fn to_json(value: LocalizedProperty) -> Json {
-  json.object([
-    #("default", json.nullable(value.default, json.string)),
-    #(
-      "defaultLanguage",
-      json.nullable(value.default_language, language_tag.to_json),
-    ),
-    #(
-      "localized",
-      json.nullable(value.localized, fn(items) {
-        json.array(items, localized_string.to_json)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #("default", json.nullable(value.default, json.string)),
+      #(
+        "defaultLanguage",
+        json.nullable(value.default_language, language_tag.to_json),
+      ),
+      #(
+        "localized",
+        json.nullable(
+          value.localized,
+          fn(items)
+          { json.array(items, localized_string.to_json) },
+        ),
+      ),
+    ],
+  )
 }

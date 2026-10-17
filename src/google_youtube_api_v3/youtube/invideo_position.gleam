@@ -24,18 +24,22 @@ pub fn decoder() -> Decoder(InvideoPosition) {
 }
 
 pub fn to_json(value: InvideoPosition) -> Json {
-  json.object([
-    #(
-      "cornerPosition",
-      json.nullable(value.corner_position, fn(e) {
-        json.string(corner_position_to_string(e))
-      }),
-    ),
-    #(
-      "type",
-      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "cornerPosition",
+        json.nullable(
+          value.corner_position,
+          fn(e)
+          { json.string(corner_position_to_string(e)) },
+        ),
+      ),
+      #(
+        "type",
+        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+      ),
+    ],
+  )
 }
 
 /// Describes in which corner of the video the visual widget will appear.

@@ -24,8 +24,10 @@ pub fn decoder() -> Decoder(I18nRegionSnippet) {
 }
 
 pub fn to_json(value: I18nRegionSnippet) -> Json {
-  json.object([
-    #("gl", json.nullable(value.gl, json.string)),
-    #("name", json.nullable(value.name, json.string)),
-  ])
+  json.object(
+    [
+      #("gl", json.nullable(value.gl, json.string)),
+      #("name", json.nullable(value.name, json.string)),
+    ],
+  )
 }

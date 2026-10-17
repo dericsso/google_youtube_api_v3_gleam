@@ -20,7 +20,7 @@ pub fn decoder() -> Decoder(ActivityContentDetailsSubscription) {
 }
 
 pub fn to_json(value: ActivityContentDetailsSubscription) -> Json {
-  json.object([
-    #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
-  ])
+  json.object(
+    [#("resourceId", json.nullable(value.resource_id, resource_id.to_json))],
+  )
 }

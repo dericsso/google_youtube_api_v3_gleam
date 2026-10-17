@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/channel_profile_details.{
-  type ChannelProfileDetails,
-}
+import google_youtube_api_v3/youtube/channel_profile_details.{type ChannelProfileDetails}
 
 pub type LiveChatUserBannedMessageDetails {
   LiveChatUserBannedMessageDetails(
@@ -31,28 +29,39 @@ pub fn decoder() -> Decoder(LiveChatUserBannedMessageDetails) {
     option.None,
     decode.optional(channel_profile_details.decoder()),
   )
-  decode.success(LiveChatUserBannedMessageDetails(
-    ban_duration_seconds,
-    ban_type,
-    banned_user_details,
-  ))
+  decode.success(
+    LiveChatUserBannedMessageDetails(
+      ban_duration_seconds,
+      ban_type,
+      banned_user_details,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveChatUserBannedMessageDetails) -> Json {
-  json.object([
-    #(
-      "banDurationSeconds",
-      json.nullable(value.ban_duration_seconds, json.string),
-    ),
-    #(
-      "banType",
-      json.nullable(value.ban_type, fn(e) { json.string(ban_type_to_string(e)) }),
-    ),
-    #(
-      "bannedUserDetails",
-      json.nullable(value.banned_user_details, channel_profile_details.to_json),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "banDurationSeconds",
+        json.nullable(value.ban_duration_seconds, json.string),
+      ),
+      #(
+        "banType",
+        json.nullable(
+          value.ban_type,
+          fn(e)
+          { json.string(ban_type_to_string(e)) },
+        ),
+      ),
+      #(
+        "bannedUserDetails",
+        json.nullable(
+          value.banned_user_details,
+          channel_profile_details.to_json,
+        ),
+      ),
+    ],
+  )
 }
 
 /// The type of ban.

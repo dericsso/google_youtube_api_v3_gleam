@@ -35,26 +35,35 @@ pub fn decoder() -> Decoder(CuepointSchedule) {
     option.None,
     decode.optional(schedule_strategy_decoder()),
   )
-  decode.success(CuepointSchedule(
-    enabled,
-    pause_ads_until,
-    repeat_interval_secs,
-    schedule_strategy,
-  ))
+  decode.success(
+    CuepointSchedule(
+      enabled,
+      pause_ads_until,
+      repeat_interval_secs,
+      schedule_strategy,
+    ),
+  )
 }
 
 pub fn to_json(value: CuepointSchedule) -> Json {
-  json.object([
-    #("enabled", json.nullable(value.enabled, json.bool)),
-    #("pauseAdsUntil", json.nullable(value.pause_ads_until, json.string)),
-    #("repeatIntervalSecs", json.nullable(value.repeat_interval_secs, json.int)),
-    #(
-      "scheduleStrategy",
-      json.nullable(value.schedule_strategy, fn(e) {
-        json.string(schedule_strategy_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #("enabled", json.nullable(value.enabled, json.bool)),
+      #("pauseAdsUntil", json.nullable(value.pause_ads_until, json.string)),
+      #(
+        "repeatIntervalSecs",
+        json.nullable(value.repeat_interval_secs, json.int),
+      ),
+      #(
+        "scheduleStrategy",
+        json.nullable(
+          value.schedule_strategy,
+          fn(e)
+          { json.string(schedule_strategy_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// The strategy to use when scheduling cuepoints.
@@ -75,14 +84,14 @@ pub fn schedule_strategy_to_string(value: ScheduleStrategy) -> String {
 pub fn schedule_strategy_decoder() -> Decoder(ScheduleStrategy) {
   use value <- decode.then(decode.string)
   case value {
-    "scheduleStrategyUnspecified" ->
-      decode.success(ScheduleStrategyScheduleStrategyUnspecified)
+    "scheduleStrategyUnspecified" -> decode.success(
+      ScheduleStrategyScheduleStrategyUnspecified,
+    )
     "concurrent" -> decode.success(ScheduleStrategyConcurrent)
     "nonConcurrent" -> decode.success(ScheduleStrategyNonConcurrent)
-    _ ->
-      decode.failure(
-        ScheduleStrategyScheduleStrategyUnspecified,
-        "a valid ScheduleStrategy",
-      )
+    _ -> decode.failure(
+      ScheduleStrategyScheduleStrategyUnspecified,
+      "a valid ScheduleStrategy",
+    )
   }
 }

@@ -33,22 +33,32 @@ pub fn decoder() -> Decoder(ChannelSectionTargeting) {
 }
 
 pub fn to_json(value: ChannelSectionTargeting) -> Json {
-  json.object([
-    #(
-      "countries",
-      json.nullable(value.countries, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #(
-      "languages",
-      json.nullable(value.languages, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #(
-      "regions",
-      json.nullable(value.regions, fn(items) { json.array(items, json.string) }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "countries",
+        json.nullable(
+          value.countries,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #(
+        "languages",
+        json.nullable(
+          value.languages,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #(
+        "regions",
+        json.nullable(
+          value.regions,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+    ],
+  )
 }

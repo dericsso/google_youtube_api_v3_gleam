@@ -32,9 +32,11 @@ pub fn decoder() -> Decoder(SuperStickerMetadata) {
 }
 
 pub fn to_json(value: SuperStickerMetadata) -> Json {
-  json.object([
-    #("altText", json.nullable(value.alt_text, json.string)),
-    #("altTextLanguage", json.nullable(value.alt_text_language, json.string)),
-    #("stickerId", json.nullable(value.sticker_id, json.string)),
-  ])
+  json.object(
+    [
+      #("altText", json.nullable(value.alt_text, json.string)),
+      #("altTextLanguage", json.nullable(value.alt_text_language, json.string)),
+      #("stickerId", json.nullable(value.sticker_id, json.string)),
+    ],
+  )
 }

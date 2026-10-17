@@ -49,23 +49,30 @@ pub fn decoder() -> Decoder(SubscriptionSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(SubscriptionSnippet(
-    channel_id,
-    description,
-    published_at,
-    resource_id,
-    thumbnails,
-    title,
-  ))
+  decode.success(
+    SubscriptionSnippet(
+      channel_id,
+      description,
+      published_at,
+      resource_id,
+      thumbnails,
+      title,
+    ),
+  )
 }
 
 pub fn to_json(value: SubscriptionSnippet) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
-    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
+      #(
+        "thumbnails",
+        json.nullable(value.thumbnails, thumbnail_details.to_json),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }

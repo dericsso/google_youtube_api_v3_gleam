@@ -41,26 +41,26 @@ pub fn decoder() -> Decoder(ChannelSectionListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(ChannelSectionListResponse(
-    etag,
-    event_id,
-    items,
-    kind,
-    visitor_id,
-  ))
+  decode.success(
+    ChannelSectionListResponse(etag, event_id, items, kind, visitor_id),
+  )
 }
 
 pub fn to_json(value: ChannelSectionListResponse) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("eventId", json.nullable(value.event_id, json.string)),
-    #(
-      "items",
-      json.nullable(value.items, fn(items) {
-        json.array(items, channel_section.to_json)
-      }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("visitorId", json.nullable(value.visitor_id, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("eventId", json.nullable(value.event_id, json.string)),
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, channel_section.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("visitorId", json.nullable(value.visitor_id, json.string)),
+    ],
+  )
 }

@@ -3,12 +3,8 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/comment_thread_replies.{
-  type CommentThreadReplies,
-}
-import google_youtube_api_v3/youtube/comment_thread_snippet.{
-  type CommentThreadSnippet,
-}
+import google_youtube_api_v3/youtube/comment_thread_replies.{type CommentThreadReplies}
+import google_youtube_api_v3/youtube/comment_thread_snippet.{type CommentThreadSnippet}
 
 /// A *comment thread* represents information that applies to a top level comment and all its replies. It can also include the top level comment itself and some of the replies.
 pub type CommentThread {
@@ -51,11 +47,13 @@ pub fn decoder() -> Decoder(CommentThread) {
 }
 
 pub fn to_json(value: CommentThread) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("replies", json.nullable(value.replies, comment_thread_replies.to_json)),
-    #("snippet", json.nullable(value.snippet, comment_thread_snippet.to_json)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("replies", json.nullable(value.replies, comment_thread_replies.to_json)),
+      #("snippet", json.nullable(value.snippet, comment_thread_snippet.to_json)),
+    ],
+  )
 }

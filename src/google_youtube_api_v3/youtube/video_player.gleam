@@ -33,9 +33,11 @@ pub fn decoder() -> Decoder(VideoPlayer) {
 }
 
 pub fn to_json(value: VideoPlayer) -> Json {
-  json.object([
-    #("embedHeight", json.nullable(value.embed_height, json.string)),
-    #("embedHtml", json.nullable(value.embed_html, json.string)),
-    #("embedWidth", json.nullable(value.embed_width, json.string)),
-  ])
+  json.object(
+    [
+      #("embedHeight", json.nullable(value.embed_height, json.string)),
+      #("embedHtml", json.nullable(value.embed_html, json.string)),
+      #("embedWidth", json.nullable(value.embed_width, json.string)),
+    ],
+  )
 }

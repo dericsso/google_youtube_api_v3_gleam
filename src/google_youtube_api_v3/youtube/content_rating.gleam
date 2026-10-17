@@ -437,512 +437,668 @@ pub fn decoder() -> Decoder(ContentRating) {
     option.None,
     decode.optional(yt_rating_decoder()),
   )
-  decode.success(ContentRating(
-    acb_rating,
-    agcom_rating,
-    anatel_rating,
-    bbfc_rating,
-    bfvc_rating,
-    bmukk_rating,
-    catv_rating,
-    catvfr_rating,
-    cbfc_rating,
-    ccc_rating,
-    cce_rating,
-    chfilm_rating,
-    chvrs_rating,
-    cicf_rating,
-    cna_rating,
-    cnc_rating,
-    csa_rating,
-    cscf_rating,
-    czfilm_rating,
-    djctq_rating,
-    djctq_rating_reasons,
-    ecbmct_rating,
-    eefilm_rating,
-    egfilm_rating,
-    eirin_rating,
-    fcbm_rating,
-    fco_rating,
-    fmoc_rating,
-    fpb_rating,
-    fpb_rating_reasons,
-    fsk_rating,
-    grfilm_rating,
-    icaa_rating,
-    ifco_rating,
-    ilfilm_rating,
-    incaa_rating,
-    kfcb_rating,
-    kijkwijzer_rating,
-    kmrb_rating,
-    lsf_rating,
-    mccaa_rating,
-    mccyp_rating,
-    mcst_rating,
-    mda_rating,
-    medietilsynet_rating,
-    meku_rating,
-    mena_mpaa_rating,
-    mibac_rating,
-    moc_rating,
-    moctw_rating,
-    mpaa_rating,
-    mpaat_rating,
-    mtrcb_rating,
-    nbc_rating,
-    nbcpl_rating,
-    nfrc_rating,
-    nfvcb_rating,
-    nkclv_rating,
-    nmc_rating,
-    oflc_rating,
-    pefilm_rating,
-    rcnof_rating,
-    resorteviolencia_rating,
-    rtc_rating,
-    rte_rating,
-    russia_rating,
-    skfilm_rating,
-    smais_rating,
-    smsa_rating,
-    tvpg_rating,
-    yt_rating,
-  ))
+  decode.success(
+    ContentRating(
+      acb_rating,
+      agcom_rating,
+      anatel_rating,
+      bbfc_rating,
+      bfvc_rating,
+      bmukk_rating,
+      catv_rating,
+      catvfr_rating,
+      cbfc_rating,
+      ccc_rating,
+      cce_rating,
+      chfilm_rating,
+      chvrs_rating,
+      cicf_rating,
+      cna_rating,
+      cnc_rating,
+      csa_rating,
+      cscf_rating,
+      czfilm_rating,
+      djctq_rating,
+      djctq_rating_reasons,
+      ecbmct_rating,
+      eefilm_rating,
+      egfilm_rating,
+      eirin_rating,
+      fcbm_rating,
+      fco_rating,
+      fmoc_rating,
+      fpb_rating,
+      fpb_rating_reasons,
+      fsk_rating,
+      grfilm_rating,
+      icaa_rating,
+      ifco_rating,
+      ilfilm_rating,
+      incaa_rating,
+      kfcb_rating,
+      kijkwijzer_rating,
+      kmrb_rating,
+      lsf_rating,
+      mccaa_rating,
+      mccyp_rating,
+      mcst_rating,
+      mda_rating,
+      medietilsynet_rating,
+      meku_rating,
+      mena_mpaa_rating,
+      mibac_rating,
+      moc_rating,
+      moctw_rating,
+      mpaa_rating,
+      mpaat_rating,
+      mtrcb_rating,
+      nbc_rating,
+      nbcpl_rating,
+      nfrc_rating,
+      nfvcb_rating,
+      nkclv_rating,
+      nmc_rating,
+      oflc_rating,
+      pefilm_rating,
+      rcnof_rating,
+      resorteviolencia_rating,
+      rtc_rating,
+      rte_rating,
+      russia_rating,
+      skfilm_rating,
+      smais_rating,
+      smsa_rating,
+      tvpg_rating,
+      yt_rating,
+    ),
+  )
 }
 
 pub fn to_json(value: ContentRating) -> Json {
-  json.object([
-    #(
-      "acbRating",
-      json.nullable(value.acb_rating, fn(e) {
-        json.string(acb_rating_to_string(e))
-      }),
-    ),
-    #(
-      "agcomRating",
-      json.nullable(value.agcom_rating, fn(e) {
-        json.string(agcom_rating_to_string(e))
-      }),
-    ),
-    #(
-      "anatelRating",
-      json.nullable(value.anatel_rating, fn(e) {
-        json.string(anatel_rating_to_string(e))
-      }),
-    ),
-    #(
-      "bbfcRating",
-      json.nullable(value.bbfc_rating, fn(e) {
-        json.string(bbfc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "bfvcRating",
-      json.nullable(value.bfvc_rating, fn(e) {
-        json.string(bfvc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "bmukkRating",
-      json.nullable(value.bmukk_rating, fn(e) {
-        json.string(bmukk_rating_to_string(e))
-      }),
-    ),
-    #(
-      "catvRating",
-      json.nullable(value.catv_rating, fn(e) {
-        json.string(catv_rating_to_string(e))
-      }),
-    ),
-    #(
-      "catvfrRating",
-      json.nullable(value.catvfr_rating, fn(e) {
-        json.string(catvfr_rating_to_string(e))
-      }),
-    ),
-    #(
-      "cbfcRating",
-      json.nullable(value.cbfc_rating, fn(e) {
-        json.string(cbfc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "cccRating",
-      json.nullable(value.ccc_rating, fn(e) {
-        json.string(ccc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "cceRating",
-      json.nullable(value.cce_rating, fn(e) {
-        json.string(cce_rating_to_string(e))
-      }),
-    ),
-    #(
-      "chfilmRating",
-      json.nullable(value.chfilm_rating, fn(e) {
-        json.string(chfilm_rating_to_string(e))
-      }),
-    ),
-    #(
-      "chvrsRating",
-      json.nullable(value.chvrs_rating, fn(e) {
-        json.string(chvrs_rating_to_string(e))
-      }),
-    ),
-    #(
-      "cicfRating",
-      json.nullable(value.cicf_rating, fn(e) {
-        json.string(cicf_rating_to_string(e))
-      }),
-    ),
-    #(
-      "cnaRating",
-      json.nullable(value.cna_rating, fn(e) {
-        json.string(cna_rating_to_string(e))
-      }),
-    ),
-    #(
-      "cncRating",
-      json.nullable(value.cnc_rating, fn(e) {
-        json.string(cnc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "csaRating",
-      json.nullable(value.csa_rating, fn(e) {
-        json.string(csa_rating_to_string(e))
-      }),
-    ),
-    #(
-      "cscfRating",
-      json.nullable(value.cscf_rating, fn(e) {
-        json.string(cscf_rating_to_string(e))
-      }),
-    ),
-    #(
-      "czfilmRating",
-      json.nullable(value.czfilm_rating, fn(e) {
-        json.string(czfilm_rating_to_string(e))
-      }),
-    ),
-    #(
-      "djctqRating",
-      json.nullable(value.djctq_rating, fn(e) {
-        json.string(djctq_rating_to_string(e))
-      }),
-    ),
-    #(
-      "djctqRatingReasons",
-      json.nullable(value.djctq_rating_reasons, fn(items) {
-        json.array(items, fn(e) {
-          json.string(djctq_rating_reasons_to_string(e))
-        })
-      }),
-    ),
-    #(
-      "ecbmctRating",
-      json.nullable(value.ecbmct_rating, fn(e) {
-        json.string(ecbmct_rating_to_string(e))
-      }),
-    ),
-    #(
-      "eefilmRating",
-      json.nullable(value.eefilm_rating, fn(e) {
-        json.string(eefilm_rating_to_string(e))
-      }),
-    ),
-    #(
-      "egfilmRating",
-      json.nullable(value.egfilm_rating, fn(e) {
-        json.string(egfilm_rating_to_string(e))
-      }),
-    ),
-    #(
-      "eirinRating",
-      json.nullable(value.eirin_rating, fn(e) {
-        json.string(eirin_rating_to_string(e))
-      }),
-    ),
-    #(
-      "fcbmRating",
-      json.nullable(value.fcbm_rating, fn(e) {
-        json.string(fcbm_rating_to_string(e))
-      }),
-    ),
-    #(
-      "fcoRating",
-      json.nullable(value.fco_rating, fn(e) {
-        json.string(fco_rating_to_string(e))
-      }),
-    ),
-    #(
-      "fmocRating",
-      json.nullable(value.fmoc_rating, fn(e) {
-        json.string(fmoc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "fpbRating",
-      json.nullable(value.fpb_rating, fn(e) {
-        json.string(fpb_rating_to_string(e))
-      }),
-    ),
-    #(
-      "fpbRatingReasons",
-      json.nullable(value.fpb_rating_reasons, fn(items) {
-        json.array(items, fn(e) { json.string(fpb_rating_reasons_to_string(e)) })
-      }),
-    ),
-    #(
-      "fskRating",
-      json.nullable(value.fsk_rating, fn(e) {
-        json.string(fsk_rating_to_string(e))
-      }),
-    ),
-    #(
-      "grfilmRating",
-      json.nullable(value.grfilm_rating, fn(e) {
-        json.string(grfilm_rating_to_string(e))
-      }),
-    ),
-    #(
-      "icaaRating",
-      json.nullable(value.icaa_rating, fn(e) {
-        json.string(icaa_rating_to_string(e))
-      }),
-    ),
-    #(
-      "ifcoRating",
-      json.nullable(value.ifco_rating, fn(e) {
-        json.string(ifco_rating_to_string(e))
-      }),
-    ),
-    #(
-      "ilfilmRating",
-      json.nullable(value.ilfilm_rating, fn(e) {
-        json.string(ilfilm_rating_to_string(e))
-      }),
-    ),
-    #(
-      "incaaRating",
-      json.nullable(value.incaa_rating, fn(e) {
-        json.string(incaa_rating_to_string(e))
-      }),
-    ),
-    #(
-      "kfcbRating",
-      json.nullable(value.kfcb_rating, fn(e) {
-        json.string(kfcb_rating_to_string(e))
-      }),
-    ),
-    #(
-      "kijkwijzerRating",
-      json.nullable(value.kijkwijzer_rating, fn(e) {
-        json.string(kijkwijzer_rating_to_string(e))
-      }),
-    ),
-    #(
-      "kmrbRating",
-      json.nullable(value.kmrb_rating, fn(e) {
-        json.string(kmrb_rating_to_string(e))
-      }),
-    ),
-    #(
-      "lsfRating",
-      json.nullable(value.lsf_rating, fn(e) {
-        json.string(lsf_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mccaaRating",
-      json.nullable(value.mccaa_rating, fn(e) {
-        json.string(mccaa_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mccypRating",
-      json.nullable(value.mccyp_rating, fn(e) {
-        json.string(mccyp_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mcstRating",
-      json.nullable(value.mcst_rating, fn(e) {
-        json.string(mcst_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mdaRating",
-      json.nullable(value.mda_rating, fn(e) {
-        json.string(mda_rating_to_string(e))
-      }),
-    ),
-    #(
-      "medietilsynetRating",
-      json.nullable(value.medietilsynet_rating, fn(e) {
-        json.string(medietilsynet_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mekuRating",
-      json.nullable(value.meku_rating, fn(e) {
-        json.string(meku_rating_to_string(e))
-      }),
-    ),
-    #(
-      "menaMpaaRating",
-      json.nullable(value.mena_mpaa_rating, fn(e) {
-        json.string(mena_mpaa_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mibacRating",
-      json.nullable(value.mibac_rating, fn(e) {
-        json.string(mibac_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mocRating",
-      json.nullable(value.moc_rating, fn(e) {
-        json.string(moc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "moctwRating",
-      json.nullable(value.moctw_rating, fn(e) {
-        json.string(moctw_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mpaaRating",
-      json.nullable(value.mpaa_rating, fn(e) {
-        json.string(mpaa_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mpaatRating",
-      json.nullable(value.mpaat_rating, fn(e) {
-        json.string(mpaat_rating_to_string(e))
-      }),
-    ),
-    #(
-      "mtrcbRating",
-      json.nullable(value.mtrcb_rating, fn(e) {
-        json.string(mtrcb_rating_to_string(e))
-      }),
-    ),
-    #(
-      "nbcRating",
-      json.nullable(value.nbc_rating, fn(e) {
-        json.string(nbc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "nbcplRating",
-      json.nullable(value.nbcpl_rating, fn(e) {
-        json.string(nbcpl_rating_to_string(e))
-      }),
-    ),
-    #(
-      "nfrcRating",
-      json.nullable(value.nfrc_rating, fn(e) {
-        json.string(nfrc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "nfvcbRating",
-      json.nullable(value.nfvcb_rating, fn(e) {
-        json.string(nfvcb_rating_to_string(e))
-      }),
-    ),
-    #(
-      "nkclvRating",
-      json.nullable(value.nkclv_rating, fn(e) {
-        json.string(nkclv_rating_to_string(e))
-      }),
-    ),
-    #(
-      "nmcRating",
-      json.nullable(value.nmc_rating, fn(e) {
-        json.string(nmc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "oflcRating",
-      json.nullable(value.oflc_rating, fn(e) {
-        json.string(oflc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "pefilmRating",
-      json.nullable(value.pefilm_rating, fn(e) {
-        json.string(pefilm_rating_to_string(e))
-      }),
-    ),
-    #(
-      "rcnofRating",
-      json.nullable(value.rcnof_rating, fn(e) {
-        json.string(rcnof_rating_to_string(e))
-      }),
-    ),
-    #(
-      "resorteviolenciaRating",
-      json.nullable(value.resorteviolencia_rating, fn(e) {
-        json.string(resorteviolencia_rating_to_string(e))
-      }),
-    ),
-    #(
-      "rtcRating",
-      json.nullable(value.rtc_rating, fn(e) {
-        json.string(rtc_rating_to_string(e))
-      }),
-    ),
-    #(
-      "rteRating",
-      json.nullable(value.rte_rating, fn(e) {
-        json.string(rte_rating_to_string(e))
-      }),
-    ),
-    #(
-      "russiaRating",
-      json.nullable(value.russia_rating, fn(e) {
-        json.string(russia_rating_to_string(e))
-      }),
-    ),
-    #(
-      "skfilmRating",
-      json.nullable(value.skfilm_rating, fn(e) {
-        json.string(skfilm_rating_to_string(e))
-      }),
-    ),
-    #(
-      "smaisRating",
-      json.nullable(value.smais_rating, fn(e) {
-        json.string(smais_rating_to_string(e))
-      }),
-    ),
-    #(
-      "smsaRating",
-      json.nullable(value.smsa_rating, fn(e) {
-        json.string(smsa_rating_to_string(e))
-      }),
-    ),
-    #(
-      "tvpgRating",
-      json.nullable(value.tvpg_rating, fn(e) {
-        json.string(tvpg_rating_to_string(e))
-      }),
-    ),
-    #(
-      "ytRating",
-      json.nullable(value.yt_rating, fn(e) {
-        json.string(yt_rating_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "acbRating",
+        json.nullable(
+          value.acb_rating,
+          fn(e)
+          { json.string(acb_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "agcomRating",
+        json.nullable(
+          value.agcom_rating,
+          fn(e)
+          { json.string(agcom_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "anatelRating",
+        json.nullable(
+          value.anatel_rating,
+          fn(e)
+          { json.string(anatel_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "bbfcRating",
+        json.nullable(
+          value.bbfc_rating,
+          fn(e)
+          { json.string(bbfc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "bfvcRating",
+        json.nullable(
+          value.bfvc_rating,
+          fn(e)
+          { json.string(bfvc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "bmukkRating",
+        json.nullable(
+          value.bmukk_rating,
+          fn(e)
+          { json.string(bmukk_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "catvRating",
+        json.nullable(
+          value.catv_rating,
+          fn(e)
+          { json.string(catv_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "catvfrRating",
+        json.nullable(
+          value.catvfr_rating,
+          fn(e)
+          { json.string(catvfr_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "cbfcRating",
+        json.nullable(
+          value.cbfc_rating,
+          fn(e)
+          { json.string(cbfc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "cccRating",
+        json.nullable(
+          value.ccc_rating,
+          fn(e)
+          { json.string(ccc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "cceRating",
+        json.nullable(
+          value.cce_rating,
+          fn(e)
+          { json.string(cce_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "chfilmRating",
+        json.nullable(
+          value.chfilm_rating,
+          fn(e)
+          { json.string(chfilm_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "chvrsRating",
+        json.nullable(
+          value.chvrs_rating,
+          fn(e)
+          { json.string(chvrs_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "cicfRating",
+        json.nullable(
+          value.cicf_rating,
+          fn(e)
+          { json.string(cicf_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "cnaRating",
+        json.nullable(
+          value.cna_rating,
+          fn(e)
+          { json.string(cna_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "cncRating",
+        json.nullable(
+          value.cnc_rating,
+          fn(e)
+          { json.string(cnc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "csaRating",
+        json.nullable(
+          value.csa_rating,
+          fn(e)
+          { json.string(csa_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "cscfRating",
+        json.nullable(
+          value.cscf_rating,
+          fn(e)
+          { json.string(cscf_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "czfilmRating",
+        json.nullable(
+          value.czfilm_rating,
+          fn(e)
+          { json.string(czfilm_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "djctqRating",
+        json.nullable(
+          value.djctq_rating,
+          fn(e)
+          { json.string(djctq_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "djctqRatingReasons",
+        json.nullable(
+          value.djctq_rating_reasons,
+          fn(items)
+          {
+            json.array(
+              items,
+              fn(e)
+              { json.string(djctq_rating_reasons_to_string(e)) },
+            )
+          },
+        ),
+      ),
+      #(
+        "ecbmctRating",
+        json.nullable(
+          value.ecbmct_rating,
+          fn(e)
+          { json.string(ecbmct_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "eefilmRating",
+        json.nullable(
+          value.eefilm_rating,
+          fn(e)
+          { json.string(eefilm_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "egfilmRating",
+        json.nullable(
+          value.egfilm_rating,
+          fn(e)
+          { json.string(egfilm_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "eirinRating",
+        json.nullable(
+          value.eirin_rating,
+          fn(e)
+          { json.string(eirin_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "fcbmRating",
+        json.nullable(
+          value.fcbm_rating,
+          fn(e)
+          { json.string(fcbm_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "fcoRating",
+        json.nullable(
+          value.fco_rating,
+          fn(e)
+          { json.string(fco_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "fmocRating",
+        json.nullable(
+          value.fmoc_rating,
+          fn(e)
+          { json.string(fmoc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "fpbRating",
+        json.nullable(
+          value.fpb_rating,
+          fn(e)
+          { json.string(fpb_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "fpbRatingReasons",
+        json.nullable(
+          value.fpb_rating_reasons,
+          fn(items)
+          {
+            json.array(
+              items,
+              fn(e)
+              { json.string(fpb_rating_reasons_to_string(e)) },
+            )
+          },
+        ),
+      ),
+      #(
+        "fskRating",
+        json.nullable(
+          value.fsk_rating,
+          fn(e)
+          { json.string(fsk_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "grfilmRating",
+        json.nullable(
+          value.grfilm_rating,
+          fn(e)
+          { json.string(grfilm_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "icaaRating",
+        json.nullable(
+          value.icaa_rating,
+          fn(e)
+          { json.string(icaa_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "ifcoRating",
+        json.nullable(
+          value.ifco_rating,
+          fn(e)
+          { json.string(ifco_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "ilfilmRating",
+        json.nullable(
+          value.ilfilm_rating,
+          fn(e)
+          { json.string(ilfilm_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "incaaRating",
+        json.nullable(
+          value.incaa_rating,
+          fn(e)
+          { json.string(incaa_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "kfcbRating",
+        json.nullable(
+          value.kfcb_rating,
+          fn(e)
+          { json.string(kfcb_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "kijkwijzerRating",
+        json.nullable(
+          value.kijkwijzer_rating,
+          fn(e)
+          { json.string(kijkwijzer_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "kmrbRating",
+        json.nullable(
+          value.kmrb_rating,
+          fn(e)
+          { json.string(kmrb_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "lsfRating",
+        json.nullable(
+          value.lsf_rating,
+          fn(e)
+          { json.string(lsf_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mccaaRating",
+        json.nullable(
+          value.mccaa_rating,
+          fn(e)
+          { json.string(mccaa_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mccypRating",
+        json.nullable(
+          value.mccyp_rating,
+          fn(e)
+          { json.string(mccyp_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mcstRating",
+        json.nullable(
+          value.mcst_rating,
+          fn(e)
+          { json.string(mcst_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mdaRating",
+        json.nullable(
+          value.mda_rating,
+          fn(e)
+          { json.string(mda_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "medietilsynetRating",
+        json.nullable(
+          value.medietilsynet_rating,
+          fn(e)
+          { json.string(medietilsynet_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mekuRating",
+        json.nullable(
+          value.meku_rating,
+          fn(e)
+          { json.string(meku_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "menaMpaaRating",
+        json.nullable(
+          value.mena_mpaa_rating,
+          fn(e)
+          { json.string(mena_mpaa_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mibacRating",
+        json.nullable(
+          value.mibac_rating,
+          fn(e)
+          { json.string(mibac_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mocRating",
+        json.nullable(
+          value.moc_rating,
+          fn(e)
+          { json.string(moc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "moctwRating",
+        json.nullable(
+          value.moctw_rating,
+          fn(e)
+          { json.string(moctw_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mpaaRating",
+        json.nullable(
+          value.mpaa_rating,
+          fn(e)
+          { json.string(mpaa_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mpaatRating",
+        json.nullable(
+          value.mpaat_rating,
+          fn(e)
+          { json.string(mpaat_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "mtrcbRating",
+        json.nullable(
+          value.mtrcb_rating,
+          fn(e)
+          { json.string(mtrcb_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "nbcRating",
+        json.nullable(
+          value.nbc_rating,
+          fn(e)
+          { json.string(nbc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "nbcplRating",
+        json.nullable(
+          value.nbcpl_rating,
+          fn(e)
+          { json.string(nbcpl_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "nfrcRating",
+        json.nullable(
+          value.nfrc_rating,
+          fn(e)
+          { json.string(nfrc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "nfvcbRating",
+        json.nullable(
+          value.nfvcb_rating,
+          fn(e)
+          { json.string(nfvcb_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "nkclvRating",
+        json.nullable(
+          value.nkclv_rating,
+          fn(e)
+          { json.string(nkclv_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "nmcRating",
+        json.nullable(
+          value.nmc_rating,
+          fn(e)
+          { json.string(nmc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "oflcRating",
+        json.nullable(
+          value.oflc_rating,
+          fn(e)
+          { json.string(oflc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "pefilmRating",
+        json.nullable(
+          value.pefilm_rating,
+          fn(e)
+          { json.string(pefilm_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "rcnofRating",
+        json.nullable(
+          value.rcnof_rating,
+          fn(e)
+          { json.string(rcnof_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "resorteviolenciaRating",
+        json.nullable(
+          value.resorteviolencia_rating,
+          fn(e)
+          { json.string(resorteviolencia_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "rtcRating",
+        json.nullable(
+          value.rtc_rating,
+          fn(e)
+          { json.string(rtc_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "rteRating",
+        json.nullable(
+          value.rte_rating,
+          fn(e)
+          { json.string(rte_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "russiaRating",
+        json.nullable(
+          value.russia_rating,
+          fn(e)
+          { json.string(russia_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "skfilmRating",
+        json.nullable(
+          value.skfilm_rating,
+          fn(e)
+          { json.string(skfilm_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "smaisRating",
+        json.nullable(
+          value.smais_rating,
+          fn(e)
+          { json.string(smais_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "smsaRating",
+        json.nullable(
+          value.smsa_rating,
+          fn(e)
+          { json.string(smsa_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "tvpgRating",
+        json.nullable(
+          value.tvpg_rating,
+          fn(e)
+          { json.string(tvpg_rating_to_string(e)) },
+        ),
+      ),
+      #(
+        "ytRating",
+        json.nullable(
+          value.yt_rating,
+          fn(e)
+          { json.string(yt_rating_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// The video's Australian Classification Board (ACB) or Australian Communications and Media Authority (ACMA) rating. ACMA ratings are used to classify children's television programming.
@@ -1816,8 +1972,7 @@ pub type DjctqRatingReasons {
 
 pub fn djctq_rating_reasons_to_string(value: DjctqRatingReasons) -> String {
   case value {
-    DjctqRatingReasonsDjctqRatingReasonUnspecified ->
-      "djctqRatingReasonUnspecified"
+    DjctqRatingReasonsDjctqRatingReasonUnspecified -> "djctqRatingReasonUnspecified"
     DjctqRatingReasonsDjctqViolence -> "djctqViolence"
     DjctqRatingReasonsDjctqExtremeViolence -> "djctqExtremeViolence"
     DjctqRatingReasonsDjctqSexualContent -> "djctqSexualContent"
@@ -1840,11 +1995,13 @@ pub fn djctq_rating_reasons_to_string(value: DjctqRatingReasons) -> String {
 pub fn djctq_rating_reasons_decoder() -> Decoder(DjctqRatingReasons) {
   use value <- decode.then(decode.string)
   case value {
-    "djctqRatingReasonUnspecified" ->
-      decode.success(DjctqRatingReasonsDjctqRatingReasonUnspecified)
+    "djctqRatingReasonUnspecified" -> decode.success(
+      DjctqRatingReasonsDjctqRatingReasonUnspecified,
+    )
     "djctqViolence" -> decode.success(DjctqRatingReasonsDjctqViolence)
-    "djctqExtremeViolence" ->
-      decode.success(DjctqRatingReasonsDjctqExtremeViolence)
+    "djctqExtremeViolence" -> decode.success(
+      DjctqRatingReasonsDjctqExtremeViolence,
+    )
     "djctqSexualContent" -> decode.success(DjctqRatingReasonsDjctqSexualContent)
     "djctqNudity" -> decode.success(DjctqRatingReasonsDjctqNudity)
     "djctqSex" -> decode.success(DjctqRatingReasonsDjctqSex)
@@ -1852,23 +2009,27 @@ pub fn djctq_rating_reasons_decoder() -> Decoder(DjctqRatingReasons) {
     "djctqDrugs" -> decode.success(DjctqRatingReasonsDjctqDrugs)
     "djctqLegalDrugs" -> decode.success(DjctqRatingReasonsDjctqLegalDrugs)
     "djctqIllegalDrugs" -> decode.success(DjctqRatingReasonsDjctqIllegalDrugs)
-    "djctqInappropriateLanguage" ->
-      decode.success(DjctqRatingReasonsDjctqInappropriateLanguage)
+    "djctqInappropriateLanguage" -> decode.success(
+      DjctqRatingReasonsDjctqInappropriateLanguage,
+    )
     "djctqCriminalActs" -> decode.success(DjctqRatingReasonsDjctqCriminalActs)
-    "djctqImpactingContent" ->
-      decode.success(DjctqRatingReasonsDjctqImpactingContent)
+    "djctqImpactingContent" -> decode.success(
+      DjctqRatingReasonsDjctqImpactingContent,
+    )
     "djctqFear" -> decode.success(DjctqRatingReasonsDjctqFear)
-    "djctqMedicalProcedures" ->
-      decode.success(DjctqRatingReasonsDjctqMedicalProcedures)
-    "djctqSensitiveTopics" ->
-      decode.success(DjctqRatingReasonsDjctqSensitiveTopics)
-    "djctqFantasyViolence" ->
-      decode.success(DjctqRatingReasonsDjctqFantasyViolence)
-    _ ->
-      decode.failure(
-        DjctqRatingReasonsDjctqRatingReasonUnspecified,
-        "a valid DjctqRatingReasons",
-      )
+    "djctqMedicalProcedures" -> decode.success(
+      DjctqRatingReasonsDjctqMedicalProcedures,
+    )
+    "djctqSensitiveTopics" -> decode.success(
+      DjctqRatingReasonsDjctqSensitiveTopics,
+    )
+    "djctqFantasyViolence" -> decode.success(
+      DjctqRatingReasonsDjctqFantasyViolence,
+    )
+    _ -> decode.failure(
+      DjctqRatingReasonsDjctqRatingReasonUnspecified,
+      "a valid DjctqRatingReasons",
+    )
   }
 }
 
@@ -2240,8 +2401,9 @@ pub fn fpb_rating_reasons_to_string(value: FpbRatingReasons) -> String {
 pub fn fpb_rating_reasons_decoder() -> Decoder(FpbRatingReasons) {
   use value <- decode.then(decode.string)
   case value {
-    "fpbRatingReasonUnspecified" ->
-      decode.success(FpbRatingReasonsFpbRatingReasonUnspecified)
+    "fpbRatingReasonUnspecified" -> decode.success(
+      FpbRatingReasonsFpbRatingReasonUnspecified,
+    )
     "fpbBlasphemy" -> decode.success(FpbRatingReasonsFpbBlasphemy)
     "fpbLanguage" -> decode.success(FpbRatingReasonsFpbLanguage)
     "fpbNudity" -> decode.success(FpbRatingReasonsFpbNudity)
@@ -2251,15 +2413,16 @@ pub fn fpb_rating_reasons_decoder() -> Decoder(FpbRatingReasons) {
     "fpbDrugs" -> decode.success(FpbRatingReasonsFpbDrugs)
     "fpbSexualViolence" -> decode.success(FpbRatingReasonsFpbSexualViolence)
     "fpbHorror" -> decode.success(FpbRatingReasonsFpbHorror)
-    "fpbCriminalTechniques" ->
-      decode.success(FpbRatingReasonsFpbCriminalTechniques)
-    "fpbImitativeActsTechniques" ->
-      decode.success(FpbRatingReasonsFpbImitativeActsTechniques)
-    _ ->
-      decode.failure(
-        FpbRatingReasonsFpbRatingReasonUnspecified,
-        "a valid FpbRatingReasons",
-      )
+    "fpbCriminalTechniques" -> decode.success(
+      FpbRatingReasonsFpbCriminalTechniques,
+    )
+    "fpbImitativeActsTechniques" -> decode.success(
+      FpbRatingReasonsFpbImitativeActsTechniques,
+    )
+    _ -> decode.failure(
+      FpbRatingReasonsFpbRatingReasonUnspecified,
+      "a valid FpbRatingReasons",
+    )
   }
 }
 
@@ -2568,8 +2731,9 @@ pub fn kijkwijzer_rating_to_string(value: KijkwijzerRating) -> String {
 pub fn kijkwijzer_rating_decoder() -> Decoder(KijkwijzerRating) {
   use value <- decode.then(decode.string)
   case value {
-    "kijkwijzerUnspecified" ->
-      decode.success(KijkwijzerRatingKijkwijzerUnspecified)
+    "kijkwijzerUnspecified" -> decode.success(
+      KijkwijzerRatingKijkwijzerUnspecified,
+    )
     "kijkwijzerAl" -> decode.success(KijkwijzerRatingKijkwijzerAl)
     "kijkwijzer6" -> decode.success(KijkwijzerRatingKijkwijzer6)
     "kijkwijzer9" -> decode.success(KijkwijzerRatingKijkwijzer9)
@@ -2577,11 +2741,10 @@ pub fn kijkwijzer_rating_decoder() -> Decoder(KijkwijzerRating) {
     "kijkwijzer16" -> decode.success(KijkwijzerRatingKijkwijzer16)
     "kijkwijzer18" -> decode.success(KijkwijzerRatingKijkwijzer18)
     "kijkwijzerUnrated" -> decode.success(KijkwijzerRatingKijkwijzerUnrated)
-    _ ->
-      decode.failure(
-        KijkwijzerRatingKijkwijzerUnspecified,
-        "a valid KijkwijzerRating",
-      )
+    _ -> decode.failure(
+      KijkwijzerRatingKijkwijzerUnspecified,
+      "a valid KijkwijzerRating",
+    )
   }
 }
 
@@ -2863,8 +3026,9 @@ pub fn medietilsynet_rating_to_string(value: MedietilsynetRating) -> String {
 pub fn medietilsynet_rating_decoder() -> Decoder(MedietilsynetRating) {
   use value <- decode.then(decode.string)
   case value {
-    "medietilsynetUnspecified" ->
-      decode.success(MedietilsynetRatingMedietilsynetUnspecified)
+    "medietilsynetUnspecified" -> decode.success(
+      MedietilsynetRatingMedietilsynetUnspecified,
+    )
     "medietilsynetA" -> decode.success(MedietilsynetRatingMedietilsynetA)
     "medietilsynet6" -> decode.success(MedietilsynetRatingMedietilsynet6)
     "medietilsynet7" -> decode.success(MedietilsynetRatingMedietilsynet7)
@@ -2873,13 +3037,13 @@ pub fn medietilsynet_rating_decoder() -> Decoder(MedietilsynetRating) {
     "medietilsynet12" -> decode.success(MedietilsynetRatingMedietilsynet12)
     "medietilsynet15" -> decode.success(MedietilsynetRatingMedietilsynet15)
     "medietilsynet18" -> decode.success(MedietilsynetRatingMedietilsynet18)
-    "medietilsynetUnrated" ->
-      decode.success(MedietilsynetRatingMedietilsynetUnrated)
-    _ ->
-      decode.failure(
-        MedietilsynetRatingMedietilsynetUnspecified,
-        "a valid MedietilsynetRating",
-      )
+    "medietilsynetUnrated" -> decode.success(
+      MedietilsynetRatingMedietilsynetUnrated,
+    )
+    _ -> decode.failure(
+      MedietilsynetRatingMedietilsynetUnspecified,
+      "a valid MedietilsynetRating",
+    )
   }
 }
 
@@ -2950,11 +3114,10 @@ pub fn mena_mpaa_rating_decoder() -> Decoder(MenaMpaaRating) {
     "menaMpaaPg13" -> decode.success(MenaMpaaRatingMenaMpaaPg13)
     "menaMpaaR" -> decode.success(MenaMpaaRatingMenaMpaaR)
     "menaMpaaUnrated" -> decode.success(MenaMpaaRatingMenaMpaaUnrated)
-    _ ->
-      decode.failure(
-        MenaMpaaRatingMenaMpaaUnspecified,
-        "a valid MenaMpaaRating",
-      )
+    _ -> decode.failure(
+      MenaMpaaRatingMenaMpaaUnspecified,
+      "a valid MenaMpaaRating",
+    )
   }
 }
 
@@ -3569,12 +3732,10 @@ pub type ResorteviolenciaRating {
   ResorteviolenciaRatingResorteviolenciaUnrated
 }
 
-pub fn resorteviolencia_rating_to_string(
-  value: ResorteviolenciaRating,
-) -> String {
-  case value {
-    ResorteviolenciaRatingResorteviolenciaUnspecified ->
-      "resorteviolenciaUnspecified"
+pub fn resorteviolencia_rating_to_string(value: ResorteviolenciaRating) -> String {
+  case value
+  {
+    ResorteviolenciaRatingResorteviolenciaUnspecified -> "resorteviolenciaUnspecified"
     ResorteviolenciaRatingResorteviolenciaA -> "resorteviolenciaA"
     ResorteviolenciaRatingResorteviolenciaB -> "resorteviolenciaB"
     ResorteviolenciaRatingResorteviolenciaC -> "resorteviolenciaC"
@@ -3587,25 +3748,31 @@ pub fn resorteviolencia_rating_to_string(
 pub fn resorteviolencia_rating_decoder() -> Decoder(ResorteviolenciaRating) {
   use value <- decode.then(decode.string)
   case value {
-    "resorteviolenciaUnspecified" ->
-      decode.success(ResorteviolenciaRatingResorteviolenciaUnspecified)
-    "resorteviolenciaA" ->
-      decode.success(ResorteviolenciaRatingResorteviolenciaA)
-    "resorteviolenciaB" ->
-      decode.success(ResorteviolenciaRatingResorteviolenciaB)
-    "resorteviolenciaC" ->
-      decode.success(ResorteviolenciaRatingResorteviolenciaC)
-    "resorteviolenciaD" ->
-      decode.success(ResorteviolenciaRatingResorteviolenciaD)
-    "resorteviolenciaE" ->
-      decode.success(ResorteviolenciaRatingResorteviolenciaE)
-    "resorteviolenciaUnrated" ->
-      decode.success(ResorteviolenciaRatingResorteviolenciaUnrated)
-    _ ->
-      decode.failure(
-        ResorteviolenciaRatingResorteviolenciaUnspecified,
-        "a valid ResorteviolenciaRating",
-      )
+    "resorteviolenciaUnspecified" -> decode.success(
+      ResorteviolenciaRatingResorteviolenciaUnspecified,
+    )
+    "resorteviolenciaA" -> decode.success(
+      ResorteviolenciaRatingResorteviolenciaA,
+    )
+    "resorteviolenciaB" -> decode.success(
+      ResorteviolenciaRatingResorteviolenciaB,
+    )
+    "resorteviolenciaC" -> decode.success(
+      ResorteviolenciaRatingResorteviolenciaC,
+    )
+    "resorteviolenciaD" -> decode.success(
+      ResorteviolenciaRatingResorteviolenciaD,
+    )
+    "resorteviolenciaE" -> decode.success(
+      ResorteviolenciaRatingResorteviolenciaE,
+    )
+    "resorteviolenciaUnrated" -> decode.success(
+      ResorteviolenciaRatingResorteviolenciaUnrated,
+    )
+    _ -> decode.failure(
+      ResorteviolenciaRatingResorteviolenciaUnspecified,
+      "a valid ResorteviolenciaRating",
+    )
   }
 }
 

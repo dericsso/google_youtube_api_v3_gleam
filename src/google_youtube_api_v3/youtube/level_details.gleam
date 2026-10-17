@@ -18,5 +18,7 @@ pub fn decoder() -> Decoder(LevelDetails) {
 }
 
 pub fn to_json(value: LevelDetails) -> Json {
-  json.object([#("displayName", json.nullable(value.display_name, json.string))])
+  json.object(
+    [#("displayName", json.nullable(value.display_name, json.string))],
+  )
 }

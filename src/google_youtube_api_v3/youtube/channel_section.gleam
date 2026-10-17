@@ -4,18 +4,10 @@ import gleam/dict.{type Dict}
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/channel_section_content_details.{
-  type ChannelSectionContentDetails,
-}
-import google_youtube_api_v3/youtube/channel_section_localization.{
-  type ChannelSectionLocalization,
-}
-import google_youtube_api_v3/youtube/channel_section_snippet.{
-  type ChannelSectionSnippet,
-}
-import google_youtube_api_v3/youtube/channel_section_targeting.{
-  type ChannelSectionTargeting,
-}
+import google_youtube_api_v3/youtube/channel_section_content_details.{type ChannelSectionContentDetails}
+import google_youtube_api_v3/youtube/channel_section_localization.{type ChannelSectionLocalization}
+import google_youtube_api_v3/youtube/channel_section_snippet.{type ChannelSectionSnippet}
+import google_youtube_api_v3/youtube/channel_section_targeting.{type ChannelSectionTargeting}
 
 pub type ChannelSection {
   ChannelSection(
@@ -53,10 +45,9 @@ pub fn decoder() -> Decoder(ChannelSection) {
   use localizations <- decode.optional_field(
     "localizations",
     option.None,
-    decode.optional(decode.dict(
-      decode.string,
-      channel_section_localization.decoder(),
-    )),
+    decode.optional(
+      decode.dict(decode.string, channel_section_localization.decoder()),
+    ),
   )
   use snippet <- decode.optional_field(
     "snippet",
@@ -68,39 +59,48 @@ pub fn decoder() -> Decoder(ChannelSection) {
     option.None,
     decode.optional(channel_section_targeting.decoder()),
   )
-  decode.success(ChannelSection(
-    content_details,
-    etag,
-    id,
-    kind,
-    localizations,
-    snippet,
-    targeting,
-  ))
+  decode.success(
+    ChannelSection(
+      content_details,
+      etag,
+      id,
+      kind,
+      localizations,
+      snippet,
+      targeting,
+    ),
+  )
 }
 
 pub fn to_json(value: ChannelSection) -> Json {
-  json.object([
-    #(
-      "contentDetails",
-      json.nullable(
-        value.content_details,
-        channel_section_content_details.to_json,
+  json.object(
+    [
+      #(
+        "contentDetails",
+        json.nullable(
+          value.content_details,
+          channel_section_content_details.to_json,
+        ),
       ),
-    ),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #(
-      "localizations",
-      json.nullable(value.localizations, fn(d) {
-        json.dict(d, fn(k) { k }, channel_section_localization.to_json)
-      }),
-    ),
-    #("snippet", json.nullable(value.snippet, channel_section_snippet.to_json)),
-    #(
-      "targeting",
-      json.nullable(value.targeting, channel_section_targeting.to_json),
-    ),
-  ])
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #(
+        "localizations",
+        json.nullable(
+          value.localizations,
+          fn(d)
+          { json.dict(d, fn(k) { k }, channel_section_localization.to_json) },
+        ),
+      ),
+      #(
+        "snippet",
+        json.nullable(value.snippet, channel_section_snippet.to_json),
+      ),
+      #(
+        "targeting",
+        json.nullable(value.targeting, channel_section_targeting.to_json),
+      ),
+    ],
+  )
 }

@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/super_chat_event_snippet.{
-  type SuperChatEventSnippet,
-}
+import google_youtube_api_v3/youtube/super_chat_event_snippet.{type SuperChatEventSnippet}
 
 /// A `__superChatEvent__` resource represents a Super Chat purchase on a YouTube channel.
 pub type SuperChatEvent {
@@ -42,10 +40,15 @@ pub fn decoder() -> Decoder(SuperChatEvent) {
 }
 
 pub fn to_json(value: SuperChatEvent) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, super_chat_event_snippet.to_json)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #(
+        "snippet",
+        json.nullable(value.snippet, super_chat_event_snippet.to_json),
+      ),
+    ],
+  )
 }

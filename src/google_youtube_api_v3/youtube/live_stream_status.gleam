@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/live_stream_health_status.{
-  type LiveStreamHealthStatus,
-}
+import google_youtube_api_v3/youtube/live_stream_health_status.{type LiveStreamHealthStatus}
 
 /// Brief description of the live stream status.
 pub type LiveStreamStatus {
@@ -30,18 +28,22 @@ pub fn decoder() -> Decoder(LiveStreamStatus) {
 }
 
 pub fn to_json(value: LiveStreamStatus) -> Json {
-  json.object([
-    #(
-      "healthStatus",
-      json.nullable(value.health_status, live_stream_health_status.to_json),
-    ),
-    #(
-      "streamStatus",
-      json.nullable(value.stream_status, fn(e) {
-        json.string(stream_status_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "healthStatus",
+        json.nullable(value.health_status, live_stream_health_status.to_json),
+      ),
+      #(
+        "streamStatus",
+        json.nullable(
+          value.stream_status,
+          fn(e)
+          { json.string(stream_status_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 pub type StreamStatus {

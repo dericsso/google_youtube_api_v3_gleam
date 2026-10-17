@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/channel_profile_details.{
-  type ChannelProfileDetails,
-}
+import google_youtube_api_v3/youtube/channel_profile_details.{type ChannelProfileDetails}
 
 pub type LiveChatModeratorSnippet {
   LiveChatModeratorSnippet(
@@ -29,11 +27,13 @@ pub fn decoder() -> Decoder(LiveChatModeratorSnippet) {
 }
 
 pub fn to_json(value: LiveChatModeratorSnippet) -> Json {
-  json.object([
-    #("liveChatId", json.nullable(value.live_chat_id, json.string)),
-    #(
-      "moderatorDetails",
-      json.nullable(value.moderator_details, channel_profile_details.to_json),
-    ),
-  ])
+  json.object(
+    [
+      #("liveChatId", json.nullable(value.live_chat_id, json.string)),
+      #(
+        "moderatorDetails",
+        json.nullable(value.moderator_details, channel_profile_details.to_json),
+      ),
+    ],
+  )
 }

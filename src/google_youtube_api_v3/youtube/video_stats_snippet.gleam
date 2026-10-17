@@ -19,5 +19,7 @@ pub fn decoder() -> Decoder(VideoStatsSnippet) {
 }
 
 pub fn to_json(value: VideoStatsSnippet) -> Json {
-  json.object([#("publishTime", json.nullable(value.publish_time, json.string))])
+  json.object(
+    [#("publishTime", json.nullable(value.publish_time, json.string))],
+  )
 }

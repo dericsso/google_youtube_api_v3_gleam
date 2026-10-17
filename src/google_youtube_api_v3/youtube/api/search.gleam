@@ -117,10 +117,7 @@ pub fn list_add_part(params: ListParams, value: String) -> ListParams {
   )
 }
 
-pub fn list_with_video_type(
-  params: ListParams,
-  value: ListVideoType,
-) -> ListParams {
+pub fn list_with_video_type(params: ListParams, value: ListVideoType) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -234,10 +231,7 @@ pub fn list_with_video_paid_product_placement(
   )
 }
 
-pub fn list_with_video_license(
-  params: ListParams,
-  value: ListVideoLicense,
-) -> ListParams {
+pub fn list_with_video_license(params: ListParams, value: ListVideoLicense) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -312,10 +306,7 @@ pub fn list_with_video_embeddable(
   )
 }
 
-pub fn list_with_video_duration(
-  params: ListParams,
-  value: ListVideoDuration,
-) -> ListParams {
+pub fn list_with_video_duration(params: ListParams, value: ListVideoDuration) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -351,10 +342,7 @@ pub fn list_with_video_duration(
   )
 }
 
-pub fn list_with_video_dimension(
-  params: ListParams,
-  value: ListVideoDimension,
-) -> ListParams {
+pub fn list_with_video_dimension(params: ListParams, value: ListVideoDimension) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -429,10 +417,7 @@ pub fn list_with_video_definition(
   )
 }
 
-pub fn list_with_video_category_id(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_video_category_id(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -468,10 +453,7 @@ pub fn list_with_video_category_id(
   )
 }
 
-pub fn list_with_video_caption(
-  params: ListParams,
-  value: ListVideoCaption,
-) -> ListParams {
+pub fn list_with_video_caption(params: ListParams, value: ListVideoCaption) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -565,7 +547,8 @@ pub fn list_add_type_(params: ListParams, value: String) -> ListParams {
     params.relevance_language,
     params.safe_search,
     params.topic_id,
-    case params.type_ {
+    case params.type_
+    {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -618,10 +601,7 @@ pub fn list_with_topic_id(params: ListParams, value: String) -> ListParams {
   )
 }
 
-pub fn list_with_safe_search(
-  params: ListParams,
-  value: ListSafeSearch,
-) -> ListParams {
+pub fn list_with_safe_search(params: ListParams, value: ListSafeSearch) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -657,10 +637,7 @@ pub fn list_with_safe_search(
   )
 }
 
-pub fn list_with_relevance_language(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_relevance_language(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -768,10 +745,7 @@ pub fn list_with_q(params: ListParams, value: String) -> ListParams {
   )
 }
 
-pub fn list_with_published_before(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_published_before(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -807,10 +781,7 @@ pub fn list_with_published_before(
   )
 }
 
-pub fn list_with_published_after(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_published_after(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -918,10 +889,7 @@ pub fn list_with_order(params: ListParams, value: ListOrder) -> ListParams {
   )
 }
 
-pub fn list_with_on_behalf_of_content_owner(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_on_behalf_of_content_owner(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -993,10 +961,7 @@ pub fn list_with_max_results(params: ListParams, value: Int) -> ListParams {
   )
 }
 
-pub fn list_with_location_radius(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_location_radius(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -1140,10 +1105,7 @@ pub fn list_with_for_developer(params: ListParams, value: Bool) -> ListParams {
   )
 }
 
-pub fn list_with_for_content_owner(
-  params: ListParams,
-  value: Bool,
-) -> ListParams {
+pub fn list_with_for_content_owner(params: ListParams, value: Bool) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -1179,10 +1141,7 @@ pub fn list_with_for_content_owner(
   )
 }
 
-pub fn list_with_event_type(
-  params: ListParams,
-  value: ListEventType,
-) -> ListParams {
+pub fn list_with_event_type(params: ListParams, value: ListEventType) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -1218,10 +1177,7 @@ pub fn list_with_event_type(
   )
 }
 
-pub fn list_with_channel_type(
-  params: ListParams,
-  value: ListChannelType,
-) -> ListParams {
+pub fn list_with_channel_type(params: ListParams, value: ListChannelType) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -1297,144 +1253,114 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/search",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.channel_id {
-        option.Some(v) -> [#("channelId", v)]
-        option.None -> []
-      },
-      case params.channel_type {
-        option.Some(v) -> [#("channelType", list_channel_type_to_string(v))]
-        option.None -> []
-      },
-      case params.event_type {
-        option.Some(v) -> [#("eventType", list_event_type_to_string(v))]
-        option.None -> []
-      },
-      case params.for_content_owner {
-        option.Some(v) -> [#("forContentOwner", bool.to_string(v))]
-        option.None -> []
-      },
-      case params.for_developer {
-        option.Some(v) -> [#("forDeveloper", bool.to_string(v))]
-        option.None -> []
-      },
-      case params.for_mine {
-        option.Some(v) -> [#("forMine", bool.to_string(v))]
-        option.None -> []
-      },
-      case params.location {
-        option.Some(v) -> [#("location", v)]
-        option.None -> []
-      },
-      case params.location_radius {
-        option.Some(v) -> [#("locationRadius", v)]
-        option.None -> []
-      },
-      case params.max_results {
-        option.Some(v) -> [#("maxResults", int.to_string(v))]
-        option.None -> []
-      },
-      case params.on_behalf_of_content_owner {
-        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-        option.None -> []
-      },
-      case params.order {
-        option.Some(v) -> [#("order", list_order_to_string(v))]
-        option.None -> []
-      },
-      case params.page_token {
-        option.Some(v) -> [#("pageToken", v)]
-        option.None -> []
-      },
-      case params.published_after {
-        option.Some(v) -> [#("publishedAfter", v)]
-        option.None -> []
-      },
-      case params.published_before {
-        option.Some(v) -> [#("publishedBefore", v)]
-        option.None -> []
-      },
-      case params.q {
-        option.Some(v) -> [#("q", v)]
-        option.None -> []
-      },
-      case params.region_code {
-        option.Some(v) -> [#("regionCode", v)]
-        option.None -> []
-      },
-      case params.relevance_language {
-        option.Some(v) -> [#("relevanceLanguage", v)]
-        option.None -> []
-      },
-      case params.safe_search {
-        option.Some(v) -> [#("safeSearch", list_safe_search_to_string(v))]
-        option.None -> []
-      },
-      case params.topic_id {
-        option.Some(v) -> [#("topicId", v)]
-        option.None -> []
-      },
-      case params.type_ {
-        option.Some(v) -> list.map(v, fn(w) { #("type", w) })
-        option.None -> []
-      },
-      case params.video_caption {
-        option.Some(v) -> [#("videoCaption", list_video_caption_to_string(v))]
-        option.None -> []
-      },
-      case params.video_category_id {
-        option.Some(v) -> [#("videoCategoryId", v)]
-        option.None -> []
-      },
-      case params.video_definition {
-        option.Some(v) -> [
-          #("videoDefinition", list_video_definition_to_string(v)),
-        ]
-        option.None -> []
-      },
-      case params.video_dimension {
-        option.Some(v) -> [
-          #("videoDimension", list_video_dimension_to_string(v)),
-        ]
-        option.None -> []
-      },
-      case params.video_duration {
-        option.Some(v) -> [
-          #("videoDuration", list_video_duration_to_string(v)),
-        ]
-        option.None -> []
-      },
-      case params.video_embeddable {
-        option.Some(v) -> [
-          #("videoEmbeddable", list_video_embeddable_to_string(v)),
-        ]
-        option.None -> []
-      },
-      case params.video_license {
-        option.Some(v) -> [#("videoLicense", list_video_license_to_string(v))]
-        option.None -> []
-      },
-      case params.video_paid_product_placement {
-        option.Some(v) -> [
-          #(
-            "videoPaidProductPlacement",
-            list_video_paid_product_placement_to_string(v),
-          ),
-        ]
-        option.None -> []
-      },
-      case params.video_syndicated {
-        option.Some(v) -> [
-          #("videoSyndicated", list_video_syndicated_to_string(v)),
-        ]
-        option.None -> []
-      },
-      case params.video_type {
-        option.Some(v) -> [#("videoType", list_video_type_to_string(v))]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [list.map(params.part, fn(v) { #("part", v) }), case params.channel_id {
+          option.Some(v) -> [#("channelId", v)]
+          option.None -> []
+        }, case params.channel_type {
+          option.Some(v) -> [#("channelType", list_channel_type_to_string(v))]
+          option.None -> []
+        }, case params.event_type {
+          option.Some(v) -> [#("eventType", list_event_type_to_string(v))]
+          option.None -> []
+        }, case params.for_content_owner {
+          option.Some(v) -> [#("forContentOwner", bool.to_string(v))]
+          option.None -> []
+        }, case params.for_developer {
+          option.Some(v) -> [#("forDeveloper", bool.to_string(v))]
+          option.None -> []
+        }, case params.for_mine {
+          option.Some(v) -> [#("forMine", bool.to_string(v))]
+          option.None -> []
+        }, case params.location {
+          option.Some(v) -> [#("location", v)]
+          option.None -> []
+        }, case params.location_radius {
+          option.Some(v) -> [#("locationRadius", v)]
+          option.None -> []
+        }, case params.max_results {
+          option.Some(v) -> [#("maxResults", int.to_string(v))]
+          option.None -> []
+        }, case params.on_behalf_of_content_owner {
+          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+          option.None -> []
+        }, case params.order {
+          option.Some(v) -> [#("order", list_order_to_string(v))]
+          option.None -> []
+        }, case params.page_token {
+          option.Some(v) -> [#("pageToken", v)]
+          option.None -> []
+        }, case params.published_after {
+          option.Some(v) -> [#("publishedAfter", v)]
+          option.None -> []
+        }, case params.published_before {
+          option.Some(v) -> [#("publishedBefore", v)]
+          option.None -> []
+        }, case params.q {
+          option.Some(v) -> [#("q", v)]
+          option.None -> []
+        }, case params.region_code {
+          option.Some(v) -> [#("regionCode", v)]
+          option.None -> []
+        }, case params.relevance_language {
+          option.Some(v) -> [#("relevanceLanguage", v)]
+          option.None -> []
+        }, case params.safe_search {
+          option.Some(v) -> [#("safeSearch", list_safe_search_to_string(v))]
+          option.None -> []
+        }, case params.topic_id {
+          option.Some(v) -> [#("topicId", v)]
+          option.None -> []
+        }, case params.type_ {
+          option.Some(v) -> list.map(v, fn(w) { #("type", w) })
+          option.None -> []
+        }, case params.video_caption {
+          option.Some(v) -> [#("videoCaption", list_video_caption_to_string(v))]
+          option.None -> []
+        }, case params.video_category_id {
+          option.Some(v) -> [#("videoCategoryId", v)]
+          option.None -> []
+        }, case params.video_definition {
+          option.Some(v) -> [
+            #("videoDefinition", list_video_definition_to_string(v)),
+          ]
+          option.None -> []
+        }, case params.video_dimension {
+          option.Some(v) -> [
+            #("videoDimension", list_video_dimension_to_string(v)),
+          ]
+          option.None -> []
+        }, case params.video_duration {
+          option.Some(v) -> [
+            #("videoDuration", list_video_duration_to_string(v)),
+          ]
+          option.None -> []
+        }, case params.video_embeddable {
+          option.Some(v) -> [
+            #("videoEmbeddable", list_video_embeddable_to_string(v)),
+          ]
+          option.None -> []
+        }, case params.video_license {
+          option.Some(v) -> [#("videoLicense", list_video_license_to_string(v))]
+          option.None -> []
+        }, case params.video_paid_product_placement {
+          option.Some(v) -> [
+            #(
+              "videoPaidProductPlacement",
+              list_video_paid_product_placement_to_string(v),
+            ),
+          ]
+          option.None -> []
+        }, case params.video_syndicated {
+          option.Some(v) -> [
+            #("videoSyndicated", list_video_syndicated_to_string(v)),
+          ]
+          option.None -> []
+        }, case params.video_type {
+          option.Some(v) -> [#("videoType", list_video_type_to_string(v))]
+          option.None -> []
+        }],
+    ),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1464,15 +1390,15 @@ pub fn list_channel_type_to_string(value: ListChannelType) -> String {
 pub fn list_channel_type_decoder() -> Decoder(ListChannelType) {
   use value <- decode.then(decode.string)
   case value {
-    "channelTypeUnspecified" ->
-      decode.success(ListChannelTypeChannelTypeUnspecified)
+    "channelTypeUnspecified" -> decode.success(
+      ListChannelTypeChannelTypeUnspecified,
+    )
     "any" -> decode.success(ListChannelTypeAny)
     "show" -> decode.success(ListChannelTypeShow)
-    _ ->
-      decode.failure(
-        ListChannelTypeChannelTypeUnspecified,
-        "a valid ListChannelType",
-      )
+    _ -> decode.failure(
+      ListChannelTypeChannelTypeUnspecified,
+      "a valid ListChannelType",
+    )
   }
 }
 
@@ -1561,16 +1487,16 @@ pub fn list_safe_search_to_string(value: ListSafeSearch) -> String {
 pub fn list_safe_search_decoder() -> Decoder(ListSafeSearch) {
   use value <- decode.then(decode.string)
   case value {
-    "safeSearchSettingUnspecified" ->
-      decode.success(ListSafeSearchSafeSearchSettingUnspecified)
+    "safeSearchSettingUnspecified" -> decode.success(
+      ListSafeSearchSafeSearchSettingUnspecified,
+    )
     "none" -> decode.success(ListSafeSearchNone)
     "moderate" -> decode.success(ListSafeSearchModerate)
     "strict" -> decode.success(ListSafeSearchStrict)
-    _ ->
-      decode.failure(
-        ListSafeSearchSafeSearchSettingUnspecified,
-        "a valid ListSafeSearch",
-      )
+    _ -> decode.failure(
+      ListSafeSearchSafeSearchSettingUnspecified,
+      "a valid ListSafeSearch",
+    )
   }
 }
 
@@ -1594,16 +1520,16 @@ pub fn list_video_caption_to_string(value: ListVideoCaption) -> String {
 pub fn list_video_caption_decoder() -> Decoder(ListVideoCaption) {
   use value <- decode.then(decode.string)
   case value {
-    "videoCaptionUnspecified" ->
-      decode.success(ListVideoCaptionVideoCaptionUnspecified)
+    "videoCaptionUnspecified" -> decode.success(
+      ListVideoCaptionVideoCaptionUnspecified,
+    )
     "any" -> decode.success(ListVideoCaptionAny)
     "closedCaption" -> decode.success(ListVideoCaptionClosedCaption)
     "none" -> decode.success(ListVideoCaptionNone)
-    _ ->
-      decode.failure(
-        ListVideoCaptionVideoCaptionUnspecified,
-        "a valid ListVideoCaption",
-      )
+    _ -> decode.failure(
+      ListVideoCaptionVideoCaptionUnspecified,
+      "a valid ListVideoCaption",
+    )
   }
 }
 
@@ -1679,17 +1605,17 @@ pub fn list_video_duration_to_string(value: ListVideoDuration) -> String {
 pub fn list_video_duration_decoder() -> Decoder(ListVideoDuration) {
   use value <- decode.then(decode.string)
   case value {
-    "videoDurationUnspecified" ->
-      decode.success(ListVideoDurationVideoDurationUnspecified)
+    "videoDurationUnspecified" -> decode.success(
+      ListVideoDurationVideoDurationUnspecified,
+    )
     "any" -> decode.success(ListVideoDurationAny)
     "short" -> decode.success(ListVideoDurationShort)
     "medium" -> decode.success(ListVideoDurationMedium)
     "long" -> decode.success(ListVideoDurationLong)
-    _ ->
-      decode.failure(
-        ListVideoDurationVideoDurationUnspecified,
-        "a valid ListVideoDuration",
-      )
+    _ -> decode.failure(
+      ListVideoDurationVideoDurationUnspecified,
+      "a valid ListVideoDuration",
+    )
   }
 }
 
@@ -1702,8 +1628,7 @@ pub type ListVideoEmbeddable {
 
 pub fn list_video_embeddable_to_string(value: ListVideoEmbeddable) -> String {
   case value {
-    ListVideoEmbeddableVideoEmbeddableUnspecified ->
-      "videoEmbeddableUnspecified"
+    ListVideoEmbeddableVideoEmbeddableUnspecified -> "videoEmbeddableUnspecified"
     ListVideoEmbeddableAny -> "any"
     ListVideoEmbeddableTrue -> "true"
   }
@@ -1712,15 +1637,15 @@ pub fn list_video_embeddable_to_string(value: ListVideoEmbeddable) -> String {
 pub fn list_video_embeddable_decoder() -> Decoder(ListVideoEmbeddable) {
   use value <- decode.then(decode.string)
   case value {
-    "videoEmbeddableUnspecified" ->
-      decode.success(ListVideoEmbeddableVideoEmbeddableUnspecified)
+    "videoEmbeddableUnspecified" -> decode.success(
+      ListVideoEmbeddableVideoEmbeddableUnspecified,
+    )
     "any" -> decode.success(ListVideoEmbeddableAny)
     "true" -> decode.success(ListVideoEmbeddableTrue)
-    _ ->
-      decode.failure(
-        ListVideoEmbeddableVideoEmbeddableUnspecified,
-        "a valid ListVideoEmbeddable",
-      )
+    _ -> decode.failure(
+      ListVideoEmbeddableVideoEmbeddableUnspecified,
+      "a valid ListVideoEmbeddable",
+    )
   }
 }
 
@@ -1759,8 +1684,7 @@ pub fn list_video_paid_product_placement_to_string(
   value: ListVideoPaidProductPlacement,
 ) -> String {
   case value {
-    ListVideoPaidProductPlacementVideoPaidProductPlacementUnspecified ->
-      "videoPaidProductPlacementUnspecified"
+    ListVideoPaidProductPlacementVideoPaidProductPlacementUnspecified -> "videoPaidProductPlacementUnspecified"
     ListVideoPaidProductPlacementAny -> "any"
     ListVideoPaidProductPlacementTrue -> "true"
   }
@@ -1771,17 +1695,15 @@ pub fn list_video_paid_product_placement_decoder() -> Decoder(
 ) {
   use value <- decode.then(decode.string)
   case value {
-    "videoPaidProductPlacementUnspecified" ->
-      decode.success(
-        ListVideoPaidProductPlacementVideoPaidProductPlacementUnspecified,
-      )
+    "videoPaidProductPlacementUnspecified" -> decode.success(
+      ListVideoPaidProductPlacementVideoPaidProductPlacementUnspecified,
+    )
     "any" -> decode.success(ListVideoPaidProductPlacementAny)
     "true" -> decode.success(ListVideoPaidProductPlacementTrue)
-    _ ->
-      decode.failure(
-        ListVideoPaidProductPlacementVideoPaidProductPlacementUnspecified,
-        "a valid ListVideoPaidProductPlacement",
-      )
+    _ -> decode.failure(
+      ListVideoPaidProductPlacementVideoPaidProductPlacementUnspecified,
+      "a valid ListVideoPaidProductPlacement",
+    )
   }
 }
 
@@ -1794,8 +1716,7 @@ pub type ListVideoSyndicated {
 
 pub fn list_video_syndicated_to_string(value: ListVideoSyndicated) -> String {
   case value {
-    ListVideoSyndicatedVideoSyndicatedUnspecified ->
-      "videoSyndicatedUnspecified"
+    ListVideoSyndicatedVideoSyndicatedUnspecified -> "videoSyndicatedUnspecified"
     ListVideoSyndicatedAny -> "any"
     ListVideoSyndicatedTrue -> "true"
   }
@@ -1804,15 +1725,15 @@ pub fn list_video_syndicated_to_string(value: ListVideoSyndicated) -> String {
 pub fn list_video_syndicated_decoder() -> Decoder(ListVideoSyndicated) {
   use value <- decode.then(decode.string)
   case value {
-    "videoSyndicatedUnspecified" ->
-      decode.success(ListVideoSyndicatedVideoSyndicatedUnspecified)
+    "videoSyndicatedUnspecified" -> decode.success(
+      ListVideoSyndicatedVideoSyndicatedUnspecified,
+    )
     "any" -> decode.success(ListVideoSyndicatedAny)
     "true" -> decode.success(ListVideoSyndicatedTrue)
-    _ ->
-      decode.failure(
-        ListVideoSyndicatedVideoSyndicatedUnspecified,
-        "a valid ListVideoSyndicated",
-      )
+    _ -> decode.failure(
+      ListVideoSyndicatedVideoSyndicatedUnspecified,
+      "a valid ListVideoSyndicated",
+    )
   }
 }
 
@@ -1840,7 +1761,9 @@ pub fn list_video_type_decoder() -> Decoder(ListVideoType) {
     "any" -> decode.success(ListVideoTypeAny)
     "movie" -> decode.success(ListVideoTypeMovie)
     "episode" -> decode.success(ListVideoTypeEpisode)
-    _ ->
-      decode.failure(ListVideoTypeVideoTypeUnspecified, "a valid ListVideoType")
+    _ -> decode.failure(
+      ListVideoTypeVideoTypeUnspecified,
+      "a valid ListVideoType",
+    )
   }
 }

@@ -43,15 +43,19 @@ pub fn decoder() -> Decoder(ChannelBrandingSettings) {
 }
 
 pub fn to_json(value: ChannelBrandingSettings) -> Json {
-  json.object([
-    #("channel", json.nullable(value.channel, channel_settings.to_json)),
-    #(
-      "hints",
-      json.nullable(value.hints, fn(items) {
-        json.array(items, property_value.to_json)
-      }),
-    ),
-    #("image", json.nullable(value.image, image_settings.to_json)),
-    #("watch", json.nullable(value.watch, watch_settings.to_json)),
-  ])
+  json.object(
+    [
+      #("channel", json.nullable(value.channel, channel_settings.to_json)),
+      #(
+        "hints",
+        json.nullable(
+          value.hints,
+          fn(items)
+          { json.array(items, property_value.to_json) },
+        ),
+      ),
+      #("image", json.nullable(value.image, image_settings.to_json)),
+      #("watch", json.nullable(value.watch, watch_settings.to_json)),
+    ],
+  )
 }

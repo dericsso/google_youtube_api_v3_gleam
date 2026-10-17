@@ -23,18 +23,19 @@ pub fn decoder() -> Decoder(LiveStreamContentDetails) {
     option.None,
     decode.optional(decode.bool),
   )
-  decode.success(LiveStreamContentDetails(
-    closed_captions_ingestion_url,
-    is_reusable,
-  ))
+  decode.success(
+    LiveStreamContentDetails(closed_captions_ingestion_url, is_reusable),
+  )
 }
 
 pub fn to_json(value: LiveStreamContentDetails) -> Json {
-  json.object([
-    #(
-      "closedCaptionsIngestionUrl",
-      json.nullable(value.closed_captions_ingestion_url, json.string),
-    ),
-    #("isReusable", json.nullable(value.is_reusable, json.bool)),
-  ])
+  json.object(
+    [
+      #(
+        "closedCaptionsIngestionUrl",
+        json.nullable(value.closed_captions_ingestion_url, json.string),
+      ),
+      #("isReusable", json.nullable(value.is_reusable, json.bool)),
+    ],
+  )
 }

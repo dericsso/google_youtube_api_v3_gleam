@@ -19,10 +19,12 @@ pub fn decoder() -> Decoder(VideoPaidProductPlacementDetails) {
 }
 
 pub fn to_json(value: VideoPaidProductPlacementDetails) -> Json {
-  json.object([
-    #(
-      "hasPaidProductPlacement",
-      json.nullable(value.has_paid_product_placement, json.bool),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "hasPaidProductPlacement",
+        json.nullable(value.has_paid_product_placement, json.bool),
+      ),
+    ],
+  )
 }

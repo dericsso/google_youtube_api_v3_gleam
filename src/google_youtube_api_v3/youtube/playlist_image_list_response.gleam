@@ -42,26 +42,32 @@ pub fn decoder() -> Decoder(PlaylistImageListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(PlaylistImageListResponse(
-    items,
-    kind,
-    next_page_token,
-    page_info,
-    prev_page_token,
-  ))
+  decode.success(
+    PlaylistImageListResponse(
+      items,
+      kind,
+      next_page_token,
+      page_info,
+      prev_page_token,
+    ),
+  )
 }
 
 pub fn to_json(value: PlaylistImageListResponse) -> Json {
-  json.object([
-    #(
-      "items",
-      json.nullable(value.items, fn(items) {
-        json.array(items, playlist_image.to_json)
-      }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-    #("pageInfo", json.nullable(value.page_info, page_info.to_json)),
-    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, playlist_image.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+      #("pageInfo", json.nullable(value.page_info, page_info.to_json)),
+      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    ],
+  )
 }

@@ -24,15 +24,16 @@ pub fn decoder() -> Decoder(AvailabilityConfigRegionsConfigRegionInterval) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(AvailabilityConfigRegionsConfigRegionInterval(
-    interval,
-    region_code,
-  ))
+  decode.success(
+    AvailabilityConfigRegionsConfigRegionInterval(interval, region_code),
+  )
 }
 
 pub fn to_json(value: AvailabilityConfigRegionsConfigRegionInterval) -> Json {
-  json.object([
-    #("interval", json.nullable(value.interval, interval.to_json)),
-    #("regionCode", json.nullable(value.region_code, json.string)),
-  ])
+  json.object(
+    [
+      #("interval", json.nullable(value.interval, interval.to_json)),
+      #("regionCode", json.nullable(value.region_code, json.string)),
+    ],
+  )
 }

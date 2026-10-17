@@ -42,26 +42,30 @@ pub fn decoder() -> Decoder(ActivityContentDetailsSocial) {
     option.None,
     decode.optional(type_decoder()),
   )
-  decode.success(ActivityContentDetailsSocial(
-    author,
-    image_url,
-    reference_url,
-    resource_id,
-    type_,
-  ))
+  decode.success(
+    ActivityContentDetailsSocial(
+      author,
+      image_url,
+      reference_url,
+      resource_id,
+      type_,
+    ),
+  )
 }
 
 pub fn to_json(value: ActivityContentDetailsSocial) -> Json {
-  json.object([
-    #("author", json.nullable(value.author, json.string)),
-    #("imageUrl", json.nullable(value.image_url, json.string)),
-    #("referenceUrl", json.nullable(value.reference_url, json.string)),
-    #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
-    #(
-      "type",
-      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-    ),
-  ])
+  json.object(
+    [
+      #("author", json.nullable(value.author, json.string)),
+      #("imageUrl", json.nullable(value.image_url, json.string)),
+      #("referenceUrl", json.nullable(value.reference_url, json.string)),
+      #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
+      #(
+        "type",
+        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+      ),
+    ],
+  )
 }
 
 /// The name of the social network.

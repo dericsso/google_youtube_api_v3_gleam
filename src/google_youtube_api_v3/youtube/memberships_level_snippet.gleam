@@ -27,8 +27,16 @@ pub fn decoder() -> Decoder(MembershipsLevelSnippet) {
 }
 
 pub fn to_json(value: MembershipsLevelSnippet) -> Json {
-  json.object([
-    #("creatorChannelId", json.nullable(value.creator_channel_id, json.string)),
-    #("levelDetails", json.nullable(value.level_details, level_details.to_json)),
-  ])
+  json.object(
+    [
+      #(
+        "creatorChannelId",
+        json.nullable(value.creator_channel_id, json.string),
+      ),
+      #(
+        "levelDetails",
+        json.nullable(value.level_details, level_details.to_json),
+      ),
+    ],
+  )
 }

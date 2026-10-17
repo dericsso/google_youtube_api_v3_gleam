@@ -24,13 +24,17 @@ pub fn decoder() -> Decoder(AccessPolicy) {
 }
 
 pub fn to_json(value: AccessPolicy) -> Json {
-  json.object([
-    #("allowed", json.nullable(value.allowed, json.bool)),
-    #(
-      "exception",
-      json.nullable(value.exception, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #("allowed", json.nullable(value.allowed, json.bool)),
+      #(
+        "exception",
+        json.nullable(
+          value.exception,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+    ],
+  )
 }

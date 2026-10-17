@@ -40,21 +40,25 @@ pub fn decoder() -> Decoder(LiveStreamSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(LiveStreamSnippet(
-    channel_id,
-    description,
-    is_default_stream,
-    published_at,
-    title,
-  ))
+  decode.success(
+    LiveStreamSnippet(
+      channel_id,
+      description,
+      is_default_stream,
+      published_at,
+      title,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveStreamSnippet) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #("isDefaultStream", json.nullable(value.is_default_stream, json.bool)),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #("isDefaultStream", json.nullable(value.is_default_stream, json.bool)),
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }

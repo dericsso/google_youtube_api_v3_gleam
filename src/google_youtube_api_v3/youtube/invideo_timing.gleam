@@ -33,14 +33,16 @@ pub fn decoder() -> Decoder(InvideoTiming) {
 }
 
 pub fn to_json(value: InvideoTiming) -> Json {
-  json.object([
-    #("durationMs", json.nullable(value.duration_ms, json.string)),
-    #("offsetMs", json.nullable(value.offset_ms, json.string)),
-    #(
-      "type",
-      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-    ),
-  ])
+  json.object(
+    [
+      #("durationMs", json.nullable(value.duration_ms, json.string)),
+      #("offsetMs", json.nullable(value.offset_ms, json.string)),
+      #(
+        "type",
+        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+      ),
+    ],
+  )
 }
 
 /// Describes a timing type. If the value is offsetFromStart, then the offsetMs field represents an offset from the start of the video. If the value is offsetFromEnd, then the offsetMs field represents an offset from the end of the video.

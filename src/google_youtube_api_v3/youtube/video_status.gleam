@@ -77,67 +77,83 @@ pub fn decoder() -> Decoder(VideoStatus) {
     option.None,
     decode.optional(upload_status_decoder()),
   )
-  decode.success(VideoStatus(
-    contains_synthetic_media,
-    embeddable,
-    failure_reason,
-    license,
-    made_for_kids,
-    privacy_status,
-    public_stats_viewable,
-    publish_at,
-    rejection_reason,
-    self_declared_made_for_kids,
-    upload_status,
-  ))
+  decode.success(
+    VideoStatus(
+      contains_synthetic_media,
+      embeddable,
+      failure_reason,
+      license,
+      made_for_kids,
+      privacy_status,
+      public_stats_viewable,
+      publish_at,
+      rejection_reason,
+      self_declared_made_for_kids,
+      upload_status,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoStatus) -> Json {
-  json.object([
-    #(
-      "containsSyntheticMedia",
-      json.nullable(value.contains_synthetic_media, json.bool),
-    ),
-    #("embeddable", json.nullable(value.embeddable, json.bool)),
-    #(
-      "failureReason",
-      json.nullable(value.failure_reason, fn(e) {
-        json.string(failure_reason_to_string(e))
-      }),
-    ),
-    #(
-      "license",
-      json.nullable(value.license, fn(e) { json.string(license_to_string(e)) }),
-    ),
-    #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
-    #(
-      "privacyStatus",
-      json.nullable(value.privacy_status, fn(e) {
-        json.string(privacy_status_to_string(e))
-      }),
-    ),
-    #(
-      "publicStatsViewable",
-      json.nullable(value.public_stats_viewable, json.bool),
-    ),
-    #("publishAt", json.nullable(value.publish_at, json.string)),
-    #(
-      "rejectionReason",
-      json.nullable(value.rejection_reason, fn(e) {
-        json.string(rejection_reason_to_string(e))
-      }),
-    ),
-    #(
-      "selfDeclaredMadeForKids",
-      json.nullable(value.self_declared_made_for_kids, json.bool),
-    ),
-    #(
-      "uploadStatus",
-      json.nullable(value.upload_status, fn(e) {
-        json.string(upload_status_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "containsSyntheticMedia",
+        json.nullable(value.contains_synthetic_media, json.bool),
+      ),
+      #("embeddable", json.nullable(value.embeddable, json.bool)),
+      #(
+        "failureReason",
+        json.nullable(
+          value.failure_reason,
+          fn(e)
+          { json.string(failure_reason_to_string(e)) },
+        ),
+      ),
+      #(
+        "license",
+        json.nullable(
+          value.license,
+          fn(e)
+          { json.string(license_to_string(e)) },
+        ),
+      ),
+      #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
+      #(
+        "privacyStatus",
+        json.nullable(
+          value.privacy_status,
+          fn(e)
+          { json.string(privacy_status_to_string(e)) },
+        ),
+      ),
+      #(
+        "publicStatsViewable",
+        json.nullable(value.public_stats_viewable, json.bool),
+      ),
+      #("publishAt", json.nullable(value.publish_at, json.string)),
+      #(
+        "rejectionReason",
+        json.nullable(
+          value.rejection_reason,
+          fn(e)
+          { json.string(rejection_reason_to_string(e)) },
+        ),
+      ),
+      #(
+        "selfDeclaredMadeForKids",
+        json.nullable(value.self_declared_made_for_kids, json.bool),
+      ),
+      #(
+        "uploadStatus",
+        json.nullable(
+          value.upload_status,
+          fn(e)
+          { json.string(upload_status_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// This value explains why a video failed to upload. This property is only present if the `uploadStatus` property indicates that the upload failed.
@@ -257,12 +273,14 @@ pub fn rejection_reason_decoder() -> Decoder(RejectionReason) {
     "inappropriate" -> decode.success(RejectionReasonInappropriate)
     "duplicate" -> decode.success(RejectionReasonDuplicate)
     "termsOfUse" -> decode.success(RejectionReasonTermsOfUse)
-    "uploaderAccountSuspended" ->
-      decode.success(RejectionReasonUploaderAccountSuspended)
+    "uploaderAccountSuspended" -> decode.success(
+      RejectionReasonUploaderAccountSuspended,
+    )
     "length" -> decode.success(RejectionReasonLength)
     "claim" -> decode.success(RejectionReasonClaim)
-    "uploaderAccountClosed" ->
-      decode.success(RejectionReasonUploaderAccountClosed)
+    "uploaderAccountClosed" -> decode.success(
+      RejectionReasonUploaderAccountClosed,
+    )
     "trademark" -> decode.success(RejectionReasonTrademark)
     "legal" -> decode.success(RejectionReasonLegal)
     _ -> decode.failure(RejectionReasonCopyright, "a valid RejectionReason")

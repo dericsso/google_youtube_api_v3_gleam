@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/channel_localization.{
-  type ChannelLocalization,
-}
+import google_youtube_api_v3/youtube/channel_localization.{type ChannelLocalization}
 import google_youtube_api_v3/youtube/thumbnail_details.{type ThumbnailDetails}
 
 /// Basic details about a channel, including title, description and thumbnails.
@@ -63,27 +61,37 @@ pub fn decoder() -> Decoder(ChannelSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(ChannelSnippet(
-    country,
-    custom_url,
-    default_language,
-    description,
-    localized,
-    published_at,
-    thumbnails,
-    title,
-  ))
+  decode.success(
+    ChannelSnippet(
+      country,
+      custom_url,
+      default_language,
+      description,
+      localized,
+      published_at,
+      thumbnails,
+      title,
+    ),
+  )
 }
 
 pub fn to_json(value: ChannelSnippet) -> Json {
-  json.object([
-    #("country", json.nullable(value.country, json.string)),
-    #("customUrl", json.nullable(value.custom_url, json.string)),
-    #("defaultLanguage", json.nullable(value.default_language, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #("localized", json.nullable(value.localized, channel_localization.to_json)),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("country", json.nullable(value.country, json.string)),
+      #("customUrl", json.nullable(value.custom_url, json.string)),
+      #("defaultLanguage", json.nullable(value.default_language, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #(
+        "localized",
+        json.nullable(value.localized, channel_localization.to_json),
+      ),
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #(
+        "thumbnails",
+        json.nullable(value.thumbnails, thumbnail_details.to_json),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }

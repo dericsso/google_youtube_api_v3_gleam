@@ -79,39 +79,46 @@ pub fn decoder() -> Decoder(PlaylistItemSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(PlaylistItemSnippet(
-    channel_id,
-    channel_title,
-    description,
-    playlist_id,
-    position,
-    published_at,
-    resource_id,
-    thumbnails,
-    title,
-    video_owner_channel_id,
-    video_owner_channel_title,
-  ))
+  decode.success(
+    PlaylistItemSnippet(
+      channel_id,
+      channel_title,
+      description,
+      playlist_id,
+      position,
+      published_at,
+      resource_id,
+      thumbnails,
+      title,
+      video_owner_channel_id,
+      video_owner_channel_title,
+    ),
+  )
 }
 
 pub fn to_json(value: PlaylistItemSnippet) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("channelTitle", json.nullable(value.channel_title, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #("playlistId", json.nullable(value.playlist_id, json.string)),
-    #("position", json.nullable(value.position, json.int)),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
-    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
-    #("title", json.nullable(value.title, json.string)),
-    #(
-      "videoOwnerChannelId",
-      json.nullable(value.video_owner_channel_id, json.string),
-    ),
-    #(
-      "videoOwnerChannelTitle",
-      json.nullable(value.video_owner_channel_title, json.string),
-    ),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("channelTitle", json.nullable(value.channel_title, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #("playlistId", json.nullable(value.playlist_id, json.string)),
+      #("position", json.nullable(value.position, json.int)),
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
+      #(
+        "thumbnails",
+        json.nullable(value.thumbnails, thumbnail_details.to_json),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+      #(
+        "videoOwnerChannelId",
+        json.nullable(value.video_owner_channel_id, json.string),
+      ),
+      #(
+        "videoOwnerChannelTitle",
+        json.nullable(value.video_owner_channel_title, json.string),
+      ),
+    ],
+  )
 }

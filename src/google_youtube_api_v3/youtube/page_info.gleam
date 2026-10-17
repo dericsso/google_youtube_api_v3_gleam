@@ -24,8 +24,10 @@ pub fn decoder() -> Decoder(PageInfo) {
 }
 
 pub fn to_json(value: PageInfo) -> Json {
-  json.object([
-    #("resultsPerPage", json.nullable(value.results_per_page, json.int)),
-    #("totalResults", json.nullable(value.total_results, json.int)),
-  ])
+  json.object(
+    [
+      #("resultsPerPage", json.nullable(value.results_per_page, json.int)),
+      #("totalResults", json.nullable(value.total_results, json.int)),
+    ],
+  )
 }

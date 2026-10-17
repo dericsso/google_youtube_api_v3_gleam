@@ -33,9 +33,11 @@ pub fn decoder() -> Decoder(VideoStatsStatistics) {
 }
 
 pub fn to_json(value: VideoStatsStatistics) -> Json {
-  json.object([
-    #("commentCount", json.nullable(value.comment_count, json.string)),
-    #("likeCount", json.nullable(value.like_count, json.string)),
-    #("viewCount", json.nullable(value.view_count, json.string)),
-  ])
+  json.object(
+    [
+      #("commentCount", json.nullable(value.comment_count, json.string)),
+      #("likeCount", json.nullable(value.like_count, json.string)),
+      #("viewCount", json.nullable(value.view_count, json.string)),
+    ],
+  )
 }

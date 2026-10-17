@@ -23,8 +23,10 @@ pub fn decoder() -> Decoder(VideoAbuseReportSecondaryReason) {
 }
 
 pub fn to_json(value: VideoAbuseReportSecondaryReason) -> Json {
-  json.object([
-    #("id", json.nullable(value.id, json.string)),
-    #("label", json.nullable(value.label, json.string)),
-  ])
+  json.object(
+    [
+      #("id", json.nullable(value.id, json.string)),
+      #("label", json.nullable(value.label, json.string)),
+    ],
+  )
 }

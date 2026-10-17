@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/playlist_localization.{
-  type PlaylistLocalization,
-}
+import google_youtube_api_v3/youtube/playlist_localization.{type PlaylistLocalization}
 import google_youtube_api_v3/youtube/thumbnail_details.{type ThumbnailDetails}
 
 /// Basic details about a playlist, including title, description and thumbnails.
@@ -75,37 +73,47 @@ pub fn decoder() -> Decoder(PlaylistSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(PlaylistSnippet(
-    channel_id,
-    channel_title,
-    default_language,
-    description,
-    localized,
-    published_at,
-    tags,
-    thumbnail_video_id,
-    thumbnails,
-    title,
-  ))
+  decode.success(
+    PlaylistSnippet(
+      channel_id,
+      channel_title,
+      default_language,
+      description,
+      localized,
+      published_at,
+      tags,
+      thumbnail_video_id,
+      thumbnails,
+      title,
+    ),
+  )
 }
 
 pub fn to_json(value: PlaylistSnippet) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("channelTitle", json.nullable(value.channel_title, json.string)),
-    #("defaultLanguage", json.nullable(value.default_language, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #(
-      "localized",
-      json.nullable(value.localized, playlist_localization.to_json),
-    ),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #(
-      "tags",
-      json.nullable(value.tags, fn(items) { json.array(items, json.string) }),
-    ),
-    #("thumbnailVideoId", json.nullable(value.thumbnail_video_id, json.string)),
-    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("channelTitle", json.nullable(value.channel_title, json.string)),
+      #("defaultLanguage", json.nullable(value.default_language, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #(
+        "localized",
+        json.nullable(value.localized, playlist_localization.to_json),
+      ),
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #(
+        "tags",
+        json.nullable(value.tags, fn(items) { json.array(items, json.string) }),
+      ),
+      #(
+        "thumbnailVideoId",
+        json.nullable(value.thumbnail_video_id, json.string),
+      ),
+      #(
+        "thumbnails",
+        json.nullable(value.thumbnails, thumbnail_details.to_json),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }

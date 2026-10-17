@@ -29,32 +29,38 @@ pub fn decoder() -> Decoder(VideoTopicDetails) {
     option.None,
     decode.optional(decode.list(decode.string)),
   )
-  decode.success(VideoTopicDetails(
-    relevant_topic_ids,
-    topic_categories,
-    topic_ids,
-  ))
+  decode.success(
+    VideoTopicDetails(relevant_topic_ids, topic_categories, topic_ids),
+  )
 }
 
 pub fn to_json(value: VideoTopicDetails) -> Json {
-  json.object([
-    #(
-      "relevantTopicIds",
-      json.nullable(value.relevant_topic_ids, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #(
-      "topicCategories",
-      json.nullable(value.topic_categories, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #(
-      "topicIds",
-      json.nullable(value.topic_ids, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "relevantTopicIds",
+        json.nullable(
+          value.relevant_topic_ids,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #(
+        "topicCategories",
+        json.nullable(
+          value.topic_categories,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #(
+        "topicIds",
+        json.nullable(
+          value.topic_ids,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+    ],
+  )
 }

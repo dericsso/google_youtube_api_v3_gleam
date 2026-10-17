@@ -24,8 +24,10 @@ pub fn decoder() -> Decoder(I18nLanguageSnippet) {
 }
 
 pub fn to_json(value: I18nLanguageSnippet) -> Json {
-  json.object([
-    #("hl", json.nullable(value.hl, json.string)),
-    #("name", json.nullable(value.name, json.string)),
-  ])
+  json.object(
+    [
+      #("hl", json.nullable(value.hl, json.string)),
+      #("name", json.nullable(value.name, json.string)),
+    ],
+  )
 }

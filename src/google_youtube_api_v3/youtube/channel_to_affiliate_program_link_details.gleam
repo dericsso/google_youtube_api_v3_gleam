@@ -35,29 +35,38 @@ pub fn decoder() -> Decoder(ChannelToAffiliateProgramLinkDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(ChannelToAffiliateProgramLinkDetails(
-    merchant_id,
-    program_status,
-    status_update_reason,
-    status_update_time,
-  ))
+  decode.success(
+    ChannelToAffiliateProgramLinkDetails(
+      merchant_id,
+      program_status,
+      status_update_reason,
+      status_update_time,
+    ),
+  )
 }
 
 pub fn to_json(value: ChannelToAffiliateProgramLinkDetails) -> Json {
-  json.object([
-    #("merchantId", json.nullable(value.merchant_id, json.string)),
-    #(
-      "programStatus",
-      json.nullable(value.program_status, fn(e) {
-        json.string(program_status_to_string(e))
-      }),
-    ),
-    #(
-      "statusUpdateReason",
-      json.nullable(value.status_update_reason, json.string),
-    ),
-    #("statusUpdateTime", json.nullable(value.status_update_time, json.string)),
-  ])
+  json.object(
+    [
+      #("merchantId", json.nullable(value.merchant_id, json.string)),
+      #(
+        "programStatus",
+        json.nullable(
+          value.program_status,
+          fn(e)
+          { json.string(program_status_to_string(e)) },
+        ),
+      ),
+      #(
+        "statusUpdateReason",
+        json.nullable(value.status_update_reason, json.string),
+      ),
+      #(
+        "statusUpdateTime",
+        json.nullable(value.status_update_time, json.string),
+      ),
+    ],
+  )
 }
 
 /// Required. Affiliate program status.
@@ -69,8 +78,7 @@ pub type ProgramStatus {
 
 pub fn program_status_to_string(value: ProgramStatus) -> String {
   case value {
-    ProgramStatusAffiliateProgramStatusUnspecified ->
-      "affiliateProgramStatusUnspecified"
+    ProgramStatusAffiliateProgramStatusUnspecified -> "affiliateProgramStatusUnspecified"
     ProgramStatusActive -> "active"
     ProgramStatusInactive -> "inactive"
   }
@@ -79,14 +87,14 @@ pub fn program_status_to_string(value: ProgramStatus) -> String {
 pub fn program_status_decoder() -> Decoder(ProgramStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "affiliateProgramStatusUnspecified" ->
-      decode.success(ProgramStatusAffiliateProgramStatusUnspecified)
+    "affiliateProgramStatusUnspecified" -> decode.success(
+      ProgramStatusAffiliateProgramStatusUnspecified,
+    )
     "active" -> decode.success(ProgramStatusActive)
     "inactive" -> decode.success(ProgramStatusInactive)
-    _ ->
-      decode.failure(
-        ProgramStatusAffiliateProgramStatusUnspecified,
-        "a valid ProgramStatus",
-      )
+    _ -> decode.failure(
+      ProgramStatusAffiliateProgramStatusUnspecified,
+      "a valid ProgramStatus",
+    )
   }
 }

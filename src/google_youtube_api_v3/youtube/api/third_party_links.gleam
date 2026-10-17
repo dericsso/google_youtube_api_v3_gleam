@@ -22,10 +22,7 @@ pub fn delete(linking_token: String, type_: DeleteType) -> DeleteParams {
   DeleteParams(linking_token, type_, option.None, option.None)
 }
 
-pub fn delete_with_part(
-  params: DeleteParams,
-  value: List(String),
-) -> DeleteParams {
+pub fn delete_with_part(params: DeleteParams, value: List(String)) -> DeleteParams {
   DeleteParams(
     params.linking_token,
     params.type_,
@@ -39,17 +36,15 @@ pub fn delete_add_part(params: DeleteParams, value: String) -> DeleteParams {
     params.linking_token,
     params.type_,
     params.external_channel_id,
-    case params.part {
+    case params.part
+    {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
   )
 }
 
-pub fn delete_with_external_channel_id(
-  params: DeleteParams,
-  value: String,
-) -> DeleteParams {
+pub fn delete_with_external_channel_id(params: DeleteParams, value: String) -> DeleteParams {
   DeleteParams(
     params.linking_token,
     params.type_,
@@ -62,18 +57,22 @@ pub fn delete_request(params: DeleteParams) -> Request {
   Request(
     http.Delete,
     "youtube/v3/thirdPartyLinks",
-    list.flatten([
-      [#("linkingToken", params.linking_token)],
-      [#("type", delete_type_to_string(params.type_))],
-      case params.external_channel_id {
-        option.Some(v) -> [#("externalChannelId", v)]
-        option.None -> []
-      },
-      case params.part {
-        option.Some(v) -> list.map(v, fn(w) { #("part", w) })
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [
+        [#("linkingToken", params.linking_token)],
+        [#("type", delete_type_to_string(params.type_))],
+        case params.external_channel_id
+        {
+          option.Some(v) -> [#("externalChannelId", v)]
+          option.None -> []
+        },
+        case params.part
+        {
+          option.Some(v) -> list.map(v, fn(w) { #("part", w) })
+          option.None -> []
+        },
+      ],
+    ),
     [],
     [],
     option.None,
@@ -93,10 +92,7 @@ pub fn insert_add_part(params: InsertParams, value: String) -> InsertParams {
   InsertParams(list.append(params.part, [value]), params.external_channel_id)
 }
 
-pub fn insert_with_external_channel_id(
-  params: InsertParams,
-  value: String,
-) -> InsertParams {
+pub fn insert_with_external_channel_id(params: InsertParams, value: String) -> InsertParams {
   InsertParams(params.part, option.Some(value))
 }
 
@@ -104,13 +100,16 @@ pub fn insert_request(params: InsertParams, body: ThirdPartyLink) -> Request {
   Request(
     http.Post,
     "youtube/v3/thirdPartyLinks",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.external_channel_id {
-        option.Some(v) -> [#("externalChannelId", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [
+        list.map(params.part, fn(v) { #("part", v) }),
+        case params.external_channel_id
+        {
+          option.Some(v) -> [#("externalChannelId", v)]
+          option.None -> []
+        },
+      ],
+    ),
     [],
     [],
     option.Some(json.to_string(third_party_link.to_json(body))),
@@ -149,10 +148,7 @@ pub fn list_with_type_(params: ListParams, value: ListType) -> ListParams {
   )
 }
 
-pub fn list_with_linking_token(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_linking_token(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.external_channel_id,
@@ -161,10 +157,7 @@ pub fn list_with_linking_token(
   )
 }
 
-pub fn list_with_external_channel_id(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_external_channel_id(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     option.Some(value),
@@ -177,21 +170,26 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/thirdPartyLinks",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.external_channel_id {
-        option.Some(v) -> [#("externalChannelId", v)]
-        option.None -> []
-      },
-      case params.linking_token {
-        option.Some(v) -> [#("linkingToken", v)]
-        option.None -> []
-      },
-      case params.type_ {
-        option.Some(v) -> [#("type", list_type_to_string(v))]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [
+        list.map(params.part, fn(v) { #("part", v) }),
+        case params.external_channel_id
+        {
+          option.Some(v) -> [#("externalChannelId", v)]
+          option.None -> []
+        },
+        case params.linking_token
+        {
+          option.Some(v) -> [#("linkingToken", v)]
+          option.None -> []
+        },
+        case params.type_
+        {
+          option.Some(v) -> [#("type", list_type_to_string(v))]
+          option.None -> []
+        },
+      ],
+    ),
     [],
     [],
     option.None,
@@ -211,10 +209,7 @@ pub fn update_add_part(params: UpdateParams, value: String) -> UpdateParams {
   UpdateParams(list.append(params.part, [value]), params.external_channel_id)
 }
 
-pub fn update_with_external_channel_id(
-  params: UpdateParams,
-  value: String,
-) -> UpdateParams {
+pub fn update_with_external_channel_id(params: UpdateParams, value: String) -> UpdateParams {
   UpdateParams(params.part, option.Some(value))
 }
 
@@ -222,13 +217,16 @@ pub fn update_request(params: UpdateParams, body: ThirdPartyLink) -> Request {
   Request(
     http.Put,
     "youtube/v3/thirdPartyLinks",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.external_channel_id {
-        option.Some(v) -> [#("externalChannelId", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [
+        list.map(params.part, fn(v) { #("part", v) }),
+        case params.external_channel_id
+        {
+          option.Some(v) -> [#("externalChannelId", v)]
+          option.None -> []
+        },
+      ],
+    ),
     [],
     [],
     option.Some(json.to_string(third_party_link.to_json(body))),
@@ -255,8 +253,9 @@ pub fn delete_type_decoder() -> Decoder(DeleteType) {
   case value {
     "linkUnspecified" -> decode.success(DeleteTypeLinkUnspecified)
     "channelToStoreLink" -> decode.success(DeleteTypeChannelToStoreLink)
-    "channelToAffiliateProgramLink" ->
-      decode.success(DeleteTypeChannelToAffiliateProgramLink)
+    "channelToAffiliateProgramLink" -> decode.success(
+      DeleteTypeChannelToAffiliateProgramLink,
+    )
     _ -> decode.failure(DeleteTypeLinkUnspecified, "a valid DeleteType")
   }
 }
@@ -281,8 +280,9 @@ pub fn list_type_decoder() -> Decoder(ListType) {
   case value {
     "linkUnspecified" -> decode.success(ListTypeLinkUnspecified)
     "channelToStoreLink" -> decode.success(ListTypeChannelToStoreLink)
-    "channelToAffiliateProgramLink" ->
-      decode.success(ListTypeChannelToAffiliateProgramLink)
+    "channelToAffiliateProgramLink" -> decode.success(
+      ListTypeChannelToAffiliateProgramLink,
+    )
     _ -> decode.failure(ListTypeLinkUnspecified, "a valid ListType")
   }
 }

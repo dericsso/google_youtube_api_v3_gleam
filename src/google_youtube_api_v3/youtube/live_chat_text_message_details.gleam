@@ -18,5 +18,7 @@ pub fn decoder() -> Decoder(LiveChatTextMessageDetails) {
 }
 
 pub fn to_json(value: LiveChatTextMessageDetails) -> Json {
-  json.object([#("messageText", json.nullable(value.message_text, json.string))])
+  json.object(
+    [#("messageText", json.nullable(value.message_text, json.string))],
+  )
 }

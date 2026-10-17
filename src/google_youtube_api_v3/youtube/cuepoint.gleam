@@ -47,31 +47,39 @@ pub fn decoder() -> Decoder(Cuepoint) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(Cuepoint(
-    cue_type,
-    duration_secs,
-    etag,
-    id,
-    insertion_offset_time_ms,
-    walltime_ms,
-  ))
+  decode.success(
+    Cuepoint(
+      cue_type,
+      duration_secs,
+      etag,
+      id,
+      insertion_offset_time_ms,
+      walltime_ms,
+    ),
+  )
 }
 
 pub fn to_json(value: Cuepoint) -> Json {
-  json.object([
-    #(
-      "cueType",
-      json.nullable(value.cue_type, fn(e) { json.string(cue_type_to_string(e)) }),
-    ),
-    #("durationSecs", json.nullable(value.duration_secs, json.int)),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #(
-      "insertionOffsetTimeMs",
-      json.nullable(value.insertion_offset_time_ms, json.string),
-    ),
-    #("walltimeMs", json.nullable(value.walltime_ms, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "cueType",
+        json.nullable(
+          value.cue_type,
+          fn(e)
+          { json.string(cue_type_to_string(e)) },
+        ),
+      ),
+      #("durationSecs", json.nullable(value.duration_secs, json.int)),
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #(
+        "insertionOffsetTimeMs",
+        json.nullable(value.insertion_offset_time_ms, json.string),
+      ),
+      #("walltimeMs", json.nullable(value.walltime_ms, json.string)),
+    ],
+  )
 }
 
 pub type CueType {

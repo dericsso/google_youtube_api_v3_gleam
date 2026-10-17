@@ -71,49 +71,64 @@ pub fn decoder() -> Decoder(ActivityContentDetailsPromotedItem) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(ActivityContentDetailsPromotedItem(
-    ad_tag,
-    click_tracking_url,
-    creative_view_url,
-    cta_type,
-    custom_cta_button_text,
-    description_text,
-    destination_url,
-    forecasting_url,
-    impression_url,
-    video_id,
-  ))
+  decode.success(
+    ActivityContentDetailsPromotedItem(
+      ad_tag,
+      click_tracking_url,
+      creative_view_url,
+      cta_type,
+      custom_cta_button_text,
+      description_text,
+      destination_url,
+      forecasting_url,
+      impression_url,
+      video_id,
+    ),
+  )
 }
 
 pub fn to_json(value: ActivityContentDetailsPromotedItem) -> Json {
-  json.object([
-    #("adTag", json.nullable(value.ad_tag, json.string)),
-    #("clickTrackingUrl", json.nullable(value.click_tracking_url, json.string)),
-    #("creativeViewUrl", json.nullable(value.creative_view_url, json.string)),
-    #(
-      "ctaType",
-      json.nullable(value.cta_type, fn(e) { json.string(cta_type_to_string(e)) }),
-    ),
-    #(
-      "customCtaButtonText",
-      json.nullable(value.custom_cta_button_text, json.string),
-    ),
-    #("descriptionText", json.nullable(value.description_text, json.string)),
-    #("destinationUrl", json.nullable(value.destination_url, json.string)),
-    #(
-      "forecastingUrl",
-      json.nullable(value.forecasting_url, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #(
-      "impressionUrl",
-      json.nullable(value.impression_url, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #("videoId", json.nullable(value.video_id, json.string)),
-  ])
+  json.object(
+    [
+      #("adTag", json.nullable(value.ad_tag, json.string)),
+      #(
+        "clickTrackingUrl",
+        json.nullable(value.click_tracking_url, json.string),
+      ),
+      #("creativeViewUrl", json.nullable(value.creative_view_url, json.string)),
+      #(
+        "ctaType",
+        json.nullable(
+          value.cta_type,
+          fn(e)
+          { json.string(cta_type_to_string(e)) },
+        ),
+      ),
+      #(
+        "customCtaButtonText",
+        json.nullable(value.custom_cta_button_text, json.string),
+      ),
+      #("descriptionText", json.nullable(value.description_text, json.string)),
+      #("destinationUrl", json.nullable(value.destination_url, json.string)),
+      #(
+        "forecastingUrl",
+        json.nullable(
+          value.forecasting_url,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #(
+        "impressionUrl",
+        json.nullable(
+          value.impression_url,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #("videoId", json.nullable(value.video_id, json.string)),
+    ],
+  )
 }
 
 /// The type of call-to-action, a message to the user indicating action that can be taken.

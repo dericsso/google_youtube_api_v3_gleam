@@ -3,15 +3,9 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/subscription_content_details.{
-  type SubscriptionContentDetails,
-}
-import google_youtube_api_v3/youtube/subscription_snippet.{
-  type SubscriptionSnippet,
-}
-import google_youtube_api_v3/youtube/subscription_subscriber_snippet.{
-  type SubscriptionSubscriberSnippet,
-}
+import google_youtube_api_v3/youtube/subscription_content_details.{type SubscriptionContentDetails}
+import google_youtube_api_v3/youtube/subscription_snippet.{type SubscriptionSnippet}
+import google_youtube_api_v3/youtube/subscription_subscriber_snippet.{type SubscriptionSubscriberSnippet}
 
 /// A *subscription* resource contains information about a YouTube user subscription. A subscription notifies a user when new videos are added to a channel or when another user takes one of several actions on YouTube, such as uploading a video, rating a video, or commenting on a video.
 pub type Subscription {
@@ -56,32 +50,32 @@ pub fn decoder() -> Decoder(Subscription) {
     option.None,
     decode.optional(subscription_subscriber_snippet.decoder()),
   )
-  decode.success(Subscription(
-    content_details,
-    etag,
-    id,
-    kind,
-    snippet,
-    subscriber_snippet,
-  ))
+  decode.success(
+    Subscription(content_details, etag, id, kind, snippet, subscriber_snippet),
+  )
 }
 
 pub fn to_json(value: Subscription) -> Json {
-  json.object([
-    #(
-      "contentDetails",
-      json.nullable(value.content_details, subscription_content_details.to_json),
-    ),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, subscription_snippet.to_json)),
-    #(
-      "subscriberSnippet",
-      json.nullable(
-        value.subscriber_snippet,
-        subscription_subscriber_snippet.to_json,
+  json.object(
+    [
+      #(
+        "contentDetails",
+        json.nullable(
+          value.content_details,
+          subscription_content_details.to_json,
+        ),
       ),
-    ),
-  ])
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("snippet", json.nullable(value.snippet, subscription_snippet.to_json)),
+      #(
+        "subscriberSnippet",
+        json.nullable(
+          value.subscriber_snippet,
+          subscription_subscriber_snippet.to_json,
+        ),
+      ),
+    ],
+  )
 }

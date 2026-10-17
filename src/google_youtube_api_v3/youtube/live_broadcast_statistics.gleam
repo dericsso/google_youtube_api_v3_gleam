@@ -19,7 +19,12 @@ pub fn decoder() -> Decoder(LiveBroadcastStatistics) {
 }
 
 pub fn to_json(value: LiveBroadcastStatistics) -> Json {
-  json.object([
-    #("concurrentViewers", json.nullable(value.concurrent_viewers, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "concurrentViewers",
+        json.nullable(value.concurrent_viewers, json.string),
+      ),
+    ],
+  )
 }

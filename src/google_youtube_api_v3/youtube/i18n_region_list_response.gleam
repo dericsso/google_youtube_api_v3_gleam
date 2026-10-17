@@ -41,20 +41,26 @@ pub fn decoder() -> Decoder(I18nRegionListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(I18nRegionListResponse(etag, event_id, items, kind, visitor_id))
+  decode.success(
+    I18nRegionListResponse(etag, event_id, items, kind, visitor_id),
+  )
 }
 
 pub fn to_json(value: I18nRegionListResponse) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("eventId", json.nullable(value.event_id, json.string)),
-    #(
-      "items",
-      json.nullable(value.items, fn(items) {
-        json.array(items, i18n_region.to_json)
-      }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("visitorId", json.nullable(value.visitor_id, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("eventId", json.nullable(value.event_id, json.string)),
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, i18n_region.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("visitorId", json.nullable(value.visitor_id, json.string)),
+    ],
+  )
 }

@@ -64,10 +64,7 @@ pub fn list_with_region_code(params: ListParams, value: String) -> ListParams {
   )
 }
 
-pub fn list_with_published_before(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_published_before(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -81,10 +78,7 @@ pub fn list_with_published_before(
   )
 }
 
-pub fn list_with_published_after(
-  params: ListParams,
-  value: String,
-) -> ListParams {
+pub fn list_with_published_after(params: ListParams, value: String) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -172,41 +166,33 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/activities",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.channel_id {
-        option.Some(v) -> [#("channelId", v)]
-        option.None -> []
-      },
-      case params.home {
-        option.Some(v) -> [#("home", bool.to_string(v))]
-        option.None -> []
-      },
-      case params.max_results {
-        option.Some(v) -> [#("maxResults", int.to_string(v))]
-        option.None -> []
-      },
-      case params.mine {
-        option.Some(v) -> [#("mine", bool.to_string(v))]
-        option.None -> []
-      },
-      case params.page_token {
-        option.Some(v) -> [#("pageToken", v)]
-        option.None -> []
-      },
-      case params.published_after {
-        option.Some(v) -> [#("publishedAfter", v)]
-        option.None -> []
-      },
-      case params.published_before {
-        option.Some(v) -> [#("publishedBefore", v)]
-        option.None -> []
-      },
-      case params.region_code {
-        option.Some(v) -> [#("regionCode", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [list.map(params.part, fn(v) { #("part", v) }), case params.channel_id {
+          option.Some(v) -> [#("channelId", v)]
+          option.None -> []
+        }, case params.home {
+          option.Some(v) -> [#("home", bool.to_string(v))]
+          option.None -> []
+        }, case params.max_results {
+          option.Some(v) -> [#("maxResults", int.to_string(v))]
+          option.None -> []
+        }, case params.mine {
+          option.Some(v) -> [#("mine", bool.to_string(v))]
+          option.None -> []
+        }, case params.page_token {
+          option.Some(v) -> [#("pageToken", v)]
+          option.None -> []
+        }, case params.published_after {
+          option.Some(v) -> [#("publishedAfter", v)]
+          option.None -> []
+        }, case params.published_before {
+          option.Some(v) -> [#("publishedBefore", v)]
+          option.None -> []
+        }, case params.region_code {
+          option.Some(v) -> [#("regionCode", v)]
+          option.None -> []
+        }],
+    ),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

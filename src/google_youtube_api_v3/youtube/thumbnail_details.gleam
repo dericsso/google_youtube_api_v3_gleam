@@ -60,27 +60,22 @@ pub fn decoder() -> Decoder(ThumbnailDetails) {
     option.None,
     decode.optional(thumbnail.decoder()),
   )
-  decode.success(ThumbnailDetails(
-    default,
-    fhd,
-    high,
-    maxres,
-    medium,
-    qhd,
-    standard,
-    uhd,
-  ))
+  decode.success(
+    ThumbnailDetails(default, fhd, high, maxres, medium, qhd, standard, uhd),
+  )
 }
 
 pub fn to_json(value: ThumbnailDetails) -> Json {
-  json.object([
-    #("default", json.nullable(value.default, thumbnail.to_json)),
-    #("fhd", json.nullable(value.fhd, thumbnail.to_json)),
-    #("high", json.nullable(value.high, thumbnail.to_json)),
-    #("maxres", json.nullable(value.maxres, thumbnail.to_json)),
-    #("medium", json.nullable(value.medium, thumbnail.to_json)),
-    #("qhd", json.nullable(value.qhd, thumbnail.to_json)),
-    #("standard", json.nullable(value.standard, thumbnail.to_json)),
-    #("uhd", json.nullable(value.uhd, thumbnail.to_json)),
-  ])
+  json.object(
+    [
+      #("default", json.nullable(value.default, thumbnail.to_json)),
+      #("fhd", json.nullable(value.fhd, thumbnail.to_json)),
+      #("high", json.nullable(value.high, thumbnail.to_json)),
+      #("maxres", json.nullable(value.maxres, thumbnail.to_json)),
+      #("medium", json.nullable(value.medium, thumbnail.to_json)),
+      #("qhd", json.nullable(value.qhd, thumbnail.to_json)),
+      #("standard", json.nullable(value.standard, thumbnail.to_json)),
+      #("uhd", json.nullable(value.uhd, thumbnail.to_json)),
+    ],
+  )
 }

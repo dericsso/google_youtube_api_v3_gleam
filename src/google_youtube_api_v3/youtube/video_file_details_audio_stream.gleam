@@ -35,19 +35,18 @@ pub fn decoder() -> Decoder(VideoFileDetailsAudioStream) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(VideoFileDetailsAudioStream(
-    bitrate_bps,
-    channel_count,
-    codec,
-    vendor,
-  ))
+  decode.success(
+    VideoFileDetailsAudioStream(bitrate_bps, channel_count, codec, vendor),
+  )
 }
 
 pub fn to_json(value: VideoFileDetailsAudioStream) -> Json {
-  json.object([
-    #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
-    #("channelCount", json.nullable(value.channel_count, json.int)),
-    #("codec", json.nullable(value.codec, json.string)),
-    #("vendor", json.nullable(value.vendor, json.string)),
-  ])
+  json.object(
+    [
+      #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
+      #("channelCount", json.nullable(value.channel_count, json.int)),
+      #("codec", json.nullable(value.codec, json.string)),
+      #("vendor", json.nullable(value.vendor, json.string)),
+    ],
+  )
 }

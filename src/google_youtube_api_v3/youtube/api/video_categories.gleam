@@ -37,15 +37,10 @@ pub fn list_with_id(params: ListParams, value: List(String)) -> ListParams {
 }
 
 pub fn list_add_id(params: ListParams, value: String) -> ListParams {
-  ListParams(
-    params.part,
-    params.hl,
-    case params.id {
+  ListParams(params.part, params.hl, case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
-    },
-    params.region_code,
-  )
+    }, params.region_code)
 }
 
 pub fn list_with_hl(params: ListParams, value: String) -> ListParams {
@@ -56,21 +51,18 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/videoCategories",
-    list.flatten([
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.hl {
-        option.Some(v) -> [#("hl", v)]
-        option.None -> []
-      },
-      case params.id {
-        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-        option.None -> []
-      },
-      case params.region_code {
-        option.Some(v) -> [#("regionCode", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [list.map(params.part, fn(v) { #("part", v) }), case params.hl {
+          option.Some(v) -> [#("hl", v)]
+          option.None -> []
+        }, case params.id {
+          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+          option.None -> []
+        }, case params.region_code {
+          option.Some(v) -> [#("regionCode", v)]
+          option.None -> []
+        }],
+    ),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

@@ -33,9 +33,11 @@ pub fn decoder() -> Decoder(VideoCategorySnippet) {
 }
 
 pub fn to_json(value: VideoCategorySnippet) -> Json {
-  json.object([
-    #("assignable", json.nullable(value.assignable, json.bool)),
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("assignable", json.nullable(value.assignable, json.bool)),
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }

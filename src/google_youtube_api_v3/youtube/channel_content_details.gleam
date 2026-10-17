@@ -20,12 +20,16 @@ pub fn decoder() -> Decoder(ChannelContentDetails) {
 }
 
 pub fn to_json(value: ChannelContentDetails) -> Json {
-  json.object([
-    #(
-      "relatedPlaylists",
-      json.nullable(value.related_playlists, fn(d) {
-        json.dict(d, fn(k) { k }, json.string)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "relatedPlaylists",
+        json.nullable(
+          value.related_playlists,
+          fn(d)
+          { json.dict(d, fn(k) { k }, json.string) },
+        ),
+      ),
+    ],
+  )
 }

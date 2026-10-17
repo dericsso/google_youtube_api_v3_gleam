@@ -39,15 +39,17 @@ pub fn decoder() -> Decoder(PlaylistImageSnippet) {
 }
 
 pub fn to_json(value: PlaylistImageSnippet) -> Json {
-  json.object([
-    #("height", json.nullable(value.height, json.int)),
-    #("playlistId", json.nullable(value.playlist_id, json.string)),
-    #(
-      "type",
-      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-    ),
-    #("width", json.nullable(value.width, json.int)),
-  ])
+  json.object(
+    [
+      #("height", json.nullable(value.height, json.int)),
+      #("playlistId", json.nullable(value.playlist_id, json.string)),
+      #(
+        "type",
+        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+      ),
+      #("width", json.nullable(value.width, json.int)),
+    ],
+  )
 }
 
 /// The image type.

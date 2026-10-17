@@ -34,22 +34,26 @@ pub fn decoder() -> Decoder(LiveChatFanFundingEventDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(LiveChatFanFundingEventDetails(
-    amount_display_string,
-    amount_micros,
-    currency,
-    user_comment,
-  ))
+  decode.success(
+    LiveChatFanFundingEventDetails(
+      amount_display_string,
+      amount_micros,
+      currency,
+      user_comment,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveChatFanFundingEventDetails) -> Json {
-  json.object([
-    #(
-      "amountDisplayString",
-      json.nullable(value.amount_display_string, json.string),
-    ),
-    #("amountMicros", json.nullable(value.amount_micros, json.string)),
-    #("currency", json.nullable(value.currency, json.string)),
-    #("userComment", json.nullable(value.user_comment, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "amountDisplayString",
+        json.nullable(value.amount_display_string, json.string),
+      ),
+      #("amountMicros", json.nullable(value.amount_micros, json.string)),
+      #("currency", json.nullable(value.currency, json.string)),
+      #("userComment", json.nullable(value.user_comment, json.string)),
+    ],
+  )
 }

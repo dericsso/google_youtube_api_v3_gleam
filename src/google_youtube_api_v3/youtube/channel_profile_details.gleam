@@ -34,19 +34,23 @@ pub fn decoder() -> Decoder(ChannelProfileDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(ChannelProfileDetails(
-    channel_id,
-    channel_url,
-    display_name,
-    profile_image_url,
-  ))
+  decode.success(
+    ChannelProfileDetails(
+      channel_id,
+      channel_url,
+      display_name,
+      profile_image_url,
+    ),
+  )
 }
 
 pub fn to_json(value: ChannelProfileDetails) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("channelUrl", json.nullable(value.channel_url, json.string)),
-    #("displayName", json.nullable(value.display_name, json.string)),
-    #("profileImageUrl", json.nullable(value.profile_image_url, json.string)),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("channelUrl", json.nullable(value.channel_url, json.string)),
+      #("displayName", json.nullable(value.display_name, json.string)),
+      #("profileImageUrl", json.nullable(value.profile_image_url, json.string)),
+    ],
+  )
 }

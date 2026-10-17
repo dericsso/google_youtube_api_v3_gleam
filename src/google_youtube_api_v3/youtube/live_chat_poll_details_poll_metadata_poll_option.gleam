@@ -26,8 +26,10 @@ pub fn decoder() -> Decoder(LiveChatPollDetailsPollMetadataPollOption) {
 }
 
 pub fn to_json(value: LiveChatPollDetailsPollMetadataPollOption) -> Json {
-  json.object([
-    #("optionText", json.nullable(value.option_text, json.string)),
-    #("tally", json.nullable(value.tally, json.string)),
-  ])
+  json.object(
+    [
+      #("optionText", json.nullable(value.option_text, json.string)),
+      #("tally", json.nullable(value.tally, json.string)),
+    ],
+  )
 }

@@ -41,26 +41,26 @@ pub fn decoder() -> Decoder(MembershipsLevelListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(MembershipsLevelListResponse(
-    etag,
-    event_id,
-    items,
-    kind,
-    visitor_id,
-  ))
+  decode.success(
+    MembershipsLevelListResponse(etag, event_id, items, kind, visitor_id),
+  )
 }
 
 pub fn to_json(value: MembershipsLevelListResponse) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("eventId", json.nullable(value.event_id, json.string)),
-    #(
-      "items",
-      json.nullable(value.items, fn(items) {
-        json.array(items, memberships_level.to_json)
-      }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("visitorId", json.nullable(value.visitor_id, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("eventId", json.nullable(value.event_id, json.string)),
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, memberships_level.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("visitorId", json.nullable(value.visitor_id, json.string)),
+    ],
+  )
 }

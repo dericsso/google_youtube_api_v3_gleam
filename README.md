@@ -96,7 +96,7 @@ Further documentation can be found at <https://hexdocs.pm/google_youtube_api_v3/
 
 ```sh
 gleam test                  # Run the tests
-gleam run -m google_youtube_api_v3/generate  # Regenerate from discovery/
+gleam dev  # Regenerate from discovery/
 gleam format src test       # Generated code needs a format pass
 ```
 

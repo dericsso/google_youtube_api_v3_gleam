@@ -58,27 +58,31 @@ pub fn decoder() -> Decoder(LiveChatMessageAuthorDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(LiveChatMessageAuthorDetails(
-    channel_id,
-    channel_url,
-    display_name,
-    is_chat_moderator,
-    is_chat_owner,
-    is_chat_sponsor,
-    is_verified,
-    profile_image_url,
-  ))
+  decode.success(
+    LiveChatMessageAuthorDetails(
+      channel_id,
+      channel_url,
+      display_name,
+      is_chat_moderator,
+      is_chat_owner,
+      is_chat_sponsor,
+      is_verified,
+      profile_image_url,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveChatMessageAuthorDetails) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("channelUrl", json.nullable(value.channel_url, json.string)),
-    #("displayName", json.nullable(value.display_name, json.string)),
-    #("isChatModerator", json.nullable(value.is_chat_moderator, json.bool)),
-    #("isChatOwner", json.nullable(value.is_chat_owner, json.bool)),
-    #("isChatSponsor", json.nullable(value.is_chat_sponsor, json.bool)),
-    #("isVerified", json.nullable(value.is_verified, json.bool)),
-    #("profileImageUrl", json.nullable(value.profile_image_url, json.string)),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("channelUrl", json.nullable(value.channel_url, json.string)),
+      #("displayName", json.nullable(value.display_name, json.string)),
+      #("isChatModerator", json.nullable(value.is_chat_moderator, json.bool)),
+      #("isChatOwner", json.nullable(value.is_chat_owner, json.bool)),
+      #("isChatSponsor", json.nullable(value.is_chat_sponsor, json.bool)),
+      #("isVerified", json.nullable(value.is_verified, json.bool)),
+      #("profileImageUrl", json.nullable(value.profile_image_url, json.string)),
+    ],
+  )
 }

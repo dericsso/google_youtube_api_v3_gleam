@@ -24,8 +24,10 @@ pub fn decoder() -> Decoder(BrandPartner) {
 }
 
 pub fn to_json(value: BrandPartner) -> Json {
-  json.object([
-    #("channelHandle", json.nullable(value.channel_handle, json.string)),
-    #("channelId", json.nullable(value.channel_id, json.string)),
-  ])
+  json.object(
+    [
+      #("channelHandle", json.nullable(value.channel_handle, json.string)),
+      #("channelId", json.nullable(value.channel_id, json.string)),
+    ],
+  )
 }

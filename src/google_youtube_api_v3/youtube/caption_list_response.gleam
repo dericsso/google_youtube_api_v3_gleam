@@ -45,16 +45,20 @@ pub fn decoder() -> Decoder(CaptionListResponse) {
 }
 
 pub fn to_json(value: CaptionListResponse) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("eventId", json.nullable(value.event_id, json.string)),
-    #(
-      "items",
-      json.nullable(value.items, fn(items) {
-        json.array(items, caption.to_json)
-      }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("visitorId", json.nullable(value.visitor_id, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("eventId", json.nullable(value.event_id, json.string)),
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, caption.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("visitorId", json.nullable(value.visitor_id, json.string)),
+    ],
+  )
 }

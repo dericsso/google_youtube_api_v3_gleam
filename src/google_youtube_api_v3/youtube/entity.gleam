@@ -28,9 +28,11 @@ pub fn decoder() -> Decoder(Entity) {
 }
 
 pub fn to_json(value: Entity) -> Json {
-  json.object([
-    #("id", json.nullable(value.id, json.string)),
-    #("typeId", json.nullable(value.type_id, json.string)),
-    #("url", json.nullable(value.url, json.string)),
-  ])
+  json.object(
+    [
+      #("id", json.nullable(value.id, json.string)),
+      #("typeId", json.nullable(value.type_id, json.string)),
+      #("url", json.nullable(value.url, json.string)),
+    ],
+  )
 }

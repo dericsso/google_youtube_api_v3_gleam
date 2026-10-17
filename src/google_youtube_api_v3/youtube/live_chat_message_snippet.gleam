@@ -3,45 +3,19 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/live_chat_fan_funding_event_details.{
-  type LiveChatFanFundingEventDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_gift_details.{
-  type LiveChatGiftDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_gift_membership_received_details.{
-  type LiveChatGiftMembershipReceivedDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_member_milestone_chat_details.{
-  type LiveChatMemberMilestoneChatDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_membership_gifting_details.{
-  type LiveChatMembershipGiftingDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_message_deleted_details.{
-  type LiveChatMessageDeletedDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_message_retracted_details.{
-  type LiveChatMessageRetractedDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_new_sponsor_details.{
-  type LiveChatNewSponsorDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_poll_details.{
-  type LiveChatPollDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_super_chat_details.{
-  type LiveChatSuperChatDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_super_sticker_details.{
-  type LiveChatSuperStickerDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_text_message_details.{
-  type LiveChatTextMessageDetails,
-}
-import google_youtube_api_v3/youtube/live_chat_user_banned_message_details.{
-  type LiveChatUserBannedMessageDetails,
-}
+import google_youtube_api_v3/youtube/live_chat_fan_funding_event_details.{type LiveChatFanFundingEventDetails}
+import google_youtube_api_v3/youtube/live_chat_gift_details.{type LiveChatGiftDetails}
+import google_youtube_api_v3/youtube/live_chat_gift_membership_received_details.{type LiveChatGiftMembershipReceivedDetails}
+import google_youtube_api_v3/youtube/live_chat_member_milestone_chat_details.{type LiveChatMemberMilestoneChatDetails}
+import google_youtube_api_v3/youtube/live_chat_membership_gifting_details.{type LiveChatMembershipGiftingDetails}
+import google_youtube_api_v3/youtube/live_chat_message_deleted_details.{type LiveChatMessageDeletedDetails}
+import google_youtube_api_v3/youtube/live_chat_message_retracted_details.{type LiveChatMessageRetractedDetails}
+import google_youtube_api_v3/youtube/live_chat_new_sponsor_details.{type LiveChatNewSponsorDetails}
+import google_youtube_api_v3/youtube/live_chat_poll_details.{type LiveChatPollDetails}
+import google_youtube_api_v3/youtube/live_chat_super_chat_details.{type LiveChatSuperChatDetails}
+import google_youtube_api_v3/youtube/live_chat_super_sticker_details.{type LiveChatSuperStickerDetails}
+import google_youtube_api_v3/youtube/live_chat_text_message_details.{type LiveChatTextMessageDetails}
+import google_youtube_api_v3/youtube/live_chat_user_banned_message_details.{type LiveChatUserBannedMessageDetails}
 
 /// Next ID: 35
 pub type LiveChatMessageSnippet {
@@ -50,9 +24,8 @@ pub type LiveChatMessageSnippet {
     display_message: Option(String),
     fan_funding_event_details: Option(LiveChatFanFundingEventDetails),
     gift_details: Option(LiveChatGiftDetails),
-    gift_membership_received_details: Option(
-      LiveChatGiftMembershipReceivedDetails,
-    ),
+    gift_membership_received_details:
+    Option(LiveChatGiftMembershipReceivedDetails),
     has_display_content: Option(Bool),
     live_chat_id: Option(String),
     member_milestone_chat_details: Option(LiveChatMemberMilestoneChatDetails),
@@ -166,126 +139,133 @@ pub fn decoder() -> Decoder(LiveChatMessageSnippet) {
     option.None,
     decode.optional(live_chat_user_banned_message_details.decoder()),
   )
-  decode.success(LiveChatMessageSnippet(
-    author_channel_id,
-    display_message,
-    fan_funding_event_details,
-    gift_details,
-    gift_membership_received_details,
-    has_display_content,
-    live_chat_id,
-    member_milestone_chat_details,
-    membership_gifting_details,
-    message_deleted_details,
-    message_retracted_details,
-    new_sponsor_details,
-    poll_details,
-    published_at,
-    super_chat_details,
-    super_sticker_details,
-    text_message_details,
-    type_,
-    user_banned_details,
-  ))
+  decode.success(
+    LiveChatMessageSnippet(
+      author_channel_id,
+      display_message,
+      fan_funding_event_details,
+      gift_details,
+      gift_membership_received_details,
+      has_display_content,
+      live_chat_id,
+      member_milestone_chat_details,
+      membership_gifting_details,
+      message_deleted_details,
+      message_retracted_details,
+      new_sponsor_details,
+      poll_details,
+      published_at,
+      super_chat_details,
+      super_sticker_details,
+      text_message_details,
+      type_,
+      user_banned_details,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveChatMessageSnippet) -> Json {
-  json.object([
-    #("authorChannelId", json.nullable(value.author_channel_id, json.string)),
-    #("displayMessage", json.nullable(value.display_message, json.string)),
-    #(
-      "fanFundingEventDetails",
-      json.nullable(
-        value.fan_funding_event_details,
-        live_chat_fan_funding_event_details.to_json,
+  json.object(
+    [
+      #("authorChannelId", json.nullable(value.author_channel_id, json.string)),
+      #("displayMessage", json.nullable(value.display_message, json.string)),
+      #(
+        "fanFundingEventDetails",
+        json.nullable(
+          value.fan_funding_event_details,
+          live_chat_fan_funding_event_details.to_json,
+        ),
       ),
-    ),
-    #(
-      "giftDetails",
-      json.nullable(value.gift_details, live_chat_gift_details.to_json),
-    ),
-    #(
-      "giftMembershipReceivedDetails",
-      json.nullable(
-        value.gift_membership_received_details,
-        live_chat_gift_membership_received_details.to_json,
+      #(
+        "giftDetails",
+        json.nullable(value.gift_details, live_chat_gift_details.to_json),
       ),
-    ),
-    #("hasDisplayContent", json.nullable(value.has_display_content, json.bool)),
-    #("liveChatId", json.nullable(value.live_chat_id, json.string)),
-    #(
-      "memberMilestoneChatDetails",
-      json.nullable(
-        value.member_milestone_chat_details,
-        live_chat_member_milestone_chat_details.to_json,
+      #(
+        "giftMembershipReceivedDetails",
+        json.nullable(
+          value.gift_membership_received_details,
+          live_chat_gift_membership_received_details.to_json,
+        ),
       ),
-    ),
-    #(
-      "membershipGiftingDetails",
-      json.nullable(
-        value.membership_gifting_details,
-        live_chat_membership_gifting_details.to_json,
+      #(
+        "hasDisplayContent",
+        json.nullable(value.has_display_content, json.bool),
       ),
-    ),
-    #(
-      "messageDeletedDetails",
-      json.nullable(
-        value.message_deleted_details,
-        live_chat_message_deleted_details.to_json,
+      #("liveChatId", json.nullable(value.live_chat_id, json.string)),
+      #(
+        "memberMilestoneChatDetails",
+        json.nullable(
+          value.member_milestone_chat_details,
+          live_chat_member_milestone_chat_details.to_json,
+        ),
       ),
-    ),
-    #(
-      "messageRetractedDetails",
-      json.nullable(
-        value.message_retracted_details,
-        live_chat_message_retracted_details.to_json,
+      #(
+        "membershipGiftingDetails",
+        json.nullable(
+          value.membership_gifting_details,
+          live_chat_membership_gifting_details.to_json,
+        ),
       ),
-    ),
-    #(
-      "newSponsorDetails",
-      json.nullable(
-        value.new_sponsor_details,
-        live_chat_new_sponsor_details.to_json,
+      #(
+        "messageDeletedDetails",
+        json.nullable(
+          value.message_deleted_details,
+          live_chat_message_deleted_details.to_json,
+        ),
       ),
-    ),
-    #(
-      "pollDetails",
-      json.nullable(value.poll_details, live_chat_poll_details.to_json),
-    ),
-    #("publishedAt", json.nullable(value.published_at, json.string)),
-    #(
-      "superChatDetails",
-      json.nullable(
-        value.super_chat_details,
-        live_chat_super_chat_details.to_json,
+      #(
+        "messageRetractedDetails",
+        json.nullable(
+          value.message_retracted_details,
+          live_chat_message_retracted_details.to_json,
+        ),
       ),
-    ),
-    #(
-      "superStickerDetails",
-      json.nullable(
-        value.super_sticker_details,
-        live_chat_super_sticker_details.to_json,
+      #(
+        "newSponsorDetails",
+        json.nullable(
+          value.new_sponsor_details,
+          live_chat_new_sponsor_details.to_json,
+        ),
       ),
-    ),
-    #(
-      "textMessageDetails",
-      json.nullable(
-        value.text_message_details,
-        live_chat_text_message_details.to_json,
+      #(
+        "pollDetails",
+        json.nullable(value.poll_details, live_chat_poll_details.to_json),
       ),
-    ),
-    #(
-      "type",
-      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-    ),
-    #(
-      "userBannedDetails",
-      json.nullable(
-        value.user_banned_details,
-        live_chat_user_banned_message_details.to_json,
+      #("publishedAt", json.nullable(value.published_at, json.string)),
+      #(
+        "superChatDetails",
+        json.nullable(
+          value.super_chat_details,
+          live_chat_super_chat_details.to_json,
+        ),
       ),
-    ),
-  ])
+      #(
+        "superStickerDetails",
+        json.nullable(
+          value.super_sticker_details,
+          live_chat_super_sticker_details.to_json,
+        ),
+      ),
+      #(
+        "textMessageDetails",
+        json.nullable(
+          value.text_message_details,
+          live_chat_text_message_details.to_json,
+        ),
+      ),
+      #(
+        "type",
+        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+      ),
+      #(
+        "userBannedDetails",
+        json.nullable(
+          value.user_banned_details,
+          live_chat_user_banned_message_details.to_json,
+        ),
+      ),
+    ],
+  )
 }
 
 /// The type of message, this will always be present, it determines the contents of the message as well as which fields will be present.
@@ -341,14 +321,16 @@ pub fn type_decoder() -> Decoder(Type) {
     "tombstone" -> decode.success(TypeTombstone)
     "fanFundingEvent" -> decode.success(TypeFanFundingEvent)
     "chatEndedEvent" -> decode.success(TypeChatEndedEvent)
-    "sponsorOnlyModeStartedEvent" ->
-      decode.success(TypeSponsorOnlyModeStartedEvent)
+    "sponsorOnlyModeStartedEvent" -> decode.success(
+      TypeSponsorOnlyModeStartedEvent,
+    )
     "sponsorOnlyModeEndedEvent" -> decode.success(TypeSponsorOnlyModeEndedEvent)
     "newSponsorEvent" -> decode.success(TypeNewSponsorEvent)
     "memberMilestoneChatEvent" -> decode.success(TypeMemberMilestoneChatEvent)
     "membershipGiftingEvent" -> decode.success(TypeMembershipGiftingEvent)
-    "giftMembershipReceivedEvent" ->
-      decode.success(TypeGiftMembershipReceivedEvent)
+    "giftMembershipReceivedEvent" -> decode.success(
+      TypeGiftMembershipReceivedEvent,
+    )
     "messageDeletedEvent" -> decode.success(TypeMessageDeletedEvent)
     "messageRetractedEvent" -> decode.success(TypeMessageRetractedEvent)
     "userBannedEvent" -> decode.success(TypeUserBannedEvent)

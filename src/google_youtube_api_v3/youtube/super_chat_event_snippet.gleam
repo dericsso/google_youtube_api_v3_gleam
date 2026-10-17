@@ -3,12 +3,8 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/channel_profile_details.{
-  type ChannelProfileDetails,
-}
-import google_youtube_api_v3/youtube/super_sticker_metadata.{
-  type SuperStickerMetadata,
-}
+import google_youtube_api_v3/youtube/channel_profile_details.{type ChannelProfileDetails}
+import google_youtube_api_v3/youtube/super_sticker_metadata.{type SuperStickerMetadata}
 
 pub type SuperChatEventSnippet {
   SuperChatEventSnippet(
@@ -76,43 +72,47 @@ pub fn decoder() -> Decoder(SuperChatEventSnippet) {
     option.None,
     decode.optional(channel_profile_details.decoder()),
   )
-  decode.success(SuperChatEventSnippet(
-    amount_micros,
-    channel_id,
-    comment_text,
-    created_at,
-    currency,
-    display_string,
-    is_super_sticker_event,
-    message_type,
-    super_sticker_metadata,
-    supporter_details,
-  ))
+  decode.success(
+    SuperChatEventSnippet(
+      amount_micros,
+      channel_id,
+      comment_text,
+      created_at,
+      currency,
+      display_string,
+      is_super_sticker_event,
+      message_type,
+      super_sticker_metadata,
+      supporter_details,
+    ),
+  )
 }
 
 pub fn to_json(value: SuperChatEventSnippet) -> Json {
-  json.object([
-    #("amountMicros", json.nullable(value.amount_micros, json.string)),
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("commentText", json.nullable(value.comment_text, json.string)),
-    #("createdAt", json.nullable(value.created_at, json.string)),
-    #("currency", json.nullable(value.currency, json.string)),
-    #("displayString", json.nullable(value.display_string, json.string)),
-    #(
-      "isSuperStickerEvent",
-      json.nullable(value.is_super_sticker_event, json.bool),
-    ),
-    #("messageType", json.nullable(value.message_type, json.int)),
-    #(
-      "superStickerMetadata",
-      json.nullable(
-        value.super_sticker_metadata,
-        super_sticker_metadata.to_json,
+  json.object(
+    [
+      #("amountMicros", json.nullable(value.amount_micros, json.string)),
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("commentText", json.nullable(value.comment_text, json.string)),
+      #("createdAt", json.nullable(value.created_at, json.string)),
+      #("currency", json.nullable(value.currency, json.string)),
+      #("displayString", json.nullable(value.display_string, json.string)),
+      #(
+        "isSuperStickerEvent",
+        json.nullable(value.is_super_sticker_event, json.bool),
       ),
-    ),
-    #(
-      "supporterDetails",
-      json.nullable(value.supporter_details, channel_profile_details.to_json),
-    ),
-  ])
+      #("messageType", json.nullable(value.message_type, json.int)),
+      #(
+        "superStickerMetadata",
+        json.nullable(
+          value.super_sticker_metadata,
+          super_sticker_metadata.to_json,
+        ),
+      ),
+      #(
+        "supporterDetails",
+        json.nullable(value.supporter_details, channel_profile_details.to_json),
+      ),
+    ],
+  )
 }

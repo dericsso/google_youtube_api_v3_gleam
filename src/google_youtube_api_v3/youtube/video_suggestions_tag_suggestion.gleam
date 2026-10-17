@@ -27,13 +27,17 @@ pub fn decoder() -> Decoder(VideoSuggestionsTagSuggestion) {
 }
 
 pub fn to_json(value: VideoSuggestionsTagSuggestion) -> Json {
-  json.object([
-    #(
-      "categoryRestricts",
-      json.nullable(value.category_restricts, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #("tag", json.nullable(value.tag, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "categoryRestricts",
+        json.nullable(
+          value.category_restricts,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #("tag", json.nullable(value.tag, json.string)),
+    ],
+  )
 }

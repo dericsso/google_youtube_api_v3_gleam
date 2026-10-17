@@ -79,47 +79,53 @@ pub fn decoder() -> Decoder(LiveChatMessageListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(LiveChatMessageListResponse(
-    active_poll_item,
-    etag,
-    event_id,
-    items,
-    kind,
-    next_page_token,
-    offline_at,
-    page_info,
-    polling_interval_millis,
-    token_pagination,
-    visitor_id,
-  ))
+  decode.success(
+    LiveChatMessageListResponse(
+      active_poll_item,
+      etag,
+      event_id,
+      items,
+      kind,
+      next_page_token,
+      offline_at,
+      page_info,
+      polling_interval_millis,
+      token_pagination,
+      visitor_id,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveChatMessageListResponse) -> Json {
-  json.object([
-    #(
-      "activePollItem",
-      json.nullable(value.active_poll_item, live_chat_message.to_json),
-    ),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("eventId", json.nullable(value.event_id, json.string)),
-    #(
-      "items",
-      json.nullable(value.items, fn(items) {
-        json.array(items, live_chat_message.to_json)
-      }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-    #("offlineAt", json.nullable(value.offline_at, json.string)),
-    #("pageInfo", json.nullable(value.page_info, page_info.to_json)),
-    #(
-      "pollingIntervalMillis",
-      json.nullable(value.polling_interval_millis, json.int),
-    ),
-    #(
-      "tokenPagination",
-      json.nullable(value.token_pagination, token_pagination.to_json),
-    ),
-    #("visitorId", json.nullable(value.visitor_id, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "activePollItem",
+        json.nullable(value.active_poll_item, live_chat_message.to_json),
+      ),
+      #("etag", json.nullable(value.etag, json.string)),
+      #("eventId", json.nullable(value.event_id, json.string)),
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, live_chat_message.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+      #("offlineAt", json.nullable(value.offline_at, json.string)),
+      #("pageInfo", json.nullable(value.page_info, page_info.to_json)),
+      #(
+        "pollingIntervalMillis",
+        json.nullable(value.polling_interval_millis, json.int),
+      ),
+      #(
+        "tokenPagination",
+        json.nullable(value.token_pagination, token_pagination.to_json),
+      ),
+      #("visitorId", json.nullable(value.visitor_id, json.string)),
+    ],
+  )
 }

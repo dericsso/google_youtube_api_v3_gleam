@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/activity_content_details.{
-  type ActivityContentDetails,
-}
+import google_youtube_api_v3/youtube/activity_content_details.{type ActivityContentDetails}
 import google_youtube_api_v3/youtube/activity_snippet.{type ActivitySnippet}
 
 /// An `activity` resource contains information about an action that a particular channel, or user, has taken on YouTube. The actions reported in activity feeds include sharing a video, uploading a video, and so forth. Each `activity` resource identifies the type of action, the channel associated with the action, and the resource(s) associated with the action, such as the video that was rated or uploaded.
@@ -49,14 +47,16 @@ pub fn decoder() -> Decoder(Activity) {
 }
 
 pub fn to_json(value: Activity) -> Json {
-  json.object([
-    #(
-      "contentDetails",
-      json.nullable(value.content_details, activity_content_details.to_json),
-    ),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, activity_snippet.to_json)),
-  ])
+  json.object(
+    [
+      #(
+        "contentDetails",
+        json.nullable(value.content_details, activity_content_details.to_json),
+      ),
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("snippet", json.nullable(value.snippet, activity_snippet.to_json)),
+    ],
+  )
 }

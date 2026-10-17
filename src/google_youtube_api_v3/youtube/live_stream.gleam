@@ -4,9 +4,7 @@ import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
 import google_youtube_api_v3/youtube/cdn_settings.{type CdnSettings}
-import google_youtube_api_v3/youtube/live_stream_content_details.{
-  type LiveStreamContentDetails,
-}
+import google_youtube_api_v3/youtube/live_stream_content_details.{type LiveStreamContentDetails}
 import google_youtube_api_v3/youtube/live_stream_snippet.{type LiveStreamSnippet}
 import google_youtube_api_v3/youtube/live_stream_status.{type LiveStreamStatus}
 
@@ -59,28 +57,27 @@ pub fn decoder() -> Decoder(LiveStream) {
     option.None,
     decode.optional(live_stream_status.decoder()),
   )
-  decode.success(LiveStream(
-    cdn,
-    content_details,
-    etag,
-    id,
-    kind,
-    snippet,
-    status,
-  ))
+  decode.success(
+    LiveStream(cdn, content_details, etag, id, kind, snippet, status),
+  )
 }
 
 pub fn to_json(value: LiveStream) -> Json {
-  json.object([
-    #("cdn", json.nullable(value.cdn, cdn_settings.to_json)),
-    #(
-      "contentDetails",
-      json.nullable(value.content_details, live_stream_content_details.to_json),
-    ),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, live_stream_snippet.to_json)),
-    #("status", json.nullable(value.status, live_stream_status.to_json)),
-  ])
+  json.object(
+    [
+      #("cdn", json.nullable(value.cdn, cdn_settings.to_json)),
+      #(
+        "contentDetails",
+        json.nullable(
+          value.content_details,
+          live_stream_content_details.to_json,
+        ),
+      ),
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("snippet", json.nullable(value.snippet, live_stream_snippet.to_json)),
+      #("status", json.nullable(value.status, live_stream_status.to_json)),
+    ],
+  )
 }

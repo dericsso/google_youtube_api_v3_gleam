@@ -32,16 +32,20 @@ pub fn decoder() -> Decoder(VideoAgeGating) {
 }
 
 pub fn to_json(value: VideoAgeGating) -> Json {
-  json.object([
-    #("alcoholContent", json.nullable(value.alcohol_content, json.bool)),
-    #("restricted", json.nullable(value.restricted, json.bool)),
-    #(
-      "videoGameRating",
-      json.nullable(value.video_game_rating, fn(e) {
-        json.string(video_game_rating_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #("alcoholContent", json.nullable(value.alcohol_content, json.bool)),
+      #("restricted", json.nullable(value.restricted, json.bool)),
+      #(
+        "videoGameRating",
+        json.nullable(
+          value.video_game_rating,
+          fn(e)
+          { json.string(video_game_rating_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// Video game rating, if any.

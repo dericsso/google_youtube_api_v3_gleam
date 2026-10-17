@@ -22,21 +22,25 @@ pub fn decoder() -> Decoder(LiveChatMembershipGiftingDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(LiveChatMembershipGiftingDetails(
-    gift_memberships_count,
-    gift_memberships_level_name,
-  ))
+  decode.success(
+    LiveChatMembershipGiftingDetails(
+      gift_memberships_count,
+      gift_memberships_level_name,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveChatMembershipGiftingDetails) -> Json {
-  json.object([
-    #(
-      "giftMembershipsCount",
-      json.nullable(value.gift_memberships_count, json.int),
-    ),
-    #(
-      "giftMembershipsLevelName",
-      json.nullable(value.gift_memberships_level_name, json.string),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "giftMembershipsCount",
+        json.nullable(value.gift_memberships_count, json.int),
+      ),
+      #(
+        "giftMembershipsLevelName",
+        json.nullable(value.gift_memberships_level_name, json.string),
+      ),
+    ],
+  )
 }

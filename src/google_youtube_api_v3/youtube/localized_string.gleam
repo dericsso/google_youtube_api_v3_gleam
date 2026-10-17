@@ -23,8 +23,10 @@ pub fn decoder() -> Decoder(LocalizedString) {
 }
 
 pub fn to_json(value: LocalizedString) -> Json {
-  json.object([
-    #("language", json.nullable(value.language, json.string)),
-    #("value", json.nullable(value.value, json.string)),
-  ])
+  json.object(
+    [
+      #("language", json.nullable(value.language, json.string)),
+      #("value", json.nullable(value.value, json.string)),
+    ],
+  )
 }

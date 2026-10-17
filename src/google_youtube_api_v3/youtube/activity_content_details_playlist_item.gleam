@@ -30,17 +30,21 @@ pub fn decoder() -> Decoder(ActivityContentDetailsPlaylistItem) {
     option.None,
     decode.optional(resource_id.decoder()),
   )
-  decode.success(ActivityContentDetailsPlaylistItem(
-    playlist_id,
-    playlist_item_id,
-    resource_id,
-  ))
+  decode.success(
+    ActivityContentDetailsPlaylistItem(
+      playlist_id,
+      playlist_item_id,
+      resource_id,
+    ),
+  )
 }
 
 pub fn to_json(value: ActivityContentDetailsPlaylistItem) -> Json {
-  json.object([
-    #("playlistId", json.nullable(value.playlist_id, json.string)),
-    #("playlistItemId", json.nullable(value.playlist_item_id, json.string)),
-    #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
-  ])
+  json.object(
+    [
+      #("playlistId", json.nullable(value.playlist_id, json.string)),
+      #("playlistItemId", json.nullable(value.playlist_item_id, json.string)),
+      #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
+    ],
+  )
 }

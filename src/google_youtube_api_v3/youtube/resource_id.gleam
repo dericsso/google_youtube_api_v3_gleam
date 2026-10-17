@@ -39,10 +39,12 @@ pub fn decoder() -> Decoder(ResourceId) {
 }
 
 pub fn to_json(value: ResourceId) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("playlistId", json.nullable(value.playlist_id, json.string)),
-    #("videoId", json.nullable(value.video_id, json.string)),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("playlistId", json.nullable(value.playlist_id, json.string)),
+      #("videoId", json.nullable(value.video_id, json.string)),
+    ],
+  )
 }

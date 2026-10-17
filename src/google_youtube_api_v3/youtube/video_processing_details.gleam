@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/video_processing_details_processing_progress.{
-  type VideoProcessingDetailsProcessingProgress,
-}
+import google_youtube_api_v3/youtube/video_processing_details_processing_progress.{type VideoProcessingDetailsProcessingProgress}
 
 /// Describes processing status and progress and availability of some other Video resource parts.
 pub type VideoProcessingDetails {
@@ -62,60 +60,68 @@ pub fn decoder() -> Decoder(VideoProcessingDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(VideoProcessingDetails(
-    editor_suggestions_availability,
-    file_details_availability,
-    processing_failure_reason,
-    processing_issues_availability,
-    processing_progress,
-    processing_status,
-    tag_suggestions_availability,
-    thumbnails_availability,
-  ))
+  decode.success(
+    VideoProcessingDetails(
+      editor_suggestions_availability,
+      file_details_availability,
+      processing_failure_reason,
+      processing_issues_availability,
+      processing_progress,
+      processing_status,
+      tag_suggestions_availability,
+      thumbnails_availability,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoProcessingDetails) -> Json {
-  json.object([
-    #(
-      "editorSuggestionsAvailability",
-      json.nullable(value.editor_suggestions_availability, json.string),
-    ),
-    #(
-      "fileDetailsAvailability",
-      json.nullable(value.file_details_availability, json.string),
-    ),
-    #(
-      "processingFailureReason",
-      json.nullable(value.processing_failure_reason, fn(e) {
-        json.string(processing_failure_reason_to_string(e))
-      }),
-    ),
-    #(
-      "processingIssuesAvailability",
-      json.nullable(value.processing_issues_availability, json.string),
-    ),
-    #(
-      "processingProgress",
-      json.nullable(
-        value.processing_progress,
-        video_processing_details_processing_progress.to_json,
+  json.object(
+    [
+      #(
+        "editorSuggestionsAvailability",
+        json.nullable(value.editor_suggestions_availability, json.string),
       ),
-    ),
-    #(
-      "processingStatus",
-      json.nullable(value.processing_status, fn(e) {
-        json.string(processing_status_to_string(e))
-      }),
-    ),
-    #(
-      "tagSuggestionsAvailability",
-      json.nullable(value.tag_suggestions_availability, json.string),
-    ),
-    #(
-      "thumbnailsAvailability",
-      json.nullable(value.thumbnails_availability, json.string),
-    ),
-  ])
+      #(
+        "fileDetailsAvailability",
+        json.nullable(value.file_details_availability, json.string),
+      ),
+      #(
+        "processingFailureReason",
+        json.nullable(
+          value.processing_failure_reason,
+          fn(e)
+          { json.string(processing_failure_reason_to_string(e)) },
+        ),
+      ),
+      #(
+        "processingIssuesAvailability",
+        json.nullable(value.processing_issues_availability, json.string),
+      ),
+      #(
+        "processingProgress",
+        json.nullable(
+          value.processing_progress,
+          video_processing_details_processing_progress.to_json,
+        ),
+      ),
+      #(
+        "processingStatus",
+        json.nullable(
+          value.processing_status,
+          fn(e)
+          { json.string(processing_status_to_string(e)) },
+        ),
+      ),
+      #(
+        "tagSuggestionsAvailability",
+        json.nullable(value.tag_suggestions_availability, json.string),
+      ),
+      #(
+        "thumbnailsAvailability",
+        json.nullable(value.thumbnails_availability, json.string),
+      ),
+    ],
+  )
 }
 
 /// The reason that YouTube failed to process the video. This property will only have a value if the processingStatus property's value is failed.
@@ -126,10 +132,9 @@ pub type ProcessingFailureReason {
   ProcessingFailureReasonOther
 }
 
-pub fn processing_failure_reason_to_string(
-  value: ProcessingFailureReason,
-) -> String {
-  case value {
+pub fn processing_failure_reason_to_string(value: ProcessingFailureReason) -> String {
+  case value
+  {
     ProcessingFailureReasonUploadFailed -> "uploadFailed"
     ProcessingFailureReasonTranscodeFailed -> "transcodeFailed"
     ProcessingFailureReasonStreamingFailed -> "streamingFailed"
@@ -144,11 +149,10 @@ pub fn processing_failure_reason_decoder() -> Decoder(ProcessingFailureReason) {
     "transcodeFailed" -> decode.success(ProcessingFailureReasonTranscodeFailed)
     "streamingFailed" -> decode.success(ProcessingFailureReasonStreamingFailed)
     "other" -> decode.success(ProcessingFailureReasonOther)
-    _ ->
-      decode.failure(
-        ProcessingFailureReasonUploadFailed,
-        "a valid ProcessingFailureReason",
-      )
+    _ -> decode.failure(
+      ProcessingFailureReasonUploadFailed,
+      "a valid ProcessingFailureReason",
+    )
   }
 }
 

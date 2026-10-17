@@ -3,12 +3,8 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/memberships_duration.{
-  type MembershipsDuration,
-}
-import google_youtube_api_v3/youtube/memberships_duration_at_level.{
-  type MembershipsDurationAtLevel,
-}
+import google_youtube_api_v3/youtube/memberships_duration.{type MembershipsDuration}
+import google_youtube_api_v3/youtube/memberships_duration_at_level.{type MembershipsDurationAtLevel}
 
 pub type MembershipsDetails {
   MembershipsDetails(
@@ -46,40 +42,48 @@ pub fn decoder() -> Decoder(MembershipsDetails) {
     option.None,
     decode.optional(decode.list(memberships_duration_at_level.decoder())),
   )
-  decode.success(MembershipsDetails(
-    accessible_levels,
-    highest_accessible_level,
-    highest_accessible_level_display_name,
-    memberships_duration,
-    memberships_duration_at_levels,
-  ))
+  decode.success(
+    MembershipsDetails(
+      accessible_levels,
+      highest_accessible_level,
+      highest_accessible_level_display_name,
+      memberships_duration,
+      memberships_duration_at_levels,
+    ),
+  )
 }
 
 pub fn to_json(value: MembershipsDetails) -> Json {
-  json.object([
-    #(
-      "accessibleLevels",
-      json.nullable(value.accessible_levels, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #(
-      "highestAccessibleLevel",
-      json.nullable(value.highest_accessible_level, json.string),
-    ),
-    #(
-      "highestAccessibleLevelDisplayName",
-      json.nullable(value.highest_accessible_level_display_name, json.string),
-    ),
-    #(
-      "membershipsDuration",
-      json.nullable(value.memberships_duration, memberships_duration.to_json),
-    ),
-    #(
-      "membershipsDurationAtLevels",
-      json.nullable(value.memberships_duration_at_levels, fn(items) {
-        json.array(items, memberships_duration_at_level.to_json)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "accessibleLevels",
+        json.nullable(
+          value.accessible_levels,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #(
+        "highestAccessibleLevel",
+        json.nullable(value.highest_accessible_level, json.string),
+      ),
+      #(
+        "highestAccessibleLevelDisplayName",
+        json.nullable(value.highest_accessible_level_display_name, json.string),
+      ),
+      #(
+        "membershipsDuration",
+        json.nullable(value.memberships_duration, memberships_duration.to_json),
+      ),
+      #(
+        "membershipsDurationAtLevels",
+        json.nullable(
+          value.memberships_duration_at_levels,
+          fn(items)
+          { json.array(items, memberships_duration_at_level.to_json) },
+        ),
+      ),
+    ],
+  )
 }

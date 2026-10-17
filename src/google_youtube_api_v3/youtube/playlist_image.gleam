@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/playlist_image_snippet.{
-  type PlaylistImageSnippet,
-}
+import google_youtube_api_v3/youtube/playlist_image_snippet.{type PlaylistImageSnippet}
 
 pub type PlaylistImage {
   PlaylistImage(
@@ -35,9 +33,11 @@ pub fn decoder() -> Decoder(PlaylistImage) {
 }
 
 pub fn to_json(value: PlaylistImage) -> Json {
-  json.object([
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, playlist_image_snippet.to_json)),
-  ])
+  json.object(
+    [
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("snippet", json.nullable(value.snippet, playlist_image_snippet.to_json)),
+    ],
+  )
 }

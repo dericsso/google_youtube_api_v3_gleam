@@ -24,13 +24,15 @@ pub fn decoder() -> Decoder(VideoRating) {
 }
 
 pub fn to_json(value: VideoRating) -> Json {
-  json.object([
-    #(
-      "rating",
-      json.nullable(value.rating, fn(e) { json.string(rating_to_string(e)) }),
-    ),
-    #("videoId", json.nullable(value.video_id, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "rating",
+        json.nullable(value.rating, fn(e) { json.string(rating_to_string(e)) }),
+      ),
+      #("videoId", json.nullable(value.video_id, json.string)),
+    ],
+  )
 }
 
 /// Rating of a video.

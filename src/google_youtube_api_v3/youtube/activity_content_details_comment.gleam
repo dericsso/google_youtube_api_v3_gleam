@@ -20,7 +20,7 @@ pub fn decoder() -> Decoder(ActivityContentDetailsComment) {
 }
 
 pub fn to_json(value: ActivityContentDetailsComment) -> Json {
-  json.object([
-    #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
-  ])
+  json.object(
+    [#("resourceId", json.nullable(value.resource_id, resource_id.to_json))],
+  )
 }

@@ -19,14 +19,18 @@ pub fn decoder() -> Decoder(PlaylistItemStatus) {
 }
 
 pub fn to_json(value: PlaylistItemStatus) -> Json {
-  json.object([
-    #(
-      "privacyStatus",
-      json.nullable(value.privacy_status, fn(e) {
-        json.string(privacy_status_to_string(e))
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "privacyStatus",
+        json.nullable(
+          value.privacy_status,
+          fn(e)
+          { json.string(privacy_status_to_string(e)) },
+        ),
+      ),
+    ],
+  )
 }
 
 /// This resource's privacy status.

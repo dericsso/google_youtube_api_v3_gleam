@@ -18,10 +18,12 @@ pub fn decoder() -> Decoder(LiveChatMessageRetractedDetails) {
 }
 
 pub fn to_json(value: LiveChatMessageRetractedDetails) -> Json {
-  json.object([
-    #(
-      "retractedMessageId",
-      json.nullable(value.retracted_message_id, json.string),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "retractedMessageId",
+        json.nullable(value.retracted_message_id, json.string),
+      ),
+    ],
+  )
 }

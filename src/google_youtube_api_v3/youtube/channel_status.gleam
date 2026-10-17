@@ -47,41 +47,49 @@ pub fn decoder() -> Decoder(ChannelStatus) {
     option.None,
     decode.optional(decode.bool),
   )
-  decode.success(ChannelStatus(
-    is_channel_monetization_enabled,
-    is_linked,
-    long_uploads_status,
-    made_for_kids,
-    privacy_status,
-    self_declared_made_for_kids,
-  ))
+  decode.success(
+    ChannelStatus(
+      is_channel_monetization_enabled,
+      is_linked,
+      long_uploads_status,
+      made_for_kids,
+      privacy_status,
+      self_declared_made_for_kids,
+    ),
+  )
 }
 
 pub fn to_json(value: ChannelStatus) -> Json {
-  json.object([
-    #(
-      "isChannelMonetizationEnabled",
-      json.nullable(value.is_channel_monetization_enabled, json.bool),
-    ),
-    #("isLinked", json.nullable(value.is_linked, json.bool)),
-    #(
-      "longUploadsStatus",
-      json.nullable(value.long_uploads_status, fn(e) {
-        json.string(long_uploads_status_to_string(e))
-      }),
-    ),
-    #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
-    #(
-      "privacyStatus",
-      json.nullable(value.privacy_status, fn(e) {
-        json.string(privacy_status_to_string(e))
-      }),
-    ),
-    #(
-      "selfDeclaredMadeForKids",
-      json.nullable(value.self_declared_made_for_kids, json.bool),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "isChannelMonetizationEnabled",
+        json.nullable(value.is_channel_monetization_enabled, json.bool),
+      ),
+      #("isLinked", json.nullable(value.is_linked, json.bool)),
+      #(
+        "longUploadsStatus",
+        json.nullable(
+          value.long_uploads_status,
+          fn(e)
+          { json.string(long_uploads_status_to_string(e)) },
+        ),
+      ),
+      #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
+      #(
+        "privacyStatus",
+        json.nullable(
+          value.privacy_status,
+          fn(e)
+          { json.string(privacy_status_to_string(e)) },
+        ),
+      ),
+      #(
+        "selfDeclaredMadeForKids",
+        json.nullable(value.self_declared_made_for_kids, json.bool),
+      ),
+    ],
+  )
 }
 
 /// The long uploads status of this channel. See https://support.google.com/youtube/answer/71673 for more information.
@@ -104,16 +112,16 @@ pub fn long_uploads_status_to_string(value: LongUploadsStatus) -> String {
 pub fn long_uploads_status_decoder() -> Decoder(LongUploadsStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "longUploadsUnspecified" ->
-      decode.success(LongUploadsStatusLongUploadsUnspecified)
+    "longUploadsUnspecified" -> decode.success(
+      LongUploadsStatusLongUploadsUnspecified,
+    )
     "allowed" -> decode.success(LongUploadsStatusAllowed)
     "eligible" -> decode.success(LongUploadsStatusEligible)
     "disallowed" -> decode.success(LongUploadsStatusDisallowed)
-    _ ->
-      decode.failure(
-        LongUploadsStatusLongUploadsUnspecified,
-        "a valid LongUploadsStatus",
-      )
+    _ -> decode.failure(
+      LongUploadsStatusLongUploadsUnspecified,
+      "a valid LongUploadsStatus",
+    )
   }
 }
 

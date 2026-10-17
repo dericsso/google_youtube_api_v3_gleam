@@ -48,26 +48,30 @@ pub fn decoder() -> Decoder(CommentThreadSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(CommentThreadSnippet(
-    can_reply,
-    channel_id,
-    is_public,
-    top_level_comment,
-    total_reply_count,
-    video_id,
-  ))
+  decode.success(
+    CommentThreadSnippet(
+      can_reply,
+      channel_id,
+      is_public,
+      top_level_comment,
+      total_reply_count,
+      video_id,
+    ),
+  )
 }
 
 pub fn to_json(value: CommentThreadSnippet) -> Json {
-  json.object([
-    #("canReply", json.nullable(value.can_reply, json.bool)),
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("isPublic", json.nullable(value.is_public, json.bool)),
-    #(
-      "topLevelComment",
-      json.nullable(value.top_level_comment, comment.to_json),
-    ),
-    #("totalReplyCount", json.nullable(value.total_reply_count, json.int)),
-    #("videoId", json.nullable(value.video_id, json.string)),
-  ])
+  json.object(
+    [
+      #("canReply", json.nullable(value.can_reply, json.bool)),
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("isPublic", json.nullable(value.is_public, json.bool)),
+      #(
+        "topLevelComment",
+        json.nullable(value.top_level_comment, comment.to_json),
+      ),
+      #("totalReplyCount", json.nullable(value.total_reply_count, json.int)),
+      #("videoId", json.nullable(value.video_id, json.string)),
+    ],
+  )
 }

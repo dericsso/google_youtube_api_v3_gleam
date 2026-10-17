@@ -24,17 +24,23 @@ pub fn decoder() -> Decoder(AvailabilityConfigGlobalConfig) {
     option.None,
     decode.optional(interval.decoder()),
   )
-  decode.success(AvailabilityConfigGlobalConfig(excluded_region_codes, interval))
+  decode.success(
+    AvailabilityConfigGlobalConfig(excluded_region_codes, interval),
+  )
 }
 
 pub fn to_json(value: AvailabilityConfigGlobalConfig) -> Json {
-  json.object([
-    #(
-      "excludedRegionCodes",
-      json.nullable(value.excluded_region_codes, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #("interval", json.nullable(value.interval, interval.to_json)),
-  ])
+  json.object(
+    [
+      #(
+        "excludedRegionCodes",
+        json.nullable(
+          value.excluded_region_codes,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #("interval", json.nullable(value.interval, interval.to_json)),
+    ],
+  )
 }

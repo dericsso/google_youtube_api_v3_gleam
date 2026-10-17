@@ -59,32 +59,40 @@ pub fn decoder() -> Decoder(VideoFileDetailsVideoStream) {
     option.None,
     decode.optional(decode.int),
   )
-  decode.success(VideoFileDetailsVideoStream(
-    aspect_ratio,
-    bitrate_bps,
-    codec,
-    frame_rate_fps,
-    height_pixels,
-    rotation,
-    vendor,
-    width_pixels,
-  ))
+  decode.success(
+    VideoFileDetailsVideoStream(
+      aspect_ratio,
+      bitrate_bps,
+      codec,
+      frame_rate_fps,
+      height_pixels,
+      rotation,
+      vendor,
+      width_pixels,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoFileDetailsVideoStream) -> Json {
-  json.object([
-    #("aspectRatio", json.nullable(value.aspect_ratio, json.float)),
-    #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
-    #("codec", json.nullable(value.codec, json.string)),
-    #("frameRateFps", json.nullable(value.frame_rate_fps, json.float)),
-    #("heightPixels", json.nullable(value.height_pixels, json.int)),
-    #(
-      "rotation",
-      json.nullable(value.rotation, fn(e) { json.string(rotation_to_string(e)) }),
-    ),
-    #("vendor", json.nullable(value.vendor, json.string)),
-    #("widthPixels", json.nullable(value.width_pixels, json.int)),
-  ])
+  json.object(
+    [
+      #("aspectRatio", json.nullable(value.aspect_ratio, json.float)),
+      #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
+      #("codec", json.nullable(value.codec, json.string)),
+      #("frameRateFps", json.nullable(value.frame_rate_fps, json.float)),
+      #("heightPixels", json.nullable(value.height_pixels, json.int)),
+      #(
+        "rotation",
+        json.nullable(
+          value.rotation,
+          fn(e)
+          { json.string(rotation_to_string(e)) },
+        ),
+      ),
+      #("vendor", json.nullable(value.vendor, json.string)),
+      #("widthPixels", json.nullable(value.width_pixels, json.int)),
+    ],
+  )
 }
 
 /// The amount that YouTube needs to rotate the original source content to properly display the video.

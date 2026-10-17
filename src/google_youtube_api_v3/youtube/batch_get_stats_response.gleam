@@ -34,14 +34,18 @@ pub fn decoder() -> Decoder(BatchGetStatsResponse) {
 }
 
 pub fn to_json(value: BatchGetStatsResponse) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #(
-      "items",
-      json.nullable(value.items, fn(items) {
-        json.array(items, video_stat.to_json)
-      }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, video_stat.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+    ],
+  )
 }

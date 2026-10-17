@@ -41,30 +41,34 @@ pub fn decoder() -> Decoder(IngestionInfo) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(IngestionInfo(
-    backup_ingestion_address,
-    ingestion_address,
-    rtmps_backup_ingestion_address,
-    rtmps_ingestion_address,
-    stream_name,
-  ))
+  decode.success(
+    IngestionInfo(
+      backup_ingestion_address,
+      ingestion_address,
+      rtmps_backup_ingestion_address,
+      rtmps_ingestion_address,
+      stream_name,
+    ),
+  )
 }
 
 pub fn to_json(value: IngestionInfo) -> Json {
-  json.object([
-    #(
-      "backupIngestionAddress",
-      json.nullable(value.backup_ingestion_address, json.string),
-    ),
-    #("ingestionAddress", json.nullable(value.ingestion_address, json.string)),
-    #(
-      "rtmpsBackupIngestionAddress",
-      json.nullable(value.rtmps_backup_ingestion_address, json.string),
-    ),
-    #(
-      "rtmpsIngestionAddress",
-      json.nullable(value.rtmps_ingestion_address, json.string),
-    ),
-    #("streamName", json.nullable(value.stream_name, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "backupIngestionAddress",
+        json.nullable(value.backup_ingestion_address, json.string),
+      ),
+      #("ingestionAddress", json.nullable(value.ingestion_address, json.string)),
+      #(
+        "rtmpsBackupIngestionAddress",
+        json.nullable(value.rtmps_backup_ingestion_address, json.string),
+      ),
+      #(
+        "rtmpsIngestionAddress",
+        json.nullable(value.rtmps_ingestion_address, json.string),
+      ),
+      #("streamName", json.nullable(value.stream_name, json.string)),
+    ],
+  )
 }

@@ -93,10 +93,7 @@ pub fn list_add_part(params: ListParams, value: String) -> ListParams {
   )
 }
 
-pub fn list_with_profile_image_size(
-  params: ListParams,
-  value: Int,
-) -> ListParams {
+pub fn list_with_profile_image_size(params: ListParams, value: Int) -> ListParams {
   ListParams(
     params.live_chat_id,
     params.part,
@@ -144,26 +141,32 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/liveChat/messages",
-    list.flatten([
-      [#("liveChatId", params.live_chat_id)],
-      list.map(params.part, fn(v) { #("part", v) }),
-      case params.hl {
-        option.Some(v) -> [#("hl", v)]
-        option.None -> []
-      },
-      case params.max_results {
-        option.Some(v) -> [#("maxResults", int.to_string(v))]
-        option.None -> []
-      },
-      case params.page_token {
-        option.Some(v) -> [#("pageToken", v)]
-        option.None -> []
-      },
-      case params.profile_image_size {
-        option.Some(v) -> [#("profileImageSize", int.to_string(v))]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [
+        [#("liveChatId", params.live_chat_id)],
+        list.map(params.part, fn(v) { #("part", v) }),
+        case params.hl
+        {
+          option.Some(v) -> [#("hl", v)]
+          option.None -> []
+        },
+        case params.max_results
+        {
+          option.Some(v) -> [#("maxResults", int.to_string(v))]
+          option.None -> []
+        },
+        case params.page_token
+        {
+          option.Some(v) -> [#("pageToken", v)]
+          option.None -> []
+        },
+        case params.profile_image_size
+        {
+          option.Some(v) -> [#("profileImageSize", int.to_string(v))]
+          option.None -> []
+        },
+      ],
+    ),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -183,17 +186,11 @@ pub fn transition() -> TransitionParams {
   TransitionParams(option.None, option.None)
 }
 
-pub fn transition_with_status(
-  params: TransitionParams,
-  value: TransitionStatus,
-) -> TransitionParams {
+pub fn transition_with_status(params: TransitionParams, value: TransitionStatus) -> TransitionParams {
   TransitionParams(params.id, option.Some(value))
 }
 
-pub fn transition_with_id(
-  params: TransitionParams,
-  value: String,
-) -> TransitionParams {
+pub fn transition_with_id(params: TransitionParams, value: String) -> TransitionParams {
   TransitionParams(option.Some(value), params.status)
 }
 
@@ -201,16 +198,13 @@ pub fn transition_request(params: TransitionParams) -> Request {
   Request(
     http.Post,
     "youtube/v3/liveChat/messages/transition",
-    list.flatten([
-      case params.id {
-        option.Some(v) -> [#("id", v)]
-        option.None -> []
-      },
-      case params.status {
-        option.Some(v) -> [#("status", transition_status_to_string(v))]
-        option.None -> []
-      },
-    ]),
+    list.flatten([case params.id {
+          option.Some(v) -> [#("id", v)]
+          option.None -> []
+        }, case params.status {
+          option.Some(v) -> [#("status", transition_status_to_string(v))]
+          option.None -> []
+        }]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -238,10 +232,9 @@ pub fn transition_status_decoder() -> Decoder(TransitionStatus) {
   case value {
     "statusUnspecified" -> decode.success(TransitionStatusStatusUnspecified)
     "closed" -> decode.success(TransitionStatusClosed)
-    _ ->
-      decode.failure(
-        TransitionStatusStatusUnspecified,
-        "a valid TransitionStatus",
-      )
+    _ -> decode.failure(
+      TransitionStatusStatusUnspecified,
+      "a valid TransitionStatus",
+    )
   }
 }

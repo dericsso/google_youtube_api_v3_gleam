@@ -4,30 +4,16 @@ import gleam/dict.{type Dict}
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/channel_audit_details.{
-  type ChannelAuditDetails,
-}
-import google_youtube_api_v3/youtube/channel_branding_settings.{
-  type ChannelBrandingSettings,
-}
-import google_youtube_api_v3/youtube/channel_content_details.{
-  type ChannelContentDetails,
-}
-import google_youtube_api_v3/youtube/channel_content_owner_details.{
-  type ChannelContentOwnerDetails,
-}
-import google_youtube_api_v3/youtube/channel_conversion_pings.{
-  type ChannelConversionPings,
-}
-import google_youtube_api_v3/youtube/channel_localization.{
-  type ChannelLocalization,
-}
+import google_youtube_api_v3/youtube/channel_audit_details.{type ChannelAuditDetails}
+import google_youtube_api_v3/youtube/channel_branding_settings.{type ChannelBrandingSettings}
+import google_youtube_api_v3/youtube/channel_content_details.{type ChannelContentDetails}
+import google_youtube_api_v3/youtube/channel_content_owner_details.{type ChannelContentOwnerDetails}
+import google_youtube_api_v3/youtube/channel_conversion_pings.{type ChannelConversionPings}
+import google_youtube_api_v3/youtube/channel_localization.{type ChannelLocalization}
 import google_youtube_api_v3/youtube/channel_snippet.{type ChannelSnippet}
 import google_youtube_api_v3/youtube/channel_statistics.{type ChannelStatistics}
 import google_youtube_api_v3/youtube/channel_status.{type ChannelStatus}
-import google_youtube_api_v3/youtube/channel_topic_details.{
-  type ChannelTopicDetails,
-}
+import google_youtube_api_v3/youtube/channel_topic_details.{type ChannelTopicDetails}
 
 /// A *channel* resource contains information about a YouTube channel.
 pub type Channel {
@@ -114,63 +100,75 @@ pub fn decoder() -> Decoder(Channel) {
     option.None,
     decode.optional(channel_topic_details.decoder()),
   )
-  decode.success(Channel(
-    audit_details,
-    branding_settings,
-    content_details,
-    content_owner_details,
-    conversion_pings,
-    etag,
-    id,
-    kind,
-    localizations,
-    snippet,
-    statistics,
-    status,
-    topic_details,
-  ))
+  decode.success(
+    Channel(
+      audit_details,
+      branding_settings,
+      content_details,
+      content_owner_details,
+      conversion_pings,
+      etag,
+      id,
+      kind,
+      localizations,
+      snippet,
+      statistics,
+      status,
+      topic_details,
+    ),
+  )
 }
 
 pub fn to_json(value: Channel) -> Json {
-  json.object([
-    #(
-      "auditDetails",
-      json.nullable(value.audit_details, channel_audit_details.to_json),
-    ),
-    #(
-      "brandingSettings",
-      json.nullable(value.branding_settings, channel_branding_settings.to_json),
-    ),
-    #(
-      "contentDetails",
-      json.nullable(value.content_details, channel_content_details.to_json),
-    ),
-    #(
-      "contentOwnerDetails",
-      json.nullable(
-        value.content_owner_details,
-        channel_content_owner_details.to_json,
+  json.object(
+    [
+      #(
+        "auditDetails",
+        json.nullable(value.audit_details, channel_audit_details.to_json),
       ),
-    ),
-    #(
-      "conversionPings",
-      json.nullable(value.conversion_pings, channel_conversion_pings.to_json),
-    ),
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #(
-      "localizations",
-      json.nullable(value.localizations, fn(d) {
-        json.dict(d, fn(k) { k }, channel_localization.to_json)
-      }),
-    ),
-    #("snippet", json.nullable(value.snippet, channel_snippet.to_json)),
-    #("statistics", json.nullable(value.statistics, channel_statistics.to_json)),
-    #("status", json.nullable(value.status, channel_status.to_json)),
-    #(
-      "topicDetails",
-      json.nullable(value.topic_details, channel_topic_details.to_json),
-    ),
-  ])
+      #(
+        "brandingSettings",
+        json.nullable(
+          value.branding_settings,
+          channel_branding_settings.to_json,
+        ),
+      ),
+      #(
+        "contentDetails",
+        json.nullable(value.content_details, channel_content_details.to_json),
+      ),
+      #(
+        "contentOwnerDetails",
+        json.nullable(
+          value.content_owner_details,
+          channel_content_owner_details.to_json,
+        ),
+      ),
+      #(
+        "conversionPings",
+        json.nullable(value.conversion_pings, channel_conversion_pings.to_json),
+      ),
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #(
+        "localizations",
+        json.nullable(
+          value.localizations,
+          fn(d)
+          { json.dict(d, fn(k) { k }, channel_localization.to_json) },
+        ),
+      ),
+      #("snippet", json.nullable(value.snippet, channel_snippet.to_json)),
+      #(
+        "statistics",
+        json.nullable(value.statistics, channel_statistics.to_json),
+      ),
+      #("status", json.nullable(value.status, channel_status.to_json)),
+      #(
+        "topicDetails",
+        json.nullable(value.topic_details, channel_topic_details.to_json),
+      ),
+    ],
+  )
 }

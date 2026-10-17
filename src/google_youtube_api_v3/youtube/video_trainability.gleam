@@ -39,15 +39,19 @@ pub fn decoder() -> Decoder(VideoTrainability) {
 }
 
 pub fn to_json(value: VideoTrainability) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #(
-      "permitted",
-      json.nullable(value.permitted, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #("videoId", json.nullable(value.video_id, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #(
+        "permitted",
+        json.nullable(
+          value.permitted,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #("videoId", json.nullable(value.video_id, json.string)),
+    ],
+  )
 }

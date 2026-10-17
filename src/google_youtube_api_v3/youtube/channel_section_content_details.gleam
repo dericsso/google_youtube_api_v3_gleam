@@ -27,16 +27,24 @@ pub fn decoder() -> Decoder(ChannelSectionContentDetails) {
 }
 
 pub fn to_json(value: ChannelSectionContentDetails) -> Json {
-  json.object([
-    #(
-      "channels",
-      json.nullable(value.channels, fn(items) { json.array(items, json.string) }),
-    ),
-    #(
-      "playlists",
-      json.nullable(value.playlists, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "channels",
+        json.nullable(
+          value.channels,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #(
+        "playlists",
+        json.nullable(
+          value.playlists,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+    ],
+  )
 }

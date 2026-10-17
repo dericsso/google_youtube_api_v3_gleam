@@ -27,14 +27,24 @@ pub fn decoder() -> Decoder(VideoContentDetailsRegionRestriction) {
 }
 
 pub fn to_json(value: VideoContentDetailsRegionRestriction) -> Json {
-  json.object([
-    #(
-      "allowed",
-      json.nullable(value.allowed, fn(items) { json.array(items, json.string) }),
-    ),
-    #(
-      "blocked",
-      json.nullable(value.blocked, fn(items) { json.array(items, json.string) }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "allowed",
+        json.nullable(
+          value.allowed,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #(
+        "blocked",
+        json.nullable(
+          value.blocked,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+    ],
+  )
 }

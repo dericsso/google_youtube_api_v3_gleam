@@ -29,23 +29,27 @@ pub fn decoder() -> Decoder(MonitorStreamInfo) {
     option.None,
     decode.optional(decode.bool),
   )
-  decode.success(MonitorStreamInfo(
-    broadcast_stream_delay_ms,
-    embed_html,
-    enable_monitor_stream,
-  ))
+  decode.success(
+    MonitorStreamInfo(
+      broadcast_stream_delay_ms,
+      embed_html,
+      enable_monitor_stream,
+    ),
+  )
 }
 
 pub fn to_json(value: MonitorStreamInfo) -> Json {
-  json.object([
-    #(
-      "broadcastStreamDelayMs",
-      json.nullable(value.broadcast_stream_delay_ms, json.int),
-    ),
-    #("embedHtml", json.nullable(value.embed_html, json.string)),
-    #(
-      "enableMonitorStream",
-      json.nullable(value.enable_monitor_stream, json.bool),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "broadcastStreamDelayMs",
+        json.nullable(value.broadcast_stream_delay_ms, json.int),
+      ),
+      #("embedHtml", json.nullable(value.embed_html, json.string)),
+      #(
+        "enableMonitorStream",
+        json.nullable(value.enable_monitor_stream, json.bool),
+      ),
+    ],
+  )
 }

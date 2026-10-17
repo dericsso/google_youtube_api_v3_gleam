@@ -27,18 +27,24 @@ pub fn decoder() -> Decoder(ChannelTopicDetails) {
 }
 
 pub fn to_json(value: ChannelTopicDetails) -> Json {
-  json.object([
-    #(
-      "topicCategories",
-      json.nullable(value.topic_categories, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-    #(
-      "topicIds",
-      json.nullable(value.topic_ids, fn(items) {
-        json.array(items, json.string)
-      }),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "topicCategories",
+        json.nullable(
+          value.topic_categories,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+      #(
+        "topicIds",
+        json.nullable(
+          value.topic_ids,
+          fn(items)
+          { json.array(items, json.string) },
+        ),
+      ),
+    ],
+  )
 }

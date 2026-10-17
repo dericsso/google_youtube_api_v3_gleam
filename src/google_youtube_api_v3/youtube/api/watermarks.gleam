@@ -16,10 +16,7 @@ pub fn set(channel_id: String) -> SetParams {
   SetParams(channel_id, option.None)
 }
 
-pub fn set_with_on_behalf_of_content_owner(
-  params: SetParams,
-  value: String,
-) -> SetParams {
+pub fn set_with_on_behalf_of_content_owner(params: SetParams, value: String) -> SetParams {
   SetParams(params.channel_id, option.Some(value))
 }
 
@@ -27,13 +24,16 @@ pub fn set_request(params: SetParams, body: InvideoBranding) -> Request {
   Request(
     http.Post,
     "youtube/v3/watermarks/set",
-    list.flatten([
-      [#("channelId", params.channel_id)],
-      case params.on_behalf_of_content_owner {
-        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [
+        [#("channelId", params.channel_id)],
+        case params.on_behalf_of_content_owner
+        {
+          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+          option.None -> []
+        },
+      ],
+    ),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -54,10 +54,7 @@ pub fn unset(channel_id: String) -> UnsetParams {
   UnsetParams(channel_id, option.None)
 }
 
-pub fn unset_with_on_behalf_of_content_owner(
-  params: UnsetParams,
-  value: String,
-) -> UnsetParams {
+pub fn unset_with_on_behalf_of_content_owner(params: UnsetParams, value: String) -> UnsetParams {
   UnsetParams(params.channel_id, option.Some(value))
 }
 
@@ -65,13 +62,16 @@ pub fn unset_request(params: UnsetParams) -> Request {
   Request(
     http.Post,
     "youtube/v3/watermarks/unset",
-    list.flatten([
-      [#("channelId", params.channel_id)],
-      case params.on_behalf_of_content_owner {
-        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-        option.None -> []
-      },
-    ]),
+    list.flatten(
+      [
+        [#("channelId", params.channel_id)],
+        case params.on_behalf_of_content_owner
+        {
+          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+          option.None -> []
+        },
+      ],
+    ),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

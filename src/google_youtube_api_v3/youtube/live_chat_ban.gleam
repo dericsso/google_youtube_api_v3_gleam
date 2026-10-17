@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/live_chat_ban_snippet.{
-  type LiveChatBanSnippet,
-}
+import google_youtube_api_v3/youtube/live_chat_ban_snippet.{type LiveChatBanSnippet}
 
 /// A `__liveChatBan__` resource represents a ban for a YouTube live chat.
 pub type LiveChatBan {
@@ -42,10 +40,12 @@ pub fn decoder() -> Decoder(LiveChatBan) {
 }
 
 pub fn to_json(value: LiveChatBan) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("snippet", json.nullable(value.snippet, live_chat_ban_snippet.to_json)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("snippet", json.nullable(value.snippet, live_chat_ban_snippet.to_json)),
+    ],
+  )
 }

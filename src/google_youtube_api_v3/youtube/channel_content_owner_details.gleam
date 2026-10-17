@@ -27,8 +27,10 @@ pub fn decoder() -> Decoder(ChannelContentOwnerDetails) {
 }
 
 pub fn to_json(value: ChannelContentOwnerDetails) -> Json {
-  json.object([
-    #("contentOwner", json.nullable(value.content_owner, json.string)),
-    #("timeLinked", json.nullable(value.time_linked, json.string)),
-  ])
+  json.object(
+    [
+      #("contentOwner", json.nullable(value.content_owner, json.string)),
+      #("timeLinked", json.nullable(value.time_linked, json.string)),
+    ],
+  )
 }

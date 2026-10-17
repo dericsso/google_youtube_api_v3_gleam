@@ -30,25 +30,25 @@ pub fn decoder() -> Decoder(ActivityContentDetailsRecommendation) {
     option.None,
     decode.optional(resource_id.decoder()),
   )
-  decode.success(ActivityContentDetailsRecommendation(
-    reason,
-    resource_id,
-    seed_resource_id,
-  ))
+  decode.success(
+    ActivityContentDetailsRecommendation(reason, resource_id, seed_resource_id),
+  )
 }
 
 pub fn to_json(value: ActivityContentDetailsRecommendation) -> Json {
-  json.object([
-    #(
-      "reason",
-      json.nullable(value.reason, fn(e) { json.string(reason_to_string(e)) }),
-    ),
-    #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
-    #(
-      "seedResourceId",
-      json.nullable(value.seed_resource_id, resource_id.to_json),
-    ),
-  ])
+  json.object(
+    [
+      #(
+        "reason",
+        json.nullable(value.reason, fn(e) { json.string(reason_to_string(e)) }),
+      ),
+      #("resourceId", json.nullable(value.resource_id, resource_id.to_json)),
+      #(
+        "seedResourceId",
+        json.nullable(value.seed_resource_id, resource_id.to_json),
+      ),
+    ],
+  )
 }
 
 /// The reason that the resource is recommended to the user.

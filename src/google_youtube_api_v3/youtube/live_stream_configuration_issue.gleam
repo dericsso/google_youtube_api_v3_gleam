@@ -34,27 +34,30 @@ pub fn decoder() -> Decoder(LiveStreamConfigurationIssue) {
     option.None,
     decode.optional(type_decoder()),
   )
-  decode.success(LiveStreamConfigurationIssue(
-    description,
-    reason,
-    severity,
-    type_,
-  ))
+  decode.success(
+    LiveStreamConfigurationIssue(description, reason, severity, type_),
+  )
 }
 
 pub fn to_json(value: LiveStreamConfigurationIssue) -> Json {
-  json.object([
-    #("description", json.nullable(value.description, json.string)),
-    #("reason", json.nullable(value.reason, json.string)),
-    #(
-      "severity",
-      json.nullable(value.severity, fn(e) { json.string(severity_to_string(e)) }),
-    ),
-    #(
-      "type",
-      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-    ),
-  ])
+  json.object(
+    [
+      #("description", json.nullable(value.description, json.string)),
+      #("reason", json.nullable(value.reason, json.string)),
+      #(
+        "severity",
+        json.nullable(
+          value.severity,
+          fn(e)
+          { json.string(severity_to_string(e)) },
+        ),
+      ),
+      #(
+        "type",
+        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+      ),
+    ],
+  )
 }
 
 /// How severe this issue is to the stream.
@@ -193,11 +196,13 @@ pub fn type_decoder() -> Decoder(Type) {
     "audioCodecMismatch" -> decode.success(TypeAudioCodecMismatch)
     "audioBitrateMismatch" -> decode.success(TypeAudioBitrateMismatch)
     "videoResolutionSuboptimal" -> decode.success(TypeVideoResolutionSuboptimal)
-    "videoResolutionUnsupported" ->
-      decode.success(TypeVideoResolutionUnsupported)
+    "videoResolutionUnsupported" -> decode.success(
+      TypeVideoResolutionUnsupported,
+    )
     "videoIngestionStarved" -> decode.success(TypeVideoIngestionStarved)
-    "videoIngestionFasterThanRealtime" ->
-      decode.success(TypeVideoIngestionFasterThanRealtime)
+    "videoIngestionFasterThanRealtime" -> decode.success(
+      TypeVideoIngestionFasterThanRealtime,
+    )
     _ -> decode.failure(TypeGopSizeOver, "a valid Type")
   }
 }

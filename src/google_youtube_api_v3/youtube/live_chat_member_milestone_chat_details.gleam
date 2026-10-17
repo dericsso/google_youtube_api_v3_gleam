@@ -28,17 +28,21 @@ pub fn decoder() -> Decoder(LiveChatMemberMilestoneChatDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(LiveChatMemberMilestoneChatDetails(
-    member_level_name,
-    member_month,
-    user_comment,
-  ))
+  decode.success(
+    LiveChatMemberMilestoneChatDetails(
+      member_level_name,
+      member_month,
+      user_comment,
+    ),
+  )
 }
 
 pub fn to_json(value: LiveChatMemberMilestoneChatDetails) -> Json {
-  json.object([
-    #("memberLevelName", json.nullable(value.member_level_name, json.string)),
-    #("memberMonth", json.nullable(value.member_month, json.int)),
-    #("userComment", json.nullable(value.user_comment, json.string)),
-  ])
+  json.object(
+    [
+      #("memberLevelName", json.nullable(value.member_level_name, json.string)),
+      #("memberMonth", json.nullable(value.member_month, json.int)),
+      #("userComment", json.nullable(value.user_comment, json.string)),
+    ],
+  )
 }

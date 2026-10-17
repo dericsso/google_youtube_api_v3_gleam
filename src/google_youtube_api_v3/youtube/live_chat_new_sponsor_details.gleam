@@ -26,8 +26,10 @@ pub fn decoder() -> Decoder(LiveChatNewSponsorDetails) {
 }
 
 pub fn to_json(value: LiveChatNewSponsorDetails) -> Json {
-  json.object([
-    #("isUpgrade", json.nullable(value.is_upgrade, json.bool)),
-    #("memberLevelName", json.nullable(value.member_level_name, json.string)),
-  ])
+  json.object(
+    [
+      #("isUpgrade", json.nullable(value.is_upgrade, json.bool)),
+      #("memberLevelName", json.nullable(value.member_level_name, json.string)),
+    ],
+  )
 }

@@ -43,21 +43,19 @@ pub fn decoder() -> Decoder(InvideoBranding) {
     option.None,
     decode.optional(invideo_timing.decoder()),
   )
-  decode.success(InvideoBranding(
-    image_bytes,
-    image_url,
-    position,
-    target_channel_id,
-    timing,
-  ))
+  decode.success(
+    InvideoBranding(image_bytes, image_url, position, target_channel_id, timing),
+  )
 }
 
 pub fn to_json(value: InvideoBranding) -> Json {
-  json.object([
-    #("imageBytes", json.nullable(value.image_bytes, json.string)),
-    #("imageUrl", json.nullable(value.image_url, json.string)),
-    #("position", json.nullable(value.position, invideo_position.to_json)),
-    #("targetChannelId", json.nullable(value.target_channel_id, json.string)),
-    #("timing", json.nullable(value.timing, invideo_timing.to_json)),
-  ])
+  json.object(
+    [
+      #("imageBytes", json.nullable(value.image_bytes, json.string)),
+      #("imageUrl", json.nullable(value.image_url, json.string)),
+      #("position", json.nullable(value.position, invideo_position.to_json)),
+      #("targetChannelId", json.nullable(value.target_channel_id, json.string)),
+      #("timing", json.nullable(value.timing, invideo_timing.to_json)),
+    ],
+  )
 }

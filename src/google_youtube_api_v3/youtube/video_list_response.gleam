@@ -67,35 +67,43 @@ pub fn decoder() -> Decoder(VideoListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(VideoListResponse(
-    etag,
-    event_id,
-    items,
-    kind,
-    next_page_token,
-    page_info,
-    prev_page_token,
-    token_pagination,
-    visitor_id,
-  ))
+  decode.success(
+    VideoListResponse(
+      etag,
+      event_id,
+      items,
+      kind,
+      next_page_token,
+      page_info,
+      prev_page_token,
+      token_pagination,
+      visitor_id,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoListResponse) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("eventId", json.nullable(value.event_id, json.string)),
-    #(
-      "items",
-      json.nullable(value.items, fn(items) { json.array(items, video.to_json) }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-    #("pageInfo", json.nullable(value.page_info, page_info.to_json)),
-    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-    #(
-      "tokenPagination",
-      json.nullable(value.token_pagination, token_pagination.to_json),
-    ),
-    #("visitorId", json.nullable(value.visitor_id, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("eventId", json.nullable(value.event_id, json.string)),
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, video.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+      #("pageInfo", json.nullable(value.page_info, page_info.to_json)),
+      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+      #(
+        "tokenPagination",
+        json.nullable(value.token_pagination, token_pagination.to_json),
+      ),
+      #("visitorId", json.nullable(value.visitor_id, json.string)),
+    ],
+  )
 }

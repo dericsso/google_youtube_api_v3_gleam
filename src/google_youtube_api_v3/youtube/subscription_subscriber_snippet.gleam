@@ -36,19 +36,21 @@ pub fn decoder() -> Decoder(SubscriptionSubscriberSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(SubscriptionSubscriberSnippet(
-    channel_id,
-    description,
-    thumbnails,
-    title,
-  ))
+  decode.success(
+    SubscriptionSubscriberSnippet(channel_id, description, thumbnails, title),
+  )
 }
 
 pub fn to_json(value: SubscriptionSubscriberSnippet) -> Json {
-  json.object([
-    #("channelId", json.nullable(value.channel_id, json.string)),
-    #("description", json.nullable(value.description, json.string)),
-    #("thumbnails", json.nullable(value.thumbnails, thumbnail_details.to_json)),
-    #("title", json.nullable(value.title, json.string)),
-  ])
+  json.object(
+    [
+      #("channelId", json.nullable(value.channel_id, json.string)),
+      #("description", json.nullable(value.description, json.string)),
+      #(
+        "thumbnails",
+        json.nullable(value.thumbnails, thumbnail_details.to_json),
+      ),
+      #("title", json.nullable(value.title, json.string)),
+    ],
+  )
 }

@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/test_item_test_item_snippet.{
-  type TestItemTestItemSnippet,
-}
+import google_youtube_api_v3/youtube/test_item_test_item_snippet.{type TestItemTestItemSnippet}
 
 pub type TestItem {
   TestItem(
@@ -47,14 +45,16 @@ pub fn decoder() -> Decoder(TestItem) {
 }
 
 pub fn to_json(value: TestItem) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("featuredPart", json.nullable(value.featured_part, json.bool)),
-    #("gaia", json.nullable(value.gaia, json.string)),
-    #("id", json.nullable(value.id, json.string)),
-    #(
-      "snippet",
-      json.nullable(value.snippet, test_item_test_item_snippet.to_json),
-    ),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("featuredPart", json.nullable(value.featured_part, json.bool)),
+      #("gaia", json.nullable(value.gaia, json.string)),
+      #("id", json.nullable(value.id, json.string)),
+      #(
+        "snippet",
+        json.nullable(value.snippet, test_item_test_item_snippet.to_json),
+      ),
+    ],
+  )
 }

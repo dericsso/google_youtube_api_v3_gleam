@@ -5,9 +5,7 @@ import gleam/json.{type Json}
 import gleam/option.{type Option}
 import google_youtube_api_v3/youtube/access_policy.{type AccessPolicy}
 import google_youtube_api_v3/youtube/content_rating.{type ContentRating}
-import google_youtube_api_v3/youtube/video_content_details_region_restriction.{
-  type VideoContentDetailsRegionRestriction,
-}
+import google_youtube_api_v3/youtube/video_content_details_region_restriction.{type VideoContentDetailsRegionRestriction}
 
 /// Details about the content of a YouTube Video.
 pub type VideoContentDetails {
@@ -76,61 +74,73 @@ pub fn decoder() -> Decoder(VideoContentDetails) {
     option.None,
     decode.optional(video_content_details_region_restriction.decoder()),
   )
-  decode.success(VideoContentDetails(
-    caption,
-    content_rating,
-    country_restriction,
-    definition,
-    dimension,
-    duration,
-    has_custom_thumbnail,
-    licensed_content,
-    projection,
-    region_restriction,
-  ))
+  decode.success(
+    VideoContentDetails(
+      caption,
+      content_rating,
+      country_restriction,
+      definition,
+      dimension,
+      duration,
+      has_custom_thumbnail,
+      licensed_content,
+      projection,
+      region_restriction,
+    ),
+  )
 }
 
 pub fn to_json(value: VideoContentDetails) -> Json {
-  json.object([
-    #(
-      "caption",
-      json.nullable(value.caption, fn(e) { json.string(caption_to_string(e)) }),
-    ),
-    #(
-      "contentRating",
-      json.nullable(value.content_rating, content_rating.to_json),
-    ),
-    #(
-      "countryRestriction",
-      json.nullable(value.country_restriction, access_policy.to_json),
-    ),
-    #(
-      "definition",
-      json.nullable(value.definition, fn(e) {
-        json.string(definition_to_string(e))
-      }),
-    ),
-    #("dimension", json.nullable(value.dimension, json.string)),
-    #("duration", json.nullable(value.duration, json.string)),
-    #(
-      "hasCustomThumbnail",
-      json.nullable(value.has_custom_thumbnail, json.bool),
-    ),
-    #("licensedContent", json.nullable(value.licensed_content, json.bool)),
-    #(
-      "projection",
-      json.nullable(value.projection, fn(e) {
-        json.string(projection_to_string(e))
-      }),
-    ),
-    #(
-      "regionRestriction",
-      json.nullable(
-        value.region_restriction,
-        video_content_details_region_restriction.to_json,
+  json.object(
+    [
+      #(
+        "caption",
+        json.nullable(
+          value.caption,
+          fn(e)
+          { json.string(caption_to_string(e)) },
+        ),
       ),
-    ),
-  ])
+      #(
+        "contentRating",
+        json.nullable(value.content_rating, content_rating.to_json),
+      ),
+      #(
+        "countryRestriction",
+        json.nullable(value.country_restriction, access_policy.to_json),
+      ),
+      #(
+        "definition",
+        json.nullable(
+          value.definition,
+          fn(e)
+          { json.string(definition_to_string(e)) },
+        ),
+      ),
+      #("dimension", json.nullable(value.dimension, json.string)),
+      #("duration", json.nullable(value.duration, json.string)),
+      #(
+        "hasCustomThumbnail",
+        json.nullable(value.has_custom_thumbnail, json.bool),
+      ),
+      #("licensedContent", json.nullable(value.licensed_content, json.bool)),
+      #(
+        "projection",
+        json.nullable(
+          value.projection,
+          fn(e)
+          { json.string(projection_to_string(e)) },
+        ),
+      ),
+      #(
+        "regionRestriction",
+        json.nullable(
+          value.region_restriction,
+          video_content_details_region_restriction.to_json,
+        ),
+      ),
+    ],
+  )
 }
 
 /// The value of captions indicates whether the video has captions or not.

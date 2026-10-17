@@ -3,9 +3,7 @@
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}
 import gleam/option.{type Option}
-import google_youtube_api_v3/youtube/video_abuse_report_reason.{
-  type VideoAbuseReportReason,
-}
+import google_youtube_api_v3/youtube/video_abuse_report_reason.{type VideoAbuseReportReason}
 
 pub type VideoAbuseReportReasonListResponse {
   VideoAbuseReportReasonListResponse(
@@ -43,26 +41,26 @@ pub fn decoder() -> Decoder(VideoAbuseReportReasonListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(VideoAbuseReportReasonListResponse(
-    etag,
-    event_id,
-    items,
-    kind,
-    visitor_id,
-  ))
+  decode.success(
+    VideoAbuseReportReasonListResponse(etag, event_id, items, kind, visitor_id),
+  )
 }
 
 pub fn to_json(value: VideoAbuseReportReasonListResponse) -> Json {
-  json.object([
-    #("etag", json.nullable(value.etag, json.string)),
-    #("eventId", json.nullable(value.event_id, json.string)),
-    #(
-      "items",
-      json.nullable(value.items, fn(items) {
-        json.array(items, video_abuse_report_reason.to_json)
-      }),
-    ),
-    #("kind", json.nullable(value.kind, json.string)),
-    #("visitorId", json.nullable(value.visitor_id, json.string)),
-  ])
+  json.object(
+    [
+      #("etag", json.nullable(value.etag, json.string)),
+      #("eventId", json.nullable(value.event_id, json.string)),
+      #(
+        "items",
+        json.nullable(
+          value.items,
+          fn(items)
+          { json.array(items, video_abuse_report_reason.to_json) },
+        ),
+      ),
+      #("kind", json.nullable(value.kind, json.string)),
+      #("visitorId", json.nullable(value.visitor_id, json.string)),
+    ],
+  )
 }

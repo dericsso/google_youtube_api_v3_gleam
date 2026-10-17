@@ -27,13 +27,19 @@ pub fn decoder() -> Decoder(ChannelConversionPing) {
 }
 
 pub fn to_json(value: ChannelConversionPing) -> Json {
-  json.object([
-    #(
-      "context",
-      json.nullable(value.context, fn(e) { json.string(context_to_string(e)) }),
-    ),
-    #("conversionUrl", json.nullable(value.conversion_url, json.string)),
-  ])
+  json.object(
+    [
+      #(
+        "context",
+        json.nullable(
+          value.context,
+          fn(e)
+          { json.string(context_to_string(e)) },
+        ),
+      ),
+      #("conversionUrl", json.nullable(value.conversion_url, json.string)),
+    ],
+  )
 }
 
 /// Defines the context of the ping.

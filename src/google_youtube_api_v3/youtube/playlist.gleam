@@ -62,43 +62,37 @@ pub fn playlist_decoder() -> Decoder(Playlist) {
     option.None,
     decode.optional(playlist_status_decoder()),
   )
-  decode.success(
-    Playlist(
-      content_details,
-      etag,
-      id,
-      kind,
-      localizations,
-      player,
-      snippet,
-      status,
-    ),
-  )
+  decode.success(Playlist(
+    content_details,
+    etag,
+    id,
+    kind,
+    localizations,
+    player,
+    snippet,
+    status,
+  ))
 }
 
 pub fn playlist_to_json(value: Playlist) -> Json {
-  json.object(
-    [
-      #(
-        "contentDetails",
-        json.nullable(value.content_details, playlist_content_details_to_json),
-      ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "localizations",
-        json.nullable(
-          value.localizations,
-          fn(d)
-          { json.dict(d, fn(k) { k }, playlist_localization_to_json) },
-        ),
-      ),
-      #("player", json.nullable(value.player, playlist_player_to_json)),
-      #("snippet", json.nullable(value.snippet, playlist_snippet_to_json)),
-      #("status", json.nullable(value.status, playlist_status_to_json)),
-    ],
-  )
+  json.object([
+    #(
+      "contentDetails",
+      json.nullable(value.content_details, playlist_content_details_to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "localizations",
+      json.nullable(value.localizations, fn(d) {
+        json.dict(d, fn(k) { k }, playlist_localization_to_json)
+      }),
+    ),
+    #("player", json.nullable(value.player, playlist_player_to_json)),
+    #("snippet", json.nullable(value.snippet, playlist_snippet_to_json)),
+    #("status", json.nullable(value.status, playlist_status_to_json)),
+  ])
 }
 
 pub type PlaylistContentDetails {
@@ -146,13 +140,11 @@ pub fn playlist_image_decoder() -> Decoder(PlaylistImage) {
 }
 
 pub fn playlist_image_to_json(value: PlaylistImage) -> Json {
-  json.object(
-    [
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, playlist_image_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, playlist_image_snippet_to_json)),
+  ])
 }
 
 pub type PlaylistImageListResponse {
@@ -193,34 +185,30 @@ pub fn playlist_image_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    PlaylistImageListResponse(
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-    ),
-  )
+  decode.success(PlaylistImageListResponse(
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+  ))
 }
 
-pub fn playlist_image_list_response_to_json(value: PlaylistImageListResponse) -> Json {
-  json.object(
-    [
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, playlist_image_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-    ],
-  )
+pub fn playlist_image_list_response_to_json(
+  value: PlaylistImageListResponse,
+) -> Json {
+  json.object([
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, playlist_image_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+  ])
 }
 
 /// A *playlistImage* resource identifies another resource, such as a image, that is associated with a playlist. In addition, the playlistImage resource contains details about the included resource that pertain specifically to how that resource is used in that playlist. YouTube uses playlists to identify special collections of videos for a channel, such as: - uploaded videos - favorite videos - positively rated (liked) videos - watch history To be more specific, these lists are associated with a channel, which is a collection of a person, group, or company's videos, playlists, and other YouTube information. You can retrieve the playlist IDs for each of these lists from the channel resource for a given channel. You can then use the playlistImages.list method to retrieve image data for any of those playlists. You can also add or remove images from those lists by calling the playlistImages.insert and playlistImages.delete methods.
@@ -258,17 +246,15 @@ pub fn playlist_image_snippet_decoder() -> Decoder(PlaylistImageSnippet) {
 }
 
 pub fn playlist_image_snippet_to_json(value: PlaylistImageSnippet) -> Json {
-  json.object(
-    [
-      #("height", json.nullable(value.height, json.int)),
-      #("playlistId", json.nullable(value.playlist_id, json.string)),
-      #(
-        "type",
-        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-      ),
-      #("width", json.nullable(value.width, json.int)),
-    ],
-  )
+  json.object([
+    #("height", json.nullable(value.height, json.int)),
+    #("playlistId", json.nullable(value.playlist_id, json.string)),
+    #(
+      "type",
+      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+    ),
+    #("width", json.nullable(value.width, json.int)),
+  ])
 }
 
 /// The image type.
@@ -337,22 +323,20 @@ pub fn playlist_item_decoder() -> Decoder(PlaylistItem) {
 }
 
 pub fn playlist_item_to_json(value: PlaylistItem) -> Json {
-  json.object(
-    [
-      #(
-        "contentDetails",
-        json.nullable(
-          value.content_details,
-          playlist_item_content_details_to_json,
-        ),
+  json.object([
+    #(
+      "contentDetails",
+      json.nullable(
+        value.content_details,
+        playlist_item_content_details_to_json,
       ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, playlist_item_snippet_to_json)),
-      #("status", json.nullable(value.status, playlist_item_status_to_json)),
-    ],
-  )
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, playlist_item_snippet_to_json)),
+    #("status", json.nullable(value.status, playlist_item_status_to_json)),
+  ])
 }
 
 pub type PlaylistItemContentDetails {
@@ -393,30 +377,25 @@ pub fn playlist_item_content_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    PlaylistItemContentDetails(
-      end_at,
-      note,
-      start_at,
-      video_id,
-      video_published_at,
-    ),
-  )
+  decode.success(PlaylistItemContentDetails(
+    end_at,
+    note,
+    start_at,
+    video_id,
+    video_published_at,
+  ))
 }
 
-pub fn playlist_item_content_details_to_json(value: PlaylistItemContentDetails) -> Json {
-  json.object(
-    [
-      #("endAt", json.nullable(value.end_at, json.string)),
-      #("note", json.nullable(value.note, json.string)),
-      #("startAt", json.nullable(value.start_at, json.string)),
-      #("videoId", json.nullable(value.video_id, json.string)),
-      #(
-        "videoPublishedAt",
-        json.nullable(value.video_published_at, json.string),
-      ),
-    ],
-  )
+pub fn playlist_item_content_details_to_json(
+  value: PlaylistItemContentDetails,
+) -> Json {
+  json.object([
+    #("endAt", json.nullable(value.end_at, json.string)),
+    #("note", json.nullable(value.note, json.string)),
+    #("startAt", json.nullable(value.start_at, json.string)),
+    #("videoId", json.nullable(value.video_id, json.string)),
+    #("videoPublishedAt", json.nullable(value.video_published_at, json.string)),
+  ])
 }
 
 pub type PlaylistItemListResponse {
@@ -481,48 +460,44 @@ pub fn playlist_item_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    PlaylistItemListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(PlaylistItemListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
-pub fn playlist_item_list_response_to_json(value: PlaylistItemListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, playlist_item_to_json) },
-        ),
+pub fn playlist_item_list_response_to_json(
+  value: PlaylistItemListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, playlist_item_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Basic details about a playlist, including title, description and thumbnails. Basic details of a YouTube Playlist item provided by the author. Next ID: 15
@@ -598,51 +573,47 @@ pub fn playlist_item_snippet_decoder() -> Decoder(PlaylistItemSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    PlaylistItemSnippet(
-      channel_id,
-      channel_title,
-      description,
-      playlist_id,
-      position,
-      published_at,
-      resource_id,
-      thumbnails,
-      title,
-      video_owner_channel_id,
-      video_owner_channel_title,
-    ),
-  )
+  decode.success(PlaylistItemSnippet(
+    channel_id,
+    channel_title,
+    description,
+    playlist_id,
+    position,
+    published_at,
+    resource_id,
+    thumbnails,
+    title,
+    video_owner_channel_id,
+    video_owner_channel_title,
+  ))
 }
 
 pub fn playlist_item_snippet_to_json(value: PlaylistItemSnippet) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("channelTitle", json.nullable(value.channel_title, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #("playlistId", json.nullable(value.playlist_id, json.string)),
-      #("position", json.nullable(value.position, json.int)),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #(
-        "resourceId",
-        json.nullable(value.resource_id, resource_id.resource_id_to_json),
-      ),
-      #(
-        "thumbnails",
-        json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-      #(
-        "videoOwnerChannelId",
-        json.nullable(value.video_owner_channel_id, json.string),
-      ),
-      #(
-        "videoOwnerChannelTitle",
-        json.nullable(value.video_owner_channel_title, json.string),
-      ),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("channelTitle", json.nullable(value.channel_title, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #("playlistId", json.nullable(value.playlist_id, json.string)),
+    #("position", json.nullable(value.position, json.int)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #(
+      "resourceId",
+      json.nullable(value.resource_id, resource_id.resource_id_to_json),
+    ),
+    #(
+      "thumbnails",
+      json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+    #(
+      "videoOwnerChannelId",
+      json.nullable(value.video_owner_channel_id, json.string),
+    ),
+    #(
+      "videoOwnerChannelTitle",
+      json.nullable(value.video_owner_channel_title, json.string),
+    ),
+  ])
 }
 
 /// Information about the playlist item's privacy status.
@@ -660,18 +631,14 @@ pub fn playlist_item_status_decoder() -> Decoder(PlaylistItemStatus) {
 }
 
 pub fn playlist_item_status_to_json(value: PlaylistItemStatus) -> Json {
-  json.object(
-    [
-      #(
-        "privacyStatus",
-        json.nullable(
-          value.privacy_status,
-          fn(e)
-          { json.string(playlist_item_status_privacy_status_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "privacyStatus",
+      json.nullable(value.privacy_status, fn(e) {
+        json.string(playlist_item_status_privacy_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// This resource's privacy status.
@@ -699,10 +666,11 @@ pub fn playlist_item_status_privacy_status_decoder() -> Decoder(
     "public" -> decode.success(PlaylistItemStatusPrivacyStatusPublic)
     "unlisted" -> decode.success(PlaylistItemStatusPrivacyStatusUnlisted)
     "private" -> decode.success(PlaylistItemStatusPrivacyStatusPrivate)
-    _ -> decode.failure(
-      PlaylistItemStatusPrivacyStatusPublic,
-      "a valid PlaylistItemStatusPrivacyStatus",
-    )
+    _ ->
+      decode.failure(
+        PlaylistItemStatusPrivacyStatusPublic,
+        "a valid PlaylistItemStatusPrivacyStatus",
+      )
   }
 }
 
@@ -766,48 +734,42 @@ pub fn playlist_list_response_decoder() -> Decoder(PlaylistListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    PlaylistListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(PlaylistListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
 pub fn playlist_list_response_to_json(value: PlaylistListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, playlist_to_json) },
-        ),
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, playlist_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Playlist localization setting
@@ -830,12 +792,10 @@ pub fn playlist_localization_decoder() -> Decoder(PlaylistLocalization) {
 }
 
 pub fn playlist_localization_to_json(value: PlaylistLocalization) -> Json {
-  json.object(
-    [
-      #("description", json.nullable(value.description, json.string)),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("description", json.nullable(value.description, json.string)),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 pub type PlaylistPlayer {
@@ -922,49 +882,42 @@ pub fn playlist_snippet_decoder() -> Decoder(PlaylistSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    PlaylistSnippet(
-      channel_id,
-      channel_title,
-      default_language,
-      description,
-      localized,
-      published_at,
-      tags,
-      thumbnail_video_id,
-      thumbnails,
-      title,
-    ),
-  )
+  decode.success(PlaylistSnippet(
+    channel_id,
+    channel_title,
+    default_language,
+    description,
+    localized,
+    published_at,
+    tags,
+    thumbnail_video_id,
+    thumbnails,
+    title,
+  ))
 }
 
 pub fn playlist_snippet_to_json(value: PlaylistSnippet) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("channelTitle", json.nullable(value.channel_title, json.string)),
-      #("defaultLanguage", json.nullable(value.default_language, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #(
-        "localized",
-        json.nullable(value.localized, playlist_localization_to_json),
-      ),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #(
-        "tags",
-        json.nullable(value.tags, fn(items) { json.array(items, json.string) }),
-      ),
-      #(
-        "thumbnailVideoId",
-        json.nullable(value.thumbnail_video_id, json.string),
-      ),
-      #(
-        "thumbnails",
-        json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("channelTitle", json.nullable(value.channel_title, json.string)),
+    #("defaultLanguage", json.nullable(value.default_language, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #(
+      "localized",
+      json.nullable(value.localized, playlist_localization_to_json),
+    ),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #(
+      "tags",
+      json.nullable(value.tags, fn(items) { json.array(items, json.string) }),
+    ),
+    #("thumbnailVideoId", json.nullable(value.thumbnail_video_id, json.string)),
+    #(
+      "thumbnails",
+      json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 pub type PlaylistStatus {
@@ -989,26 +942,20 @@ pub fn playlist_status_decoder() -> Decoder(PlaylistStatus) {
 }
 
 pub fn playlist_status_to_json(value: PlaylistStatus) -> Json {
-  json.object(
-    [
-      #(
-        "podcastStatus",
-        json.nullable(
-          value.podcast_status,
-          fn(e)
-          { json.string(podcast_status_to_string(e)) },
-        ),
-      ),
-      #(
-        "privacyStatus",
-        json.nullable(
-          value.privacy_status,
-          fn(e)
-          { json.string(playlist_status_privacy_status_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "podcastStatus",
+      json.nullable(value.podcast_status, fn(e) {
+        json.string(podcast_status_to_string(e))
+      }),
+    ),
+    #(
+      "privacyStatus",
+      json.nullable(value.privacy_status, fn(e) {
+        json.string(playlist_status_privacy_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The playlist's podcast status.
@@ -1058,9 +1005,10 @@ pub fn playlist_status_privacy_status_decoder() -> Decoder(
     "public" -> decode.success(PlaylistStatusPrivacyStatusPublic)
     "unlisted" -> decode.success(PlaylistStatusPrivacyStatusUnlisted)
     "private" -> decode.success(PlaylistStatusPrivacyStatusPrivate)
-    _ -> decode.failure(
-      PlaylistStatusPrivacyStatusPublic,
-      "a valid PlaylistStatusPrivacyStatus",
-    )
+    _ ->
+      decode.failure(
+        PlaylistStatusPrivacyStatusPublic,
+        "a valid PlaylistStatusPrivacyStatus",
+      )
   }
 }

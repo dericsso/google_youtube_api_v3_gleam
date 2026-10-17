@@ -37,14 +37,12 @@ pub fn caption_decoder() -> Decoder(Caption) {
 }
 
 pub fn caption_to_json(value: Caption) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, caption_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, caption_snippet_to_json)),
+  ])
 }
 
 pub type CaptionListResponse {
@@ -87,22 +85,18 @@ pub fn caption_list_response_decoder() -> Decoder(CaptionListResponse) {
 }
 
 pub fn caption_list_response_to_json(value: CaptionListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, caption_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, caption_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Basic details about a caption track, such as its language and name.
@@ -190,67 +184,57 @@ pub fn caption_snippet_decoder() -> Decoder(CaptionSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    CaptionSnippet(
-      audio_track_type,
-      failure_reason,
-      is_auto_synced,
-      is_cc,
-      is_draft,
-      is_easy_reader,
-      is_large,
-      language,
-      last_updated,
-      name,
-      status,
-      track_kind,
-      video_id,
-    ),
-  )
+  decode.success(CaptionSnippet(
+    audio_track_type,
+    failure_reason,
+    is_auto_synced,
+    is_cc,
+    is_draft,
+    is_easy_reader,
+    is_large,
+    language,
+    last_updated,
+    name,
+    status,
+    track_kind,
+    video_id,
+  ))
 }
 
 pub fn caption_snippet_to_json(value: CaptionSnippet) -> Json {
-  json.object(
-    [
-      #(
-        "audioTrackType",
-        json.nullable(
-          value.audio_track_type,
-          fn(e)
-          { json.string(audio_track_type_to_string(e)) },
-        ),
-      ),
-      #(
-        "failureReason",
-        json.nullable(
-          value.failure_reason,
-          fn(e)
-          { json.string(failure_reason_to_string(e)) },
-        ),
-      ),
-      #("isAutoSynced", json.nullable(value.is_auto_synced, json.bool)),
-      #("isCC", json.nullable(value.is_cc, json.bool)),
-      #("isDraft", json.nullable(value.is_draft, json.bool)),
-      #("isEasyReader", json.nullable(value.is_easy_reader, json.bool)),
-      #("isLarge", json.nullable(value.is_large, json.bool)),
-      #("language", json.nullable(value.language, json.string)),
-      #("lastUpdated", json.nullable(value.last_updated, json.string)),
-      #("name", json.nullable(value.name, json.string)),
-      #(
-        "status",
-        json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
-      ),
-      #(
-        "trackKind",
-        json.nullable(
-          value.track_kind,
-          fn(e)
-          { json.string(track_kind_to_string(e)) },
-        ),
-      ),
-      #("videoId", json.nullable(value.video_id, json.string)),
-    ],
-  )
+  json.object([
+    #(
+      "audioTrackType",
+      json.nullable(value.audio_track_type, fn(e) {
+        json.string(audio_track_type_to_string(e))
+      }),
+    ),
+    #(
+      "failureReason",
+      json.nullable(value.failure_reason, fn(e) {
+        json.string(failure_reason_to_string(e))
+      }),
+    ),
+    #("isAutoSynced", json.nullable(value.is_auto_synced, json.bool)),
+    #("isCC", json.nullable(value.is_cc, json.bool)),
+    #("isDraft", json.nullable(value.is_draft, json.bool)),
+    #("isEasyReader", json.nullable(value.is_easy_reader, json.bool)),
+    #("isLarge", json.nullable(value.is_large, json.bool)),
+    #("language", json.nullable(value.language, json.string)),
+    #("lastUpdated", json.nullable(value.last_updated, json.string)),
+    #("name", json.nullable(value.name, json.string)),
+    #(
+      "status",
+      json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
+    ),
+    #(
+      "trackKind",
+      json.nullable(value.track_kind, fn(e) {
+        json.string(track_kind_to_string(e))
+      }),
+    ),
+    #("videoId", json.nullable(value.video_id, json.string)),
+  ])
 }
 
 /// The type of audio track associated with the caption track.

@@ -72,50 +72,44 @@ pub fn search_list_response_decoder() -> Decoder(SearchListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    SearchListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      region_code,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(SearchListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    region_code,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
 pub fn search_list_response_to_json(value: SearchListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, search_result_to_json) },
-        ),
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, search_result_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #("regionCode", json.nullable(value.region_code, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #("regionCode", json.nullable(value.region_code, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// A search result contains information about a YouTube video, channel, or playlist that matches the search parameters specified in an API request. While a search result points to a uniquely identifiable resource, like a video, it does not have its own persistent data.
@@ -153,14 +147,12 @@ pub fn search_result_decoder() -> Decoder(SearchResult) {
 }
 
 pub fn search_result_to_json(value: SearchResult) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, resource_id.resource_id_to_json)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, search_result_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, resource_id.resource_id_to_json)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, search_result_snippet_to_json)),
+  ])
 }
 
 /// Basic details about a search result, including title, description and thumbnails of the item referenced by the search result.
@@ -212,41 +204,35 @@ pub fn search_result_snippet_decoder() -> Decoder(SearchResultSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    SearchResultSnippet(
-      channel_id,
-      channel_title,
-      description,
-      live_broadcast_content,
-      published_at,
-      thumbnails,
-      title,
-    ),
-  )
+  decode.success(SearchResultSnippet(
+    channel_id,
+    channel_title,
+    description,
+    live_broadcast_content,
+    published_at,
+    thumbnails,
+    title,
+  ))
 }
 
 pub fn search_result_snippet_to_json(value: SearchResultSnippet) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("channelTitle", json.nullable(value.channel_title, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #(
-        "liveBroadcastContent",
-        json.nullable(
-          value.live_broadcast_content,
-          fn(e)
-          { json.string(live_broadcast_content_to_string(e)) },
-        ),
-      ),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #(
-        "thumbnails",
-        json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("channelTitle", json.nullable(value.channel_title, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #(
+      "liveBroadcastContent",
+      json.nullable(value.live_broadcast_content, fn(e) {
+        json.string(live_broadcast_content_to_string(e))
+      }),
+    ),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #(
+      "thumbnails",
+      json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 /// It indicates if the resource (video or channel) has upcoming/active live broadcast content. Or it's "none" if there is not any upcoming/active live broadcasts.
@@ -273,9 +259,7 @@ pub fn live_broadcast_content_decoder() -> Decoder(LiveBroadcastContent) {
     "upcoming" -> decode.success(LiveBroadcastContentUpcoming)
     "live" -> decode.success(LiveBroadcastContentLive)
     "completed" -> decode.success(LiveBroadcastContentCompleted)
-    _ -> decode.failure(
-      LiveBroadcastContentNone,
-      "a valid LiveBroadcastContent",
-    )
+    _ ->
+      decode.failure(LiveBroadcastContentNone, "a valid LiveBroadcastContent")
   }
 }

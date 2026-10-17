@@ -47,23 +47,19 @@ pub fn localized_property_decoder() -> Decoder(LocalizedProperty) {
 }
 
 pub fn localized_property_to_json(value: LocalizedProperty) -> Json {
-  json.object(
-    [
-      #("default", json.nullable(value.default, json.string)),
-      #(
-        "defaultLanguage",
-        json.nullable(value.default_language, language_tag_to_json),
-      ),
-      #(
-        "localized",
-        json.nullable(
-          value.localized,
-          fn(items)
-          { json.array(items, localized_string_to_json) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #("default", json.nullable(value.default, json.string)),
+    #(
+      "defaultLanguage",
+      json.nullable(value.default_language, language_tag_to_json),
+    ),
+    #(
+      "localized",
+      json.nullable(value.localized, fn(items) {
+        json.array(items, localized_string_to_json)
+      }),
+    ),
+  ])
 }
 
 pub type LocalizedString {
@@ -85,10 +81,8 @@ pub fn localized_string_decoder() -> Decoder(LocalizedString) {
 }
 
 pub fn localized_string_to_json(value: LocalizedString) -> Json {
-  json.object(
-    [
-      #("language", json.nullable(value.language, json.string)),
-      #("value", json.nullable(value.value, json.string)),
-    ],
-  )
+  json.object([
+    #("language", json.nullable(value.language, json.string)),
+    #("value", json.nullable(value.value, json.string)),
+  ])
 }

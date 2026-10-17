@@ -33,7 +33,10 @@ pub fn insert_with_on_behalf_of_content_owner_channel(
   InsertParams(params.part, params.external_channel_id, option.Some(value))
 }
 
-pub fn insert_with_external_channel_id(params: InsertParams, value: String) -> InsertParams {
+pub fn insert_with_external_channel_id(
+  params: InsertParams,
+  value: String,
+) -> InsertParams {
   InsertParams(
     params.part,
     option.Some(value),
@@ -45,21 +48,17 @@ pub fn insert_request(params: InsertParams, body: TestItem) -> Request {
   Request(
     http.Post,
     "youtube/v3/tests",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.external_channel_id
-        {
-          option.Some(v) -> [#("externalChannelId", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.external_channel_id {
+        option.Some(v) -> [#("externalChannelId", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     ["https://www.googleapis.com/auth/youtube.readonly"],
     option.Some(json.to_string(tests.test_item_to_json(body))),

@@ -27,13 +27,11 @@ pub fn thumbnail_decoder() -> Decoder(Thumbnail) {
 }
 
 pub fn thumbnail_to_json(value: Thumbnail) -> Json {
-  json.object(
-    [
-      #("height", json.nullable(value.height, json.int)),
-      #("url", json.nullable(value.url, json.string)),
-      #("width", json.nullable(value.width, json.int)),
-    ],
-  )
+  json.object([
+    #("height", json.nullable(value.height, json.int)),
+    #("url", json.nullable(value.url, json.string)),
+    #("width", json.nullable(value.width, json.int)),
+  ])
 }
 
 /// Internal representation of thumbnails for a YouTube resource.
@@ -91,24 +89,29 @@ pub fn thumbnail_details_decoder() -> Decoder(ThumbnailDetails) {
     option.None,
     decode.optional(thumbnail_decoder()),
   )
-  decode.success(
-    ThumbnailDetails(default, fhd, high, maxres, medium, qhd, standard, uhd),
-  )
+  decode.success(ThumbnailDetails(
+    default,
+    fhd,
+    high,
+    maxres,
+    medium,
+    qhd,
+    standard,
+    uhd,
+  ))
 }
 
 pub fn thumbnail_details_to_json(value: ThumbnailDetails) -> Json {
-  json.object(
-    [
-      #("default", json.nullable(value.default, thumbnail_to_json)),
-      #("fhd", json.nullable(value.fhd, thumbnail_to_json)),
-      #("high", json.nullable(value.high, thumbnail_to_json)),
-      #("maxres", json.nullable(value.maxres, thumbnail_to_json)),
-      #("medium", json.nullable(value.medium, thumbnail_to_json)),
-      #("qhd", json.nullable(value.qhd, thumbnail_to_json)),
-      #("standard", json.nullable(value.standard, thumbnail_to_json)),
-      #("uhd", json.nullable(value.uhd, thumbnail_to_json)),
-    ],
-  )
+  json.object([
+    #("default", json.nullable(value.default, thumbnail_to_json)),
+    #("fhd", json.nullable(value.fhd, thumbnail_to_json)),
+    #("high", json.nullable(value.high, thumbnail_to_json)),
+    #("maxres", json.nullable(value.maxres, thumbnail_to_json)),
+    #("medium", json.nullable(value.medium, thumbnail_to_json)),
+    #("qhd", json.nullable(value.qhd, thumbnail_to_json)),
+    #("standard", json.nullable(value.standard, thumbnail_to_json)),
+    #("uhd", json.nullable(value.uhd, thumbnail_to_json)),
+  ])
 }
 
 pub type ThumbnailSetResponse {
@@ -151,20 +154,16 @@ pub fn thumbnail_set_response_decoder() -> Decoder(ThumbnailSetResponse) {
 }
 
 pub fn thumbnail_set_response_to_json(value: ThumbnailSetResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, thumbnail_details_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, thumbnail_details_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }

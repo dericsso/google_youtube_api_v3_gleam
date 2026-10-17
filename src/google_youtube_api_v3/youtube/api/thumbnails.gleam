@@ -12,7 +12,10 @@ pub fn set(video_id: String) -> SetParams {
   SetParams(video_id, option.None)
 }
 
-pub fn set_with_on_behalf_of_content_owner(params: SetParams, value: String) -> SetParams {
+pub fn set_with_on_behalf_of_content_owner(
+  params: SetParams,
+  value: String,
+) -> SetParams {
   SetParams(params.video_id, option.Some(value))
 }
 
@@ -20,12 +23,13 @@ pub fn set_request(params: SetParams) -> Request {
   Request(
     http.Post,
     "youtube/v3/thumbnails/set",
-    list.flatten(
-      [[#("videoId", params.video_id)], case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      [#("videoId", params.video_id)],
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

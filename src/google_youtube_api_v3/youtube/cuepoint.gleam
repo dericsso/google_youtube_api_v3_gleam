@@ -45,39 +45,31 @@ pub fn cuepoint_decoder() -> Decoder(Cuepoint) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    Cuepoint(
-      cue_type,
-      duration_secs,
-      etag,
-      id,
-      insertion_offset_time_ms,
-      walltime_ms,
-    ),
-  )
+  decode.success(Cuepoint(
+    cue_type,
+    duration_secs,
+    etag,
+    id,
+    insertion_offset_time_ms,
+    walltime_ms,
+  ))
 }
 
 pub fn cuepoint_to_json(value: Cuepoint) -> Json {
-  json.object(
-    [
-      #(
-        "cueType",
-        json.nullable(
-          value.cue_type,
-          fn(e)
-          { json.string(cue_type_to_string(e)) },
-        ),
-      ),
-      #("durationSecs", json.nullable(value.duration_secs, json.int)),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #(
-        "insertionOffsetTimeMs",
-        json.nullable(value.insertion_offset_time_ms, json.string),
-      ),
-      #("walltimeMs", json.nullable(value.walltime_ms, json.string)),
-    ],
-  )
+  json.object([
+    #(
+      "cueType",
+      json.nullable(value.cue_type, fn(e) { json.string(cue_type_to_string(e)) }),
+    ),
+    #("durationSecs", json.nullable(value.duration_secs, json.int)),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #(
+      "insertionOffsetTimeMs",
+      json.nullable(value.insertion_offset_time_ms, json.string),
+    ),
+    #("walltimeMs", json.nullable(value.walltime_ms, json.string)),
+  ])
 }
 
 pub type CueType {
@@ -132,35 +124,26 @@ pub fn cuepoint_schedule_decoder() -> Decoder(CuepointSchedule) {
     option.None,
     decode.optional(schedule_strategy_decoder()),
   )
-  decode.success(
-    CuepointSchedule(
-      enabled,
-      pause_ads_until,
-      repeat_interval_secs,
-      schedule_strategy,
-    ),
-  )
+  decode.success(CuepointSchedule(
+    enabled,
+    pause_ads_until,
+    repeat_interval_secs,
+    schedule_strategy,
+  ))
 }
 
 pub fn cuepoint_schedule_to_json(value: CuepointSchedule) -> Json {
-  json.object(
-    [
-      #("enabled", json.nullable(value.enabled, json.bool)),
-      #("pauseAdsUntil", json.nullable(value.pause_ads_until, json.string)),
-      #(
-        "repeatIntervalSecs",
-        json.nullable(value.repeat_interval_secs, json.int),
-      ),
-      #(
-        "scheduleStrategy",
-        json.nullable(
-          value.schedule_strategy,
-          fn(e)
-          { json.string(schedule_strategy_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #("enabled", json.nullable(value.enabled, json.bool)),
+    #("pauseAdsUntil", json.nullable(value.pause_ads_until, json.string)),
+    #("repeatIntervalSecs", json.nullable(value.repeat_interval_secs, json.int)),
+    #(
+      "scheduleStrategy",
+      json.nullable(value.schedule_strategy, fn(e) {
+        json.string(schedule_strategy_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The strategy to use when scheduling cuepoints.
@@ -181,14 +164,14 @@ pub fn schedule_strategy_to_string(value: ScheduleStrategy) -> String {
 pub fn schedule_strategy_decoder() -> Decoder(ScheduleStrategy) {
   use value <- decode.then(decode.string)
   case value {
-    "scheduleStrategyUnspecified" -> decode.success(
-      ScheduleStrategyScheduleStrategyUnspecified,
-    )
+    "scheduleStrategyUnspecified" ->
+      decode.success(ScheduleStrategyScheduleStrategyUnspecified)
     "concurrent" -> decode.success(ScheduleStrategyConcurrent)
     "nonConcurrent" -> decode.success(ScheduleStrategyNonConcurrent)
-    _ -> decode.failure(
-      ScheduleStrategyScheduleStrategyUnspecified,
-      "a valid ScheduleStrategy",
-    )
+    _ ->
+      decode.failure(
+        ScheduleStrategyScheduleStrategyUnspecified,
+        "a valid ScheduleStrategy",
+      )
   }
 }

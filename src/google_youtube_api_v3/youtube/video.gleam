@@ -26,19 +26,15 @@ pub fn access_policy_decoder() -> Decoder(AccessPolicy) {
 }
 
 pub fn access_policy_to_json(value: AccessPolicy) -> Json {
-  json.object(
-    [
-      #("allowed", json.nullable(value.allowed, json.bool)),
-      #(
-        "exception",
-        json.nullable(
-          value.exception,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #("allowed", json.nullable(value.allowed, json.bool)),
+    #(
+      "exception",
+      json.nullable(value.exception, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+  ])
 }
 
 /// Response for the Videos.stats API. Returns VideoStat information about a batch of videos. VideoStat contains a subset of the information in Video that is relevant to statistics and content details. BatchGetStats is intentionally not atomic to provide a better user experience. BatchGetStatsResponse returns a summary to help users understand the outcome of the operation.
@@ -70,20 +66,16 @@ pub fn batch_get_stats_response_decoder() -> Decoder(BatchGetStatsResponse) {
 }
 
 pub fn batch_get_stats_response_to_json(value: BatchGetStatsResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, video_stat_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, video_stat_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+  ])
 }
 
 /// Details about the brand partner linked to the video for Creator Initiated Linking (CIL). Next ID: 6
@@ -106,12 +98,10 @@ pub fn brand_partner_decoder() -> Decoder(BrandPartner) {
 }
 
 pub fn brand_partner_to_json(value: BrandPartner) -> Json {
-  json.object(
-    [
-      #("channelHandle", json.nullable(value.channel_handle, json.string)),
-      #("channelId", json.nullable(value.channel_id, json.string)),
-    ],
-  )
+  json.object([
+    #("channelHandle", json.nullable(value.channel_handle, json.string)),
+    #("channelId", json.nullable(value.channel_id, json.string)),
+  ])
 }
 
 /// Ratings schemes. The country-specific ratings are mostly for movies and shows. LINT.IfChange
@@ -547,668 +537,512 @@ pub fn content_rating_decoder() -> Decoder(ContentRating) {
     option.None,
     decode.optional(yt_rating_decoder()),
   )
-  decode.success(
-    ContentRating(
-      acb_rating,
-      agcom_rating,
-      anatel_rating,
-      bbfc_rating,
-      bfvc_rating,
-      bmukk_rating,
-      catv_rating,
-      catvfr_rating,
-      cbfc_rating,
-      ccc_rating,
-      cce_rating,
-      chfilm_rating,
-      chvrs_rating,
-      cicf_rating,
-      cna_rating,
-      cnc_rating,
-      csa_rating,
-      cscf_rating,
-      czfilm_rating,
-      djctq_rating,
-      djctq_rating_reasons,
-      ecbmct_rating,
-      eefilm_rating,
-      egfilm_rating,
-      eirin_rating,
-      fcbm_rating,
-      fco_rating,
-      fmoc_rating,
-      fpb_rating,
-      fpb_rating_reasons,
-      fsk_rating,
-      grfilm_rating,
-      icaa_rating,
-      ifco_rating,
-      ilfilm_rating,
-      incaa_rating,
-      kfcb_rating,
-      kijkwijzer_rating,
-      kmrb_rating,
-      lsf_rating,
-      mccaa_rating,
-      mccyp_rating,
-      mcst_rating,
-      mda_rating,
-      medietilsynet_rating,
-      meku_rating,
-      mena_mpaa_rating,
-      mibac_rating,
-      moc_rating,
-      moctw_rating,
-      mpaa_rating,
-      mpaat_rating,
-      mtrcb_rating,
-      nbc_rating,
-      nbcpl_rating,
-      nfrc_rating,
-      nfvcb_rating,
-      nkclv_rating,
-      nmc_rating,
-      oflc_rating,
-      pefilm_rating,
-      rcnof_rating,
-      resorteviolencia_rating,
-      rtc_rating,
-      rte_rating,
-      russia_rating,
-      skfilm_rating,
-      smais_rating,
-      smsa_rating,
-      tvpg_rating,
-      yt_rating,
-    ),
-  )
+  decode.success(ContentRating(
+    acb_rating,
+    agcom_rating,
+    anatel_rating,
+    bbfc_rating,
+    bfvc_rating,
+    bmukk_rating,
+    catv_rating,
+    catvfr_rating,
+    cbfc_rating,
+    ccc_rating,
+    cce_rating,
+    chfilm_rating,
+    chvrs_rating,
+    cicf_rating,
+    cna_rating,
+    cnc_rating,
+    csa_rating,
+    cscf_rating,
+    czfilm_rating,
+    djctq_rating,
+    djctq_rating_reasons,
+    ecbmct_rating,
+    eefilm_rating,
+    egfilm_rating,
+    eirin_rating,
+    fcbm_rating,
+    fco_rating,
+    fmoc_rating,
+    fpb_rating,
+    fpb_rating_reasons,
+    fsk_rating,
+    grfilm_rating,
+    icaa_rating,
+    ifco_rating,
+    ilfilm_rating,
+    incaa_rating,
+    kfcb_rating,
+    kijkwijzer_rating,
+    kmrb_rating,
+    lsf_rating,
+    mccaa_rating,
+    mccyp_rating,
+    mcst_rating,
+    mda_rating,
+    medietilsynet_rating,
+    meku_rating,
+    mena_mpaa_rating,
+    mibac_rating,
+    moc_rating,
+    moctw_rating,
+    mpaa_rating,
+    mpaat_rating,
+    mtrcb_rating,
+    nbc_rating,
+    nbcpl_rating,
+    nfrc_rating,
+    nfvcb_rating,
+    nkclv_rating,
+    nmc_rating,
+    oflc_rating,
+    pefilm_rating,
+    rcnof_rating,
+    resorteviolencia_rating,
+    rtc_rating,
+    rte_rating,
+    russia_rating,
+    skfilm_rating,
+    smais_rating,
+    smsa_rating,
+    tvpg_rating,
+    yt_rating,
+  ))
 }
 
 pub fn content_rating_to_json(value: ContentRating) -> Json {
-  json.object(
-    [
-      #(
-        "acbRating",
-        json.nullable(
-          value.acb_rating,
-          fn(e)
-          { json.string(acb_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "agcomRating",
-        json.nullable(
-          value.agcom_rating,
-          fn(e)
-          { json.string(agcom_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "anatelRating",
-        json.nullable(
-          value.anatel_rating,
-          fn(e)
-          { json.string(anatel_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "bbfcRating",
-        json.nullable(
-          value.bbfc_rating,
-          fn(e)
-          { json.string(bbfc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "bfvcRating",
-        json.nullable(
-          value.bfvc_rating,
-          fn(e)
-          { json.string(bfvc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "bmukkRating",
-        json.nullable(
-          value.bmukk_rating,
-          fn(e)
-          { json.string(bmukk_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "catvRating",
-        json.nullable(
-          value.catv_rating,
-          fn(e)
-          { json.string(catv_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "catvfrRating",
-        json.nullable(
-          value.catvfr_rating,
-          fn(e)
-          { json.string(catvfr_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "cbfcRating",
-        json.nullable(
-          value.cbfc_rating,
-          fn(e)
-          { json.string(cbfc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "cccRating",
-        json.nullable(
-          value.ccc_rating,
-          fn(e)
-          { json.string(ccc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "cceRating",
-        json.nullable(
-          value.cce_rating,
-          fn(e)
-          { json.string(cce_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "chfilmRating",
-        json.nullable(
-          value.chfilm_rating,
-          fn(e)
-          { json.string(chfilm_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "chvrsRating",
-        json.nullable(
-          value.chvrs_rating,
-          fn(e)
-          { json.string(chvrs_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "cicfRating",
-        json.nullable(
-          value.cicf_rating,
-          fn(e)
-          { json.string(cicf_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "cnaRating",
-        json.nullable(
-          value.cna_rating,
-          fn(e)
-          { json.string(cna_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "cncRating",
-        json.nullable(
-          value.cnc_rating,
-          fn(e)
-          { json.string(cnc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "csaRating",
-        json.nullable(
-          value.csa_rating,
-          fn(e)
-          { json.string(csa_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "cscfRating",
-        json.nullable(
-          value.cscf_rating,
-          fn(e)
-          { json.string(cscf_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "czfilmRating",
-        json.nullable(
-          value.czfilm_rating,
-          fn(e)
-          { json.string(czfilm_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "djctqRating",
-        json.nullable(
-          value.djctq_rating,
-          fn(e)
-          { json.string(djctq_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "djctqRatingReasons",
-        json.nullable(
-          value.djctq_rating_reasons,
-          fn(items)
-          {
-            json.array(
-              items,
-              fn(e)
-              { json.string(djctq_rating_reasons_to_string(e)) },
-            )
-          },
-        ),
-      ),
-      #(
-        "ecbmctRating",
-        json.nullable(
-          value.ecbmct_rating,
-          fn(e)
-          { json.string(ecbmct_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "eefilmRating",
-        json.nullable(
-          value.eefilm_rating,
-          fn(e)
-          { json.string(eefilm_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "egfilmRating",
-        json.nullable(
-          value.egfilm_rating,
-          fn(e)
-          { json.string(egfilm_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "eirinRating",
-        json.nullable(
-          value.eirin_rating,
-          fn(e)
-          { json.string(eirin_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "fcbmRating",
-        json.nullable(
-          value.fcbm_rating,
-          fn(e)
-          { json.string(fcbm_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "fcoRating",
-        json.nullable(
-          value.fco_rating,
-          fn(e)
-          { json.string(fco_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "fmocRating",
-        json.nullable(
-          value.fmoc_rating,
-          fn(e)
-          { json.string(fmoc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "fpbRating",
-        json.nullable(
-          value.fpb_rating,
-          fn(e)
-          { json.string(fpb_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "fpbRatingReasons",
-        json.nullable(
-          value.fpb_rating_reasons,
-          fn(items)
-          {
-            json.array(
-              items,
-              fn(e)
-              { json.string(fpb_rating_reasons_to_string(e)) },
-            )
-          },
-        ),
-      ),
-      #(
-        "fskRating",
-        json.nullable(
-          value.fsk_rating,
-          fn(e)
-          { json.string(fsk_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "grfilmRating",
-        json.nullable(
-          value.grfilm_rating,
-          fn(e)
-          { json.string(grfilm_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "icaaRating",
-        json.nullable(
-          value.icaa_rating,
-          fn(e)
-          { json.string(icaa_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "ifcoRating",
-        json.nullable(
-          value.ifco_rating,
-          fn(e)
-          { json.string(ifco_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "ilfilmRating",
-        json.nullable(
-          value.ilfilm_rating,
-          fn(e)
-          { json.string(ilfilm_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "incaaRating",
-        json.nullable(
-          value.incaa_rating,
-          fn(e)
-          { json.string(incaa_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "kfcbRating",
-        json.nullable(
-          value.kfcb_rating,
-          fn(e)
-          { json.string(kfcb_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "kijkwijzerRating",
-        json.nullable(
-          value.kijkwijzer_rating,
-          fn(e)
-          { json.string(kijkwijzer_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "kmrbRating",
-        json.nullable(
-          value.kmrb_rating,
-          fn(e)
-          { json.string(kmrb_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "lsfRating",
-        json.nullable(
-          value.lsf_rating,
-          fn(e)
-          { json.string(lsf_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mccaaRating",
-        json.nullable(
-          value.mccaa_rating,
-          fn(e)
-          { json.string(mccaa_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mccypRating",
-        json.nullable(
-          value.mccyp_rating,
-          fn(e)
-          { json.string(mccyp_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mcstRating",
-        json.nullable(
-          value.mcst_rating,
-          fn(e)
-          { json.string(mcst_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mdaRating",
-        json.nullable(
-          value.mda_rating,
-          fn(e)
-          { json.string(mda_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "medietilsynetRating",
-        json.nullable(
-          value.medietilsynet_rating,
-          fn(e)
-          { json.string(medietilsynet_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mekuRating",
-        json.nullable(
-          value.meku_rating,
-          fn(e)
-          { json.string(meku_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "menaMpaaRating",
-        json.nullable(
-          value.mena_mpaa_rating,
-          fn(e)
-          { json.string(mena_mpaa_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mibacRating",
-        json.nullable(
-          value.mibac_rating,
-          fn(e)
-          { json.string(mibac_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mocRating",
-        json.nullable(
-          value.moc_rating,
-          fn(e)
-          { json.string(moc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "moctwRating",
-        json.nullable(
-          value.moctw_rating,
-          fn(e)
-          { json.string(moctw_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mpaaRating",
-        json.nullable(
-          value.mpaa_rating,
-          fn(e)
-          { json.string(mpaa_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mpaatRating",
-        json.nullable(
-          value.mpaat_rating,
-          fn(e)
-          { json.string(mpaat_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "mtrcbRating",
-        json.nullable(
-          value.mtrcb_rating,
-          fn(e)
-          { json.string(mtrcb_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "nbcRating",
-        json.nullable(
-          value.nbc_rating,
-          fn(e)
-          { json.string(nbc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "nbcplRating",
-        json.nullable(
-          value.nbcpl_rating,
-          fn(e)
-          { json.string(nbcpl_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "nfrcRating",
-        json.nullable(
-          value.nfrc_rating,
-          fn(e)
-          { json.string(nfrc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "nfvcbRating",
-        json.nullable(
-          value.nfvcb_rating,
-          fn(e)
-          { json.string(nfvcb_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "nkclvRating",
-        json.nullable(
-          value.nkclv_rating,
-          fn(e)
-          { json.string(nkclv_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "nmcRating",
-        json.nullable(
-          value.nmc_rating,
-          fn(e)
-          { json.string(nmc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "oflcRating",
-        json.nullable(
-          value.oflc_rating,
-          fn(e)
-          { json.string(oflc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "pefilmRating",
-        json.nullable(
-          value.pefilm_rating,
-          fn(e)
-          { json.string(pefilm_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "rcnofRating",
-        json.nullable(
-          value.rcnof_rating,
-          fn(e)
-          { json.string(rcnof_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "resorteviolenciaRating",
-        json.nullable(
-          value.resorteviolencia_rating,
-          fn(e)
-          { json.string(resorteviolencia_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "rtcRating",
-        json.nullable(
-          value.rtc_rating,
-          fn(e)
-          { json.string(rtc_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "rteRating",
-        json.nullable(
-          value.rte_rating,
-          fn(e)
-          { json.string(rte_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "russiaRating",
-        json.nullable(
-          value.russia_rating,
-          fn(e)
-          { json.string(russia_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "skfilmRating",
-        json.nullable(
-          value.skfilm_rating,
-          fn(e)
-          { json.string(skfilm_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "smaisRating",
-        json.nullable(
-          value.smais_rating,
-          fn(e)
-          { json.string(smais_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "smsaRating",
-        json.nullable(
-          value.smsa_rating,
-          fn(e)
-          { json.string(smsa_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "tvpgRating",
-        json.nullable(
-          value.tvpg_rating,
-          fn(e)
-          { json.string(tvpg_rating_to_string(e)) },
-        ),
-      ),
-      #(
-        "ytRating",
-        json.nullable(
-          value.yt_rating,
-          fn(e)
-          { json.string(yt_rating_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "acbRating",
+      json.nullable(value.acb_rating, fn(e) {
+        json.string(acb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "agcomRating",
+      json.nullable(value.agcom_rating, fn(e) {
+        json.string(agcom_rating_to_string(e))
+      }),
+    ),
+    #(
+      "anatelRating",
+      json.nullable(value.anatel_rating, fn(e) {
+        json.string(anatel_rating_to_string(e))
+      }),
+    ),
+    #(
+      "bbfcRating",
+      json.nullable(value.bbfc_rating, fn(e) {
+        json.string(bbfc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "bfvcRating",
+      json.nullable(value.bfvc_rating, fn(e) {
+        json.string(bfvc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "bmukkRating",
+      json.nullable(value.bmukk_rating, fn(e) {
+        json.string(bmukk_rating_to_string(e))
+      }),
+    ),
+    #(
+      "catvRating",
+      json.nullable(value.catv_rating, fn(e) {
+        json.string(catv_rating_to_string(e))
+      }),
+    ),
+    #(
+      "catvfrRating",
+      json.nullable(value.catvfr_rating, fn(e) {
+        json.string(catvfr_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cbfcRating",
+      json.nullable(value.cbfc_rating, fn(e) {
+        json.string(cbfc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cccRating",
+      json.nullable(value.ccc_rating, fn(e) {
+        json.string(ccc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cceRating",
+      json.nullable(value.cce_rating, fn(e) {
+        json.string(cce_rating_to_string(e))
+      }),
+    ),
+    #(
+      "chfilmRating",
+      json.nullable(value.chfilm_rating, fn(e) {
+        json.string(chfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "chvrsRating",
+      json.nullable(value.chvrs_rating, fn(e) {
+        json.string(chvrs_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cicfRating",
+      json.nullable(value.cicf_rating, fn(e) {
+        json.string(cicf_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cnaRating",
+      json.nullable(value.cna_rating, fn(e) {
+        json.string(cna_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cncRating",
+      json.nullable(value.cnc_rating, fn(e) {
+        json.string(cnc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "csaRating",
+      json.nullable(value.csa_rating, fn(e) {
+        json.string(csa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "cscfRating",
+      json.nullable(value.cscf_rating, fn(e) {
+        json.string(cscf_rating_to_string(e))
+      }),
+    ),
+    #(
+      "czfilmRating",
+      json.nullable(value.czfilm_rating, fn(e) {
+        json.string(czfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "djctqRating",
+      json.nullable(value.djctq_rating, fn(e) {
+        json.string(djctq_rating_to_string(e))
+      }),
+    ),
+    #(
+      "djctqRatingReasons",
+      json.nullable(value.djctq_rating_reasons, fn(items) {
+        json.array(items, fn(e) {
+          json.string(djctq_rating_reasons_to_string(e))
+        })
+      }),
+    ),
+    #(
+      "ecbmctRating",
+      json.nullable(value.ecbmct_rating, fn(e) {
+        json.string(ecbmct_rating_to_string(e))
+      }),
+    ),
+    #(
+      "eefilmRating",
+      json.nullable(value.eefilm_rating, fn(e) {
+        json.string(eefilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "egfilmRating",
+      json.nullable(value.egfilm_rating, fn(e) {
+        json.string(egfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "eirinRating",
+      json.nullable(value.eirin_rating, fn(e) {
+        json.string(eirin_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fcbmRating",
+      json.nullable(value.fcbm_rating, fn(e) {
+        json.string(fcbm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fcoRating",
+      json.nullable(value.fco_rating, fn(e) {
+        json.string(fco_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fmocRating",
+      json.nullable(value.fmoc_rating, fn(e) {
+        json.string(fmoc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fpbRating",
+      json.nullable(value.fpb_rating, fn(e) {
+        json.string(fpb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "fpbRatingReasons",
+      json.nullable(value.fpb_rating_reasons, fn(items) {
+        json.array(items, fn(e) { json.string(fpb_rating_reasons_to_string(e)) })
+      }),
+    ),
+    #(
+      "fskRating",
+      json.nullable(value.fsk_rating, fn(e) {
+        json.string(fsk_rating_to_string(e))
+      }),
+    ),
+    #(
+      "grfilmRating",
+      json.nullable(value.grfilm_rating, fn(e) {
+        json.string(grfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "icaaRating",
+      json.nullable(value.icaa_rating, fn(e) {
+        json.string(icaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "ifcoRating",
+      json.nullable(value.ifco_rating, fn(e) {
+        json.string(ifco_rating_to_string(e))
+      }),
+    ),
+    #(
+      "ilfilmRating",
+      json.nullable(value.ilfilm_rating, fn(e) {
+        json.string(ilfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "incaaRating",
+      json.nullable(value.incaa_rating, fn(e) {
+        json.string(incaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "kfcbRating",
+      json.nullable(value.kfcb_rating, fn(e) {
+        json.string(kfcb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "kijkwijzerRating",
+      json.nullable(value.kijkwijzer_rating, fn(e) {
+        json.string(kijkwijzer_rating_to_string(e))
+      }),
+    ),
+    #(
+      "kmrbRating",
+      json.nullable(value.kmrb_rating, fn(e) {
+        json.string(kmrb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "lsfRating",
+      json.nullable(value.lsf_rating, fn(e) {
+        json.string(lsf_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mccaaRating",
+      json.nullable(value.mccaa_rating, fn(e) {
+        json.string(mccaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mccypRating",
+      json.nullable(value.mccyp_rating, fn(e) {
+        json.string(mccyp_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mcstRating",
+      json.nullable(value.mcst_rating, fn(e) {
+        json.string(mcst_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mdaRating",
+      json.nullable(value.mda_rating, fn(e) {
+        json.string(mda_rating_to_string(e))
+      }),
+    ),
+    #(
+      "medietilsynetRating",
+      json.nullable(value.medietilsynet_rating, fn(e) {
+        json.string(medietilsynet_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mekuRating",
+      json.nullable(value.meku_rating, fn(e) {
+        json.string(meku_rating_to_string(e))
+      }),
+    ),
+    #(
+      "menaMpaaRating",
+      json.nullable(value.mena_mpaa_rating, fn(e) {
+        json.string(mena_mpaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mibacRating",
+      json.nullable(value.mibac_rating, fn(e) {
+        json.string(mibac_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mocRating",
+      json.nullable(value.moc_rating, fn(e) {
+        json.string(moc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "moctwRating",
+      json.nullable(value.moctw_rating, fn(e) {
+        json.string(moctw_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mpaaRating",
+      json.nullable(value.mpaa_rating, fn(e) {
+        json.string(mpaa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mpaatRating",
+      json.nullable(value.mpaat_rating, fn(e) {
+        json.string(mpaat_rating_to_string(e))
+      }),
+    ),
+    #(
+      "mtrcbRating",
+      json.nullable(value.mtrcb_rating, fn(e) {
+        json.string(mtrcb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nbcRating",
+      json.nullable(value.nbc_rating, fn(e) {
+        json.string(nbc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nbcplRating",
+      json.nullable(value.nbcpl_rating, fn(e) {
+        json.string(nbcpl_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nfrcRating",
+      json.nullable(value.nfrc_rating, fn(e) {
+        json.string(nfrc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nfvcbRating",
+      json.nullable(value.nfvcb_rating, fn(e) {
+        json.string(nfvcb_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nkclvRating",
+      json.nullable(value.nkclv_rating, fn(e) {
+        json.string(nkclv_rating_to_string(e))
+      }),
+    ),
+    #(
+      "nmcRating",
+      json.nullable(value.nmc_rating, fn(e) {
+        json.string(nmc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "oflcRating",
+      json.nullable(value.oflc_rating, fn(e) {
+        json.string(oflc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "pefilmRating",
+      json.nullable(value.pefilm_rating, fn(e) {
+        json.string(pefilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "rcnofRating",
+      json.nullable(value.rcnof_rating, fn(e) {
+        json.string(rcnof_rating_to_string(e))
+      }),
+    ),
+    #(
+      "resorteviolenciaRating",
+      json.nullable(value.resorteviolencia_rating, fn(e) {
+        json.string(resorteviolencia_rating_to_string(e))
+      }),
+    ),
+    #(
+      "rtcRating",
+      json.nullable(value.rtc_rating, fn(e) {
+        json.string(rtc_rating_to_string(e))
+      }),
+    ),
+    #(
+      "rteRating",
+      json.nullable(value.rte_rating, fn(e) {
+        json.string(rte_rating_to_string(e))
+      }),
+    ),
+    #(
+      "russiaRating",
+      json.nullable(value.russia_rating, fn(e) {
+        json.string(russia_rating_to_string(e))
+      }),
+    ),
+    #(
+      "skfilmRating",
+      json.nullable(value.skfilm_rating, fn(e) {
+        json.string(skfilm_rating_to_string(e))
+      }),
+    ),
+    #(
+      "smaisRating",
+      json.nullable(value.smais_rating, fn(e) {
+        json.string(smais_rating_to_string(e))
+      }),
+    ),
+    #(
+      "smsaRating",
+      json.nullable(value.smsa_rating, fn(e) {
+        json.string(smsa_rating_to_string(e))
+      }),
+    ),
+    #(
+      "tvpgRating",
+      json.nullable(value.tvpg_rating, fn(e) {
+        json.string(tvpg_rating_to_string(e))
+      }),
+    ),
+    #(
+      "ytRating",
+      json.nullable(value.yt_rating, fn(e) {
+        json.string(yt_rating_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The video's Australian Classification Board (ACB) or Australian Communications and Media Authority (ACMA) rating. ACMA ratings are used to classify children's television programming.
@@ -2082,7 +1916,8 @@ pub type DjctqRatingReasons {
 
 pub fn djctq_rating_reasons_to_string(value: DjctqRatingReasons) -> String {
   case value {
-    DjctqRatingReasonsDjctqRatingReasonUnspecified -> "djctqRatingReasonUnspecified"
+    DjctqRatingReasonsDjctqRatingReasonUnspecified ->
+      "djctqRatingReasonUnspecified"
     DjctqRatingReasonsDjctqViolence -> "djctqViolence"
     DjctqRatingReasonsDjctqExtremeViolence -> "djctqExtremeViolence"
     DjctqRatingReasonsDjctqSexualContent -> "djctqSexualContent"
@@ -2105,13 +1940,11 @@ pub fn djctq_rating_reasons_to_string(value: DjctqRatingReasons) -> String {
 pub fn djctq_rating_reasons_decoder() -> Decoder(DjctqRatingReasons) {
   use value <- decode.then(decode.string)
   case value {
-    "djctqRatingReasonUnspecified" -> decode.success(
-      DjctqRatingReasonsDjctqRatingReasonUnspecified,
-    )
+    "djctqRatingReasonUnspecified" ->
+      decode.success(DjctqRatingReasonsDjctqRatingReasonUnspecified)
     "djctqViolence" -> decode.success(DjctqRatingReasonsDjctqViolence)
-    "djctqExtremeViolence" -> decode.success(
-      DjctqRatingReasonsDjctqExtremeViolence,
-    )
+    "djctqExtremeViolence" ->
+      decode.success(DjctqRatingReasonsDjctqExtremeViolence)
     "djctqSexualContent" -> decode.success(DjctqRatingReasonsDjctqSexualContent)
     "djctqNudity" -> decode.success(DjctqRatingReasonsDjctqNudity)
     "djctqSex" -> decode.success(DjctqRatingReasonsDjctqSex)
@@ -2119,27 +1952,23 @@ pub fn djctq_rating_reasons_decoder() -> Decoder(DjctqRatingReasons) {
     "djctqDrugs" -> decode.success(DjctqRatingReasonsDjctqDrugs)
     "djctqLegalDrugs" -> decode.success(DjctqRatingReasonsDjctqLegalDrugs)
     "djctqIllegalDrugs" -> decode.success(DjctqRatingReasonsDjctqIllegalDrugs)
-    "djctqInappropriateLanguage" -> decode.success(
-      DjctqRatingReasonsDjctqInappropriateLanguage,
-    )
+    "djctqInappropriateLanguage" ->
+      decode.success(DjctqRatingReasonsDjctqInappropriateLanguage)
     "djctqCriminalActs" -> decode.success(DjctqRatingReasonsDjctqCriminalActs)
-    "djctqImpactingContent" -> decode.success(
-      DjctqRatingReasonsDjctqImpactingContent,
-    )
+    "djctqImpactingContent" ->
+      decode.success(DjctqRatingReasonsDjctqImpactingContent)
     "djctqFear" -> decode.success(DjctqRatingReasonsDjctqFear)
-    "djctqMedicalProcedures" -> decode.success(
-      DjctqRatingReasonsDjctqMedicalProcedures,
-    )
-    "djctqSensitiveTopics" -> decode.success(
-      DjctqRatingReasonsDjctqSensitiveTopics,
-    )
-    "djctqFantasyViolence" -> decode.success(
-      DjctqRatingReasonsDjctqFantasyViolence,
-    )
-    _ -> decode.failure(
-      DjctqRatingReasonsDjctqRatingReasonUnspecified,
-      "a valid DjctqRatingReasons",
-    )
+    "djctqMedicalProcedures" ->
+      decode.success(DjctqRatingReasonsDjctqMedicalProcedures)
+    "djctqSensitiveTopics" ->
+      decode.success(DjctqRatingReasonsDjctqSensitiveTopics)
+    "djctqFantasyViolence" ->
+      decode.success(DjctqRatingReasonsDjctqFantasyViolence)
+    _ ->
+      decode.failure(
+        DjctqRatingReasonsDjctqRatingReasonUnspecified,
+        "a valid DjctqRatingReasons",
+      )
   }
 }
 
@@ -2511,9 +2340,8 @@ pub fn fpb_rating_reasons_to_string(value: FpbRatingReasons) -> String {
 pub fn fpb_rating_reasons_decoder() -> Decoder(FpbRatingReasons) {
   use value <- decode.then(decode.string)
   case value {
-    "fpbRatingReasonUnspecified" -> decode.success(
-      FpbRatingReasonsFpbRatingReasonUnspecified,
-    )
+    "fpbRatingReasonUnspecified" ->
+      decode.success(FpbRatingReasonsFpbRatingReasonUnspecified)
     "fpbBlasphemy" -> decode.success(FpbRatingReasonsFpbBlasphemy)
     "fpbLanguage" -> decode.success(FpbRatingReasonsFpbLanguage)
     "fpbNudity" -> decode.success(FpbRatingReasonsFpbNudity)
@@ -2523,16 +2351,15 @@ pub fn fpb_rating_reasons_decoder() -> Decoder(FpbRatingReasons) {
     "fpbDrugs" -> decode.success(FpbRatingReasonsFpbDrugs)
     "fpbSexualViolence" -> decode.success(FpbRatingReasonsFpbSexualViolence)
     "fpbHorror" -> decode.success(FpbRatingReasonsFpbHorror)
-    "fpbCriminalTechniques" -> decode.success(
-      FpbRatingReasonsFpbCriminalTechniques,
-    )
-    "fpbImitativeActsTechniques" -> decode.success(
-      FpbRatingReasonsFpbImitativeActsTechniques,
-    )
-    _ -> decode.failure(
-      FpbRatingReasonsFpbRatingReasonUnspecified,
-      "a valid FpbRatingReasons",
-    )
+    "fpbCriminalTechniques" ->
+      decode.success(FpbRatingReasonsFpbCriminalTechniques)
+    "fpbImitativeActsTechniques" ->
+      decode.success(FpbRatingReasonsFpbImitativeActsTechniques)
+    _ ->
+      decode.failure(
+        FpbRatingReasonsFpbRatingReasonUnspecified,
+        "a valid FpbRatingReasons",
+      )
   }
 }
 
@@ -2841,9 +2668,8 @@ pub fn kijkwijzer_rating_to_string(value: KijkwijzerRating) -> String {
 pub fn kijkwijzer_rating_decoder() -> Decoder(KijkwijzerRating) {
   use value <- decode.then(decode.string)
   case value {
-    "kijkwijzerUnspecified" -> decode.success(
-      KijkwijzerRatingKijkwijzerUnspecified,
-    )
+    "kijkwijzerUnspecified" ->
+      decode.success(KijkwijzerRatingKijkwijzerUnspecified)
     "kijkwijzerAl" -> decode.success(KijkwijzerRatingKijkwijzerAl)
     "kijkwijzer6" -> decode.success(KijkwijzerRatingKijkwijzer6)
     "kijkwijzer9" -> decode.success(KijkwijzerRatingKijkwijzer9)
@@ -2851,10 +2677,11 @@ pub fn kijkwijzer_rating_decoder() -> Decoder(KijkwijzerRating) {
     "kijkwijzer16" -> decode.success(KijkwijzerRatingKijkwijzer16)
     "kijkwijzer18" -> decode.success(KijkwijzerRatingKijkwijzer18)
     "kijkwijzerUnrated" -> decode.success(KijkwijzerRatingKijkwijzerUnrated)
-    _ -> decode.failure(
-      KijkwijzerRatingKijkwijzerUnspecified,
-      "a valid KijkwijzerRating",
-    )
+    _ ->
+      decode.failure(
+        KijkwijzerRatingKijkwijzerUnspecified,
+        "a valid KijkwijzerRating",
+      )
   }
 }
 
@@ -3136,9 +2963,8 @@ pub fn medietilsynet_rating_to_string(value: MedietilsynetRating) -> String {
 pub fn medietilsynet_rating_decoder() -> Decoder(MedietilsynetRating) {
   use value <- decode.then(decode.string)
   case value {
-    "medietilsynetUnspecified" -> decode.success(
-      MedietilsynetRatingMedietilsynetUnspecified,
-    )
+    "medietilsynetUnspecified" ->
+      decode.success(MedietilsynetRatingMedietilsynetUnspecified)
     "medietilsynetA" -> decode.success(MedietilsynetRatingMedietilsynetA)
     "medietilsynet6" -> decode.success(MedietilsynetRatingMedietilsynet6)
     "medietilsynet7" -> decode.success(MedietilsynetRatingMedietilsynet7)
@@ -3147,13 +2973,13 @@ pub fn medietilsynet_rating_decoder() -> Decoder(MedietilsynetRating) {
     "medietilsynet12" -> decode.success(MedietilsynetRatingMedietilsynet12)
     "medietilsynet15" -> decode.success(MedietilsynetRatingMedietilsynet15)
     "medietilsynet18" -> decode.success(MedietilsynetRatingMedietilsynet18)
-    "medietilsynetUnrated" -> decode.success(
-      MedietilsynetRatingMedietilsynetUnrated,
-    )
-    _ -> decode.failure(
-      MedietilsynetRatingMedietilsynetUnspecified,
-      "a valid MedietilsynetRating",
-    )
+    "medietilsynetUnrated" ->
+      decode.success(MedietilsynetRatingMedietilsynetUnrated)
+    _ ->
+      decode.failure(
+        MedietilsynetRatingMedietilsynetUnspecified,
+        "a valid MedietilsynetRating",
+      )
   }
 }
 
@@ -3224,10 +3050,11 @@ pub fn mena_mpaa_rating_decoder() -> Decoder(MenaMpaaRating) {
     "menaMpaaPg13" -> decode.success(MenaMpaaRatingMenaMpaaPg13)
     "menaMpaaR" -> decode.success(MenaMpaaRatingMenaMpaaR)
     "menaMpaaUnrated" -> decode.success(MenaMpaaRatingMenaMpaaUnrated)
-    _ -> decode.failure(
-      MenaMpaaRatingMenaMpaaUnspecified,
-      "a valid MenaMpaaRating",
-    )
+    _ ->
+      decode.failure(
+        MenaMpaaRatingMenaMpaaUnspecified,
+        "a valid MenaMpaaRating",
+      )
   }
 }
 
@@ -3842,10 +3669,12 @@ pub type ResorteviolenciaRating {
   ResorteviolenciaRatingResorteviolenciaUnrated
 }
 
-pub fn resorteviolencia_rating_to_string(value: ResorteviolenciaRating) -> String {
-  case value
-  {
-    ResorteviolenciaRatingResorteviolenciaUnspecified -> "resorteviolenciaUnspecified"
+pub fn resorteviolencia_rating_to_string(
+  value: ResorteviolenciaRating,
+) -> String {
+  case value {
+    ResorteviolenciaRatingResorteviolenciaUnspecified ->
+      "resorteviolenciaUnspecified"
     ResorteviolenciaRatingResorteviolenciaA -> "resorteviolenciaA"
     ResorteviolenciaRatingResorteviolenciaB -> "resorteviolenciaB"
     ResorteviolenciaRatingResorteviolenciaC -> "resorteviolenciaC"
@@ -3858,31 +3687,25 @@ pub fn resorteviolencia_rating_to_string(value: ResorteviolenciaRating) -> Strin
 pub fn resorteviolencia_rating_decoder() -> Decoder(ResorteviolenciaRating) {
   use value <- decode.then(decode.string)
   case value {
-    "resorteviolenciaUnspecified" -> decode.success(
-      ResorteviolenciaRatingResorteviolenciaUnspecified,
-    )
-    "resorteviolenciaA" -> decode.success(
-      ResorteviolenciaRatingResorteviolenciaA,
-    )
-    "resorteviolenciaB" -> decode.success(
-      ResorteviolenciaRatingResorteviolenciaB,
-    )
-    "resorteviolenciaC" -> decode.success(
-      ResorteviolenciaRatingResorteviolenciaC,
-    )
-    "resorteviolenciaD" -> decode.success(
-      ResorteviolenciaRatingResorteviolenciaD,
-    )
-    "resorteviolenciaE" -> decode.success(
-      ResorteviolenciaRatingResorteviolenciaE,
-    )
-    "resorteviolenciaUnrated" -> decode.success(
-      ResorteviolenciaRatingResorteviolenciaUnrated,
-    )
-    _ -> decode.failure(
-      ResorteviolenciaRatingResorteviolenciaUnspecified,
-      "a valid ResorteviolenciaRating",
-    )
+    "resorteviolenciaUnspecified" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaUnspecified)
+    "resorteviolenciaA" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaA)
+    "resorteviolenciaB" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaB)
+    "resorteviolenciaC" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaC)
+    "resorteviolenciaD" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaD)
+    "resorteviolenciaE" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaE)
+    "resorteviolenciaUnrated" ->
+      decode.success(ResorteviolenciaRatingResorteviolenciaUnrated)
+    _ ->
+      decode.failure(
+        ResorteviolenciaRatingResorteviolenciaUnspecified,
+        "a valid ResorteviolenciaRating",
+      )
   }
 }
 
@@ -4199,13 +4022,11 @@ pub fn geo_point_decoder() -> Decoder(GeoPoint) {
 }
 
 pub fn geo_point_to_json(value: GeoPoint) -> Json {
-  json.object(
-    [
-      #("altitude", json.nullable(value.altitude, json.float)),
-      #("latitude", json.nullable(value.latitude, json.float)),
-      #("longitude", json.nullable(value.longitude, json.float)),
-    ],
-  )
+  json.object([
+    #("altitude", json.nullable(value.altitude, json.float)),
+    #("latitude", json.nullable(value.latitude, json.float)),
+    #("longitude", json.nullable(value.longitude, json.float)),
+  ])
 }
 
 /// A *video* resource represents a YouTube video.
@@ -4335,109 +4156,97 @@ pub fn video_decoder() -> Decoder(Video) {
     option.None,
     decode.optional(video_topic_details_decoder()),
   )
-  decode.success(
-    Video(
-      age_gating,
-      brand_partner,
-      content_details,
-      etag,
-      file_details,
-      id,
-      kind,
-      live_streaming_details,
-      localizations,
-      monetization_details,
-      paid_product_placement_details,
-      player,
-      processing_details,
-      project_details,
-      recording_details,
-      snippet,
-      statistics,
-      status,
-      suggestions,
-      topic_details,
-    ),
-  )
+  decode.success(Video(
+    age_gating,
+    brand_partner,
+    content_details,
+    etag,
+    file_details,
+    id,
+    kind,
+    live_streaming_details,
+    localizations,
+    monetization_details,
+    paid_product_placement_details,
+    player,
+    processing_details,
+    project_details,
+    recording_details,
+    snippet,
+    statistics,
+    status,
+    suggestions,
+    topic_details,
+  ))
 }
 
 pub fn video_to_json(value: Video) -> Json {
-  json.object(
-    [
-      #("ageGating", json.nullable(value.age_gating, video_age_gating_to_json)),
-      #(
-        "brandPartner",
-        json.nullable(value.brand_partner, brand_partner_to_json),
+  json.object([
+    #("ageGating", json.nullable(value.age_gating, video_age_gating_to_json)),
+    #("brandPartner", json.nullable(value.brand_partner, brand_partner_to_json)),
+    #(
+      "contentDetails",
+      json.nullable(value.content_details, video_content_details_to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #(
+      "fileDetails",
+      json.nullable(value.file_details, video_file_details_to_json),
+    ),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "liveStreamingDetails",
+      json.nullable(
+        value.live_streaming_details,
+        video_live_streaming_details_to_json,
       ),
-      #(
-        "contentDetails",
-        json.nullable(value.content_details, video_content_details_to_json),
+    ),
+    #(
+      "localizations",
+      json.nullable(value.localizations, fn(d) {
+        json.dict(d, fn(k) { k }, video_localization_to_json)
+      }),
+    ),
+    #(
+      "monetizationDetails",
+      json.nullable(
+        value.monetization_details,
+        video_monetization_details_to_json,
       ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #(
-        "fileDetails",
-        json.nullable(value.file_details, video_file_details_to_json),
+    ),
+    #(
+      "paidProductPlacementDetails",
+      json.nullable(
+        value.paid_product_placement_details,
+        video_paid_product_placement_details_to_json,
       ),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "liveStreamingDetails",
-        json.nullable(
-          value.live_streaming_details,
-          video_live_streaming_details_to_json,
-        ),
-      ),
-      #(
-        "localizations",
-        json.nullable(
-          value.localizations,
-          fn(d)
-          { json.dict(d, fn(k) { k }, video_localization_to_json) },
-        ),
-      ),
-      #(
-        "monetizationDetails",
-        json.nullable(
-          value.monetization_details,
-          video_monetization_details_to_json,
-        ),
-      ),
-      #(
-        "paidProductPlacementDetails",
-        json.nullable(
-          value.paid_product_placement_details,
-          video_paid_product_placement_details_to_json,
-        ),
-      ),
-      #("player", json.nullable(value.player, video_player_to_json)),
-      #(
-        "processingDetails",
-        json.nullable(
-          value.processing_details,
-          video_processing_details_to_json,
-        ),
-      ),
-      #(
-        "projectDetails",
-        json.nullable(value.project_details, video_project_details_to_json),
-      ),
-      #(
-        "recordingDetails",
-        json.nullable(value.recording_details, video_recording_details_to_json),
-      ),
-      #("snippet", json.nullable(value.snippet, video_snippet_to_json)),
-      #("statistics", json.nullable(value.statistics, video_statistics_to_json)),
-      #("status", json.nullable(value.status, video_status_to_json)),
-      #(
-        "suggestions",
-        json.nullable(value.suggestions, video_suggestions_to_json),
-      ),
-      #(
-        "topicDetails",
-        json.nullable(value.topic_details, video_topic_details_to_json),
-      ),
-    ],
-  )
+    ),
+    #("player", json.nullable(value.player, video_player_to_json)),
+    #(
+      "processingDetails",
+      json.nullable(value.processing_details, video_processing_details_to_json),
+    ),
+    #(
+      "projectDetails",
+      json.nullable(value.project_details, video_project_details_to_json),
+    ),
+    #(
+      "recordingDetails",
+      json.nullable(value.recording_details, video_recording_details_to_json),
+    ),
+    #("snippet", json.nullable(value.snippet, video_snippet_to_json)),
+    #("statistics", json.nullable(value.statistics, video_statistics_to_json)),
+    #("status", json.nullable(value.status, video_status_to_json)),
+    #(
+      "suggestions",
+      json.nullable(value.suggestions, video_suggestions_to_json),
+    ),
+    #(
+      "topicDetails",
+      json.nullable(value.topic_details, video_topic_details_to_json),
+    ),
+  ])
 }
 
 pub type VideoAbuseReport {
@@ -4476,30 +4285,26 @@ pub fn video_abuse_report_decoder() -> Decoder(VideoAbuseReport) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoAbuseReport(
-      comments,
-      language,
-      reason_id,
-      secondary_reason_id,
-      video_id,
-    ),
-  )
+  decode.success(VideoAbuseReport(
+    comments,
+    language,
+    reason_id,
+    secondary_reason_id,
+    video_id,
+  ))
 }
 
 pub fn video_abuse_report_to_json(value: VideoAbuseReport) -> Json {
-  json.object(
-    [
-      #("comments", json.nullable(value.comments, json.string)),
-      #("language", json.nullable(value.language, json.string)),
-      #("reasonId", json.nullable(value.reason_id, json.string)),
-      #(
-        "secondaryReasonId",
-        json.nullable(value.secondary_reason_id, json.string),
-      ),
-      #("videoId", json.nullable(value.video_id, json.string)),
-    ],
-  )
+  json.object([
+    #("comments", json.nullable(value.comments, json.string)),
+    #("language", json.nullable(value.language, json.string)),
+    #("reasonId", json.nullable(value.reason_id, json.string)),
+    #(
+      "secondaryReasonId",
+      json.nullable(value.secondary_reason_id, json.string),
+    ),
+    #("videoId", json.nullable(value.video_id, json.string)),
+  ])
 }
 
 /// A `__videoAbuseReportReason__` resource identifies a reason that a video could be reported as abusive. Video abuse report reasons are used with `video.ReportAbuse`.
@@ -4536,18 +4341,18 @@ pub fn video_abuse_report_reason_decoder() -> Decoder(VideoAbuseReportReason) {
   decode.success(VideoAbuseReportReason(etag, id, kind, snippet))
 }
 
-pub fn video_abuse_report_reason_to_json(value: VideoAbuseReportReason) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "snippet",
-        json.nullable(value.snippet, video_abuse_report_reason_snippet_to_json),
-      ),
-    ],
-  )
+pub fn video_abuse_report_reason_to_json(
+  value: VideoAbuseReportReason,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "snippet",
+      json.nullable(value.snippet, video_abuse_report_reason_snippet_to_json),
+    ),
+  ])
 }
 
 pub type VideoAbuseReportReasonListResponse {
@@ -4588,30 +4393,30 @@ pub fn video_abuse_report_reason_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoAbuseReportReasonListResponse(etag, event_id, items, kind, visitor_id),
-  )
+  decode.success(VideoAbuseReportReasonListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    visitor_id,
+  ))
 }
 
 pub fn video_abuse_report_reason_list_response_to_json(
   value: VideoAbuseReportReasonListResponse,
 ) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, video_abuse_report_reason_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, video_abuse_report_reason_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Basic details about a video category, such as its localized title.
@@ -4641,19 +4446,15 @@ pub fn video_abuse_report_reason_snippet_decoder() -> Decoder(
 pub fn video_abuse_report_reason_snippet_to_json(
   value: VideoAbuseReportReasonSnippet,
 ) -> Json {
-  json.object(
-    [
-      #("label", json.nullable(value.label, json.string)),
-      #(
-        "secondaryReasons",
-        json.nullable(
-          value.secondary_reasons,
-          fn(items)
-          { json.array(items, video_abuse_report_secondary_reason_to_json) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #("label", json.nullable(value.label, json.string)),
+    #(
+      "secondaryReasons",
+      json.nullable(value.secondary_reasons, fn(items) {
+        json.array(items, video_abuse_report_secondary_reason_to_json)
+      }),
+    ),
+  ])
 }
 
 pub type VideoAbuseReportSecondaryReason {
@@ -4679,12 +4480,10 @@ pub fn video_abuse_report_secondary_reason_decoder() -> Decoder(
 pub fn video_abuse_report_secondary_reason_to_json(
   value: VideoAbuseReportSecondaryReason,
 ) -> Json {
-  json.object(
-    [
-      #("id", json.nullable(value.id, json.string)),
-      #("label", json.nullable(value.label, json.string)),
-    ],
-  )
+  json.object([
+    #("id", json.nullable(value.id, json.string)),
+    #("label", json.nullable(value.label, json.string)),
+  ])
 }
 
 pub type VideoAgeGating {
@@ -4715,20 +4514,16 @@ pub fn video_age_gating_decoder() -> Decoder(VideoAgeGating) {
 }
 
 pub fn video_age_gating_to_json(value: VideoAgeGating) -> Json {
-  json.object(
-    [
-      #("alcoholContent", json.nullable(value.alcohol_content, json.bool)),
-      #("restricted", json.nullable(value.restricted, json.bool)),
-      #(
-        "videoGameRating",
-        json.nullable(
-          value.video_game_rating,
-          fn(e)
-          { json.string(video_game_rating_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #("alcoholContent", json.nullable(value.alcohol_content, json.bool)),
+    #("restricted", json.nullable(value.restricted, json.bool)),
+    #(
+      "videoGameRating",
+      json.nullable(value.video_game_rating, fn(e) {
+        json.string(video_game_rating_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// Video game rating, if any.
@@ -4794,14 +4589,12 @@ pub fn video_category_decoder() -> Decoder(VideoCategory) {
 }
 
 pub fn video_category_to_json(value: VideoCategory) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, video_category_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, video_category_snippet_to_json)),
+  ])
 }
 
 pub type VideoCategoryListResponse {
@@ -4866,48 +4659,44 @@ pub fn video_category_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoCategoryListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(VideoCategoryListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
-pub fn video_category_list_response_to_json(value: VideoCategoryListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, video_category_to_json) },
-        ),
+pub fn video_category_list_response_to_json(
+  value: VideoCategoryListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, video_category_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Basic details about a video category, such as its localized title.
@@ -4939,13 +4728,11 @@ pub fn video_category_snippet_decoder() -> Decoder(VideoCategorySnippet) {
 }
 
 pub fn video_category_snippet_to_json(value: VideoCategorySnippet) -> Json {
-  json.object(
-    [
-      #("assignable", json.nullable(value.assignable, json.bool)),
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("assignable", json.nullable(value.assignable, json.bool)),
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 /// Details about the content of a YouTube Video.
@@ -5015,73 +4802,61 @@ pub fn video_content_details_decoder() -> Decoder(VideoContentDetails) {
     option.None,
     decode.optional(video_content_details_region_restriction_decoder()),
   )
-  decode.success(
-    VideoContentDetails(
-      caption,
-      content_rating,
-      country_restriction,
-      definition,
-      dimension,
-      duration,
-      has_custom_thumbnail,
-      licensed_content,
-      projection,
-      region_restriction,
-    ),
-  )
+  decode.success(VideoContentDetails(
+    caption,
+    content_rating,
+    country_restriction,
+    definition,
+    dimension,
+    duration,
+    has_custom_thumbnail,
+    licensed_content,
+    projection,
+    region_restriction,
+  ))
 }
 
 pub fn video_content_details_to_json(value: VideoContentDetails) -> Json {
-  json.object(
-    [
-      #(
-        "caption",
-        json.nullable(
-          value.caption,
-          fn(e)
-          { json.string(caption_to_string(e)) },
-        ),
+  json.object([
+    #(
+      "caption",
+      json.nullable(value.caption, fn(e) { json.string(caption_to_string(e)) }),
+    ),
+    #(
+      "contentRating",
+      json.nullable(value.content_rating, content_rating_to_json),
+    ),
+    #(
+      "countryRestriction",
+      json.nullable(value.country_restriction, access_policy_to_json),
+    ),
+    #(
+      "definition",
+      json.nullable(value.definition, fn(e) {
+        json.string(definition_to_string(e))
+      }),
+    ),
+    #("dimension", json.nullable(value.dimension, json.string)),
+    #("duration", json.nullable(value.duration, json.string)),
+    #(
+      "hasCustomThumbnail",
+      json.nullable(value.has_custom_thumbnail, json.bool),
+    ),
+    #("licensedContent", json.nullable(value.licensed_content, json.bool)),
+    #(
+      "projection",
+      json.nullable(value.projection, fn(e) {
+        json.string(projection_to_string(e))
+      }),
+    ),
+    #(
+      "regionRestriction",
+      json.nullable(
+        value.region_restriction,
+        video_content_details_region_restriction_to_json,
       ),
-      #(
-        "contentRating",
-        json.nullable(value.content_rating, content_rating_to_json),
-      ),
-      #(
-        "countryRestriction",
-        json.nullable(value.country_restriction, access_policy_to_json),
-      ),
-      #(
-        "definition",
-        json.nullable(
-          value.definition,
-          fn(e)
-          { json.string(definition_to_string(e)) },
-        ),
-      ),
-      #("dimension", json.nullable(value.dimension, json.string)),
-      #("duration", json.nullable(value.duration, json.string)),
-      #(
-        "hasCustomThumbnail",
-        json.nullable(value.has_custom_thumbnail, json.bool),
-      ),
-      #("licensedContent", json.nullable(value.licensed_content, json.bool)),
-      #(
-        "projection",
-        json.nullable(
-          value.projection,
-          fn(e)
-          { json.string(projection_to_string(e)) },
-        ),
-      ),
-      #(
-        "regionRestriction",
-        json.nullable(
-          value.region_restriction,
-          video_content_details_region_restriction_to_json,
-        ),
-      ),
-    ],
-  )
+    ),
+  ])
 }
 
 /// The value of captions indicates whether the video has captions or not.
@@ -5177,26 +4952,16 @@ pub fn video_content_details_region_restriction_decoder() -> Decoder(
 pub fn video_content_details_region_restriction_to_json(
   value: VideoContentDetailsRegionRestriction,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "allowed",
-        json.nullable(
-          value.allowed,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #(
-        "blocked",
-        json.nullable(
-          value.blocked,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "allowed",
+      json.nullable(value.allowed, fn(items) { json.array(items, json.string) }),
+    ),
+    #(
+      "blocked",
+      json.nullable(value.blocked, fn(items) { json.array(items, json.string) }),
+    ),
+  ])
 }
 
 /// Describes original video file properties, including technical details about audio and video streams, but also metadata information like content length, digitization time, or geotagging information.
@@ -5260,56 +5025,46 @@ pub fn video_file_details_decoder() -> Decoder(VideoFileDetails) {
     option.None,
     decode.optional(decode.list(video_file_details_video_stream_decoder())),
   )
-  decode.success(
-    VideoFileDetails(
-      audio_streams,
-      bitrate_bps,
-      container,
-      creation_time,
-      duration_ms,
-      file_name,
-      file_size,
-      file_type,
-      video_streams,
-    ),
-  )
+  decode.success(VideoFileDetails(
+    audio_streams,
+    bitrate_bps,
+    container,
+    creation_time,
+    duration_ms,
+    file_name,
+    file_size,
+    file_type,
+    video_streams,
+  ))
 }
 
 pub fn video_file_details_to_json(value: VideoFileDetails) -> Json {
-  json.object(
-    [
-      #(
-        "audioStreams",
-        json.nullable(
-          value.audio_streams,
-          fn(items)
-          { json.array(items, video_file_details_audio_stream_to_json) },
-        ),
-      ),
-      #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
-      #("container", json.nullable(value.container, json.string)),
-      #("creationTime", json.nullable(value.creation_time, json.string)),
-      #("durationMs", json.nullable(value.duration_ms, json.string)),
-      #("fileName", json.nullable(value.file_name, json.string)),
-      #("fileSize", json.nullable(value.file_size, json.string)),
-      #(
-        "fileType",
-        json.nullable(
-          value.file_type,
-          fn(e)
-          { json.string(file_type_to_string(e)) },
-        ),
-      ),
-      #(
-        "videoStreams",
-        json.nullable(
-          value.video_streams,
-          fn(items)
-          { json.array(items, video_file_details_video_stream_to_json) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "audioStreams",
+      json.nullable(value.audio_streams, fn(items) {
+        json.array(items, video_file_details_audio_stream_to_json)
+      }),
+    ),
+    #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
+    #("container", json.nullable(value.container, json.string)),
+    #("creationTime", json.nullable(value.creation_time, json.string)),
+    #("durationMs", json.nullable(value.duration_ms, json.string)),
+    #("fileName", json.nullable(value.file_name, json.string)),
+    #("fileSize", json.nullable(value.file_size, json.string)),
+    #(
+      "fileType",
+      json.nullable(value.file_type, fn(e) {
+        json.string(file_type_to_string(e))
+      }),
+    ),
+    #(
+      "videoStreams",
+      json.nullable(value.video_streams, fn(items) {
+        json.array(items, video_file_details_video_stream_to_json)
+      }),
+    ),
+  ])
 }
 
 /// The uploaded file's type as detected by YouTube's video processing engine. Currently, YouTube only processes video files, but this field is present whether a video file or another type of file was uploaded.
@@ -5382,22 +5137,23 @@ pub fn video_file_details_audio_stream_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoFileDetailsAudioStream(bitrate_bps, channel_count, codec, vendor),
-  )
+  decode.success(VideoFileDetailsAudioStream(
+    bitrate_bps,
+    channel_count,
+    codec,
+    vendor,
+  ))
 }
 
 pub fn video_file_details_audio_stream_to_json(
   value: VideoFileDetailsAudioStream,
 ) -> Json {
-  json.object(
-    [
-      #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
-      #("channelCount", json.nullable(value.channel_count, json.int)),
-      #("codec", json.nullable(value.codec, json.string)),
-      #("vendor", json.nullable(value.vendor, json.string)),
-    ],
-  )
+  json.object([
+    #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
+    #("channelCount", json.nullable(value.channel_count, json.int)),
+    #("codec", json.nullable(value.codec, json.string)),
+    #("vendor", json.nullable(value.vendor, json.string)),
+  ])
 }
 
 /// Information about a video stream.
@@ -5457,42 +5213,34 @@ pub fn video_file_details_video_stream_decoder() -> Decoder(
     option.None,
     decode.optional(decode.int),
   )
-  decode.success(
-    VideoFileDetailsVideoStream(
-      aspect_ratio,
-      bitrate_bps,
-      codec,
-      frame_rate_fps,
-      height_pixels,
-      rotation,
-      vendor,
-      width_pixels,
-    ),
-  )
+  decode.success(VideoFileDetailsVideoStream(
+    aspect_ratio,
+    bitrate_bps,
+    codec,
+    frame_rate_fps,
+    height_pixels,
+    rotation,
+    vendor,
+    width_pixels,
+  ))
 }
 
 pub fn video_file_details_video_stream_to_json(
   value: VideoFileDetailsVideoStream,
 ) -> Json {
-  json.object(
-    [
-      #("aspectRatio", json.nullable(value.aspect_ratio, json.float)),
-      #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
-      #("codec", json.nullable(value.codec, json.string)),
-      #("frameRateFps", json.nullable(value.frame_rate_fps, json.float)),
-      #("heightPixels", json.nullable(value.height_pixels, json.int)),
-      #(
-        "rotation",
-        json.nullable(
-          value.rotation,
-          fn(e)
-          { json.string(rotation_to_string(e)) },
-        ),
-      ),
-      #("vendor", json.nullable(value.vendor, json.string)),
-      #("widthPixels", json.nullable(value.width_pixels, json.int)),
-    ],
-  )
+  json.object([
+    #("aspectRatio", json.nullable(value.aspect_ratio, json.float)),
+    #("bitrateBps", json.nullable(value.bitrate_bps, json.string)),
+    #("codec", json.nullable(value.codec, json.string)),
+    #("frameRateFps", json.nullable(value.frame_rate_fps, json.float)),
+    #("heightPixels", json.nullable(value.height_pixels, json.int)),
+    #(
+      "rotation",
+      json.nullable(value.rotation, fn(e) { json.string(rotation_to_string(e)) }),
+    ),
+    #("vendor", json.nullable(value.vendor, json.string)),
+    #("widthPixels", json.nullable(value.width_pixels, json.int)),
+  ])
 }
 
 /// The amount that YouTube needs to rotate the original source content to properly display the video.
@@ -5562,28 +5310,24 @@ pub fn video_get_rating_response_decoder() -> Decoder(VideoGetRatingResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoGetRatingResponse(etag, event_id, items, kind, visitor_id),
-  )
+  decode.success(VideoGetRatingResponse(etag, event_id, items, kind, visitor_id))
 }
 
-pub fn video_get_rating_response_to_json(value: VideoGetRatingResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, video_rating_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+pub fn video_get_rating_response_to_json(
+  value: VideoGetRatingResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, video_rating_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 pub type VideoListResponse {
@@ -5646,48 +5390,40 @@ pub fn video_list_response_decoder() -> Decoder(VideoListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(VideoListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
 pub fn video_list_response_to_json(value: VideoListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, video_to_json) },
-        ),
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) { json.array(items, video_to_json) }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Details about the live streaming metadata.
@@ -5735,41 +5471,30 @@ pub fn video_live_streaming_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoLiveStreamingDetails(
-      active_live_chat_id,
-      actual_end_time,
-      actual_start_time,
-      concurrent_viewers,
-      scheduled_end_time,
-      scheduled_start_time,
-    ),
-  )
+  decode.success(VideoLiveStreamingDetails(
+    active_live_chat_id,
+    actual_end_time,
+    actual_start_time,
+    concurrent_viewers,
+    scheduled_end_time,
+    scheduled_start_time,
+  ))
 }
 
-pub fn video_live_streaming_details_to_json(value: VideoLiveStreamingDetails) -> Json {
-  json.object(
-    [
-      #(
-        "activeLiveChatId",
-        json.nullable(value.active_live_chat_id, json.string),
-      ),
-      #("actualEndTime", json.nullable(value.actual_end_time, json.string)),
-      #("actualStartTime", json.nullable(value.actual_start_time, json.string)),
-      #(
-        "concurrentViewers",
-        json.nullable(value.concurrent_viewers, json.string),
-      ),
-      #(
-        "scheduledEndTime",
-        json.nullable(value.scheduled_end_time, json.string),
-      ),
-      #(
-        "scheduledStartTime",
-        json.nullable(value.scheduled_start_time, json.string),
-      ),
-    ],
-  )
+pub fn video_live_streaming_details_to_json(
+  value: VideoLiveStreamingDetails,
+) -> Json {
+  json.object([
+    #("activeLiveChatId", json.nullable(value.active_live_chat_id, json.string)),
+    #("actualEndTime", json.nullable(value.actual_end_time, json.string)),
+    #("actualStartTime", json.nullable(value.actual_start_time, json.string)),
+    #("concurrentViewers", json.nullable(value.concurrent_viewers, json.string)),
+    #("scheduledEndTime", json.nullable(value.scheduled_end_time, json.string)),
+    #(
+      "scheduledStartTime",
+      json.nullable(value.scheduled_start_time, json.string),
+    ),
+  ])
 }
 
 /// Localized versions of certain video properties (e.g. title).
@@ -5792,12 +5517,10 @@ pub fn video_localization_decoder() -> Decoder(VideoLocalization) {
 }
 
 pub fn video_localization_to_json(value: VideoLocalization) -> Json {
-  json.object(
-    [
-      #("description", json.nullable(value.description, json.string)),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("description", json.nullable(value.description, json.string)),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 /// Details about monetization of a YouTube Video.
@@ -5806,10 +5529,7 @@ pub type VideoMonetizationDetails {
 }
 
 pub fn video_monetization_details_decoder() -> Decoder(VideoMonetizationDetails) {
-  use
-  access
-  <-
-  decode.optional_field(
+  use access <- decode.optional_field(
     "access",
     option.None,
     decode.optional(access_policy_decoder()),
@@ -5817,7 +5537,9 @@ pub fn video_monetization_details_decoder() -> Decoder(VideoMonetizationDetails)
   decode.success(VideoMonetizationDetails(access))
 }
 
-pub fn video_monetization_details_to_json(value: VideoMonetizationDetails) -> Json {
+pub fn video_monetization_details_to_json(
+  value: VideoMonetizationDetails,
+) -> Json {
   json.object([#("access", json.nullable(value.access, access_policy_to_json))])
 }
 
@@ -5840,14 +5562,12 @@ pub fn video_paid_product_placement_details_decoder() -> Decoder(
 pub fn video_paid_product_placement_details_to_json(
   value: VideoPaidProductPlacementDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "hasPaidProductPlacement",
-        json.nullable(value.has_paid_product_placement, json.bool),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "hasPaidProductPlacement",
+      json.nullable(value.has_paid_product_placement, json.bool),
+    ),
+  ])
 }
 
 /// Player to be used for a video playback.
@@ -5879,13 +5599,11 @@ pub fn video_player_decoder() -> Decoder(VideoPlayer) {
 }
 
 pub fn video_player_to_json(value: VideoPlayer) -> Json {
-  json.object(
-    [
-      #("embedHeight", json.nullable(value.embed_height, json.string)),
-      #("embedHtml", json.nullable(value.embed_html, json.string)),
-      #("embedWidth", json.nullable(value.embed_width, json.string)),
-    ],
-  )
+  json.object([
+    #("embedHeight", json.nullable(value.embed_height, json.string)),
+    #("embedHtml", json.nullable(value.embed_html, json.string)),
+    #("embedWidth", json.nullable(value.embed_width, json.string)),
+  ])
 }
 
 /// Describes processing status and progress and availability of some other Video resource parts.
@@ -5943,68 +5661,60 @@ pub fn video_processing_details_decoder() -> Decoder(VideoProcessingDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoProcessingDetails(
-      editor_suggestions_availability,
-      file_details_availability,
-      processing_failure_reason,
-      processing_issues_availability,
-      processing_progress,
-      processing_status,
-      tag_suggestions_availability,
-      thumbnails_availability,
-    ),
-  )
+  decode.success(VideoProcessingDetails(
+    editor_suggestions_availability,
+    file_details_availability,
+    processing_failure_reason,
+    processing_issues_availability,
+    processing_progress,
+    processing_status,
+    tag_suggestions_availability,
+    thumbnails_availability,
+  ))
 }
 
 pub fn video_processing_details_to_json(value: VideoProcessingDetails) -> Json {
-  json.object(
-    [
-      #(
-        "editorSuggestionsAvailability",
-        json.nullable(value.editor_suggestions_availability, json.string),
+  json.object([
+    #(
+      "editorSuggestionsAvailability",
+      json.nullable(value.editor_suggestions_availability, json.string),
+    ),
+    #(
+      "fileDetailsAvailability",
+      json.nullable(value.file_details_availability, json.string),
+    ),
+    #(
+      "processingFailureReason",
+      json.nullable(value.processing_failure_reason, fn(e) {
+        json.string(processing_failure_reason_to_string(e))
+      }),
+    ),
+    #(
+      "processingIssuesAvailability",
+      json.nullable(value.processing_issues_availability, json.string),
+    ),
+    #(
+      "processingProgress",
+      json.nullable(
+        value.processing_progress,
+        video_processing_details_processing_progress_to_json,
       ),
-      #(
-        "fileDetailsAvailability",
-        json.nullable(value.file_details_availability, json.string),
-      ),
-      #(
-        "processingFailureReason",
-        json.nullable(
-          value.processing_failure_reason,
-          fn(e)
-          { json.string(processing_failure_reason_to_string(e)) },
-        ),
-      ),
-      #(
-        "processingIssuesAvailability",
-        json.nullable(value.processing_issues_availability, json.string),
-      ),
-      #(
-        "processingProgress",
-        json.nullable(
-          value.processing_progress,
-          video_processing_details_processing_progress_to_json,
-        ),
-      ),
-      #(
-        "processingStatus",
-        json.nullable(
-          value.processing_status,
-          fn(e)
-          { json.string(processing_status_to_string(e)) },
-        ),
-      ),
-      #(
-        "tagSuggestionsAvailability",
-        json.nullable(value.tag_suggestions_availability, json.string),
-      ),
-      #(
-        "thumbnailsAvailability",
-        json.nullable(value.thumbnails_availability, json.string),
-      ),
-    ],
-  )
+    ),
+    #(
+      "processingStatus",
+      json.nullable(value.processing_status, fn(e) {
+        json.string(processing_status_to_string(e))
+      }),
+    ),
+    #(
+      "tagSuggestionsAvailability",
+      json.nullable(value.tag_suggestions_availability, json.string),
+    ),
+    #(
+      "thumbnailsAvailability",
+      json.nullable(value.thumbnails_availability, json.string),
+    ),
+  ])
 }
 
 /// The reason that YouTube failed to process the video. This property will only have a value if the processingStatus property's value is failed.
@@ -6015,9 +5725,10 @@ pub type ProcessingFailureReason {
   ProcessingFailureReasonOther
 }
 
-pub fn processing_failure_reason_to_string(value: ProcessingFailureReason) -> String {
-  case value
-  {
+pub fn processing_failure_reason_to_string(
+  value: ProcessingFailureReason,
+) -> String {
+  case value {
     ProcessingFailureReasonUploadFailed -> "uploadFailed"
     ProcessingFailureReasonTranscodeFailed -> "transcodeFailed"
     ProcessingFailureReasonStreamingFailed -> "streamingFailed"
@@ -6032,10 +5743,11 @@ pub fn processing_failure_reason_decoder() -> Decoder(ProcessingFailureReason) {
     "transcodeFailed" -> decode.success(ProcessingFailureReasonTranscodeFailed)
     "streamingFailed" -> decode.success(ProcessingFailureReasonStreamingFailed)
     "other" -> decode.success(ProcessingFailureReasonOther)
-    _ -> decode.failure(
-      ProcessingFailureReasonUploadFailed,
-      "a valid ProcessingFailureReason",
-    )
+    _ ->
+      decode.failure(
+        ProcessingFailureReasonUploadFailed,
+        "a valid ProcessingFailureReason",
+      )
   }
 }
 
@@ -6094,25 +5806,21 @@ pub fn video_processing_details_processing_progress_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoProcessingDetailsProcessingProgress(
-      parts_processed,
-      parts_total,
-      time_left_ms,
-    ),
-  )
+  decode.success(VideoProcessingDetailsProcessingProgress(
+    parts_processed,
+    parts_total,
+    time_left_ms,
+  ))
 }
 
 pub fn video_processing_details_processing_progress_to_json(
   value: VideoProcessingDetailsProcessingProgress,
 ) -> Json {
-  json.object(
-    [
-      #("partsProcessed", json.nullable(value.parts_processed, json.string)),
-      #("partsTotal", json.nullable(value.parts_total, json.string)),
-      #("timeLeftMs", json.nullable(value.time_left_ms, json.string)),
-    ],
-  )
+  json.object([
+    #("partsProcessed", json.nullable(value.parts_processed, json.string)),
+    #("partsTotal", json.nullable(value.parts_total, json.string)),
+    #("timeLeftMs", json.nullable(value.time_left_ms, json.string)),
+  ])
 }
 
 /// DEPRECATED. b/157517979: This part was never populated after it was added. However, it sees non-zero traffic because there is generated client code in the wild that refers to it [1]. We keep this field and do NOT remove it because otherwise V3 would return an error when this part gets requested [2]. [1] https://developers.google.com/resources/api-libraries/documentation/youtube/v3/csharp/latest/classGoogle_1_1Apis_1_1YouTube_1_1v3_1_1Data_1_1VideoProjectDetails.html [2] http://google3/video/youtube/src/python/servers/data_api/common.py?l=1565-1569&rcl=344141677
@@ -6148,15 +5856,13 @@ pub fn video_rating_decoder() -> Decoder(VideoRating) {
 }
 
 pub fn video_rating_to_json(value: VideoRating) -> Json {
-  json.object(
-    [
-      #(
-        "rating",
-        json.nullable(value.rating, fn(e) { json.string(rating_to_string(e)) }),
-      ),
-      #("videoId", json.nullable(value.video_id, json.string)),
-    ],
-  )
+  json.object([
+    #(
+      "rating",
+      json.nullable(value.rating, fn(e) { json.string(rating_to_string(e)) }),
+    ),
+    #("videoId", json.nullable(value.video_id, json.string)),
+  ])
 }
 
 /// Rating of a video.
@@ -6209,22 +5915,22 @@ pub fn video_recording_details_decoder() -> Decoder(VideoRecordingDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoRecordingDetails(location, location_description, recording_date),
-  )
+  decode.success(VideoRecordingDetails(
+    location,
+    location_description,
+    recording_date,
+  ))
 }
 
 pub fn video_recording_details_to_json(value: VideoRecordingDetails) -> Json {
-  json.object(
-    [
-      #("location", json.nullable(value.location, geo_point_to_json)),
-      #(
-        "locationDescription",
-        json.nullable(value.location_description, json.string),
-      ),
-      #("recordingDate", json.nullable(value.recording_date, json.string)),
-    ],
-  )
+  json.object([
+    #("location", json.nullable(value.location, geo_point_to_json)),
+    #(
+      "locationDescription",
+      json.nullable(value.location_description, json.string),
+    ),
+    #("recordingDate", json.nullable(value.recording_date, json.string)),
+  ])
 }
 
 /// Basic details about a video, including title, description, uploader, thumbnails and category.
@@ -6306,57 +6012,51 @@ pub fn video_snippet_decoder() -> Decoder(VideoSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoSnippet(
-      category_id,
-      channel_id,
-      channel_title,
-      default_audio_language,
-      default_language,
-      description,
-      live_broadcast_content,
-      localized,
-      published_at,
-      tags,
-      thumbnails,
-      title,
-    ),
-  )
+  decode.success(VideoSnippet(
+    category_id,
+    channel_id,
+    channel_title,
+    default_audio_language,
+    default_language,
+    description,
+    live_broadcast_content,
+    localized,
+    published_at,
+    tags,
+    thumbnails,
+    title,
+  ))
 }
 
 pub fn video_snippet_to_json(value: VideoSnippet) -> Json {
-  json.object(
-    [
-      #("categoryId", json.nullable(value.category_id, json.string)),
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("channelTitle", json.nullable(value.channel_title, json.string)),
-      #(
-        "defaultAudioLanguage",
-        json.nullable(value.default_audio_language, json.string),
-      ),
-      #("defaultLanguage", json.nullable(value.default_language, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #(
-        "liveBroadcastContent",
-        json.nullable(
-          value.live_broadcast_content,
-          fn(e)
-          { json.string(live_broadcast_content_to_string(e)) },
-        ),
-      ),
-      #("localized", json.nullable(value.localized, video_localization_to_json)),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #(
-        "tags",
-        json.nullable(value.tags, fn(items) { json.array(items, json.string) }),
-      ),
-      #(
-        "thumbnails",
-        json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("categoryId", json.nullable(value.category_id, json.string)),
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("channelTitle", json.nullable(value.channel_title, json.string)),
+    #(
+      "defaultAudioLanguage",
+      json.nullable(value.default_audio_language, json.string),
+    ),
+    #("defaultLanguage", json.nullable(value.default_language, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #(
+      "liveBroadcastContent",
+      json.nullable(value.live_broadcast_content, fn(e) {
+        json.string(live_broadcast_content_to_string(e))
+      }),
+    ),
+    #("localized", json.nullable(value.localized, video_localization_to_json)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #(
+      "tags",
+      json.nullable(value.tags, fn(items) { json.array(items, json.string) }),
+    ),
+    #(
+      "thumbnails",
+      json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 /// Indicates if the video is an upcoming/active live broadcast. Or it's "none" if the video is not an upcoming/active live broadcast.
@@ -6383,10 +6083,8 @@ pub fn live_broadcast_content_decoder() -> Decoder(LiveBroadcastContent) {
     "upcoming" -> decode.success(LiveBroadcastContentUpcoming)
     "live" -> decode.success(LiveBroadcastContentLive)
     "completed" -> decode.success(LiveBroadcastContentCompleted)
-    _ -> decode.failure(
-      LiveBroadcastContentNone,
-      "a valid LiveBroadcastContent",
-    )
+    _ ->
+      decode.failure(LiveBroadcastContentNone, "a valid LiveBroadcastContent")
   }
 }
 
@@ -6433,31 +6131,24 @@ pub fn video_stat_decoder() -> Decoder(VideoStat) {
     option.None,
     decode.optional(video_stats_statistics_decoder()),
   )
-  decode.success(
-    VideoStat(content_details, etag, id, kind, snippet, statistics),
-  )
+  decode.success(VideoStat(content_details, etag, id, kind, snippet, statistics))
 }
 
 pub fn video_stat_to_json(value: VideoStat) -> Json {
-  json.object(
-    [
-      #(
-        "contentDetails",
-        json.nullable(
-          value.content_details,
-          video_stats_content_details_to_json,
-        ),
-      ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, video_stats_snippet_to_json)),
-      #(
-        "statistics",
-        json.nullable(value.statistics, video_stats_statistics_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "contentDetails",
+      json.nullable(value.content_details, video_stats_content_details_to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, video_stats_snippet_to_json)),
+    #(
+      "statistics",
+      json.nullable(value.statistics, video_stats_statistics_to_json),
+    ),
+  ])
 }
 
 /// Statistics about the video, such as the number of times the video was viewed or liked.
@@ -6497,27 +6188,23 @@ pub fn video_statistics_decoder() -> Decoder(VideoStatistics) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    VideoStatistics(
-      comment_count,
-      dislike_count,
-      favorite_count,
-      like_count,
-      view_count,
-    ),
-  )
+  decode.success(VideoStatistics(
+    comment_count,
+    dislike_count,
+    favorite_count,
+    like_count,
+    view_count,
+  ))
 }
 
 pub fn video_statistics_to_json(value: VideoStatistics) -> Json {
-  json.object(
-    [
-      #("commentCount", json.nullable(value.comment_count, json.string)),
-      #("dislikeCount", json.nullable(value.dislike_count, json.string)),
-      #("favoriteCount", json.nullable(value.favorite_count, json.string)),
-      #("likeCount", json.nullable(value.like_count, json.string)),
-      #("viewCount", json.nullable(value.view_count, json.string)),
-    ],
-  )
+  json.object([
+    #("commentCount", json.nullable(value.comment_count, json.string)),
+    #("dislikeCount", json.nullable(value.dislike_count, json.string)),
+    #("favoriteCount", json.nullable(value.favorite_count, json.string)),
+    #("likeCount", json.nullable(value.like_count, json.string)),
+    #("viewCount", json.nullable(value.view_count, json.string)),
+  ])
 }
 
 /// Details about the content of a YouTube Video. This is a subset of the information in VideoContentDetails specifically for the Videos.stats API.
@@ -6536,7 +6223,9 @@ pub fn video_stats_content_details_decoder() -> Decoder(
   decode.success(VideoStatsContentDetails(duration))
 }
 
-pub fn video_stats_content_details_to_json(value: VideoStatsContentDetails) -> Json {
+pub fn video_stats_content_details_to_json(
+  value: VideoStatsContentDetails,
+) -> Json {
   json.object([#("duration", json.nullable(value.duration, json.string))])
 }
 
@@ -6555,9 +6244,7 @@ pub fn video_stats_snippet_decoder() -> Decoder(VideoStatsSnippet) {
 }
 
 pub fn video_stats_snippet_to_json(value: VideoStatsSnippet) -> Json {
-  json.object(
-    [#("publishTime", json.nullable(value.publish_time, json.string))],
-  )
+  json.object([#("publishTime", json.nullable(value.publish_time, json.string))])
 }
 
 /// Statistics about the video, such as the number of times the video was viewed or liked.
@@ -6589,13 +6276,11 @@ pub fn video_stats_statistics_decoder() -> Decoder(VideoStatsStatistics) {
 }
 
 pub fn video_stats_statistics_to_json(value: VideoStatsStatistics) -> Json {
-  json.object(
-    [
-      #("commentCount", json.nullable(value.comment_count, json.string)),
-      #("likeCount", json.nullable(value.like_count, json.string)),
-      #("viewCount", json.nullable(value.view_count, json.string)),
-    ],
-  )
+  json.object([
+    #("commentCount", json.nullable(value.comment_count, json.string)),
+    #("likeCount", json.nullable(value.like_count, json.string)),
+    #("viewCount", json.nullable(value.view_count, json.string)),
+  ])
 }
 
 /// Basic details about a video category, such as its localized title. Next Id: 20
@@ -6671,83 +6356,67 @@ pub fn video_status_decoder() -> Decoder(VideoStatus) {
     option.None,
     decode.optional(upload_status_decoder()),
   )
-  decode.success(
-    VideoStatus(
-      contains_synthetic_media,
-      embeddable,
-      failure_reason,
-      license,
-      made_for_kids,
-      privacy_status,
-      public_stats_viewable,
-      publish_at,
-      rejection_reason,
-      self_declared_made_for_kids,
-      upload_status,
-    ),
-  )
+  decode.success(VideoStatus(
+    contains_synthetic_media,
+    embeddable,
+    failure_reason,
+    license,
+    made_for_kids,
+    privacy_status,
+    public_stats_viewable,
+    publish_at,
+    rejection_reason,
+    self_declared_made_for_kids,
+    upload_status,
+  ))
 }
 
 pub fn video_status_to_json(value: VideoStatus) -> Json {
-  json.object(
-    [
-      #(
-        "containsSyntheticMedia",
-        json.nullable(value.contains_synthetic_media, json.bool),
-      ),
-      #("embeddable", json.nullable(value.embeddable, json.bool)),
-      #(
-        "failureReason",
-        json.nullable(
-          value.failure_reason,
-          fn(e)
-          { json.string(failure_reason_to_string(e)) },
-        ),
-      ),
-      #(
-        "license",
-        json.nullable(
-          value.license,
-          fn(e)
-          { json.string(license_to_string(e)) },
-        ),
-      ),
-      #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
-      #(
-        "privacyStatus",
-        json.nullable(
-          value.privacy_status,
-          fn(e)
-          { json.string(privacy_status_to_string(e)) },
-        ),
-      ),
-      #(
-        "publicStatsViewable",
-        json.nullable(value.public_stats_viewable, json.bool),
-      ),
-      #("publishAt", json.nullable(value.publish_at, json.string)),
-      #(
-        "rejectionReason",
-        json.nullable(
-          value.rejection_reason,
-          fn(e)
-          { json.string(rejection_reason_to_string(e)) },
-        ),
-      ),
-      #(
-        "selfDeclaredMadeForKids",
-        json.nullable(value.self_declared_made_for_kids, json.bool),
-      ),
-      #(
-        "uploadStatus",
-        json.nullable(
-          value.upload_status,
-          fn(e)
-          { json.string(upload_status_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "containsSyntheticMedia",
+      json.nullable(value.contains_synthetic_media, json.bool),
+    ),
+    #("embeddable", json.nullable(value.embeddable, json.bool)),
+    #(
+      "failureReason",
+      json.nullable(value.failure_reason, fn(e) {
+        json.string(failure_reason_to_string(e))
+      }),
+    ),
+    #(
+      "license",
+      json.nullable(value.license, fn(e) { json.string(license_to_string(e)) }),
+    ),
+    #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
+    #(
+      "privacyStatus",
+      json.nullable(value.privacy_status, fn(e) {
+        json.string(privacy_status_to_string(e))
+      }),
+    ),
+    #(
+      "publicStatsViewable",
+      json.nullable(value.public_stats_viewable, json.bool),
+    ),
+    #("publishAt", json.nullable(value.publish_at, json.string)),
+    #(
+      "rejectionReason",
+      json.nullable(value.rejection_reason, fn(e) {
+        json.string(rejection_reason_to_string(e))
+      }),
+    ),
+    #(
+      "selfDeclaredMadeForKids",
+      json.nullable(value.self_declared_made_for_kids, json.bool),
+    ),
+    #(
+      "uploadStatus",
+      json.nullable(value.upload_status, fn(e) {
+        json.string(upload_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// This value explains why a video failed to upload. This property is only present if the `uploadStatus` property indicates that the upload failed.
@@ -6867,14 +6536,12 @@ pub fn rejection_reason_decoder() -> Decoder(RejectionReason) {
     "inappropriate" -> decode.success(RejectionReasonInappropriate)
     "duplicate" -> decode.success(RejectionReasonDuplicate)
     "termsOfUse" -> decode.success(RejectionReasonTermsOfUse)
-    "uploaderAccountSuspended" -> decode.success(
-      RejectionReasonUploaderAccountSuspended,
-    )
+    "uploaderAccountSuspended" ->
+      decode.success(RejectionReasonUploaderAccountSuspended)
     "length" -> decode.success(RejectionReasonLength)
     "claim" -> decode.success(RejectionReasonClaim)
-    "uploaderAccountClosed" -> decode.success(
-      RejectionReasonUploaderAccountClosed,
-    )
+    "uploaderAccountClosed" ->
+      decode.success(RejectionReasonUploaderAccountClosed)
     "trademark" -> decode.success(RejectionReasonTrademark)
     "legal" -> decode.success(RejectionReasonLegal)
     _ -> decode.failure(RejectionReasonCopyright, "a valid RejectionReason")
@@ -6949,86 +6616,50 @@ pub fn video_suggestions_decoder() -> Decoder(VideoSuggestions) {
     option.None,
     decode.optional(decode.list(video_suggestions_tag_suggestion_decoder())),
   )
-  decode.success(
-    VideoSuggestions(
-      editor_suggestions,
-      processing_errors,
-      processing_hints,
-      processing_warnings,
-      tag_suggestions,
-    ),
-  )
+  decode.success(VideoSuggestions(
+    editor_suggestions,
+    processing_errors,
+    processing_hints,
+    processing_warnings,
+    tag_suggestions,
+  ))
 }
 
 pub fn video_suggestions_to_json(value: VideoSuggestions) -> Json {
-  json.object(
-    [
-      #(
-        "editorSuggestions",
-        json.nullable(
-          value.editor_suggestions,
-          fn(items)
-          {
-            json.array(
-              items,
-              fn(e)
-              { json.string(editor_suggestions_to_string(e)) },
-            )
-          },
-        ),
-      ),
-      #(
-        "processingErrors",
-        json.nullable(
-          value.processing_errors,
-          fn(items)
-          {
-            json.array(
-              items,
-              fn(e)
-              { json.string(processing_errors_to_string(e)) },
-            )
-          },
-        ),
-      ),
-      #(
-        "processingHints",
-        json.nullable(
-          value.processing_hints,
-          fn(items)
-          {
-            json.array(
-              items,
-              fn(e)
-              { json.string(processing_hints_to_string(e)) },
-            )
-          },
-        ),
-      ),
-      #(
-        "processingWarnings",
-        json.nullable(
-          value.processing_warnings,
-          fn(items)
-          {
-            json.array(
-              items,
-              fn(e)
-              { json.string(processing_warnings_to_string(e)) },
-            )
-          },
-        ),
-      ),
-      #(
-        "tagSuggestions",
-        json.nullable(
-          value.tag_suggestions,
-          fn(items)
-          { json.array(items, video_suggestions_tag_suggestion_to_json) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "editorSuggestions",
+      json.nullable(value.editor_suggestions, fn(items) {
+        json.array(items, fn(e) { json.string(editor_suggestions_to_string(e)) })
+      }),
+    ),
+    #(
+      "processingErrors",
+      json.nullable(value.processing_errors, fn(items) {
+        json.array(items, fn(e) { json.string(processing_errors_to_string(e)) })
+      }),
+    ),
+    #(
+      "processingHints",
+      json.nullable(value.processing_hints, fn(items) {
+        json.array(items, fn(e) { json.string(processing_hints_to_string(e)) })
+      }),
+    ),
+    #(
+      "processingWarnings",
+      json.nullable(value.processing_warnings, fn(items) {
+        json.array(items, fn(e) {
+          json.string(processing_warnings_to_string(e))
+        })
+      }),
+    ),
+    #(
+      "tagSuggestions",
+      json.nullable(value.tag_suggestions, fn(items) {
+        json.array(items, video_suggestions_tag_suggestion_to_json)
+      }),
+    ),
+  ])
 }
 
 /// A list of video editing operations that might improve the video quality or playback experience of the uploaded video.
@@ -7054,13 +6685,13 @@ pub fn editor_suggestions_decoder() -> Decoder(EditorSuggestions) {
     "videoAutoLevels" -> decode.success(EditorSuggestionsVideoAutoLevels)
     "videoStabilize" -> decode.success(EditorSuggestionsVideoStabilize)
     "videoCrop" -> decode.success(EditorSuggestionsVideoCrop)
-    "audioQuietAudioSwap" -> decode.success(
-      EditorSuggestionsAudioQuietAudioSwap,
-    )
-    _ -> decode.failure(
-      EditorSuggestionsVideoAutoLevels,
-      "a valid EditorSuggestions",
-    )
+    "audioQuietAudioSwap" ->
+      decode.success(EditorSuggestionsAudioQuietAudioSwap)
+    _ ->
+      decode.failure(
+        EditorSuggestionsVideoAutoLevels,
+        "a valid EditorSuggestions",
+      )
   }
 }
 
@@ -7083,7 +6714,8 @@ pub fn processing_errors_to_string(value: ProcessingErrors) -> String {
     ProcessingErrorsNotAvideoFile -> "notAVideoFile"
     ProcessingErrorsDocFile -> "docFile"
     ProcessingErrorsArchiveFile -> "archiveFile"
-    ProcessingErrorsUnsupportedSpatialAudioLayout -> "unsupportedSpatialAudioLayout"
+    ProcessingErrorsUnsupportedSpatialAudioLayout ->
+      "unsupportedSpatialAudioLayout"
   }
 }
 
@@ -7096,9 +6728,8 @@ pub fn processing_errors_decoder() -> Decoder(ProcessingErrors) {
     "notAVideoFile" -> decode.success(ProcessingErrorsNotAvideoFile)
     "docFile" -> decode.success(ProcessingErrorsDocFile)
     "archiveFile" -> decode.success(ProcessingErrorsArchiveFile)
-    "unsupportedSpatialAudioLayout" -> decode.success(
-      ProcessingErrorsUnsupportedSpatialAudioLayout,
-    )
+    "unsupportedSpatialAudioLayout" ->
+      decode.success(ProcessingErrorsUnsupportedSpatialAudioLayout)
     _ -> decode.failure(ProcessingErrorsAudioFile, "a valid ProcessingErrors")
   }
 }
@@ -7128,17 +6759,14 @@ pub fn processing_hints_decoder() -> Decoder(ProcessingHints) {
   use value <- decode.then(decode.string)
   case value {
     "nonStreamableMov" -> decode.success(ProcessingHintsNonStreamableMov)
-    "sendBestQualityVideo" -> decode.success(
-      ProcessingHintsSendBestQualityVideo,
-    )
+    "sendBestQualityVideo" ->
+      decode.success(ProcessingHintsSendBestQualityVideo)
     "sphericalVideo" -> decode.success(ProcessingHintsSphericalVideo)
     "spatialAudio" -> decode.success(ProcessingHintsSpatialAudio)
     "vrVideo" -> decode.success(ProcessingHintsVrVideo)
     "hdrVideo" -> decode.success(ProcessingHintsHdrVideo)
-    _ -> decode.failure(
-      ProcessingHintsNonStreamableMov,
-      "a valid ProcessingHints",
-    )
+    _ ->
+      decode.failure(ProcessingHintsNonStreamableMov, "a valid ProcessingHints")
   }
 }
 
@@ -7168,9 +6796,11 @@ pub fn processing_warnings_to_string(value: ProcessingWarnings) -> String {
     ProcessingWarningsProblematicVideoCodec -> "problematicVideoCodec"
     ProcessingWarningsProblematicAudioCodec -> "problematicAudioCodec"
     ProcessingWarningsUnsupportedVrStereoMode -> "unsupportedVrStereoMode"
-    ProcessingWarningsUnsupportedSphericalProjectionType -> "unsupportedSphericalProjectionType"
+    ProcessingWarningsUnsupportedSphericalProjectionType ->
+      "unsupportedSphericalProjectionType"
     ProcessingWarningsUnsupportedHdrPixelFormat -> "unsupportedHdrPixelFormat"
-    ProcessingWarningsUnsupportedHdrColorMetadata -> "unsupportedHdrColorMetadata"
+    ProcessingWarningsUnsupportedHdrColorMetadata ->
+      "unsupportedHdrColorMetadata"
     ProcessingWarningsProblematicHdrLookupTable -> "problematicHdrLookupTable"
   }
 }
@@ -7181,35 +6811,28 @@ pub fn processing_warnings_decoder() -> Decoder(ProcessingWarnings) {
     "unknownContainer" -> decode.success(ProcessingWarningsUnknownContainer)
     "unknownVideoCodec" -> decode.success(ProcessingWarningsUnknownVideoCodec)
     "unknownAudioCodec" -> decode.success(ProcessingWarningsUnknownAudioCodec)
-    "inconsistentResolution" -> decode.success(
-      ProcessingWarningsInconsistentResolution,
-    )
+    "inconsistentResolution" ->
+      decode.success(ProcessingWarningsInconsistentResolution)
     "hasEditlist" -> decode.success(ProcessingWarningsHasEditlist)
-    "problematicVideoCodec" -> decode.success(
-      ProcessingWarningsProblematicVideoCodec,
-    )
-    "problematicAudioCodec" -> decode.success(
-      ProcessingWarningsProblematicAudioCodec,
-    )
-    "unsupportedVrStereoMode" -> decode.success(
-      ProcessingWarningsUnsupportedVrStereoMode,
-    )
-    "unsupportedSphericalProjectionType" -> decode.success(
-      ProcessingWarningsUnsupportedSphericalProjectionType,
-    )
-    "unsupportedHdrPixelFormat" -> decode.success(
-      ProcessingWarningsUnsupportedHdrPixelFormat,
-    )
-    "unsupportedHdrColorMetadata" -> decode.success(
-      ProcessingWarningsUnsupportedHdrColorMetadata,
-    )
-    "problematicHdrLookupTable" -> decode.success(
-      ProcessingWarningsProblematicHdrLookupTable,
-    )
-    _ -> decode.failure(
-      ProcessingWarningsUnknownContainer,
-      "a valid ProcessingWarnings",
-    )
+    "problematicVideoCodec" ->
+      decode.success(ProcessingWarningsProblematicVideoCodec)
+    "problematicAudioCodec" ->
+      decode.success(ProcessingWarningsProblematicAudioCodec)
+    "unsupportedVrStereoMode" ->
+      decode.success(ProcessingWarningsUnsupportedVrStereoMode)
+    "unsupportedSphericalProjectionType" ->
+      decode.success(ProcessingWarningsUnsupportedSphericalProjectionType)
+    "unsupportedHdrPixelFormat" ->
+      decode.success(ProcessingWarningsUnsupportedHdrPixelFormat)
+    "unsupportedHdrColorMetadata" ->
+      decode.success(ProcessingWarningsUnsupportedHdrColorMetadata)
+    "problematicHdrLookupTable" ->
+      decode.success(ProcessingWarningsProblematicHdrLookupTable)
+    _ ->
+      decode.failure(
+        ProcessingWarningsUnknownContainer,
+        "a valid ProcessingWarnings",
+      )
   }
 }
 
@@ -7240,19 +6863,15 @@ pub fn video_suggestions_tag_suggestion_decoder() -> Decoder(
 pub fn video_suggestions_tag_suggestion_to_json(
   value: VideoSuggestionsTagSuggestion,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "categoryRestricts",
-        json.nullable(
-          value.category_restricts,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #("tag", json.nullable(value.tag, json.string)),
-    ],
-  )
+  json.object([
+    #(
+      "categoryRestricts",
+      json.nullable(value.category_restricts, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #("tag", json.nullable(value.tag, json.string)),
+  ])
 }
 
 /// Freebase topic information related to the video.
@@ -7280,40 +6899,34 @@ pub fn video_topic_details_decoder() -> Decoder(VideoTopicDetails) {
     option.None,
     decode.optional(decode.list(decode.string)),
   )
-  decode.success(
-    VideoTopicDetails(relevant_topic_ids, topic_categories, topic_ids),
-  )
+  decode.success(VideoTopicDetails(
+    relevant_topic_ids,
+    topic_categories,
+    topic_ids,
+  ))
 }
 
 pub fn video_topic_details_to_json(value: VideoTopicDetails) -> Json {
-  json.object(
-    [
-      #(
-        "relevantTopicIds",
-        json.nullable(
-          value.relevant_topic_ids,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #(
-        "topicCategories",
-        json.nullable(
-          value.topic_categories,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #(
-        "topicIds",
-        json.nullable(
-          value.topic_ids,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "relevantTopicIds",
+      json.nullable(value.relevant_topic_ids, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "topicCategories",
+      json.nullable(value.topic_categories, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "topicIds",
+      json.nullable(value.topic_ids, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+  ])
 }
 
 /// Specifies who is allowed to train on the video.
@@ -7351,19 +6964,15 @@ pub fn video_trainability_decoder() -> Decoder(VideoTrainability) {
 }
 
 pub fn video_trainability_to_json(value: VideoTrainability) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "permitted",
-        json.nullable(
-          value.permitted,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #("videoId", json.nullable(value.video_id, json.string)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "permitted",
+      json.nullable(value.permitted, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #("videoId", json.nullable(value.video_id, json.string)),
+  ])
 }

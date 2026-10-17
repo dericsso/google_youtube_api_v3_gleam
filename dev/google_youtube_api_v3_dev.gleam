@@ -733,8 +733,7 @@ fn enum_for(
 
 /// Build one `youtube/api/*` module: a fluent params builder per method.
 fn build_request_module(methods: List(#(String, String, Method))) -> String {
-  let specs =
-    list.map(methods, fn(item) { to_method_spec(item.1, item.2) })
+  let specs = list.map(methods, fn(item) { to_method_spec(item.1, item.2) })
   let all_params =
     list.flat_map(specs, fn(spec) { list.append(spec.required, spec.optional) })
   let param_types = list.map(all_params, fn(item) { item.1.param_type })
@@ -798,14 +797,15 @@ fn build_request_module(methods: List(#(String, String, Method))) -> String {
       // group, with an unqualified type item per schema.
       list.map(
         dict.to_list(body_hosts)
-        |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) }),
+          |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) }),
         fn(entry) {
           #(
             "body:" <> entry.0,
             import_.new(["google_youtube_api_v3", "youtube", entry.0])
-              |> import_.with_unqualified_items(
-                list.map(entry.1, import_.unqualified_type),
-              ),
+              |> import_.with_unqualified_items(list.map(
+                entry.1,
+                import_.unqualified_type,
+              )),
           )
         },
       ),
@@ -848,13 +848,11 @@ fn build_request_module(methods: List(#(String, String, Method))) -> String {
           bool_ref: ref_or(refs, "bool", ["gleam", "bool"]),
           list_ref: ref_or(refs, "list", ["gleam", "list"]),
           json_ref: ref_or(refs, "json", ["gleam", "json"]),
-          body_lookup:
-            dict.to_list(body_hosts)
+          body_lookup: dict.to_list(body_hosts)
             |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) })
             |> list.filter_map(fn(entry) {
               case dict.get(refs, "body:" <> entry.0) {
-                Ok(ref) ->
-                  Ok(entry.1 |> list.map(fn(body) { #(body, ref) }))
+                Ok(ref) -> Ok(entry.1 |> list.map(fn(body) { #(body, ref) }))
                 Error(Nil) -> Error(Nil)
               }
             })
@@ -1015,10 +1013,7 @@ fn with_to_request(
       some_expr(
         expression.call_dynamic(qualified(ctx.json_ref, "to_string"), [
           expression.call_dynamic(
-            qualified(
-              body_ref,
-              justin.snake_case(body_name) <> "_to_json",
-            ),
+            qualified(body_ref, justin.snake_case(body_name) <> "_to_json"),
             [raw_expr("body")],
           ),
         ]),
@@ -1408,14 +1403,16 @@ pub fn build_group_module(
         "youtube",
         entry.0,
       ])
-      |> import_.with_unqualified_items(
-        list.map(entry.1, import_.unqualified_type),
-      )
+      |> import_.with_unqualified_items(list.map(
+        entry.1,
+        import_.unqualified_type,
+      ))
     })
   let dict_needed =
     list.any(schemas, fn(item) {
       case item.1.kind {
-        Object(properties:, ..) -> dict.values(properties) |> list.any(contains_object)
+        Object(properties:, ..) ->
+          dict.values(properties) |> list.any(contains_object)
         _ -> False
       }
     })
@@ -1506,7 +1503,7 @@ pub fn build_group_module(
     let ref_lookup =
       list.zip(
         dict.to_list(dep_hosts)
-        |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) }),
+          |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) }),
         host_mods,
       )
       |> list.flat_map(fn(pair) {
@@ -1591,7 +1588,9 @@ fn prefix_enum(
 
 /// Emit every schema in a group: type, decoder, encoder, field enums.
 fn with_schema_items(
-  items: List(#(String, Schema, List(#(String, String, Schema, Option(EnumSpec))))),
+  items: List(
+    #(String, Schema, List(#(String, String, Schema, Option(EnumSpec)))),
+  ),
   ctx: GroupCtx,
   handler: fn() -> Module,
 ) -> Module {
@@ -1603,7 +1602,12 @@ fn with_schema_items(
         list.map(props, fn(prop) {
           let #(_, field_name, prop_schema, field_enum) = prop
           let inner =
-            schema_to_type(prop_schema, ctx.ref_lookup, ctx.dict_ref, field_enum)
+            schema_to_type(
+              prop_schema,
+              ctx.ref_lookup,
+              ctx.dict_ref,
+              field_enum,
+            )
           let wrapped =
             import_.raw_type(ctx.option_ref, "Option")
             |> custom.to_type1(inner)
@@ -1623,7 +1627,13 @@ fn with_schema_items(
       )
       use _decoder <- module.with_function(
         definition.new(snake <> "_decoder") |> definition.with_publicity(True),
-        decoder_function(name, props, constructors, ctx.decode_ref, ctx.ref_lookup),
+        decoder_function(
+          name,
+          props,
+          constructors,
+          ctx.decode_ref,
+          ctx.ref_lookup,
+        ),
       )
       use _encoder <- module.with_function(
         definition.new(snake <> "_to_json") |> definition.with_publicity(True),
@@ -1750,8 +1760,7 @@ fn value_decoder(
         Ok(ref) ->
           expression.imported_ident(ref, callee_name) |> expression.to_dynamic
         // Same-group reference: the local function being defined.
-        Error(Nil) ->
-          expression.raw(callee_name) |> expression.to_dynamic
+        Error(Nil) -> expression.raw(callee_name) |> expression.to_dynamic
       }
       expression.call_dynamic(callee, [])
     }

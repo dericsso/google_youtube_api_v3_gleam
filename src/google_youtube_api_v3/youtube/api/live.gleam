@@ -7,7 +7,10 @@ import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
 import google_youtube_api_v3/youtube/cuepoint.{type Cuepoint}
-import google_youtube_api_v3/youtube/live.{type LiveBroadcast, type LiveChatBan, type LiveChatMessage, type LiveChatModerator, type LiveStream}
+import google_youtube_api_v3/youtube/live.{
+  type LiveBroadcast, type LiveChatBan, type LiveChatMessage,
+  type LiveChatModerator, type LiveStream,
+}
 
 /// Bind a broadcast to a stream.
 pub type LiveBroadcastsBindParams {
@@ -20,7 +23,10 @@ pub type LiveBroadcastsBindParams {
   )
 }
 
-pub fn live_broadcasts_bind(id: String, part: List(String)) -> LiveBroadcastsBindParams {
+pub fn live_broadcasts_bind(
+  id: String,
+  part: List(String),
+) -> LiveBroadcastsBindParams {
   LiveBroadcastsBindParams(id, part, option.None, option.None, option.None)
 }
 
@@ -76,31 +82,28 @@ pub fn live_broadcasts_bind_with_on_behalf_of_content_owner(
   )
 }
 
-pub fn live_broadcasts_bind_request(params: LiveBroadcastsBindParams) -> Request {
+pub fn live_broadcasts_bind_request(
+  params: LiveBroadcastsBindParams,
+) -> Request {
   Request(
     http.Post,
     "youtube/v3/liveBroadcasts/bind",
-    list.flatten(
-      [
-        [#("id", params.id)],
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
-        case params.stream_id
-        {
-          option.Some(v) -> [#("streamId", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      [#("id", params.id)],
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+      case params.stream_id {
+        option.Some(v) -> [#("streamId", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -145,17 +148,23 @@ pub fn live_broadcasts_delete_with_on_behalf_of_content_owner(
   )
 }
 
-pub fn live_broadcasts_delete_request(params: LiveBroadcastsDeleteParams) -> Request {
+pub fn live_broadcasts_delete_request(
+  params: LiveBroadcastsDeleteParams,
+) -> Request {
   Request(
     http.Delete,
     "youtube/v3/liveBroadcasts",
-    list.flatten([[#("id", params.id)], case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner_channel {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        }]),
+    list.flatten([
+      [#("id", params.id)],
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -174,7 +183,9 @@ pub type LiveBroadcastsInsertParams {
   )
 }
 
-pub fn live_broadcasts_insert(part: List(String)) -> LiveBroadcastsInsertParams {
+pub fn live_broadcasts_insert(
+  part: List(String),
+) -> LiveBroadcastsInsertParams {
   LiveBroadcastsInsertParams(part, option.None, option.None)
 }
 
@@ -218,21 +229,17 @@ pub fn live_broadcasts_insert_request(
   Request(
     http.Post,
     "youtube/v3/liveBroadcasts",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -281,8 +288,7 @@ pub fn live_broadcasts_insert_cuepoint_add_part(
     params.id,
     params.on_behalf_of_content_owner,
     params.on_behalf_of_content_owner_channel,
-    case params.part
-    {
+    case params.part {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -332,19 +338,24 @@ pub fn live_broadcasts_insert_cuepoint_request(
   Request(
     http.Post,
     "youtube/v3/liveBroadcasts/cuepoint",
-    list.flatten([case params.id {
-          option.Some(v) -> [#("id", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner_channel {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        }, case params.part {
-          option.Some(v) -> list.map(v, fn(w) { #("part", w) })
-          option.None -> []
-        }]),
+    list.flatten([
+      case params.id {
+        option.Some(v) -> [#("id", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+      case params.part {
+        option.Some(v) -> list.map(v, fn(w) { #("part", w) })
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -511,8 +522,7 @@ pub fn live_broadcasts_list_add_id(
     params.part,
     params.broadcast_status,
     params.broadcast_type,
-    case params.id
-    {
+    case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -558,62 +568,54 @@ pub fn live_broadcasts_list_with_broadcast_status(
   )
 }
 
-pub fn live_broadcasts_list_request(params: LiveBroadcastsListParams) -> Request {
+pub fn live_broadcasts_list_request(
+  params: LiveBroadcastsListParams,
+) -> Request {
   Request(
     http.Get,
     "youtube/v3/liveBroadcasts",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.broadcast_status
-        {
-          option.Some(v) -> [
-            #(
-              "broadcastStatus",
-              live_broadcasts_list_broadcast_status_to_string(v),
-            ),
-          ]
-          option.None -> []
-        },
-        case params.broadcast_type
-        {
-          option.Some(v) -> [
-            #("broadcastType", live_broadcasts_list_broadcast_type_to_string(v)),
-          ]
-          option.None -> []
-        },
-        case params.id
-        {
-          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-          option.None -> []
-        },
-        case params.max_results
-        {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        },
-        case params.mine
-        {
-          option.Some(v) -> [#("mine", bool.to_string(v))]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
-        case params.page_token
-        {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.broadcast_status {
+        option.Some(v) -> [
+          #(
+            "broadcastStatus",
+            live_broadcasts_list_broadcast_status_to_string(v),
+          ),
+        ]
+        option.None -> []
+      },
+      case params.broadcast_type {
+        option.Some(v) -> [
+          #("broadcastType", live_broadcasts_list_broadcast_type_to_string(v)),
+        ]
+        option.None -> []
+      },
+      case params.id {
+        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.mine {
+        option.Some(v) -> [#("mine", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -694,30 +696,26 @@ pub fn live_broadcasts_transition_request(
   Request(
     http.Post,
     "youtube/v3/liveBroadcasts/transition",
-    list.flatten(
+    list.flatten([
       [
-        [
-          #(
-            "broadcastStatus",
-            live_broadcasts_transition_broadcast_status_to_string(
-              params.broadcast_status,
-            ),
+        #(
+          "broadcastStatus",
+          live_broadcasts_transition_broadcast_status_to_string(
+            params.broadcast_status,
           ),
-        ],
-        [#("id", params.id)],
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
+        ),
       ],
-    ),
+      [#("id", params.id)],
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -736,7 +734,9 @@ pub type LiveBroadcastsUpdateParams {
   )
 }
 
-pub fn live_broadcasts_update(part: List(String)) -> LiveBroadcastsUpdateParams {
+pub fn live_broadcasts_update(
+  part: List(String),
+) -> LiveBroadcastsUpdateParams {
   LiveBroadcastsUpdateParams(part, option.None, option.None)
 }
 
@@ -780,21 +780,17 @@ pub fn live_broadcasts_update_request(
   Request(
     http.Put,
     "youtube/v3/liveBroadcasts",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -813,7 +809,9 @@ pub fn live_chat_bans_delete(id: String) -> LiveChatBansDeleteParams {
   LiveChatBansDeleteParams(id)
 }
 
-pub fn live_chat_bans_delete_request(params: LiveChatBansDeleteParams) -> Request {
+pub fn live_chat_bans_delete_request(
+  params: LiveChatBansDeleteParams,
+) -> Request {
   Request(
     http.Delete,
     "youtube/v3/liveChat/bans",
@@ -869,7 +867,9 @@ pub fn live_chat_messages_delete(id: String) -> LiveChatMessagesDeleteParams {
   LiveChatMessagesDeleteParams(id)
 }
 
-pub fn live_chat_messages_delete_request(params: LiveChatMessagesDeleteParams) -> Request {
+pub fn live_chat_messages_delete_request(
+  params: LiveChatMessagesDeleteParams,
+) -> Request {
   Request(
     http.Delete,
     "youtube/v3/liveChat/messages",
@@ -888,7 +888,9 @@ pub type LiveChatMessagesInsertParams {
   LiveChatMessagesInsertParams(part: List(String))
 }
 
-pub fn live_chat_messages_insert(part: List(String)) -> LiveChatMessagesInsertParams {
+pub fn live_chat_messages_insert(
+  part: List(String),
+) -> LiveChatMessagesInsertParams {
   LiveChatMessagesInsertParams(part)
 }
 
@@ -928,7 +930,10 @@ pub type LiveChatMessagesListParams {
   )
 }
 
-pub fn live_chat_messages_list(live_chat_id: String, part: List(String)) -> LiveChatMessagesListParams {
+pub fn live_chat_messages_list(
+  live_chat_id: String,
+  part: List(String),
+) -> LiveChatMessagesListParams {
   LiveChatMessagesListParams(
     live_chat_id,
     part,
@@ -1009,36 +1014,32 @@ pub fn live_chat_messages_list_with_hl(
   )
 }
 
-pub fn live_chat_messages_list_request(params: LiveChatMessagesListParams) -> Request {
+pub fn live_chat_messages_list_request(
+  params: LiveChatMessagesListParams,
+) -> Request {
   Request(
     http.Get,
     "youtube/v3/liveChat/messages",
-    list.flatten(
-      [
-        [#("liveChatId", params.live_chat_id)],
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.hl
-        {
-          option.Some(v) -> [#("hl", v)]
-          option.None -> []
-        },
-        case params.max_results
-        {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        },
-        case params.page_token
-        {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        },
-        case params.profile_image_size
-        {
-          option.Some(v) -> [#("profileImageSize", int.to_string(v))]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      [#("liveChatId", params.live_chat_id)],
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.hl {
+        option.Some(v) -> [#("hl", v)]
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+      case params.profile_image_size {
+        option.Some(v) -> [#("profileImageSize", int.to_string(v))]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1081,15 +1082,18 @@ pub fn live_chat_messages_transition_request(
   Request(
     http.Post,
     "youtube/v3/liveChat/messages/transition",
-    list.flatten([case params.id {
-          option.Some(v) -> [#("id", v)]
-          option.None -> []
-        }, case params.status {
-          option.Some(v) -> [
-            #("status", live_chat_messages_transition_status_to_string(v)),
-          ]
-          option.None -> []
-        }]),
+    list.flatten([
+      case params.id {
+        option.Some(v) -> [#("id", v)]
+        option.None -> []
+      },
+      case params.status {
+        option.Some(v) -> [
+          #("status", live_chat_messages_transition_status_to_string(v)),
+        ]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1104,7 +1108,9 @@ pub type LiveChatModeratorsDeleteParams {
   LiveChatModeratorsDeleteParams(id: String)
 }
 
-pub fn live_chat_moderators_delete(id: String) -> LiveChatModeratorsDeleteParams {
+pub fn live_chat_moderators_delete(
+  id: String,
+) -> LiveChatModeratorsDeleteParams {
   LiveChatModeratorsDeleteParams(id)
 }
 
@@ -1129,7 +1135,9 @@ pub type LiveChatModeratorsInsertParams {
   LiveChatModeratorsInsertParams(part: List(String))
 }
 
-pub fn live_chat_moderators_insert(part: List(String)) -> LiveChatModeratorsInsertParams {
+pub fn live_chat_moderators_insert(
+  part: List(String),
+) -> LiveChatModeratorsInsertParams {
   LiveChatModeratorsInsertParams(part)
 }
 
@@ -1167,7 +1175,10 @@ pub type LiveChatModeratorsListParams {
   )
 }
 
-pub fn live_chat_moderators_list(live_chat_id: String, part: List(String)) -> LiveChatModeratorsListParams {
+pub fn live_chat_moderators_list(
+  live_chat_id: String,
+  part: List(String),
+) -> LiveChatModeratorsListParams {
   LiveChatModeratorsListParams(live_chat_id, part, option.None, option.None)
 }
 
@@ -1207,26 +1218,24 @@ pub fn live_chat_moderators_list_with_max_results(
   )
 }
 
-pub fn live_chat_moderators_list_request(params: LiveChatModeratorsListParams) -> Request {
+pub fn live_chat_moderators_list_request(
+  params: LiveChatModeratorsListParams,
+) -> Request {
   Request(
     http.Get,
     "youtube/v3/liveChat/moderators",
-    list.flatten(
-      [
-        [#("liveChatId", params.live_chat_id)],
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.max_results
-        {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        },
-        case params.page_token
-        {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      [#("liveChatId", params.live_chat_id)],
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1276,13 +1285,17 @@ pub fn live_streams_delete_request(params: LiveStreamsDeleteParams) -> Request {
   Request(
     http.Delete,
     "youtube/v3/liveStreams",
-    list.flatten([[#("id", params.id)], case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner_channel {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        }]),
+    list.flatten([
+      [#("id", params.id)],
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1345,21 +1358,17 @@ pub fn live_streams_insert_request(
   Request(
     http.Post,
     "youtube/v3/liveStreams",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1394,7 +1403,10 @@ pub fn live_streams_list(part: List(String)) -> LiveStreamsListParams {
   )
 }
 
-pub fn live_streams_list_add_part(params: LiveStreamsListParams, value: String) -> LiveStreamsListParams {
+pub fn live_streams_list_add_part(
+  params: LiveStreamsListParams,
+  value: String,
+) -> LiveStreamsListParams {
   LiveStreamsListParams(
     list.append(params.part, [value]),
     params.id,
@@ -1451,7 +1463,10 @@ pub fn live_streams_list_with_on_behalf_of_content_owner(
   )
 }
 
-pub fn live_streams_list_with_mine(params: LiveStreamsListParams, value: Bool) -> LiveStreamsListParams {
+pub fn live_streams_list_with_mine(
+  params: LiveStreamsListParams,
+  value: Bool,
+) -> LiveStreamsListParams {
   LiveStreamsListParams(
     params.part,
     params.id,
@@ -1493,38 +1508,55 @@ pub fn live_streams_list_with_id(
   )
 }
 
-pub fn live_streams_list_add_id(params: LiveStreamsListParams, value: String) -> LiveStreamsListParams {
-  LiveStreamsListParams(params.part, case params.id {
+pub fn live_streams_list_add_id(
+  params: LiveStreamsListParams,
+  value: String,
+) -> LiveStreamsListParams {
+  LiveStreamsListParams(
+    params.part,
+    case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
-    }, params.max_results, params.mine, params.on_behalf_of_content_owner, params.on_behalf_of_content_owner_channel, params.page_token)
+    },
+    params.max_results,
+    params.mine,
+    params.on_behalf_of_content_owner,
+    params.on_behalf_of_content_owner_channel,
+    params.page_token,
+  )
 }
 
 pub fn live_streams_list_request(params: LiveStreamsListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/liveStreams",
-    list.flatten(
-      [list.map(params.part, fn(v) { #("part", v) }), case params.id {
-          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-          option.None -> []
-        }, case params.max_results {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        }, case params.mine {
-          option.Some(v) -> [#("mine", bool.to_string(v))]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner_channel {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        }, case params.page_token {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.id {
+        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.mine {
+        option.Some(v) -> [#("mine", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1588,21 +1620,17 @@ pub fn live_streams_update_request(
   Request(
     http.Put,
     "youtube/v3/liveStreams",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1672,8 +1700,7 @@ pub fn youtube_v3_live_chat_messages_stream_add_part(
     params.live_chat_id,
     params.max_results,
     params.page_token,
-    case params.part
-    {
+    case params.part {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -1743,25 +1770,32 @@ pub fn youtube_v3_live_chat_messages_stream_request(
   Request(
     http.Get,
     "youtube/v3/liveChat/messages/stream",
-    list.flatten([case params.hl {
-          option.Some(v) -> [#("hl", v)]
-          option.None -> []
-        }, case params.live_chat_id {
-          option.Some(v) -> [#("liveChatId", v)]
-          option.None -> []
-        }, case params.max_results {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        }, case params.page_token {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        }, case params.part {
-          option.Some(v) -> list.map(v, fn(w) { #("part", w) })
-          option.None -> []
-        }, case params.profile_image_size {
-          option.Some(v) -> [#("profileImageSize", int.to_string(v))]
-          option.None -> []
-        }]),
+    list.flatten([
+      case params.hl {
+        option.Some(v) -> [#("hl", v)]
+        option.None -> []
+      },
+      case params.live_chat_id {
+        option.Some(v) -> [#("liveChatId", v)]
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+      case params.part {
+        option.Some(v) -> list.map(v, fn(w) { #("part", w) })
+        option.None -> []
+      },
+      case params.profile_image_size {
+        option.Some(v) -> [#("profileImageSize", int.to_string(v))]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1785,7 +1819,8 @@ pub fn live_broadcasts_list_broadcast_status_to_string(
   value: LiveBroadcastsListBroadcastStatus,
 ) -> String {
   case value {
-    LiveBroadcastsListBroadcastStatusBroadcastStatusFilterUnspecified -> "broadcastStatusFilterUnspecified"
+    LiveBroadcastsListBroadcastStatusBroadcastStatusFilterUnspecified ->
+      "broadcastStatusFilterUnspecified"
     LiveBroadcastsListBroadcastStatusAll -> "all"
     LiveBroadcastsListBroadcastStatusActive -> "active"
     LiveBroadcastsListBroadcastStatusUpcoming -> "upcoming"
@@ -1798,17 +1833,19 @@ pub fn live_broadcasts_list_broadcast_status_decoder() -> Decoder(
 ) {
   use value <- decode.then(decode.string)
   case value {
-    "broadcastStatusFilterUnspecified" -> decode.success(
-      LiveBroadcastsListBroadcastStatusBroadcastStatusFilterUnspecified,
-    )
+    "broadcastStatusFilterUnspecified" ->
+      decode.success(
+        LiveBroadcastsListBroadcastStatusBroadcastStatusFilterUnspecified,
+      )
     "all" -> decode.success(LiveBroadcastsListBroadcastStatusAll)
     "active" -> decode.success(LiveBroadcastsListBroadcastStatusActive)
     "upcoming" -> decode.success(LiveBroadcastsListBroadcastStatusUpcoming)
     "completed" -> decode.success(LiveBroadcastsListBroadcastStatusCompleted)
-    _ -> decode.failure(
-      LiveBroadcastsListBroadcastStatusBroadcastStatusFilterUnspecified,
-      "a valid LiveBroadcastsListBroadcastStatus",
-    )
+    _ ->
+      decode.failure(
+        LiveBroadcastsListBroadcastStatusBroadcastStatusFilterUnspecified,
+        "a valid LiveBroadcastsListBroadcastStatus",
+      )
   }
 }
 
@@ -1824,7 +1861,8 @@ pub fn live_broadcasts_list_broadcast_type_to_string(
   value: LiveBroadcastsListBroadcastType,
 ) -> String {
   case value {
-    LiveBroadcastsListBroadcastTypeBroadcastTypeFilterUnspecified -> "broadcastTypeFilterUnspecified"
+    LiveBroadcastsListBroadcastTypeBroadcastTypeFilterUnspecified ->
+      "broadcastTypeFilterUnspecified"
     LiveBroadcastsListBroadcastTypeAll -> "all"
     LiveBroadcastsListBroadcastTypeEvent -> "event"
     LiveBroadcastsListBroadcastTypePersistent -> "persistent"
@@ -1836,16 +1874,18 @@ pub fn live_broadcasts_list_broadcast_type_decoder() -> Decoder(
 ) {
   use value <- decode.then(decode.string)
   case value {
-    "broadcastTypeFilterUnspecified" -> decode.success(
-      LiveBroadcastsListBroadcastTypeBroadcastTypeFilterUnspecified,
-    )
+    "broadcastTypeFilterUnspecified" ->
+      decode.success(
+        LiveBroadcastsListBroadcastTypeBroadcastTypeFilterUnspecified,
+      )
     "all" -> decode.success(LiveBroadcastsListBroadcastTypeAll)
     "event" -> decode.success(LiveBroadcastsListBroadcastTypeEvent)
     "persistent" -> decode.success(LiveBroadcastsListBroadcastTypePersistent)
-    _ -> decode.failure(
-      LiveBroadcastsListBroadcastTypeBroadcastTypeFilterUnspecified,
-      "a valid LiveBroadcastsListBroadcastType",
-    )
+    _ ->
+      decode.failure(
+        LiveBroadcastsListBroadcastTypeBroadcastTypeFilterUnspecified,
+        "a valid LiveBroadcastsListBroadcastType",
+      )
   }
 }
 
@@ -1861,7 +1901,8 @@ pub fn live_broadcasts_transition_broadcast_status_to_string(
   value: LiveBroadcastsTransitionBroadcastStatus,
 ) -> String {
   case value {
-    LiveBroadcastsTransitionBroadcastStatusStatusUnspecified -> "statusUnspecified"
+    LiveBroadcastsTransitionBroadcastStatusStatusUnspecified ->
+      "statusUnspecified"
     LiveBroadcastsTransitionBroadcastStatusTesting -> "testing"
     LiveBroadcastsTransitionBroadcastStatusLive -> "live"
     LiveBroadcastsTransitionBroadcastStatusComplete -> "complete"
@@ -1873,18 +1914,17 @@ pub fn live_broadcasts_transition_broadcast_status_decoder() -> Decoder(
 ) {
   use value <- decode.then(decode.string)
   case value {
-    "statusUnspecified" -> decode.success(
-      LiveBroadcastsTransitionBroadcastStatusStatusUnspecified,
-    )
+    "statusUnspecified" ->
+      decode.success(LiveBroadcastsTransitionBroadcastStatusStatusUnspecified)
     "testing" -> decode.success(LiveBroadcastsTransitionBroadcastStatusTesting)
     "live" -> decode.success(LiveBroadcastsTransitionBroadcastStatusLive)
-    "complete" -> decode.success(
-      LiveBroadcastsTransitionBroadcastStatusComplete,
-    )
-    _ -> decode.failure(
-      LiveBroadcastsTransitionBroadcastStatusStatusUnspecified,
-      "a valid LiveBroadcastsTransitionBroadcastStatus",
-    )
+    "complete" ->
+      decode.success(LiveBroadcastsTransitionBroadcastStatusComplete)
+    _ ->
+      decode.failure(
+        LiveBroadcastsTransitionBroadcastStatusStatusUnspecified,
+        "a valid LiveBroadcastsTransitionBroadcastStatus",
+      )
   }
 }
 
@@ -1908,13 +1948,13 @@ pub fn live_chat_messages_transition_status_decoder() -> Decoder(
 ) {
   use value <- decode.then(decode.string)
   case value {
-    "statusUnspecified" -> decode.success(
-      LiveChatMessagesTransitionStatusStatusUnspecified,
-    )
+    "statusUnspecified" ->
+      decode.success(LiveChatMessagesTransitionStatusStatusUnspecified)
     "closed" -> decode.success(LiveChatMessagesTransitionStatusClosed)
-    _ -> decode.failure(
-      LiveChatMessagesTransitionStatusStatusUnspecified,
-      "a valid LiveChatMessagesTransitionStatus",
-    )
+    _ ->
+      decode.failure(
+        LiveChatMessagesTransitionStatusStatusUnspecified,
+        "a valid LiveChatMessagesTransitionStatus",
+      )
   }
 }

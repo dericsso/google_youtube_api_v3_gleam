@@ -5,7 +5,9 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/channel.{type ChannelBannerResource, type ChannelSection, type Channel}
+import google_youtube_api_v3/youtube/channel.{
+  type Channel, type ChannelBannerResource, type ChannelSection,
+}
 
 /// Inserts a new resource into this collection.
 pub type ChannelBannersInsertParams {
@@ -60,16 +62,20 @@ pub fn channel_banners_insert_request(
   Request(
     http.Post,
     "youtube/v3/channelBanners/insert",
-    list.flatten([case params.channel_id {
-          option.Some(v) -> [#("channelId", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner_channel {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        }]),
+    list.flatten([
+      case params.channel_id {
+        option.Some(v) -> [#("channelId", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -99,14 +105,19 @@ pub fn channel_sections_delete_with_on_behalf_of_content_owner(
   ChannelSectionsDeleteParams(params.id, option.Some(value))
 }
 
-pub fn channel_sections_delete_request(params: ChannelSectionsDeleteParams) -> Request {
+pub fn channel_sections_delete_request(
+  params: ChannelSectionsDeleteParams,
+) -> Request {
   Request(
     http.Delete,
     "youtube/v3/channelSections",
-    list.flatten([[#("id", params.id)], case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }]),
+    list.flatten([
+      [#("id", params.id)],
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -126,7 +137,9 @@ pub type ChannelSectionsInsertParams {
   )
 }
 
-pub fn channel_sections_insert(part: List(String)) -> ChannelSectionsInsertParams {
+pub fn channel_sections_insert(
+  part: List(String),
+) -> ChannelSectionsInsertParams {
   ChannelSectionsInsertParams(part, option.None, option.None)
 }
 
@@ -170,21 +183,17 @@ pub fn channel_sections_insert_request(
   Request(
     http.Post,
     "youtube/v3/channelSections",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -282,8 +291,7 @@ pub fn channel_sections_list_add_id(
     params.part,
     params.channel_id,
     params.hl,
-    case params.id
-    {
+    case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -320,28 +328,35 @@ pub fn channel_sections_list_with_channel_id(
   )
 }
 
-pub fn channel_sections_list_request(params: ChannelSectionsListParams) -> Request {
+pub fn channel_sections_list_request(
+  params: ChannelSectionsListParams,
+) -> Request {
   Request(
     http.Get,
     "youtube/v3/channelSections",
-    list.flatten(
-      [list.map(params.part, fn(v) { #("part", v) }), case params.channel_id {
-          option.Some(v) -> [#("channelId", v)]
-          option.None -> []
-        }, case params.hl {
-          option.Some(v) -> [#("hl", v)]
-          option.None -> []
-        }, case params.id {
-          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-          option.None -> []
-        }, case params.mine {
-          option.Some(v) -> [#("mine", bool.to_string(v))]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.channel_id {
+        option.Some(v) -> [#("channelId", v)]
+        option.None -> []
+      },
+      case params.hl {
+        option.Some(v) -> [#("hl", v)]
+        option.None -> []
+      },
+      case params.id {
+        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+        option.None -> []
+      },
+      case params.mine {
+        option.Some(v) -> [#("mine", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -361,7 +376,9 @@ pub type ChannelSectionsUpdateParams {
   )
 }
 
-pub fn channel_sections_update(part: List(String)) -> ChannelSectionsUpdateParams {
+pub fn channel_sections_update(
+  part: List(String),
+) -> ChannelSectionsUpdateParams {
   ChannelSectionsUpdateParams(part, option.None)
 }
 
@@ -389,16 +406,13 @@ pub fn channel_sections_update_request(
   Request(
     http.Put,
     "youtube/v3/channelSections",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -444,7 +458,10 @@ pub fn channels_list(part: List(String)) -> ChannelsListParams {
   )
 }
 
-pub fn channels_list_add_part(params: ChannelsListParams, value: String) -> ChannelsListParams {
+pub fn channels_list_add_part(
+  params: ChannelsListParams,
+  value: String,
+) -> ChannelsListParams {
   ChannelsListParams(
     list.append(params.part, [value]),
     params.category_id,
@@ -461,7 +478,10 @@ pub fn channels_list_add_part(params: ChannelsListParams, value: String) -> Chan
   )
 }
 
-pub fn channels_list_with_page_token(params: ChannelsListParams, value: String) -> ChannelsListParams {
+pub fn channels_list_with_page_token(
+  params: ChannelsListParams,
+  value: String,
+) -> ChannelsListParams {
   ChannelsListParams(
     params.part,
     params.category_id,
@@ -518,7 +538,10 @@ pub fn channels_list_with_my_subscribers(
   )
 }
 
-pub fn channels_list_with_mine(params: ChannelsListParams, value: Bool) -> ChannelsListParams {
+pub fn channels_list_with_mine(
+  params: ChannelsListParams,
+  value: Bool,
+) -> ChannelsListParams {
   ChannelsListParams(
     params.part,
     params.category_id,
@@ -535,7 +558,10 @@ pub fn channels_list_with_mine(params: ChannelsListParams, value: Bool) -> Chann
   )
 }
 
-pub fn channels_list_with_max_results(params: ChannelsListParams, value: Int) -> ChannelsListParams {
+pub fn channels_list_with_max_results(
+  params: ChannelsListParams,
+  value: Int,
+) -> ChannelsListParams {
   ChannelsListParams(
     params.part,
     params.category_id,
@@ -552,7 +578,10 @@ pub fn channels_list_with_max_results(params: ChannelsListParams, value: Int) ->
   )
 }
 
-pub fn channels_list_with_managed_by_me(params: ChannelsListParams, value: Bool) -> ChannelsListParams {
+pub fn channels_list_with_managed_by_me(
+  params: ChannelsListParams,
+  value: Bool,
+) -> ChannelsListParams {
   ChannelsListParams(
     params.part,
     params.category_id,
@@ -569,7 +598,10 @@ pub fn channels_list_with_managed_by_me(params: ChannelsListParams, value: Bool)
   )
 }
 
-pub fn channels_list_with_id(params: ChannelsListParams, value: List(String)) -> ChannelsListParams {
+pub fn channels_list_with_id(
+  params: ChannelsListParams,
+  value: List(String),
+) -> ChannelsListParams {
   ChannelsListParams(
     params.part,
     params.category_id,
@@ -586,15 +618,17 @@ pub fn channels_list_with_id(params: ChannelsListParams, value: List(String)) ->
   )
 }
 
-pub fn channels_list_add_id(params: ChannelsListParams, value: String) -> ChannelsListParams {
+pub fn channels_list_add_id(
+  params: ChannelsListParams,
+  value: String,
+) -> ChannelsListParams {
   ChannelsListParams(
     params.part,
     params.category_id,
     params.for_handle,
     params.for_username,
     params.hl,
-    case params.id
-    {
+    case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -607,7 +641,10 @@ pub fn channels_list_add_id(params: ChannelsListParams, value: String) -> Channe
   )
 }
 
-pub fn channels_list_with_hl(params: ChannelsListParams, value: String) -> ChannelsListParams {
+pub fn channels_list_with_hl(
+  params: ChannelsListParams,
+  value: String,
+) -> ChannelsListParams {
   ChannelsListParams(
     params.part,
     params.category_id,
@@ -644,7 +681,10 @@ pub fn channels_list_with_for_username(
   )
 }
 
-pub fn channels_list_with_for_handle(params: ChannelsListParams, value: String) -> ChannelsListParams {
+pub fn channels_list_with_for_handle(
+  params: ChannelsListParams,
+  value: String,
+) -> ChannelsListParams {
   ChannelsListParams(
     params.part,
     params.category_id,
@@ -661,7 +701,10 @@ pub fn channels_list_with_for_handle(params: ChannelsListParams, value: String) 
   )
 }
 
-pub fn channels_list_with_category_id(params: ChannelsListParams, value: String) -> ChannelsListParams {
+pub fn channels_list_with_category_id(
+  params: ChannelsListParams,
+  value: String,
+) -> ChannelsListParams {
   ChannelsListParams(
     params.part,
     option.Some(value),
@@ -682,42 +725,53 @@ pub fn channels_list_request(params: ChannelsListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/channels",
-    list.flatten(
-      [list.map(params.part, fn(v) { #("part", v) }), case params.category_id {
-          option.Some(v) -> [#("categoryId", v)]
-          option.None -> []
-        }, case params.for_handle {
-          option.Some(v) -> [#("forHandle", v)]
-          option.None -> []
-        }, case params.for_username {
-          option.Some(v) -> [#("forUsername", v)]
-          option.None -> []
-        }, case params.hl {
-          option.Some(v) -> [#("hl", v)]
-          option.None -> []
-        }, case params.id {
-          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-          option.None -> []
-        }, case params.managed_by_me {
-          option.Some(v) -> [#("managedByMe", bool.to_string(v))]
-          option.None -> []
-        }, case params.max_results {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        }, case params.mine {
-          option.Some(v) -> [#("mine", bool.to_string(v))]
-          option.None -> []
-        }, case params.my_subscribers {
-          option.Some(v) -> [#("mySubscribers", bool.to_string(v))]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.page_token {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.category_id {
+        option.Some(v) -> [#("categoryId", v)]
+        option.None -> []
+      },
+      case params.for_handle {
+        option.Some(v) -> [#("forHandle", v)]
+        option.None -> []
+      },
+      case params.for_username {
+        option.Some(v) -> [#("forUsername", v)]
+        option.None -> []
+      },
+      case params.hl {
+        option.Some(v) -> [#("hl", v)]
+        option.None -> []
+      },
+      case params.id {
+        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+        option.None -> []
+      },
+      case params.managed_by_me {
+        option.Some(v) -> [#("managedByMe", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.mine {
+        option.Some(v) -> [#("mine", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.my_subscribers {
+        option.Some(v) -> [#("mySubscribers", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -742,7 +796,10 @@ pub fn channels_update(part: List(String)) -> ChannelsUpdateParams {
   ChannelsUpdateParams(part, option.None)
 }
 
-pub fn channels_update_add_part(params: ChannelsUpdateParams, value: String) -> ChannelsUpdateParams {
+pub fn channels_update_add_part(
+  params: ChannelsUpdateParams,
+  value: String,
+) -> ChannelsUpdateParams {
   ChannelsUpdateParams(
     list.append(params.part, [value]),
     params.on_behalf_of_content_owner,
@@ -756,20 +813,20 @@ pub fn channels_update_with_on_behalf_of_content_owner(
   ChannelsUpdateParams(params.part, option.Some(value))
 }
 
-pub fn channels_update_request(params: ChannelsUpdateParams, body: Channel) -> Request {
+pub fn channels_update_request(
+  params: ChannelsUpdateParams,
+  body: Channel,
+) -> Request {
   Request(
     http.Put,
     "youtube/v3/channels",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

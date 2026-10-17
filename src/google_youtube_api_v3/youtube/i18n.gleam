@@ -37,14 +37,12 @@ pub fn i18n_language_decoder() -> Decoder(I18nLanguage) {
 }
 
 pub fn i18n_language_to_json(value: I18nLanguage) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, i18n_language_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, i18n_language_snippet_to_json)),
+  ])
 }
 
 pub type I18nLanguageListResponse {
@@ -85,28 +83,30 @@ pub fn i18n_language_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    I18nLanguageListResponse(etag, event_id, items, kind, visitor_id),
-  )
+  decode.success(I18nLanguageListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    visitor_id,
+  ))
 }
 
-pub fn i18n_language_list_response_to_json(value: I18nLanguageListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, i18n_language_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+pub fn i18n_language_list_response_to_json(
+  value: I18nLanguageListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, i18n_language_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Basic details about an i18n language, such as language code and human-readable name.
@@ -129,12 +129,10 @@ pub fn i18n_language_snippet_decoder() -> Decoder(I18nLanguageSnippet) {
 }
 
 pub fn i18n_language_snippet_to_json(value: I18nLanguageSnippet) -> Json {
-  json.object(
-    [
-      #("hl", json.nullable(value.hl, json.string)),
-      #("name", json.nullable(value.name, json.string)),
-    ],
-  )
+  json.object([
+    #("hl", json.nullable(value.hl, json.string)),
+    #("name", json.nullable(value.name, json.string)),
+  ])
 }
 
 /// A *i18nRegion* resource identifies a region where YouTube is available.
@@ -172,14 +170,12 @@ pub fn i18n_region_decoder() -> Decoder(I18nRegion) {
 }
 
 pub fn i18n_region_to_json(value: I18nRegion) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, i18n_region_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, i18n_region_snippet_to_json)),
+  ])
 }
 
 pub type I18nRegionListResponse {
@@ -218,28 +214,24 @@ pub fn i18n_region_list_response_decoder() -> Decoder(I18nRegionListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    I18nRegionListResponse(etag, event_id, items, kind, visitor_id),
-  )
+  decode.success(I18nRegionListResponse(etag, event_id, items, kind, visitor_id))
 }
 
-pub fn i18n_region_list_response_to_json(value: I18nRegionListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, i18n_region_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+pub fn i18n_region_list_response_to_json(
+  value: I18nRegionListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, i18n_region_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Basic details about an i18n region, such as region code and human-readable name.
@@ -262,10 +254,8 @@ pub fn i18n_region_snippet_decoder() -> Decoder(I18nRegionSnippet) {
 }
 
 pub fn i18n_region_snippet_to_json(value: I18nRegionSnippet) -> Json {
-  json.object(
-    [
-      #("gl", json.nullable(value.gl, json.string)),
-      #("name", json.nullable(value.name, json.string)),
-    ],
-  )
+  json.object([
+    #("gl", json.nullable(value.gl, json.string)),
+    #("name", json.nullable(value.name, json.string)),
+  ])
 }

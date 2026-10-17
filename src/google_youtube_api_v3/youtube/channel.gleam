@@ -92,77 +92,65 @@ pub fn channel_decoder() -> Decoder(Channel) {
     option.None,
     decode.optional(channel_topic_details_decoder()),
   )
-  decode.success(
-    Channel(
-      audit_details,
-      branding_settings,
-      content_details,
-      content_owner_details,
-      conversion_pings,
-      etag,
-      id,
-      kind,
-      localizations,
-      snippet,
-      statistics,
-      status,
-      topic_details,
-    ),
-  )
+  decode.success(Channel(
+    audit_details,
+    branding_settings,
+    content_details,
+    content_owner_details,
+    conversion_pings,
+    etag,
+    id,
+    kind,
+    localizations,
+    snippet,
+    statistics,
+    status,
+    topic_details,
+  ))
 }
 
 pub fn channel_to_json(value: Channel) -> Json {
-  json.object(
-    [
-      #(
-        "auditDetails",
-        json.nullable(value.audit_details, channel_audit_details_to_json),
+  json.object([
+    #(
+      "auditDetails",
+      json.nullable(value.audit_details, channel_audit_details_to_json),
+    ),
+    #(
+      "brandingSettings",
+      json.nullable(value.branding_settings, channel_branding_settings_to_json),
+    ),
+    #(
+      "contentDetails",
+      json.nullable(value.content_details, channel_content_details_to_json),
+    ),
+    #(
+      "contentOwnerDetails",
+      json.nullable(
+        value.content_owner_details,
+        channel_content_owner_details_to_json,
       ),
-      #(
-        "brandingSettings",
-        json.nullable(
-          value.branding_settings,
-          channel_branding_settings_to_json,
-        ),
-      ),
-      #(
-        "contentDetails",
-        json.nullable(value.content_details, channel_content_details_to_json),
-      ),
-      #(
-        "contentOwnerDetails",
-        json.nullable(
-          value.content_owner_details,
-          channel_content_owner_details_to_json,
-        ),
-      ),
-      #(
-        "conversionPings",
-        json.nullable(value.conversion_pings, channel_conversion_pings_to_json),
-      ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "localizations",
-        json.nullable(
-          value.localizations,
-          fn(d)
-          { json.dict(d, fn(k) { k }, channel_localization_to_json) },
-        ),
-      ),
-      #("snippet", json.nullable(value.snippet, channel_snippet_to_json)),
-      #(
-        "statistics",
-        json.nullable(value.statistics, channel_statistics_to_json),
-      ),
-      #("status", json.nullable(value.status, channel_status_to_json)),
-      #(
-        "topicDetails",
-        json.nullable(value.topic_details, channel_topic_details_to_json),
-      ),
-    ],
-  )
+    ),
+    #(
+      "conversionPings",
+      json.nullable(value.conversion_pings, channel_conversion_pings_to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "localizations",
+      json.nullable(value.localizations, fn(d) {
+        json.dict(d, fn(k) { k }, channel_localization_to_json)
+      }),
+    ),
+    #("snippet", json.nullable(value.snippet, channel_snippet_to_json)),
+    #("statistics", json.nullable(value.statistics, channel_statistics_to_json)),
+    #("status", json.nullable(value.status, channel_status_to_json)),
+    #(
+      "topicDetails",
+      json.nullable(value.topic_details, channel_topic_details_to_json),
+    ),
+  ])
 }
 
 /// The auditDetails object encapsulates channel data that is relevant for YouTube Partners during the audit process.
@@ -190,32 +178,28 @@ pub fn channel_audit_details_decoder() -> Decoder(ChannelAuditDetails) {
     option.None,
     decode.optional(decode.bool),
   )
-  decode.success(
-    ChannelAuditDetails(
-      community_guidelines_good_standing,
-      content_id_claims_good_standing,
-      copyright_strikes_good_standing,
-    ),
-  )
+  decode.success(ChannelAuditDetails(
+    community_guidelines_good_standing,
+    content_id_claims_good_standing,
+    copyright_strikes_good_standing,
+  ))
 }
 
 pub fn channel_audit_details_to_json(value: ChannelAuditDetails) -> Json {
-  json.object(
-    [
-      #(
-        "communityGuidelinesGoodStanding",
-        json.nullable(value.community_guidelines_good_standing, json.bool),
-      ),
-      #(
-        "contentIdClaimsGoodStanding",
-        json.nullable(value.content_id_claims_good_standing, json.bool),
-      ),
-      #(
-        "copyrightStrikesGoodStanding",
-        json.nullable(value.copyright_strikes_good_standing, json.bool),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "communityGuidelinesGoodStanding",
+      json.nullable(value.community_guidelines_good_standing, json.bool),
+    ),
+    #(
+      "contentIdClaimsGoodStanding",
+      json.nullable(value.content_id_claims_good_standing, json.bool),
+    ),
+    #(
+      "copyrightStrikesGoodStanding",
+      json.nullable(value.copyright_strikes_good_standing, json.bool),
+    ),
+  ])
 }
 
 /// A channel banner returned as the response to a channel_banner.insert call.
@@ -247,13 +231,11 @@ pub fn channel_banner_resource_decoder() -> Decoder(ChannelBannerResource) {
 }
 
 pub fn channel_banner_resource_to_json(value: ChannelBannerResource) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("url", json.nullable(value.url, json.string)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("url", json.nullable(value.url, json.string)),
+  ])
 }
 
 /// Branding properties of a YouTube channel.
@@ -290,22 +272,20 @@ pub fn channel_branding_settings_decoder() -> Decoder(ChannelBrandingSettings) {
   decode.success(ChannelBrandingSettings(channel, hints, image, watch))
 }
 
-pub fn channel_branding_settings_to_json(value: ChannelBrandingSettings) -> Json {
-  json.object(
-    [
-      #("channel", json.nullable(value.channel, channel_settings_to_json)),
-      #(
-        "hints",
-        json.nullable(
-          value.hints,
-          fn(items)
-          { json.array(items, property_value_to_json) },
-        ),
-      ),
-      #("image", json.nullable(value.image, image_settings_to_json)),
-      #("watch", json.nullable(value.watch, watch_settings_to_json)),
-    ],
-  )
+pub fn channel_branding_settings_to_json(
+  value: ChannelBrandingSettings,
+) -> Json {
+  json.object([
+    #("channel", json.nullable(value.channel, channel_settings_to_json)),
+    #(
+      "hints",
+      json.nullable(value.hints, fn(items) {
+        json.array(items, property_value_to_json)
+      }),
+    ),
+    #("image", json.nullable(value.image, image_settings_to_json)),
+    #("watch", json.nullable(value.watch, watch_settings_to_json)),
+  ])
 }
 
 /// Details about the content of a channel.
@@ -323,18 +303,14 @@ pub fn channel_content_details_decoder() -> Decoder(ChannelContentDetails) {
 }
 
 pub fn channel_content_details_to_json(value: ChannelContentDetails) -> Json {
-  json.object(
-    [
-      #(
-        "relatedPlaylists",
-        json.nullable(
-          value.related_playlists,
-          fn(d)
-          { json.dict(d, fn(k) { k }, json.string) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "relatedPlaylists",
+      json.nullable(value.related_playlists, fn(d) {
+        json.dict(d, fn(k) { k }, json.string)
+      }),
+    ),
+  ])
 }
 
 /// The contentOwnerDetails object encapsulates channel data that is relevant for YouTube Partners linked with the channel.
@@ -361,13 +337,13 @@ pub fn channel_content_owner_details_decoder() -> Decoder(
   decode.success(ChannelContentOwnerDetails(content_owner, time_linked))
 }
 
-pub fn channel_content_owner_details_to_json(value: ChannelContentOwnerDetails) -> Json {
-  json.object(
-    [
-      #("contentOwner", json.nullable(value.content_owner, json.string)),
-      #("timeLinked", json.nullable(value.time_linked, json.string)),
-    ],
-  )
+pub fn channel_content_owner_details_to_json(
+  value: ChannelContentOwnerDetails,
+) -> Json {
+  json.object([
+    #("contentOwner", json.nullable(value.content_owner, json.string)),
+    #("timeLinked", json.nullable(value.time_linked, json.string)),
+  ])
 }
 
 /// Pings that the app shall fire (authenticated by biscotti cookie). Each ping has a context, in which the app must fire the ping, and a url identifying the ping.
@@ -393,19 +369,13 @@ pub fn channel_conversion_ping_decoder() -> Decoder(ChannelConversionPing) {
 }
 
 pub fn channel_conversion_ping_to_json(value: ChannelConversionPing) -> Json {
-  json.object(
-    [
-      #(
-        "context",
-        json.nullable(
-          value.context,
-          fn(e)
-          { json.string(context_to_string(e)) },
-        ),
-      ),
-      #("conversionUrl", json.nullable(value.conversion_url, json.string)),
-    ],
-  )
+  json.object([
+    #(
+      "context",
+      json.nullable(value.context, fn(e) { json.string(context_to_string(e)) }),
+    ),
+    #("conversionUrl", json.nullable(value.conversion_url, json.string)),
+  ])
 }
 
 /// Defines the context of the ping.
@@ -448,18 +418,14 @@ pub fn channel_conversion_pings_decoder() -> Decoder(ChannelConversionPings) {
 }
 
 pub fn channel_conversion_pings_to_json(value: ChannelConversionPings) -> Json {
-  json.object(
-    [
-      #(
-        "pings",
-        json.nullable(
-          value.pings,
-          fn(items)
-          { json.array(items, channel_conversion_ping_to_json) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "pings",
+      json.nullable(value.pings, fn(items) {
+        json.array(items, channel_conversion_ping_to_json)
+      }),
+    ),
+  ])
 }
 
 pub type ChannelListResponse {
@@ -522,48 +488,42 @@ pub fn channel_list_response_decoder() -> Decoder(ChannelListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ChannelListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(ChannelListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
 pub fn channel_list_response_to_json(value: ChannelListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, channel_to_json) },
-        ),
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, channel_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Channel localization setting
@@ -586,12 +546,10 @@ pub fn channel_localization_decoder() -> Decoder(ChannelLocalization) {
 }
 
 pub fn channel_localization_to_json(value: ChannelLocalization) -> Json {
-  json.object(
-    [
-      #("description", json.nullable(value.description, json.string)),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("description", json.nullable(value.description, json.string)),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 pub type ChannelProfileDetails {
@@ -624,25 +582,21 @@ pub fn channel_profile_details_decoder() -> Decoder(ChannelProfileDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ChannelProfileDetails(
-      channel_id,
-      channel_url,
-      display_name,
-      profile_image_url,
-    ),
-  )
+  decode.success(ChannelProfileDetails(
+    channel_id,
+    channel_url,
+    display_name,
+    profile_image_url,
+  ))
 }
 
 pub fn channel_profile_details_to_json(value: ChannelProfileDetails) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("channelUrl", json.nullable(value.channel_url, json.string)),
-      #("displayName", json.nullable(value.display_name, json.string)),
-      #("profileImageUrl", json.nullable(value.profile_image_url, json.string)),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("channelUrl", json.nullable(value.channel_url, json.string)),
+    #("displayName", json.nullable(value.display_name, json.string)),
+    #("profileImageUrl", json.nullable(value.profile_image_url, json.string)),
+  ])
 }
 
 pub type ChannelSection {
@@ -681,9 +635,10 @@ pub fn channel_section_decoder() -> Decoder(ChannelSection) {
   use localizations <- decode.optional_field(
     "localizations",
     option.None,
-    decode.optional(
-      decode.dict(decode.string, channel_section_localization_decoder()),
-    ),
+    decode.optional(decode.dict(
+      decode.string,
+      channel_section_localization_decoder(),
+    )),
   )
   use snippet <- decode.optional_field(
     "snippet",
@@ -695,50 +650,41 @@ pub fn channel_section_decoder() -> Decoder(ChannelSection) {
     option.None,
     decode.optional(channel_section_targeting_decoder()),
   )
-  decode.success(
-    ChannelSection(
-      content_details,
-      etag,
-      id,
-      kind,
-      localizations,
-      snippet,
-      targeting,
-    ),
-  )
+  decode.success(ChannelSection(
+    content_details,
+    etag,
+    id,
+    kind,
+    localizations,
+    snippet,
+    targeting,
+  ))
 }
 
 pub fn channel_section_to_json(value: ChannelSection) -> Json {
-  json.object(
-    [
-      #(
-        "contentDetails",
-        json.nullable(
-          value.content_details,
-          channel_section_content_details_to_json,
-        ),
+  json.object([
+    #(
+      "contentDetails",
+      json.nullable(
+        value.content_details,
+        channel_section_content_details_to_json,
       ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "localizations",
-        json.nullable(
-          value.localizations,
-          fn(d)
-          { json.dict(d, fn(k) { k }, channel_section_localization_to_json) },
-        ),
-      ),
-      #(
-        "snippet",
-        json.nullable(value.snippet, channel_section_snippet_to_json),
-      ),
-      #(
-        "targeting",
-        json.nullable(value.targeting, channel_section_targeting_to_json),
-      ),
-    ],
-  )
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "localizations",
+      json.nullable(value.localizations, fn(d) {
+        json.dict(d, fn(k) { k }, channel_section_localization_to_json)
+      }),
+    ),
+    #("snippet", json.nullable(value.snippet, channel_section_snippet_to_json)),
+    #(
+      "targeting",
+      json.nullable(value.targeting, channel_section_targeting_to_json),
+    ),
+  ])
 }
 
 /// Details about a channelsection, including playlists and channels.
@@ -768,26 +714,18 @@ pub fn channel_section_content_details_decoder() -> Decoder(
 pub fn channel_section_content_details_to_json(
   value: ChannelSectionContentDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "channels",
-        json.nullable(
-          value.channels,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #(
-        "playlists",
-        json.nullable(
-          value.playlists,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "channels",
+      json.nullable(value.channels, fn(items) { json.array(items, json.string) }),
+    ),
+    #(
+      "playlists",
+      json.nullable(value.playlists, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+  ])
 }
 
 pub type ChannelSectionListResponse {
@@ -828,28 +766,30 @@ pub fn channel_section_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ChannelSectionListResponse(etag, event_id, items, kind, visitor_id),
-  )
+  decode.success(ChannelSectionListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    visitor_id,
+  ))
 }
 
-pub fn channel_section_list_response_to_json(value: ChannelSectionListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, channel_section_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+pub fn channel_section_list_response_to_json(
+  value: ChannelSectionListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, channel_section_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// ChannelSection localization setting
@@ -868,7 +808,9 @@ pub fn channel_section_localization_decoder() -> Decoder(
   decode.success(ChannelSectionLocalization(title))
 }
 
-pub fn channel_section_localization_to_json(value: ChannelSectionLocalization) -> Json {
+pub fn channel_section_localization_to_json(
+  value: ChannelSectionLocalization,
+) -> Json {
   json.object([#("title", json.nullable(value.title, json.string))])
 }
 
@@ -921,40 +863,36 @@ pub fn channel_section_snippet_decoder() -> Decoder(ChannelSectionSnippet) {
     option.None,
     decode.optional(type_decoder()),
   )
-  decode.success(
-    ChannelSectionSnippet(
-      channel_id,
-      default_language,
-      localized,
-      position,
-      style,
-      title,
-      type_,
-    ),
-  )
+  decode.success(ChannelSectionSnippet(
+    channel_id,
+    default_language,
+    localized,
+    position,
+    style,
+    title,
+    type_,
+  ))
 }
 
 pub fn channel_section_snippet_to_json(value: ChannelSectionSnippet) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("defaultLanguage", json.nullable(value.default_language, json.string)),
-      #(
-        "localized",
-        json.nullable(value.localized, channel_section_localization_to_json),
-      ),
-      #("position", json.nullable(value.position, json.int)),
-      #(
-        "style",
-        json.nullable(value.style, fn(e) { json.string(style_to_string(e)) }),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-      #(
-        "type",
-        json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
-      ),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("defaultLanguage", json.nullable(value.default_language, json.string)),
+    #(
+      "localized",
+      json.nullable(value.localized, channel_section_localization_to_json),
+    ),
+    #("position", json.nullable(value.position, json.int)),
+    #(
+      "style",
+      json.nullable(value.style, fn(e) { json.string(style_to_string(e)) }),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+    #(
+      "type",
+      json.nullable(value.type_, fn(e) { json.string(type_to_string(e)) }),
+    ),
+  ])
 }
 
 /// The style of the channel section.
@@ -975,9 +913,8 @@ pub fn style_to_string(value: Style) -> String {
 pub fn style_decoder() -> Decoder(Style) {
   use value <- decode.then(decode.string)
   case value {
-    "channelsectionStyleUnspecified" -> decode.success(
-      StyleChannelsectionStyleUnspecified,
-    )
+    "channelsectionStyleUnspecified" ->
+      decode.success(StyleChannelsectionStyleUnspecified)
     "horizontalRow" -> decode.success(StyleHorizontalRow)
     "verticalList" -> decode.success(StyleVerticalList)
     _ -> decode.failure(StyleChannelsectionStyleUnspecified, "a valid Style")
@@ -1030,9 +967,8 @@ pub fn type_to_string(value: Type) -> String {
 pub fn type_decoder() -> Decoder(Type) {
   use value <- decode.then(decode.string)
   case value {
-    "channelsectionTypeUndefined" -> decode.success(
-      TypeChannelsectionTypeUndefined,
-    )
+    "channelsectionTypeUndefined" ->
+      decode.success(TypeChannelsectionTypeUndefined)
     "singlePlaylist" -> decode.success(TypeSinglePlaylist)
     "multiplePlaylists" -> decode.success(TypeMultiplePlaylists)
     "popularUploads" -> decode.success(TypePopularUploads)
@@ -1081,35 +1017,27 @@ pub fn channel_section_targeting_decoder() -> Decoder(ChannelSectionTargeting) {
   decode.success(ChannelSectionTargeting(countries, languages, regions))
 }
 
-pub fn channel_section_targeting_to_json(value: ChannelSectionTargeting) -> Json {
-  json.object(
-    [
-      #(
-        "countries",
-        json.nullable(
-          value.countries,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #(
-        "languages",
-        json.nullable(
-          value.languages,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #(
-        "regions",
-        json.nullable(
-          value.regions,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-    ],
-  )
+pub fn channel_section_targeting_to_json(
+  value: ChannelSectionTargeting,
+) -> Json {
+  json.object([
+    #(
+      "countries",
+      json.nullable(value.countries, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "languages",
+      json.nullable(value.languages, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "regions",
+      json.nullable(value.regions, fn(items) { json.array(items, json.string) }),
+    ),
+  ])
 }
 
 /// Branding properties for the channel view.
@@ -1203,64 +1131,58 @@ pub fn channel_settings_decoder() -> Decoder(ChannelSettings) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ChannelSettings(
-      country,
-      default_language,
-      default_tab,
-      description,
-      featured_channels_title,
-      featured_channels_urls,
-      keywords,
-      moderate_comments,
-      profile_color,
-      show_browse_view,
-      show_related_channels,
-      title,
-      tracking_analytics_account_id,
-      unsubscribed_trailer,
-    ),
-  )
+  decode.success(ChannelSettings(
+    country,
+    default_language,
+    default_tab,
+    description,
+    featured_channels_title,
+    featured_channels_urls,
+    keywords,
+    moderate_comments,
+    profile_color,
+    show_browse_view,
+    show_related_channels,
+    title,
+    tracking_analytics_account_id,
+    unsubscribed_trailer,
+  ))
 }
 
 pub fn channel_settings_to_json(value: ChannelSettings) -> Json {
-  json.object(
-    [
-      #("country", json.nullable(value.country, json.string)),
-      #("defaultLanguage", json.nullable(value.default_language, json.string)),
-      #("defaultTab", json.nullable(value.default_tab, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #(
-        "featuredChannelsTitle",
-        json.nullable(value.featured_channels_title, json.string),
-      ),
-      #(
-        "featuredChannelsUrls",
-        json.nullable(
-          value.featured_channels_urls,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #("keywords", json.nullable(value.keywords, json.string)),
-      #("moderateComments", json.nullable(value.moderate_comments, json.bool)),
-      #("profileColor", json.nullable(value.profile_color, json.string)),
-      #("showBrowseView", json.nullable(value.show_browse_view, json.bool)),
-      #(
-        "showRelatedChannels",
-        json.nullable(value.show_related_channels, json.bool),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-      #(
-        "trackingAnalyticsAccountId",
-        json.nullable(value.tracking_analytics_account_id, json.string),
-      ),
-      #(
-        "unsubscribedTrailer",
-        json.nullable(value.unsubscribed_trailer, json.string),
-      ),
-    ],
-  )
+  json.object([
+    #("country", json.nullable(value.country, json.string)),
+    #("defaultLanguage", json.nullable(value.default_language, json.string)),
+    #("defaultTab", json.nullable(value.default_tab, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #(
+      "featuredChannelsTitle",
+      json.nullable(value.featured_channels_title, json.string),
+    ),
+    #(
+      "featuredChannelsUrls",
+      json.nullable(value.featured_channels_urls, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #("keywords", json.nullable(value.keywords, json.string)),
+    #("moderateComments", json.nullable(value.moderate_comments, json.bool)),
+    #("profileColor", json.nullable(value.profile_color, json.string)),
+    #("showBrowseView", json.nullable(value.show_browse_view, json.bool)),
+    #(
+      "showRelatedChannels",
+      json.nullable(value.show_related_channels, json.bool),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+    #(
+      "trackingAnalyticsAccountId",
+      json.nullable(value.tracking_analytics_account_id, json.string),
+    ),
+    #(
+      "unsubscribedTrailer",
+      json.nullable(value.unsubscribed_trailer, json.string),
+    ),
+  ])
 }
 
 /// Basic details about a channel, including title, description and thumbnails.
@@ -1318,39 +1240,32 @@ pub fn channel_snippet_decoder() -> Decoder(ChannelSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ChannelSnippet(
-      country,
-      custom_url,
-      default_language,
-      description,
-      localized,
-      published_at,
-      thumbnails,
-      title,
-    ),
-  )
+  decode.success(ChannelSnippet(
+    country,
+    custom_url,
+    default_language,
+    description,
+    localized,
+    published_at,
+    thumbnails,
+    title,
+  ))
 }
 
 pub fn channel_snippet_to_json(value: ChannelSnippet) -> Json {
-  json.object(
-    [
-      #("country", json.nullable(value.country, json.string)),
-      #("customUrl", json.nullable(value.custom_url, json.string)),
-      #("defaultLanguage", json.nullable(value.default_language, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #(
-        "localized",
-        json.nullable(value.localized, channel_localization_to_json),
-      ),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #(
-        "thumbnails",
-        json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("country", json.nullable(value.country, json.string)),
+    #("customUrl", json.nullable(value.custom_url, json.string)),
+    #("defaultLanguage", json.nullable(value.default_language, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #("localized", json.nullable(value.localized, channel_localization_to_json)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #(
+      "thumbnails",
+      json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 /// Statistics about a channel: number of subscribers, number of videos in the channel, etc.
@@ -1390,30 +1305,26 @@ pub fn channel_statistics_decoder() -> Decoder(ChannelStatistics) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ChannelStatistics(
-      comment_count,
-      hidden_subscriber_count,
-      subscriber_count,
-      video_count,
-      view_count,
-    ),
-  )
+  decode.success(ChannelStatistics(
+    comment_count,
+    hidden_subscriber_count,
+    subscriber_count,
+    video_count,
+    view_count,
+  ))
 }
 
 pub fn channel_statistics_to_json(value: ChannelStatistics) -> Json {
-  json.object(
-    [
-      #("commentCount", json.nullable(value.comment_count, json.string)),
-      #(
-        "hiddenSubscriberCount",
-        json.nullable(value.hidden_subscriber_count, json.bool),
-      ),
-      #("subscriberCount", json.nullable(value.subscriber_count, json.string)),
-      #("videoCount", json.nullable(value.video_count, json.string)),
-      #("viewCount", json.nullable(value.view_count, json.string)),
-    ],
-  )
+  json.object([
+    #("commentCount", json.nullable(value.comment_count, json.string)),
+    #(
+      "hiddenSubscriberCount",
+      json.nullable(value.hidden_subscriber_count, json.bool),
+    ),
+    #("subscriberCount", json.nullable(value.subscriber_count, json.string)),
+    #("videoCount", json.nullable(value.video_count, json.string)),
+    #("viewCount", json.nullable(value.view_count, json.string)),
+  ])
 }
 
 /// JSON template for the status part of a channel.
@@ -1459,49 +1370,41 @@ pub fn channel_status_decoder() -> Decoder(ChannelStatus) {
     option.None,
     decode.optional(decode.bool),
   )
-  decode.success(
-    ChannelStatus(
-      is_channel_monetization_enabled,
-      is_linked,
-      long_uploads_status,
-      made_for_kids,
-      privacy_status,
-      self_declared_made_for_kids,
-    ),
-  )
+  decode.success(ChannelStatus(
+    is_channel_monetization_enabled,
+    is_linked,
+    long_uploads_status,
+    made_for_kids,
+    privacy_status,
+    self_declared_made_for_kids,
+  ))
 }
 
 pub fn channel_status_to_json(value: ChannelStatus) -> Json {
-  json.object(
-    [
-      #(
-        "isChannelMonetizationEnabled",
-        json.nullable(value.is_channel_monetization_enabled, json.bool),
-      ),
-      #("isLinked", json.nullable(value.is_linked, json.bool)),
-      #(
-        "longUploadsStatus",
-        json.nullable(
-          value.long_uploads_status,
-          fn(e)
-          { json.string(long_uploads_status_to_string(e)) },
-        ),
-      ),
-      #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
-      #(
-        "privacyStatus",
-        json.nullable(
-          value.privacy_status,
-          fn(e)
-          { json.string(privacy_status_to_string(e)) },
-        ),
-      ),
-      #(
-        "selfDeclaredMadeForKids",
-        json.nullable(value.self_declared_made_for_kids, json.bool),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "isChannelMonetizationEnabled",
+      json.nullable(value.is_channel_monetization_enabled, json.bool),
+    ),
+    #("isLinked", json.nullable(value.is_linked, json.bool)),
+    #(
+      "longUploadsStatus",
+      json.nullable(value.long_uploads_status, fn(e) {
+        json.string(long_uploads_status_to_string(e))
+      }),
+    ),
+    #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
+    #(
+      "privacyStatus",
+      json.nullable(value.privacy_status, fn(e) {
+        json.string(privacy_status_to_string(e))
+      }),
+    ),
+    #(
+      "selfDeclaredMadeForKids",
+      json.nullable(value.self_declared_made_for_kids, json.bool),
+    ),
+  ])
 }
 
 /// The long uploads status of this channel. See https://support.google.com/youtube/answer/71673 for more information.
@@ -1524,16 +1427,16 @@ pub fn long_uploads_status_to_string(value: LongUploadsStatus) -> String {
 pub fn long_uploads_status_decoder() -> Decoder(LongUploadsStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "longUploadsUnspecified" -> decode.success(
-      LongUploadsStatusLongUploadsUnspecified,
-    )
+    "longUploadsUnspecified" ->
+      decode.success(LongUploadsStatusLongUploadsUnspecified)
     "allowed" -> decode.success(LongUploadsStatusAllowed)
     "eligible" -> decode.success(LongUploadsStatusEligible)
     "disallowed" -> decode.success(LongUploadsStatusDisallowed)
-    _ -> decode.failure(
-      LongUploadsStatusLongUploadsUnspecified,
-      "a valid LongUploadsStatus",
-    )
+    _ ->
+      decode.failure(
+        LongUploadsStatusLongUploadsUnspecified,
+        "a valid LongUploadsStatus",
+      )
   }
 }
 
@@ -1595,40 +1498,31 @@ pub fn channel_to_affiliate_program_link_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ChannelToAffiliateProgramLinkDetails(
-      merchant_id,
-      program_status,
-      status_update_reason,
-      status_update_time,
-    ),
-  )
+  decode.success(ChannelToAffiliateProgramLinkDetails(
+    merchant_id,
+    program_status,
+    status_update_reason,
+    status_update_time,
+  ))
 }
 
 pub fn channel_to_affiliate_program_link_details_to_json(
   value: ChannelToAffiliateProgramLinkDetails,
 ) -> Json {
-  json.object(
-    [
-      #("merchantId", json.nullable(value.merchant_id, json.string)),
-      #(
-        "programStatus",
-        json.nullable(
-          value.program_status,
-          fn(e)
-          { json.string(program_status_to_string(e)) },
-        ),
-      ),
-      #(
-        "statusUpdateReason",
-        json.nullable(value.status_update_reason, json.string),
-      ),
-      #(
-        "statusUpdateTime",
-        json.nullable(value.status_update_time, json.string),
-      ),
-    ],
-  )
+  json.object([
+    #("merchantId", json.nullable(value.merchant_id, json.string)),
+    #(
+      "programStatus",
+      json.nullable(value.program_status, fn(e) {
+        json.string(program_status_to_string(e))
+      }),
+    ),
+    #(
+      "statusUpdateReason",
+      json.nullable(value.status_update_reason, json.string),
+    ),
+    #("statusUpdateTime", json.nullable(value.status_update_time, json.string)),
+  ])
 }
 
 /// Required. Affiliate program status.
@@ -1640,7 +1534,8 @@ pub type ProgramStatus {
 
 pub fn program_status_to_string(value: ProgramStatus) -> String {
   case value {
-    ProgramStatusAffiliateProgramStatusUnspecified -> "affiliateProgramStatusUnspecified"
+    ProgramStatusAffiliateProgramStatusUnspecified ->
+      "affiliateProgramStatusUnspecified"
     ProgramStatusActive -> "active"
     ProgramStatusInactive -> "inactive"
   }
@@ -1649,15 +1544,15 @@ pub fn program_status_to_string(value: ProgramStatus) -> String {
 pub fn program_status_decoder() -> Decoder(ProgramStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "affiliateProgramStatusUnspecified" -> decode.success(
-      ProgramStatusAffiliateProgramStatusUnspecified,
-    )
+    "affiliateProgramStatusUnspecified" ->
+      decode.success(ProgramStatusAffiliateProgramStatusUnspecified)
     "active" -> decode.success(ProgramStatusActive)
     "inactive" -> decode.success(ProgramStatusInactive)
-    _ -> decode.failure(
-      ProgramStatusAffiliateProgramStatusUnspecified,
-      "a valid ProgramStatus",
-    )
+    _ ->
+      decode.failure(
+        ProgramStatusAffiliateProgramStatusUnspecified,
+        "a valid ProgramStatus",
+      )
   }
 }
 
@@ -1665,8 +1560,9 @@ pub fn program_status_decoder() -> Decoder(ProgramStatus) {
 pub type ChannelToStoreLinkDetails {
   ChannelToStoreLinkDetails(
     billing_details: Option(ChannelToStoreLinkDetailsBillingDetails),
-    merchant_affiliate_program_details:
-    Option(ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails),
+    merchant_affiliate_program_details: Option(
+      ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails,
+    ),
     merchant_id: Option(String),
     store_name: Option(String),
     store_url: Option(String),
@@ -1703,39 +1599,37 @@ pub fn channel_to_store_link_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ChannelToStoreLinkDetails(
-      billing_details,
-      merchant_affiliate_program_details,
-      merchant_id,
-      store_name,
-      store_url,
-    ),
-  )
+  decode.success(ChannelToStoreLinkDetails(
+    billing_details,
+    merchant_affiliate_program_details,
+    merchant_id,
+    store_name,
+    store_url,
+  ))
 }
 
-pub fn channel_to_store_link_details_to_json(value: ChannelToStoreLinkDetails) -> Json {
-  json.object(
-    [
-      #(
-        "billingDetails",
-        json.nullable(
-          value.billing_details,
-          channel_to_store_link_details_billing_details_to_json,
-        ),
+pub fn channel_to_store_link_details_to_json(
+  value: ChannelToStoreLinkDetails,
+) -> Json {
+  json.object([
+    #(
+      "billingDetails",
+      json.nullable(
+        value.billing_details,
+        channel_to_store_link_details_billing_details_to_json,
       ),
-      #(
-        "merchantAffiliateProgramDetails",
-        json.nullable(
-          value.merchant_affiliate_program_details,
-          channel_to_store_link_details_merchant_affiliate_program_details_to_json,
-        ),
+    ),
+    #(
+      "merchantAffiliateProgramDetails",
+      json.nullable(
+        value.merchant_affiliate_program_details,
+        channel_to_store_link_details_merchant_affiliate_program_details_to_json,
       ),
-      #("merchantId", json.nullable(value.merchant_id, json.string)),
-      #("storeName", json.nullable(value.store_name, json.string)),
-      #("storeUrl", json.nullable(value.store_url, json.string)),
-    ],
-  )
+    ),
+    #("merchantId", json.nullable(value.merchant_id, json.string)),
+    #("storeName", json.nullable(value.store_name, json.string)),
+    #("storeUrl", json.nullable(value.store_url, json.string)),
+  ])
 }
 
 /// Information specific to billing.
@@ -1757,18 +1651,14 @@ pub fn channel_to_store_link_details_billing_details_decoder() -> Decoder(
 pub fn channel_to_store_link_details_billing_details_to_json(
   value: ChannelToStoreLinkDetailsBillingDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "billingStatus",
-        json.nullable(
-          value.billing_status,
-          fn(e)
-          { json.string(billing_status_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "billingStatus",
+      json.nullable(value.billing_status, fn(e) {
+        json.string(billing_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The current billing profile status.
@@ -1791,18 +1681,17 @@ pub fn billing_status_to_string(value: BillingStatus) -> String {
 pub fn billing_status_decoder() -> Decoder(BillingStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "billingStatusUnspecified" -> decode.success(
-      BillingStatusBillingStatusUnspecified,
-    )
+    "billingStatusUnspecified" ->
+      decode.success(BillingStatusBillingStatusUnspecified)
     "billingStatusPending" -> decode.success(BillingStatusBillingStatusPending)
     "billingStatusActive" -> decode.success(BillingStatusBillingStatusActive)
-    "billingStatusInactive" -> decode.success(
-      BillingStatusBillingStatusInactive,
-    )
-    _ -> decode.failure(
-      BillingStatusBillingStatusUnspecified,
-      "a valid BillingStatus",
-    )
+    "billingStatusInactive" ->
+      decode.success(BillingStatusBillingStatusInactive)
+    _ ->
+      decode.failure(
+        BillingStatusBillingStatusUnspecified,
+        "a valid BillingStatus",
+      )
   }
 }
 
@@ -1813,28 +1702,28 @@ pub type ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails {
   )
 }
 
-pub fn channel_to_store_link_details_merchant_affiliate_program_details_decoder() -> Decoder(ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails) {
+pub fn channel_to_store_link_details_merchant_affiliate_program_details_decoder() -> Decoder(
+  ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails,
+) {
   use status <- decode.optional_field(
     "status",
     option.None,
     decode.optional(status_decoder()),
   )
-  decode.success(
-    ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails(status),
-  )
+  decode.success(ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails(
+    status,
+  ))
 }
 
 pub fn channel_to_store_link_details_merchant_affiliate_program_details_to_json(
   value: ChannelToStoreLinkDetailsMerchantAffiliateProgramDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "status",
-        json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "status",
+      json.nullable(value.status, fn(e) { json.string(status_to_string(e)) }),
+    ),
+  ])
 }
 
 /// The current merchant affiliate program status.
@@ -1847,32 +1736,33 @@ pub type Status {
 
 pub fn status_to_string(value: Status) -> String {
   case value {
-    StatusMerchantAffiliateProgramStatusUnspecified -> "merchantAffiliateProgramStatusUnspecified"
-    StatusMerchantAffiliateProgramStatusEligible -> "merchantAffiliateProgramStatusEligible"
-    StatusMerchantAffiliateProgramStatusActive -> "merchantAffiliateProgramStatusActive"
-    StatusMerchantAffiliateProgramStatusPaused -> "merchantAffiliateProgramStatusPaused"
+    StatusMerchantAffiliateProgramStatusUnspecified ->
+      "merchantAffiliateProgramStatusUnspecified"
+    StatusMerchantAffiliateProgramStatusEligible ->
+      "merchantAffiliateProgramStatusEligible"
+    StatusMerchantAffiliateProgramStatusActive ->
+      "merchantAffiliateProgramStatusActive"
+    StatusMerchantAffiliateProgramStatusPaused ->
+      "merchantAffiliateProgramStatusPaused"
   }
 }
 
 pub fn status_decoder() -> Decoder(Status) {
   use value <- decode.then(decode.string)
   case value {
-    "merchantAffiliateProgramStatusUnspecified" -> decode.success(
-      StatusMerchantAffiliateProgramStatusUnspecified,
-    )
-    "merchantAffiliateProgramStatusEligible" -> decode.success(
-      StatusMerchantAffiliateProgramStatusEligible,
-    )
-    "merchantAffiliateProgramStatusActive" -> decode.success(
-      StatusMerchantAffiliateProgramStatusActive,
-    )
-    "merchantAffiliateProgramStatusPaused" -> decode.success(
-      StatusMerchantAffiliateProgramStatusPaused,
-    )
-    _ -> decode.failure(
-      StatusMerchantAffiliateProgramStatusUnspecified,
-      "a valid Status",
-    )
+    "merchantAffiliateProgramStatusUnspecified" ->
+      decode.success(StatusMerchantAffiliateProgramStatusUnspecified)
+    "merchantAffiliateProgramStatusEligible" ->
+      decode.success(StatusMerchantAffiliateProgramStatusEligible)
+    "merchantAffiliateProgramStatusActive" ->
+      decode.success(StatusMerchantAffiliateProgramStatusActive)
+    "merchantAffiliateProgramStatusPaused" ->
+      decode.success(StatusMerchantAffiliateProgramStatusPaused)
+    _ ->
+      decode.failure(
+        StatusMerchantAffiliateProgramStatusUnspecified,
+        "a valid Status",
+      )
   }
 }
 
@@ -1899,26 +1789,20 @@ pub fn channel_topic_details_decoder() -> Decoder(ChannelTopicDetails) {
 }
 
 pub fn channel_topic_details_to_json(value: ChannelTopicDetails) -> Json {
-  json.object(
-    [
-      #(
-        "topicCategories",
-        json.nullable(
-          value.topic_categories,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #(
-        "topicIds",
-        json.nullable(
-          value.topic_ids,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "topicCategories",
+      json.nullable(value.topic_categories, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "topicIds",
+      json.nullable(value.topic_ids, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+  ])
 }
 
 /// Branding properties for images associated with the channel.
@@ -2060,139 +1944,129 @@ pub fn image_settings_decoder() -> Decoder(ImageSettings) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ImageSettings(
-      background_image_url,
-      banner_external_url,
-      banner_image_url,
-      banner_mobile_extra_hd_image_url,
-      banner_mobile_hd_image_url,
-      banner_mobile_image_url,
-      banner_mobile_low_image_url,
-      banner_mobile_medium_hd_image_url,
-      banner_tablet_extra_hd_image_url,
-      banner_tablet_hd_image_url,
-      banner_tablet_image_url,
-      banner_tablet_low_image_url,
-      banner_tv_high_image_url,
-      banner_tv_image_url,
-      banner_tv_low_image_url,
-      banner_tv_medium_image_url,
-      large_branded_banner_image_imap_script,
-      large_branded_banner_image_url,
-      small_branded_banner_image_imap_script,
-      small_branded_banner_image_url,
-      tracking_image_url,
-      watch_icon_image_url,
-    ),
-  )
+  decode.success(ImageSettings(
+    background_image_url,
+    banner_external_url,
+    banner_image_url,
+    banner_mobile_extra_hd_image_url,
+    banner_mobile_hd_image_url,
+    banner_mobile_image_url,
+    banner_mobile_low_image_url,
+    banner_mobile_medium_hd_image_url,
+    banner_tablet_extra_hd_image_url,
+    banner_tablet_hd_image_url,
+    banner_tablet_image_url,
+    banner_tablet_low_image_url,
+    banner_tv_high_image_url,
+    banner_tv_image_url,
+    banner_tv_low_image_url,
+    banner_tv_medium_image_url,
+    large_branded_banner_image_imap_script,
+    large_branded_banner_image_url,
+    small_branded_banner_image_imap_script,
+    small_branded_banner_image_url,
+    tracking_image_url,
+    watch_icon_image_url,
+  ))
 }
 
 pub fn image_settings_to_json(value: ImageSettings) -> Json {
-  json.object(
-    [
-      #(
-        "backgroundImageUrl",
-        json.nullable(
-          value.background_image_url,
-          localized.localized_property_to_json,
-        ),
+  json.object([
+    #(
+      "backgroundImageUrl",
+      json.nullable(
+        value.background_image_url,
+        localized.localized_property_to_json,
       ),
-      #(
-        "bannerExternalUrl",
-        json.nullable(value.banner_external_url, json.string),
+    ),
+    #(
+      "bannerExternalUrl",
+      json.nullable(value.banner_external_url, json.string),
+    ),
+    #("bannerImageUrl", json.nullable(value.banner_image_url, json.string)),
+    #(
+      "bannerMobileExtraHdImageUrl",
+      json.nullable(value.banner_mobile_extra_hd_image_url, json.string),
+    ),
+    #(
+      "bannerMobileHdImageUrl",
+      json.nullable(value.banner_mobile_hd_image_url, json.string),
+    ),
+    #(
+      "bannerMobileImageUrl",
+      json.nullable(value.banner_mobile_image_url, json.string),
+    ),
+    #(
+      "bannerMobileLowImageUrl",
+      json.nullable(value.banner_mobile_low_image_url, json.string),
+    ),
+    #(
+      "bannerMobileMediumHdImageUrl",
+      json.nullable(value.banner_mobile_medium_hd_image_url, json.string),
+    ),
+    #(
+      "bannerTabletExtraHdImageUrl",
+      json.nullable(value.banner_tablet_extra_hd_image_url, json.string),
+    ),
+    #(
+      "bannerTabletHdImageUrl",
+      json.nullable(value.banner_tablet_hd_image_url, json.string),
+    ),
+    #(
+      "bannerTabletImageUrl",
+      json.nullable(value.banner_tablet_image_url, json.string),
+    ),
+    #(
+      "bannerTabletLowImageUrl",
+      json.nullable(value.banner_tablet_low_image_url, json.string),
+    ),
+    #(
+      "bannerTvHighImageUrl",
+      json.nullable(value.banner_tv_high_image_url, json.string),
+    ),
+    #("bannerTvImageUrl", json.nullable(value.banner_tv_image_url, json.string)),
+    #(
+      "bannerTvLowImageUrl",
+      json.nullable(value.banner_tv_low_image_url, json.string),
+    ),
+    #(
+      "bannerTvMediumImageUrl",
+      json.nullable(value.banner_tv_medium_image_url, json.string),
+    ),
+    #(
+      "largeBrandedBannerImageImapScript",
+      json.nullable(
+        value.large_branded_banner_image_imap_script,
+        localized.localized_property_to_json,
       ),
-      #("bannerImageUrl", json.nullable(value.banner_image_url, json.string)),
-      #(
-        "bannerMobileExtraHdImageUrl",
-        json.nullable(value.banner_mobile_extra_hd_image_url, json.string),
+    ),
+    #(
+      "largeBrandedBannerImageUrl",
+      json.nullable(
+        value.large_branded_banner_image_url,
+        localized.localized_property_to_json,
       ),
-      #(
-        "bannerMobileHdImageUrl",
-        json.nullable(value.banner_mobile_hd_image_url, json.string),
+    ),
+    #(
+      "smallBrandedBannerImageImapScript",
+      json.nullable(
+        value.small_branded_banner_image_imap_script,
+        localized.localized_property_to_json,
       ),
-      #(
-        "bannerMobileImageUrl",
-        json.nullable(value.banner_mobile_image_url, json.string),
+    ),
+    #(
+      "smallBrandedBannerImageUrl",
+      json.nullable(
+        value.small_branded_banner_image_url,
+        localized.localized_property_to_json,
       ),
-      #(
-        "bannerMobileLowImageUrl",
-        json.nullable(value.banner_mobile_low_image_url, json.string),
-      ),
-      #(
-        "bannerMobileMediumHdImageUrl",
-        json.nullable(value.banner_mobile_medium_hd_image_url, json.string),
-      ),
-      #(
-        "bannerTabletExtraHdImageUrl",
-        json.nullable(value.banner_tablet_extra_hd_image_url, json.string),
-      ),
-      #(
-        "bannerTabletHdImageUrl",
-        json.nullable(value.banner_tablet_hd_image_url, json.string),
-      ),
-      #(
-        "bannerTabletImageUrl",
-        json.nullable(value.banner_tablet_image_url, json.string),
-      ),
-      #(
-        "bannerTabletLowImageUrl",
-        json.nullable(value.banner_tablet_low_image_url, json.string),
-      ),
-      #(
-        "bannerTvHighImageUrl",
-        json.nullable(value.banner_tv_high_image_url, json.string),
-      ),
-      #(
-        "bannerTvImageUrl",
-        json.nullable(value.banner_tv_image_url, json.string),
-      ),
-      #(
-        "bannerTvLowImageUrl",
-        json.nullable(value.banner_tv_low_image_url, json.string),
-      ),
-      #(
-        "bannerTvMediumImageUrl",
-        json.nullable(value.banner_tv_medium_image_url, json.string),
-      ),
-      #(
-        "largeBrandedBannerImageImapScript",
-        json.nullable(
-          value.large_branded_banner_image_imap_script,
-          localized.localized_property_to_json,
-        ),
-      ),
-      #(
-        "largeBrandedBannerImageUrl",
-        json.nullable(
-          value.large_branded_banner_image_url,
-          localized.localized_property_to_json,
-        ),
-      ),
-      #(
-        "smallBrandedBannerImageImapScript",
-        json.nullable(
-          value.small_branded_banner_image_imap_script,
-          localized.localized_property_to_json,
-        ),
-      ),
-      #(
-        "smallBrandedBannerImageUrl",
-        json.nullable(
-          value.small_branded_banner_image_url,
-          localized.localized_property_to_json,
-        ),
-      ),
-      #(
-        "trackingImageUrl",
-        json.nullable(value.tracking_image_url, json.string),
-      ),
-      #(
-        "watchIconImageUrl",
-        json.nullable(value.watch_icon_image_url, json.string),
-      ),
-    ],
-  )
+    ),
+    #("trackingImageUrl", json.nullable(value.tracking_image_url, json.string)),
+    #(
+      "watchIconImageUrl",
+      json.nullable(value.watch_icon_image_url, json.string),
+    ),
+  ])
 }
 
 /// A pair Property / Value.
@@ -2215,12 +2089,10 @@ pub fn property_value_decoder() -> Decoder(PropertyValue) {
 }
 
 pub fn property_value_to_json(value: PropertyValue) -> Json {
-  json.object(
-    [
-      #("property", json.nullable(value.property, json.string)),
-      #("value", json.nullable(value.value, json.string)),
-    ],
-  )
+  json.object([
+    #("property", json.nullable(value.property, json.string)),
+    #("value", json.nullable(value.value, json.string)),
+  ])
 }
 
 /// Branding properties for the watch. All deprecated.
@@ -2248,20 +2120,20 @@ pub fn watch_settings_decoder() -> Decoder(WatchSettings) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    WatchSettings(background_color, featured_playlist_id, text_color),
-  )
+  decode.success(WatchSettings(
+    background_color,
+    featured_playlist_id,
+    text_color,
+  ))
 }
 
 pub fn watch_settings_to_json(value: WatchSettings) -> Json {
-  json.object(
-    [
-      #("backgroundColor", json.nullable(value.background_color, json.string)),
-      #(
-        "featuredPlaylistId",
-        json.nullable(value.featured_playlist_id, json.string),
-      ),
-      #("textColor", json.nullable(value.text_color, json.string)),
-    ],
-  )
+  json.object([
+    #("backgroundColor", json.nullable(value.background_color, json.string)),
+    #(
+      "featuredPlaylistId",
+      json.nullable(value.featured_playlist_id, json.string),
+    ),
+    #("textColor", json.nullable(value.text_color, json.string)),
+  ])
 }

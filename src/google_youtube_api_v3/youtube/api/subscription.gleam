@@ -166,7 +166,10 @@ pub fn list_with_on_behalf_of_content_owner_channel(
   )
 }
 
-pub fn list_with_on_behalf_of_content_owner(params: ListParams, value: String) -> ListParams {
+pub fn list_with_on_behalf_of_content_owner(
+  params: ListParams,
+  value: String,
+) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -200,7 +203,10 @@ pub fn list_with_my_subscribers(params: ListParams, value: Bool) -> ListParams {
   )
 }
 
-pub fn list_with_my_recent_subscribers(params: ListParams, value: Bool) -> ListParams {
+pub fn list_with_my_recent_subscribers(
+  params: ListParams,
+  value: Bool,
+) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -273,8 +279,7 @@ pub fn list_add_id(params: ListParams, value: String) -> ListParams {
     params.part,
     params.channel_id,
     params.for_channel_id,
-    case params.id
-    {
+    case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -289,7 +294,10 @@ pub fn list_add_id(params: ListParams, value: String) -> ListParams {
   )
 }
 
-pub fn list_with_for_channel_id(params: ListParams, value: String) -> ListParams {
+pub fn list_with_for_channel_id(
+  params: ListParams,
+  value: String,
+) -> ListParams {
   ListParams(
     params.part,
     params.channel_id,
@@ -327,42 +335,53 @@ pub fn list_request(params: ListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/subscriptions",
-    list.flatten(
-      [list.map(params.part, fn(v) { #("part", v) }), case params.channel_id {
-          option.Some(v) -> [#("channelId", v)]
-          option.None -> []
-        }, case params.for_channel_id {
-          option.Some(v) -> [#("forChannelId", v)]
-          option.None -> []
-        }, case params.id {
-          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-          option.None -> []
-        }, case params.max_results {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        }, case params.mine {
-          option.Some(v) -> [#("mine", bool.to_string(v))]
-          option.None -> []
-        }, case params.my_recent_subscribers {
-          option.Some(v) -> [#("myRecentSubscribers", bool.to_string(v))]
-          option.None -> []
-        }, case params.my_subscribers {
-          option.Some(v) -> [#("mySubscribers", bool.to_string(v))]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner_channel {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        }, case params.order {
-          option.Some(v) -> [#("order", list_order_to_string(v))]
-          option.None -> []
-        }, case params.page_token {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.channel_id {
+        option.Some(v) -> [#("channelId", v)]
+        option.None -> []
+      },
+      case params.for_channel_id {
+        option.Some(v) -> [#("forChannelId", v)]
+        option.None -> []
+      },
+      case params.id {
+        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.mine {
+        option.Some(v) -> [#("mine", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.my_recent_subscribers {
+        option.Some(v) -> [#("myRecentSubscribers", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.my_subscribers {
+        option.Some(v) -> [#("mySubscribers", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+      case params.order {
+        option.Some(v) -> [#("order", list_order_to_string(v))]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -394,15 +413,12 @@ pub fn list_order_to_string(value: ListOrder) -> String {
 pub fn list_order_decoder() -> Decoder(ListOrder) {
   use value <- decode.then(decode.string)
   case value {
-    "subscriptionOrderUnspecified" -> decode.success(
-      ListOrderSubscriptionOrderUnspecified,
-    )
+    "subscriptionOrderUnspecified" ->
+      decode.success(ListOrderSubscriptionOrderUnspecified)
     "relevance" -> decode.success(ListOrderRelevance)
     "unread" -> decode.success(ListOrderUnread)
     "alphabetical" -> decode.success(ListOrderAlphabetical)
-    _ -> decode.failure(
-      ListOrderSubscriptionOrderUnspecified,
-      "a valid ListOrder",
-    )
+    _ ->
+      decode.failure(ListOrderSubscriptionOrderUnspecified, "a valid ListOrder")
   }
 }

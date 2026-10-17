@@ -5,7 +5,9 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/playlist.{type PlaylistImage, type PlaylistItem, type Playlist}
+import google_youtube_api_v3/youtube/playlist.{
+  type Playlist, type PlaylistImage, type PlaylistItem,
+}
 
 /// Deletes a resource.
 pub type PlaylistImagesDeleteParams {
@@ -36,17 +38,22 @@ pub fn playlist_images_delete_with_id(
   )
 }
 
-pub fn playlist_images_delete_request(params: PlaylistImagesDeleteParams) -> Request {
+pub fn playlist_images_delete_request(
+  params: PlaylistImagesDeleteParams,
+) -> Request {
   Request(
     http.Delete,
     "youtube/v3/playlistImages",
-    list.flatten([case params.id {
-          option.Some(v) -> [#("id", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }]),
+    list.flatten([
+      case params.id {
+        option.Some(v) -> [#("id", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -88,8 +95,7 @@ pub fn playlist_images_insert_add_part(
   PlaylistImagesInsertParams(
     params.on_behalf_of_content_owner,
     params.on_behalf_of_content_owner_channel,
-    case params.part
-    {
+    case params.part {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -125,16 +131,20 @@ pub fn playlist_images_insert_request(
   Request(
     http.Post,
     "youtube/v3/playlistImages",
-    list.flatten([case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner_channel {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        }, case params.part {
-          option.Some(v) -> list.map(v, fn(w) { #("part", w) })
-          option.None -> []
-        }]),
+    list.flatten([
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+      case params.part {
+        option.Some(v) -> list.map(v, fn(w) { #("part", w) })
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -192,8 +202,7 @@ pub fn playlist_images_list_add_part(
     params.on_behalf_of_content_owner_channel,
     params.page_token,
     params.parent,
-    case params.part
-    {
+    case params.part {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -270,29 +279,38 @@ pub fn playlist_images_list_with_max_results(
   )
 }
 
-pub fn playlist_images_list_request(params: PlaylistImagesListParams) -> Request {
+pub fn playlist_images_list_request(
+  params: PlaylistImagesListParams,
+) -> Request {
   Request(
     http.Get,
     "youtube/v3/playlistImages",
-    list.flatten([case params.max_results {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner_channel {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        }, case params.page_token {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        }, case params.parent {
-          option.Some(v) -> [#("parent", v)]
-          option.None -> []
-        }, case params.part {
-          option.Some(v) -> list.map(v, fn(w) { #("part", w) })
-          option.None -> []
-        }]),
+    list.flatten([
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+      case params.parent {
+        option.Some(v) -> [#("parent", v)]
+        option.None -> []
+      },
+      case params.part {
+        option.Some(v) -> list.map(v, fn(w) { #("part", w) })
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -332,8 +350,7 @@ pub fn playlist_images_update_add_part(
 ) -> PlaylistImagesUpdateParams {
   PlaylistImagesUpdateParams(
     params.on_behalf_of_content_owner,
-    case params.part
-    {
+    case params.part {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -354,13 +371,16 @@ pub fn playlist_images_update_request(
   Request(
     http.Put,
     "youtube/v3/playlistImages",
-    list.flatten([case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.part {
-          option.Some(v) -> list.map(v, fn(w) { #("part", w) })
-          option.None -> []
-        }]),
+    list.flatten([
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.part {
+        option.Some(v) -> list.map(v, fn(w) { #("part", w) })
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -390,14 +410,19 @@ pub fn playlist_items_delete_with_on_behalf_of_content_owner(
   PlaylistItemsDeleteParams(params.id, option.Some(value))
 }
 
-pub fn playlist_items_delete_request(params: PlaylistItemsDeleteParams) -> Request {
+pub fn playlist_items_delete_request(
+  params: PlaylistItemsDeleteParams,
+) -> Request {
   Request(
     http.Delete,
     "youtube/v3/playlistItems",
-    list.flatten([[#("id", params.id)], case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }]),
+    list.flatten([
+      [#("id", params.id)],
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -444,16 +469,13 @@ pub fn playlist_items_insert_request(
   Request(
     http.Post,
     "youtube/v3/playlistItems",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -598,37 +620,51 @@ pub fn playlist_items_list_add_id(
   params: PlaylistItemsListParams,
   value: String,
 ) -> PlaylistItemsListParams {
-  PlaylistItemsListParams(params.part, case params.id {
+  PlaylistItemsListParams(
+    params.part,
+    case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
-    }, params.max_results, params.on_behalf_of_content_owner, params.page_token, params.playlist_id, params.video_id)
+    },
+    params.max_results,
+    params.on_behalf_of_content_owner,
+    params.page_token,
+    params.playlist_id,
+    params.video_id,
+  )
 }
 
 pub fn playlist_items_list_request(params: PlaylistItemsListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/playlistItems",
-    list.flatten(
-      [list.map(params.part, fn(v) { #("part", v) }), case params.id {
-          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-          option.None -> []
-        }, case params.max_results {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.page_token {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        }, case params.playlist_id {
-          option.Some(v) -> [#("playlistId", v)]
-          option.None -> []
-        }, case params.video_id {
-          option.Some(v) -> [#("videoId", v)]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.id {
+        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+      case params.playlist_id {
+        option.Some(v) -> [#("playlistId", v)]
+        option.None -> []
+      },
+      case params.video_id {
+        option.Some(v) -> [#("videoId", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -676,16 +712,13 @@ pub fn playlist_items_update_request(
   Request(
     http.Put,
     "youtube/v3/playlistItems",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -716,10 +749,13 @@ pub fn playlists_delete_request(params: PlaylistsDeleteParams) -> Request {
   Request(
     http.Delete,
     "youtube/v3/playlists",
-    list.flatten([[#("id", params.id)], case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }]),
+    list.flatten([
+      [#("id", params.id)],
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -743,7 +779,10 @@ pub fn playlists_insert(part: List(String)) -> PlaylistsInsertParams {
   PlaylistsInsertParams(part, option.None, option.None)
 }
 
-pub fn playlists_insert_add_part(params: PlaylistsInsertParams, value: String) -> PlaylistsInsertParams {
+pub fn playlists_insert_add_part(
+  params: PlaylistsInsertParams,
+  value: String,
+) -> PlaylistsInsertParams {
   PlaylistsInsertParams(
     list.append(params.part, [value]),
     params.on_behalf_of_content_owner,
@@ -773,25 +812,24 @@ pub fn playlists_insert_with_on_behalf_of_content_owner(
   )
 }
 
-pub fn playlists_insert_request(params: PlaylistsInsertParams, body: Playlist) -> Request {
+pub fn playlists_insert_request(
+  params: PlaylistsInsertParams,
+  body: Playlist,
+) -> Request {
   Request(
     http.Post,
     "youtube/v3/playlists",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-        case params.on_behalf_of_content_owner_channel
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -831,7 +869,10 @@ pub fn playlists_list(part: List(String)) -> PlaylistsListParams {
   )
 }
 
-pub fn playlists_list_add_part(params: PlaylistsListParams, value: String) -> PlaylistsListParams {
+pub fn playlists_list_add_part(
+  params: PlaylistsListParams,
+  value: String,
+) -> PlaylistsListParams {
   PlaylistsListParams(
     list.append(params.part, [value]),
     params.channel_id,
@@ -896,7 +937,10 @@ pub fn playlists_list_with_on_behalf_of_content_owner(
   )
 }
 
-pub fn playlists_list_with_mine(params: PlaylistsListParams, value: Bool) -> PlaylistsListParams {
+pub fn playlists_list_with_mine(
+  params: PlaylistsListParams,
+  value: Bool,
+) -> PlaylistsListParams {
   PlaylistsListParams(
     params.part,
     params.channel_id,
@@ -910,7 +954,10 @@ pub fn playlists_list_with_mine(params: PlaylistsListParams, value: Bool) -> Pla
   )
 }
 
-pub fn playlists_list_with_max_results(params: PlaylistsListParams, value: Int) -> PlaylistsListParams {
+pub fn playlists_list_with_max_results(
+  params: PlaylistsListParams,
+  value: Int,
+) -> PlaylistsListParams {
   PlaylistsListParams(
     params.part,
     params.channel_id,
@@ -924,7 +971,10 @@ pub fn playlists_list_with_max_results(params: PlaylistsListParams, value: Int) 
   )
 }
 
-pub fn playlists_list_with_id(params: PlaylistsListParams, value: List(String)) -> PlaylistsListParams {
+pub fn playlists_list_with_id(
+  params: PlaylistsListParams,
+  value: List(String),
+) -> PlaylistsListParams {
   PlaylistsListParams(
     params.part,
     params.channel_id,
@@ -938,13 +988,15 @@ pub fn playlists_list_with_id(params: PlaylistsListParams, value: List(String)) 
   )
 }
 
-pub fn playlists_list_add_id(params: PlaylistsListParams, value: String) -> PlaylistsListParams {
+pub fn playlists_list_add_id(
+  params: PlaylistsListParams,
+  value: String,
+) -> PlaylistsListParams {
   PlaylistsListParams(
     params.part,
     params.channel_id,
     params.hl,
-    case params.id
-    {
+    case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -956,7 +1008,10 @@ pub fn playlists_list_add_id(params: PlaylistsListParams, value: String) -> Play
   )
 }
 
-pub fn playlists_list_with_hl(params: PlaylistsListParams, value: String) -> PlaylistsListParams {
+pub fn playlists_list_with_hl(
+  params: PlaylistsListParams,
+  value: String,
+) -> PlaylistsListParams {
   PlaylistsListParams(
     params.part,
     params.channel_id,
@@ -991,33 +1046,41 @@ pub fn playlists_list_request(params: PlaylistsListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/playlists",
-    list.flatten(
-      [list.map(params.part, fn(v) { #("part", v) }), case params.channel_id {
-          option.Some(v) -> [#("channelId", v)]
-          option.None -> []
-        }, case params.hl {
-          option.Some(v) -> [#("hl", v)]
-          option.None -> []
-        }, case params.id {
-          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-          option.None -> []
-        }, case params.max_results {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        }, case params.mine {
-          option.Some(v) -> [#("mine", bool.to_string(v))]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        }, case params.on_behalf_of_content_owner_channel {
-          option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
-          option.None -> []
-        }, case params.page_token {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.channel_id {
+        option.Some(v) -> [#("channelId", v)]
+        option.None -> []
+      },
+      case params.hl {
+        option.Some(v) -> [#("hl", v)]
+        option.None -> []
+      },
+      case params.id {
+        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.mine {
+        option.Some(v) -> [#("mine", bool.to_string(v))]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+      case params.on_behalf_of_content_owner_channel {
+        option.Some(v) -> [#("onBehalfOfContentOwnerChannel", v)]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -1041,7 +1104,10 @@ pub fn playlists_update(part: List(String)) -> PlaylistsUpdateParams {
   PlaylistsUpdateParams(part, option.None)
 }
 
-pub fn playlists_update_add_part(params: PlaylistsUpdateParams, value: String) -> PlaylistsUpdateParams {
+pub fn playlists_update_add_part(
+  params: PlaylistsUpdateParams,
+  value: String,
+) -> PlaylistsUpdateParams {
   PlaylistsUpdateParams(
     list.append(params.part, [value]),
     params.on_behalf_of_content_owner,
@@ -1055,20 +1121,20 @@ pub fn playlists_update_with_on_behalf_of_content_owner(
   PlaylistsUpdateParams(params.part, option.Some(value))
 }
 
-pub fn playlists_update_request(params: PlaylistsUpdateParams, body: Playlist) -> Request {
+pub fn playlists_update_request(
+  params: PlaylistsUpdateParams,
+  body: Playlist,
+) -> Request {
   Request(
     http.Put,
     "youtube/v3/playlists",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.on_behalf_of_content_owner
-        {
-          option.Some(v) -> [#("onBehalfOfContentOwner", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.on_behalf_of_content_owner {
+        option.Some(v) -> [#("onBehalfOfContentOwner", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

@@ -30,12 +30,13 @@ pub fn i18n_languages_list_request(params: I18nLanguagesListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/i18nLanguages",
-    list.flatten(
-      [list.map(params.part, fn(v) { #("part", v) }), case params.hl {
-          option.Some(v) -> [#("hl", v)]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.hl {
+        option.Some(v) -> [#("hl", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",
@@ -56,11 +57,17 @@ pub fn i18n_regions_list(part: List(String)) -> I18nRegionsListParams {
   I18nRegionsListParams(part, option.None)
 }
 
-pub fn i18n_regions_list_add_part(params: I18nRegionsListParams, value: String) -> I18nRegionsListParams {
+pub fn i18n_regions_list_add_part(
+  params: I18nRegionsListParams,
+  value: String,
+) -> I18nRegionsListParams {
   I18nRegionsListParams(list.append(params.part, [value]), params.hl)
 }
 
-pub fn i18n_regions_list_with_hl(params: I18nRegionsListParams, value: String) -> I18nRegionsListParams {
+pub fn i18n_regions_list_with_hl(
+  params: I18nRegionsListParams,
+  value: String,
+) -> I18nRegionsListParams {
   I18nRegionsListParams(params.part, option.Some(value))
 }
 
@@ -68,12 +75,13 @@ pub fn i18n_regions_list_request(params: I18nRegionsListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/i18nRegions",
-    list.flatten(
-      [list.map(params.part, fn(v) { #("part", v) }), case params.hl {
-          option.Some(v) -> [#("hl", v)]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.hl {
+        option.Some(v) -> [#("hl", v)]
+        option.None -> []
+      },
+    ]),
     [],
     [
       "https://www.googleapis.com/auth/youtube",

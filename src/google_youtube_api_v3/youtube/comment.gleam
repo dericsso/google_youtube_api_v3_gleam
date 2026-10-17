@@ -39,14 +39,12 @@ pub fn comment_decoder() -> Decoder(Comment) {
 }
 
 pub fn comment_to_json(value: Comment) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, comment_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, comment_snippet_to_json)),
+  ])
 }
 
 pub type CommentListResponse {
@@ -103,46 +101,40 @@ pub fn comment_list_response_decoder() -> Decoder(CommentListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    CommentListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(CommentListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
 pub fn comment_list_response_to_json(value: CommentListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, comment_to_json) },
-        ),
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, comment_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Basic details about a comment, such as its author and text.
@@ -248,78 +240,67 @@ pub fn comment_snippet_decoder() -> Decoder(CommentSnippet) {
     option.None,
     decode.optional(viewer_rating_decoder()),
   )
-  decode.success(
-    CommentSnippet(
-      author_channel_id,
-      author_channel_url,
-      author_display_name,
-      author_profile_image_url,
-      can_rate,
-      channel_id,
-      image_url,
-      like_count,
-      moderation_status,
-      parent_id,
-      published_at,
-      text_display,
-      text_original,
-      updated_at,
-      video_id,
-      viewer_rating,
-    ),
-  )
+  decode.success(CommentSnippet(
+    author_channel_id,
+    author_channel_url,
+    author_display_name,
+    author_profile_image_url,
+    can_rate,
+    channel_id,
+    image_url,
+    like_count,
+    moderation_status,
+    parent_id,
+    published_at,
+    text_display,
+    text_original,
+    updated_at,
+    video_id,
+    viewer_rating,
+  ))
 }
 
 pub fn comment_snippet_to_json(value: CommentSnippet) -> Json {
-  json.object(
-    [
-      #(
-        "authorChannelId",
-        json.nullable(
-          value.author_channel_id,
-          comment_snippet_author_channel_id_to_json,
-        ),
+  json.object([
+    #(
+      "authorChannelId",
+      json.nullable(
+        value.author_channel_id,
+        comment_snippet_author_channel_id_to_json,
       ),
-      #(
-        "authorChannelUrl",
-        json.nullable(value.author_channel_url, json.string),
-      ),
-      #(
-        "authorDisplayName",
-        json.nullable(value.author_display_name, json.string),
-      ),
-      #(
-        "authorProfileImageUrl",
-        json.nullable(value.author_profile_image_url, json.string),
-      ),
-      #("canRate", json.nullable(value.can_rate, json.bool)),
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("imageUrl", json.nullable(value.image_url, json.string)),
-      #("likeCount", json.nullable(value.like_count, json.int)),
-      #(
-        "moderationStatus",
-        json.nullable(
-          value.moderation_status,
-          fn(e)
-          { json.string(moderation_status_to_string(e)) },
-        ),
-      ),
-      #("parentId", json.nullable(value.parent_id, json.string)),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #("textDisplay", json.nullable(value.text_display, json.string)),
-      #("textOriginal", json.nullable(value.text_original, json.string)),
-      #("updatedAt", json.nullable(value.updated_at, json.string)),
-      #("videoId", json.nullable(value.video_id, json.string)),
-      #(
-        "viewerRating",
-        json.nullable(
-          value.viewer_rating,
-          fn(e)
-          { json.string(viewer_rating_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+    ),
+    #("authorChannelUrl", json.nullable(value.author_channel_url, json.string)),
+    #(
+      "authorDisplayName",
+      json.nullable(value.author_display_name, json.string),
+    ),
+    #(
+      "authorProfileImageUrl",
+      json.nullable(value.author_profile_image_url, json.string),
+    ),
+    #("canRate", json.nullable(value.can_rate, json.bool)),
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("imageUrl", json.nullable(value.image_url, json.string)),
+    #("likeCount", json.nullable(value.like_count, json.int)),
+    #(
+      "moderationStatus",
+      json.nullable(value.moderation_status, fn(e) {
+        json.string(moderation_status_to_string(e))
+      }),
+    ),
+    #("parentId", json.nullable(value.parent_id, json.string)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #("textDisplay", json.nullable(value.text_display, json.string)),
+    #("textOriginal", json.nullable(value.text_original, json.string)),
+    #("updatedAt", json.nullable(value.updated_at, json.string)),
+    #("videoId", json.nullable(value.video_id, json.string)),
+    #(
+      "viewerRating",
+      json.nullable(value.viewer_rating, fn(e) {
+        json.string(viewer_rating_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The comment's moderation status. Will not be set if the comments were requested through the id filter.
@@ -438,15 +419,13 @@ pub fn comment_thread_decoder() -> Decoder(CommentThread) {
 }
 
 pub fn comment_thread_to_json(value: CommentThread) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("replies", json.nullable(value.replies, comment_thread_replies_to_json)),
-      #("snippet", json.nullable(value.snippet, comment_thread_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("replies", json.nullable(value.replies, comment_thread_replies_to_json)),
+    #("snippet", json.nullable(value.snippet, comment_thread_snippet_to_json)),
+  ])
 }
 
 pub type CommentThreadListResponse {
@@ -505,46 +484,42 @@ pub fn comment_thread_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    CommentThreadListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(CommentThreadListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
-pub fn comment_thread_list_response_to_json(value: CommentThreadListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, comment_thread_to_json) },
-        ),
+pub fn comment_thread_list_response_to_json(
+  value: CommentThreadListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, comment_thread_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Comments written in (direct or indirect) reply to the top level comment.
@@ -562,18 +537,14 @@ pub fn comment_thread_replies_decoder() -> Decoder(CommentThreadReplies) {
 }
 
 pub fn comment_thread_replies_to_json(value: CommentThreadReplies) -> Json {
-  json.object(
-    [
-      #(
-        "comments",
-        json.nullable(
-          value.comments,
-          fn(items)
-          { json.array(items, comment_to_json) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "comments",
+      json.nullable(value.comments, fn(items) {
+        json.array(items, comment_to_json)
+      }),
+    ),
+  ])
 }
 
 /// Basic details about a comment thread.
@@ -619,30 +590,26 @@ pub fn comment_thread_snippet_decoder() -> Decoder(CommentThreadSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    CommentThreadSnippet(
-      can_reply,
-      channel_id,
-      is_public,
-      top_level_comment,
-      total_reply_count,
-      video_id,
-    ),
-  )
+  decode.success(CommentThreadSnippet(
+    can_reply,
+    channel_id,
+    is_public,
+    top_level_comment,
+    total_reply_count,
+    video_id,
+  ))
 }
 
 pub fn comment_thread_snippet_to_json(value: CommentThreadSnippet) -> Json {
-  json.object(
-    [
-      #("canReply", json.nullable(value.can_reply, json.bool)),
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("isPublic", json.nullable(value.is_public, json.bool)),
-      #(
-        "topLevelComment",
-        json.nullable(value.top_level_comment, comment_to_json),
-      ),
-      #("totalReplyCount", json.nullable(value.total_reply_count, json.int)),
-      #("videoId", json.nullable(value.video_id, json.string)),
-    ],
-  )
+  json.object([
+    #("canReply", json.nullable(value.can_reply, json.bool)),
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("isPublic", json.nullable(value.is_public, json.bool)),
+    #(
+      "topLevelComment",
+      json.nullable(value.top_level_comment, comment_to_json),
+    ),
+    #("totalReplyCount", json.nullable(value.total_reply_count, json.int)),
+    #("videoId", json.nullable(value.video_id, json.string)),
+  ])
 }

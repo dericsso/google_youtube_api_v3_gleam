@@ -6,14 +6,16 @@ import gleam/json
 import gleam/list
 import gleam/option.{type Option}
 import google_youtube_api_v3/request.{type Request, Request}
-import google_youtube_api_v3/youtube/comment.{type CommentThread, type Comment}
+import google_youtube_api_v3/youtube/comment.{type Comment, type CommentThread}
 
 /// Inserts a new resource into this collection.
 pub type CommentThreadsInsertParams {
   CommentThreadsInsertParams(part: List(String))
 }
 
-pub fn comment_threads_insert(part: List(String)) -> CommentThreadsInsertParams {
+pub fn comment_threads_insert(
+  part: List(String),
+) -> CommentThreadsInsertParams {
   CommentThreadsInsertParams(part)
 }
 
@@ -250,8 +252,7 @@ pub fn comment_threads_list_add_id(
     params.part,
     params.all_threads_related_to_channel_id,
     params.channel_id,
-    case params.id
-    {
+    case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
     },
@@ -303,74 +304,64 @@ pub fn comment_threads_list_with_all_threads_related_to_channel_id(
   )
 }
 
-pub fn comment_threads_list_request(params: CommentThreadsListParams) -> Request {
+pub fn comment_threads_list_request(
+  params: CommentThreadsListParams,
+) -> Request {
   Request(
     http.Get,
     "youtube/v3/commentThreads",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.all_threads_related_to_channel_id
-        {
-          option.Some(v) -> [#("allThreadsRelatedToChannelId", v)]
-          option.None -> []
-        },
-        case params.channel_id
-        {
-          option.Some(v) -> [#("channelId", v)]
-          option.None -> []
-        },
-        case params.id
-        {
-          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-          option.None -> []
-        },
-        case params.max_results
-        {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        },
-        case params.moderation_status
-        {
-          option.Some(v) -> [
-            #(
-              "moderationStatus",
-              comment_threads_list_moderation_status_to_string(v),
-            ),
-          ]
-          option.None -> []
-        },
-        case params.order
-        {
-          option.Some(v) -> [
-            #("order", comment_threads_list_order_to_string(v)),
-          ]
-          option.None -> []
-        },
-        case params.page_token
-        {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        },
-        case params.search_terms
-        {
-          option.Some(v) -> [#("searchTerms", v)]
-          option.None -> []
-        },
-        case params.text_format
-        {
-          option.Some(v) -> [
-            #("textFormat", comment_threads_list_text_format_to_string(v)),
-          ]
-          option.None -> []
-        },
-        case params.video_id
-        {
-          option.Some(v) -> [#("videoId", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.all_threads_related_to_channel_id {
+        option.Some(v) -> [#("allThreadsRelatedToChannelId", v)]
+        option.None -> []
+      },
+      case params.channel_id {
+        option.Some(v) -> [#("channelId", v)]
+        option.None -> []
+      },
+      case params.id {
+        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.moderation_status {
+        option.Some(v) -> [
+          #(
+            "moderationStatus",
+            comment_threads_list_moderation_status_to_string(v),
+          ),
+        ]
+        option.None -> []
+      },
+      case params.order {
+        option.Some(v) -> [
+          #("order", comment_threads_list_order_to_string(v)),
+        ]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+      case params.search_terms {
+        option.Some(v) -> [#("searchTerms", v)]
+        option.None -> []
+      },
+      case params.text_format {
+        option.Some(v) -> [
+          #("textFormat", comment_threads_list_text_format_to_string(v)),
+        ]
+        option.None -> []
+      },
+      case params.video_id {
+        option.Some(v) -> [#("videoId", v)]
+        option.None -> []
+      },
+    ]),
     [],
     ["https://www.googleapis.com/auth/youtube.force-ssl"],
     option.None,
@@ -406,11 +397,17 @@ pub fn comments_insert(part: List(String)) -> CommentsInsertParams {
   CommentsInsertParams(part)
 }
 
-pub fn comments_insert_add_part(params: CommentsInsertParams, value: String) -> CommentsInsertParams {
+pub fn comments_insert_add_part(
+  params: CommentsInsertParams,
+  value: String,
+) -> CommentsInsertParams {
   CommentsInsertParams(list.append(params.part, [value]))
 }
 
-pub fn comments_insert_request(params: CommentsInsertParams, body: Comment) -> Request {
+pub fn comments_insert_request(
+  params: CommentsInsertParams,
+  body: Comment,
+) -> Request {
   Request(
     http.Post,
     "youtube/v3/comments",
@@ -444,7 +441,10 @@ pub fn comments_list(part: List(String)) -> CommentsListParams {
   )
 }
 
-pub fn comments_list_add_part(params: CommentsListParams, value: String) -> CommentsListParams {
+pub fn comments_list_add_part(
+  params: CommentsListParams,
+  value: String,
+) -> CommentsListParams {
   CommentsListParams(
     list.append(params.part, [value]),
     params.id,
@@ -469,7 +469,10 @@ pub fn comments_list_with_text_format(
   )
 }
 
-pub fn comments_list_with_parent_id(params: CommentsListParams, value: String) -> CommentsListParams {
+pub fn comments_list_with_parent_id(
+  params: CommentsListParams,
+  value: String,
+) -> CommentsListParams {
   CommentsListParams(
     params.part,
     params.id,
@@ -480,7 +483,10 @@ pub fn comments_list_with_parent_id(params: CommentsListParams, value: String) -
   )
 }
 
-pub fn comments_list_with_page_token(params: CommentsListParams, value: String) -> CommentsListParams {
+pub fn comments_list_with_page_token(
+  params: CommentsListParams,
+  value: String,
+) -> CommentsListParams {
   CommentsListParams(
     params.part,
     params.id,
@@ -491,7 +497,10 @@ pub fn comments_list_with_page_token(params: CommentsListParams, value: String) 
   )
 }
 
-pub fn comments_list_with_max_results(params: CommentsListParams, value: Int) -> CommentsListParams {
+pub fn comments_list_with_max_results(
+  params: CommentsListParams,
+  value: Int,
+) -> CommentsListParams {
   CommentsListParams(
     params.part,
     params.id,
@@ -502,7 +511,10 @@ pub fn comments_list_with_max_results(params: CommentsListParams, value: Int) ->
   )
 }
 
-pub fn comments_list_with_id(params: CommentsListParams, value: List(String)) -> CommentsListParams {
+pub fn comments_list_with_id(
+  params: CommentsListParams,
+  value: List(String),
+) -> CommentsListParams {
   CommentsListParams(
     params.part,
     option.Some(value),
@@ -513,37 +525,52 @@ pub fn comments_list_with_id(params: CommentsListParams, value: List(String)) ->
   )
 }
 
-pub fn comments_list_add_id(params: CommentsListParams, value: String) -> CommentsListParams {
-  CommentsListParams(params.part, case params.id {
+pub fn comments_list_add_id(
+  params: CommentsListParams,
+  value: String,
+) -> CommentsListParams {
+  CommentsListParams(
+    params.part,
+    case params.id {
       option.Some(vs) -> option.Some(list.append(vs, [value]))
       option.None -> option.Some([value])
-    }, params.max_results, params.page_token, params.parent_id, params.text_format)
+    },
+    params.max_results,
+    params.page_token,
+    params.parent_id,
+    params.text_format,
+  )
 }
 
 pub fn comments_list_request(params: CommentsListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/comments",
-    list.flatten(
-      [list.map(params.part, fn(v) { #("part", v) }), case params.id {
-          option.Some(v) -> list.map(v, fn(w) { #("id", w) })
-          option.None -> []
-        }, case params.max_results {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        }, case params.page_token {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        }, case params.parent_id {
-          option.Some(v) -> [#("parentId", v)]
-          option.None -> []
-        }, case params.text_format {
-          option.Some(v) -> [
-            #("textFormat", comments_list_text_format_to_string(v)),
-          ]
-          option.None -> []
-        }],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.id {
+        option.Some(v) -> list.map(v, fn(w) { #("id", w) })
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+      case params.parent_id {
+        option.Some(v) -> [#("parentId", v)]
+        option.None -> []
+      },
+      case params.text_format {
+        option.Some(v) -> [
+          #("textFormat", comments_list_text_format_to_string(v)),
+        ]
+        option.None -> []
+      },
+    ]),
     [],
     ["https://www.googleapis.com/auth/youtube.force-ssl"],
     option.None,
@@ -566,7 +593,9 @@ pub fn comments_mark_as_spam_add_id(
   CommentsMarkAsSpamParams(list.append(params.id, [value]))
 }
 
-pub fn comments_mark_as_spam_request(params: CommentsMarkAsSpamParams) -> Request {
+pub fn comments_mark_as_spam_request(
+  params: CommentsMarkAsSpamParams,
+) -> Request {
   Request(
     http.Post,
     "youtube/v3/comments/markAsSpam",
@@ -621,24 +650,21 @@ pub fn comments_set_moderation_status_request(
   Request(
     http.Post,
     "youtube/v3/comments/setModerationStatus",
-    list.flatten(
+    list.flatten([
+      list.map(params.id, fn(v) { #("id", v) }),
       [
-        list.map(params.id, fn(v) { #("id", v) }),
-        [
-          #(
-            "moderationStatus",
-            comments_set_moderation_status_moderation_status_to_string(
-              params.moderation_status,
-            ),
+        #(
+          "moderationStatus",
+          comments_set_moderation_status_moderation_status_to_string(
+            params.moderation_status,
           ),
-        ],
-        case params.ban_author
-        {
-          option.Some(v) -> [#("banAuthor", bool.to_string(v))]
-          option.None -> []
-        },
+        ),
       ],
-    ),
+      case params.ban_author {
+        option.Some(v) -> [#("banAuthor", bool.to_string(v))]
+        option.None -> []
+      },
+    ]),
     [],
     ["https://www.googleapis.com/auth/youtube.force-ssl"],
     option.None,
@@ -654,11 +680,17 @@ pub fn comments_update(part: List(String)) -> CommentsUpdateParams {
   CommentsUpdateParams(part)
 }
 
-pub fn comments_update_add_part(params: CommentsUpdateParams, value: String) -> CommentsUpdateParams {
+pub fn comments_update_add_part(
+  params: CommentsUpdateParams,
+  value: String,
+) -> CommentsUpdateParams {
   CommentsUpdateParams(list.append(params.part, [value]))
 }
 
-pub fn comments_update_request(params: CommentsUpdateParams, body: Comment) -> Request {
+pub fn comments_update_request(
+  params: CommentsUpdateParams,
+  body: Comment,
+) -> Request {
   Request(
     http.Put,
     "youtube/v3/comments",
@@ -694,15 +726,15 @@ pub fn comment_threads_list_moderation_status_decoder() -> Decoder(
   use value <- decode.then(decode.string)
   case value {
     "published" -> decode.success(CommentThreadsListModerationStatusPublished)
-    "heldForReview" -> decode.success(
-      CommentThreadsListModerationStatusHeldForReview,
-    )
+    "heldForReview" ->
+      decode.success(CommentThreadsListModerationStatusHeldForReview)
     "likelySpam" -> decode.success(CommentThreadsListModerationStatusLikelySpam)
     "rejected" -> decode.success(CommentThreadsListModerationStatusRejected)
-    _ -> decode.failure(
-      CommentThreadsListModerationStatusPublished,
-      "a valid CommentThreadsListModerationStatus",
-    )
+    _ ->
+      decode.failure(
+        CommentThreadsListModerationStatusPublished,
+        "a valid CommentThreadsListModerationStatus",
+      )
   }
 }
 
@@ -712,9 +744,10 @@ pub type CommentThreadsListOrder {
   CommentThreadsListOrderRelevance
 }
 
-pub fn comment_threads_list_order_to_string(value: CommentThreadsListOrder) -> String {
-  case value
-  {
+pub fn comment_threads_list_order_to_string(
+  value: CommentThreadsListOrder,
+) -> String {
+  case value {
     CommentThreadsListOrderOrderUnspecified -> "orderUnspecified"
     CommentThreadsListOrderTime -> "time"
     CommentThreadsListOrderRelevance -> "relevance"
@@ -722,21 +755,17 @@ pub fn comment_threads_list_order_to_string(value: CommentThreadsListOrder) -> S
 }
 
 pub fn comment_threads_list_order_decoder() -> Decoder(CommentThreadsListOrder) {
-  use
-  value
-  <-
-  decode.then(decode.string)
-  case value
-  {
-    "orderUnspecified" -> decode.success(
-      CommentThreadsListOrderOrderUnspecified,
-    )
+  use value <- decode.then(decode.string)
+  case value {
+    "orderUnspecified" ->
+      decode.success(CommentThreadsListOrderOrderUnspecified)
     "time" -> decode.success(CommentThreadsListOrderTime)
     "relevance" -> decode.success(CommentThreadsListOrderRelevance)
-    _ -> decode.failure(
-      CommentThreadsListOrderOrderUnspecified,
-      "a valid CommentThreadsListOrder",
-    )
+    _ ->
+      decode.failure(
+        CommentThreadsListOrderOrderUnspecified,
+        "a valid CommentThreadsListOrder",
+      )
   }
 }
 
@@ -762,15 +791,15 @@ pub fn comment_threads_list_text_format_decoder() -> Decoder(
 ) {
   use value <- decode.then(decode.string)
   case value {
-    "textFormatUnspecified" -> decode.success(
-      CommentThreadsListTextFormatTextFormatUnspecified,
-    )
+    "textFormatUnspecified" ->
+      decode.success(CommentThreadsListTextFormatTextFormatUnspecified)
     "html" -> decode.success(CommentThreadsListTextFormatHtml)
     "plainText" -> decode.success(CommentThreadsListTextFormatPlainText)
-    _ -> decode.failure(
-      CommentThreadsListTextFormatTextFormatUnspecified,
-      "a valid CommentThreadsListTextFormat",
-    )
+    _ ->
+      decode.failure(
+        CommentThreadsListTextFormatTextFormatUnspecified,
+        "a valid CommentThreadsListTextFormat",
+      )
   }
 }
 
@@ -781,9 +810,10 @@ pub type CommentsListTextFormat {
   CommentsListTextFormatPlainText
 }
 
-pub fn comments_list_text_format_to_string(value: CommentsListTextFormat) -> String {
-  case value
-  {
+pub fn comments_list_text_format_to_string(
+  value: CommentsListTextFormat,
+) -> String {
+  case value {
     CommentsListTextFormatTextFormatUnspecified -> "textFormatUnspecified"
     CommentsListTextFormatHtml -> "html"
     CommentsListTextFormatPlainText -> "plainText"
@@ -793,15 +823,15 @@ pub fn comments_list_text_format_to_string(value: CommentsListTextFormat) -> Str
 pub fn comments_list_text_format_decoder() -> Decoder(CommentsListTextFormat) {
   use value <- decode.then(decode.string)
   case value {
-    "textFormatUnspecified" -> decode.success(
-      CommentsListTextFormatTextFormatUnspecified,
-    )
+    "textFormatUnspecified" ->
+      decode.success(CommentsListTextFormatTextFormatUnspecified)
     "html" -> decode.success(CommentsListTextFormatHtml)
     "plainText" -> decode.success(CommentsListTextFormatPlainText)
-    _ -> decode.failure(
-      CommentsListTextFormatTextFormatUnspecified,
-      "a valid CommentsListTextFormat",
-    )
+    _ ->
+      decode.failure(
+        CommentsListTextFormatTextFormatUnspecified,
+        "a valid CommentsListTextFormat",
+      )
   }
 }
 
@@ -829,21 +859,18 @@ pub fn comments_set_moderation_status_moderation_status_decoder() -> Decoder(
 ) {
   use value <- decode.then(decode.string)
   case value {
-    "published" -> decode.success(
-      CommentsSetModerationStatusModerationStatusPublished,
-    )
-    "heldForReview" -> decode.success(
-      CommentsSetModerationStatusModerationStatusHeldForReview,
-    )
-    "likelySpam" -> decode.success(
-      CommentsSetModerationStatusModerationStatusLikelySpam,
-    )
-    "rejected" -> decode.success(
-      CommentsSetModerationStatusModerationStatusRejected,
-    )
-    _ -> decode.failure(
-      CommentsSetModerationStatusModerationStatusPublished,
-      "a valid CommentsSetModerationStatusModerationStatus",
-    )
+    "published" ->
+      decode.success(CommentsSetModerationStatusModerationStatusPublished)
+    "heldForReview" ->
+      decode.success(CommentsSetModerationStatusModerationStatusHeldForReview)
+    "likelySpam" ->
+      decode.success(CommentsSetModerationStatusModerationStatusLikelySpam)
+    "rejected" ->
+      decode.success(CommentsSetModerationStatusModerationStatusRejected)
+    _ ->
+      decode.failure(
+        CommentsSetModerationStatusModerationStatusPublished,
+        "a valid CommentsSetModerationStatusModerationStatus",
+      )
   }
 }

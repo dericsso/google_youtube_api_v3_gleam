@@ -47,18 +47,16 @@ pub fn activity_decoder() -> Decoder(Activity) {
 }
 
 pub fn activity_to_json(value: Activity) -> Json {
-  json.object(
-    [
-      #(
-        "contentDetails",
-        json.nullable(value.content_details, activity_content_details_to_json),
-      ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, activity_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #(
+      "contentDetails",
+      json.nullable(value.content_details, activity_content_details_to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, activity_snippet_to_json)),
+  ])
 }
 
 /// Details about the content of an activity: the video that was shared, the channel that was subscribed to, etc.
@@ -122,77 +120,73 @@ pub fn activity_content_details_decoder() -> Decoder(ActivityContentDetails) {
     option.None,
     decode.optional(activity_content_details_upload_decoder()),
   )
-  decode.success(
-    ActivityContentDetails(
-      bulletin,
-      channel_item,
-      comment,
-      playlist_item,
-      promoted_item,
-      recommendation,
-      social,
-      subscription,
-      upload,
-    ),
-  )
+  decode.success(ActivityContentDetails(
+    bulletin,
+    channel_item,
+    comment,
+    playlist_item,
+    promoted_item,
+    recommendation,
+    social,
+    subscription,
+    upload,
+  ))
 }
 
 pub fn activity_content_details_to_json(value: ActivityContentDetails) -> Json {
-  json.object(
-    [
-      #(
-        "bulletin",
-        json.nullable(value.bulletin, activity_content_details_bulletin_to_json),
+  json.object([
+    #(
+      "bulletin",
+      json.nullable(value.bulletin, activity_content_details_bulletin_to_json),
+    ),
+    #(
+      "channelItem",
+      json.nullable(
+        value.channel_item,
+        activity_content_details_channel_item_to_json,
       ),
-      #(
-        "channelItem",
-        json.nullable(
-          value.channel_item,
-          activity_content_details_channel_item_to_json,
-        ),
+    ),
+    #(
+      "comment",
+      json.nullable(value.comment, activity_content_details_comment_to_json),
+    ),
+    #(
+      "playlistItem",
+      json.nullable(
+        value.playlist_item,
+        activity_content_details_playlist_item_to_json,
       ),
-      #(
-        "comment",
-        json.nullable(value.comment, activity_content_details_comment_to_json),
+    ),
+    #(
+      "promotedItem",
+      json.nullable(
+        value.promoted_item,
+        activity_content_details_promoted_item_to_json,
       ),
-      #(
-        "playlistItem",
-        json.nullable(
-          value.playlist_item,
-          activity_content_details_playlist_item_to_json,
-        ),
+    ),
+    #(
+      "recommendation",
+      json.nullable(
+        value.recommendation,
+        activity_content_details_recommendation_to_json,
       ),
-      #(
-        "promotedItem",
-        json.nullable(
-          value.promoted_item,
-          activity_content_details_promoted_item_to_json,
-        ),
+    ),
+    #(
+      "social",
+      json.nullable(value.social, activity_content_details_social_to_json),
+    ),
+    #(
+      "subscription",
+      json.nullable(
+        value.subscription,
+        activity_content_details_subscription_to_json,
       ),
-      #(
-        "recommendation",
-        json.nullable(
-          value.recommendation,
-          activity_content_details_recommendation_to_json,
-        ),
-      ),
-      #(
-        "social",
-        json.nullable(value.social, activity_content_details_social_to_json),
-      ),
-      #(
-        "subscription",
-        json.nullable(
-          value.subscription,
-          activity_content_details_subscription_to_json,
-        ),
-      ),
-      #(
-        "upload",
-        json.nullable(value.upload, activity_content_details_upload_to_json),
-      ),
-    ],
-  )
+    ),
+    #(
+      "upload",
+      json.nullable(value.upload, activity_content_details_upload_to_json),
+    ),
+  ])
 }
 
 /// Details about a channel bulletin post.
@@ -214,14 +208,12 @@ pub fn activity_content_details_bulletin_decoder() -> Decoder(
 pub fn activity_content_details_bulletin_to_json(
   value: ActivityContentDetailsBulletin,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "resourceId",
-        json.nullable(value.resource_id, resource_id.resource_id_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "resourceId",
+      json.nullable(value.resource_id, resource_id.resource_id_to_json),
+    ),
+  ])
 }
 
 /// Details about a resource which was added to a channel.
@@ -243,14 +235,12 @@ pub fn activity_content_details_channel_item_decoder() -> Decoder(
 pub fn activity_content_details_channel_item_to_json(
   value: ActivityContentDetailsChannelItem,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "resourceId",
-        json.nullable(value.resource_id, resource_id.resource_id_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "resourceId",
+      json.nullable(value.resource_id, resource_id.resource_id_to_json),
+    ),
+  ])
 }
 
 /// Information about a resource that received a comment.
@@ -272,14 +262,12 @@ pub fn activity_content_details_comment_decoder() -> Decoder(
 pub fn activity_content_details_comment_to_json(
   value: ActivityContentDetailsComment,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "resourceId",
-        json.nullable(value.resource_id, resource_id.resource_id_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "resourceId",
+      json.nullable(value.resource_id, resource_id.resource_id_to_json),
+    ),
+  ])
 }
 
 /// Information about a new playlist item.
@@ -309,28 +297,24 @@ pub fn activity_content_details_playlist_item_decoder() -> Decoder(
     option.None,
     decode.optional(resource_id.resource_id_decoder()),
   )
-  decode.success(
-    ActivityContentDetailsPlaylistItem(
-      playlist_id,
-      playlist_item_id,
-      resource_id,
-    ),
-  )
+  decode.success(ActivityContentDetailsPlaylistItem(
+    playlist_id,
+    playlist_item_id,
+    resource_id,
+  ))
 }
 
 pub fn activity_content_details_playlist_item_to_json(
   value: ActivityContentDetailsPlaylistItem,
 ) -> Json {
-  json.object(
-    [
-      #("playlistId", json.nullable(value.playlist_id, json.string)),
-      #("playlistItemId", json.nullable(value.playlist_item_id, json.string)),
-      #(
-        "resourceId",
-        json.nullable(value.resource_id, resource_id.resource_id_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #("playlistId", json.nullable(value.playlist_id, json.string)),
+    #("playlistItemId", json.nullable(value.playlist_item_id, json.string)),
+    #(
+      "resourceId",
+      json.nullable(value.resource_id, resource_id.resource_id_to_json),
+    ),
+  ])
 }
 
 /// Details about a resource which is being promoted.
@@ -402,66 +386,51 @@ pub fn activity_content_details_promoted_item_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ActivityContentDetailsPromotedItem(
-      ad_tag,
-      click_tracking_url,
-      creative_view_url,
-      cta_type,
-      custom_cta_button_text,
-      description_text,
-      destination_url,
-      forecasting_url,
-      impression_url,
-      video_id,
-    ),
-  )
+  decode.success(ActivityContentDetailsPromotedItem(
+    ad_tag,
+    click_tracking_url,
+    creative_view_url,
+    cta_type,
+    custom_cta_button_text,
+    description_text,
+    destination_url,
+    forecasting_url,
+    impression_url,
+    video_id,
+  ))
 }
 
 pub fn activity_content_details_promoted_item_to_json(
   value: ActivityContentDetailsPromotedItem,
 ) -> Json {
-  json.object(
-    [
-      #("adTag", json.nullable(value.ad_tag, json.string)),
-      #(
-        "clickTrackingUrl",
-        json.nullable(value.click_tracking_url, json.string),
-      ),
-      #("creativeViewUrl", json.nullable(value.creative_view_url, json.string)),
-      #(
-        "ctaType",
-        json.nullable(
-          value.cta_type,
-          fn(e)
-          { json.string(cta_type_to_string(e)) },
-        ),
-      ),
-      #(
-        "customCtaButtonText",
-        json.nullable(value.custom_cta_button_text, json.string),
-      ),
-      #("descriptionText", json.nullable(value.description_text, json.string)),
-      #("destinationUrl", json.nullable(value.destination_url, json.string)),
-      #(
-        "forecastingUrl",
-        json.nullable(
-          value.forecasting_url,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #(
-        "impressionUrl",
-        json.nullable(
-          value.impression_url,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #("videoId", json.nullable(value.video_id, json.string)),
-    ],
-  )
+  json.object([
+    #("adTag", json.nullable(value.ad_tag, json.string)),
+    #("clickTrackingUrl", json.nullable(value.click_tracking_url, json.string)),
+    #("creativeViewUrl", json.nullable(value.creative_view_url, json.string)),
+    #(
+      "ctaType",
+      json.nullable(value.cta_type, fn(e) { json.string(cta_type_to_string(e)) }),
+    ),
+    #(
+      "customCtaButtonText",
+      json.nullable(value.custom_cta_button_text, json.string),
+    ),
+    #("descriptionText", json.nullable(value.description_text, json.string)),
+    #("destinationUrl", json.nullable(value.destination_url, json.string)),
+    #(
+      "forecastingUrl",
+      json.nullable(value.forecasting_url, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "impressionUrl",
+      json.nullable(value.impression_url, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #("videoId", json.nullable(value.video_id, json.string)),
+  ])
 }
 
 /// The type of call-to-action, a message to the user indicating action that can be taken.
@@ -513,30 +482,30 @@ pub fn activity_content_details_recommendation_decoder() -> Decoder(
     option.None,
     decode.optional(resource_id.resource_id_decoder()),
   )
-  decode.success(
-    ActivityContentDetailsRecommendation(reason, resource_id, seed_resource_id),
-  )
+  decode.success(ActivityContentDetailsRecommendation(
+    reason,
+    resource_id,
+    seed_resource_id,
+  ))
 }
 
 pub fn activity_content_details_recommendation_to_json(
   value: ActivityContentDetailsRecommendation,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "reason",
-        json.nullable(value.reason, fn(e) { json.string(reason_to_string(e)) }),
-      ),
-      #(
-        "resourceId",
-        json.nullable(value.resource_id, resource_id.resource_id_to_json),
-      ),
-      #(
-        "seedResourceId",
-        json.nullable(value.seed_resource_id, resource_id.resource_id_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "reason",
+      json.nullable(value.reason, fn(e) { json.string(reason_to_string(e)) }),
+    ),
+    #(
+      "resourceId",
+      json.nullable(value.resource_id, resource_id.resource_id_to_json),
+    ),
+    #(
+      "seedResourceId",
+      json.nullable(value.seed_resource_id, resource_id.resource_id_to_json),
+    ),
+  ])
 }
 
 /// The reason that the resource is recommended to the user.
@@ -600,39 +569,33 @@ pub fn activity_content_details_social_decoder() -> Decoder(
     option.None,
     decode.optional(activity_content_details_social_type_decoder()),
   )
-  decode.success(
-    ActivityContentDetailsSocial(
-      author,
-      image_url,
-      reference_url,
-      resource_id,
-      type_,
-    ),
-  )
+  decode.success(ActivityContentDetailsSocial(
+    author,
+    image_url,
+    reference_url,
+    resource_id,
+    type_,
+  ))
 }
 
 pub fn activity_content_details_social_to_json(
   value: ActivityContentDetailsSocial,
 ) -> Json {
-  json.object(
-    [
-      #("author", json.nullable(value.author, json.string)),
-      #("imageUrl", json.nullable(value.image_url, json.string)),
-      #("referenceUrl", json.nullable(value.reference_url, json.string)),
-      #(
-        "resourceId",
-        json.nullable(value.resource_id, resource_id.resource_id_to_json),
-      ),
-      #(
-        "type",
-        json.nullable(
-          value.type_,
-          fn(e)
-          { json.string(activity_content_details_social_type_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #("author", json.nullable(value.author, json.string)),
+    #("imageUrl", json.nullable(value.image_url, json.string)),
+    #("referenceUrl", json.nullable(value.reference_url, json.string)),
+    #(
+      "resourceId",
+      json.nullable(value.resource_id, resource_id.resource_id_to_json),
+    ),
+    #(
+      "type",
+      json.nullable(value.type_, fn(e) {
+        json.string(activity_content_details_social_type_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The name of the social network.
@@ -663,10 +626,11 @@ pub fn activity_content_details_social_type_decoder() -> Decoder(
     "googlePlus" -> decode.success(ActivityContentDetailsSocialTypeGooglePlus)
     "facebook" -> decode.success(ActivityContentDetailsSocialTypeFacebook)
     "twitter" -> decode.success(ActivityContentDetailsSocialTypeTwitter)
-    _ -> decode.failure(
-      ActivityContentDetailsSocialTypeUnspecified,
-      "a valid ActivityContentDetailsSocialType",
-    )
+    _ ->
+      decode.failure(
+        ActivityContentDetailsSocialTypeUnspecified,
+        "a valid ActivityContentDetailsSocialType",
+      )
   }
 }
 
@@ -689,14 +653,12 @@ pub fn activity_content_details_subscription_decoder() -> Decoder(
 pub fn activity_content_details_subscription_to_json(
   value: ActivityContentDetailsSubscription,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "resourceId",
-        json.nullable(value.resource_id, resource_id.resource_id_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "resourceId",
+      json.nullable(value.resource_id, resource_id.resource_id_to_json),
+    ),
+  ])
 }
 
 /// Information about the uploaded video.
@@ -781,48 +743,42 @@ pub fn activity_list_response_decoder() -> Decoder(ActivityListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    ActivityListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(ActivityListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
 pub fn activity_list_response_to_json(value: ActivityListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, activity_to_json) },
-        ),
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, activity_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Basic details about an activity, including title, description, thumbnails, activity type and group. Next ID: 12
@@ -880,43 +836,37 @@ pub fn activity_snippet_decoder() -> Decoder(ActivitySnippet) {
     option.None,
     decode.optional(activity_snippet_type_decoder()),
   )
-  decode.success(
-    ActivitySnippet(
-      channel_id,
-      channel_title,
-      description,
-      group_id,
-      published_at,
-      thumbnails,
-      title,
-      type_,
-    ),
-  )
+  decode.success(ActivitySnippet(
+    channel_id,
+    channel_title,
+    description,
+    group_id,
+    published_at,
+    thumbnails,
+    title,
+    type_,
+  ))
 }
 
 pub fn activity_snippet_to_json(value: ActivitySnippet) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("channelTitle", json.nullable(value.channel_title, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #("groupId", json.nullable(value.group_id, json.string)),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #(
-        "thumbnails",
-        json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-      #(
-        "type",
-        json.nullable(
-          value.type_,
-          fn(e)
-          { json.string(activity_snippet_type_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("channelTitle", json.nullable(value.channel_title, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #("groupId", json.nullable(value.group_id, json.string)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #(
+      "thumbnails",
+      json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+    #(
+      "type",
+      json.nullable(value.type_, fn(e) {
+        json.string(activity_snippet_type_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The type of activity that the resource describes.
@@ -961,9 +911,10 @@ pub fn activity_snippet_type_decoder() -> Decoder(ActivitySnippetType) {
     "social" -> decode.success(ActivitySnippetTypeSocial)
     "channelItem" -> decode.success(ActivitySnippetTypeChannelItem)
     "promotedItem" -> decode.success(ActivitySnippetTypePromotedItem)
-    _ -> decode.failure(
-      ActivitySnippetTypeTypeUnspecified,
-      "a valid ActivitySnippetType",
-    )
+    _ ->
+      decode.failure(
+        ActivitySnippetTypeTypeUnspecified,
+        "a valid ActivitySnippetType",
+      )
   }
 }

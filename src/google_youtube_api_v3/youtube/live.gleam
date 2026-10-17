@@ -46,45 +46,41 @@ pub fn cdn_settings_decoder() -> Decoder(CdnSettings) {
     option.None,
     decode.optional(resolution_decoder()),
   )
-  decode.success(
-    CdnSettings(format, frame_rate, ingestion_info, ingestion_type, resolution),
-  )
+  decode.success(CdnSettings(
+    format,
+    frame_rate,
+    ingestion_info,
+    ingestion_type,
+    resolution,
+  ))
 }
 
 pub fn cdn_settings_to_json(value: CdnSettings) -> Json {
-  json.object(
-    [
-      #("format", json.nullable(value.format, json.string)),
-      #(
-        "frameRate",
-        json.nullable(
-          value.frame_rate,
-          fn(e)
-          { json.string(frame_rate_to_string(e)) },
-        ),
-      ),
-      #(
-        "ingestionInfo",
-        json.nullable(value.ingestion_info, ingestion_info_to_json),
-      ),
-      #(
-        "ingestionType",
-        json.nullable(
-          value.ingestion_type,
-          fn(e)
-          { json.string(ingestion_type_to_string(e)) },
-        ),
-      ),
-      #(
-        "resolution",
-        json.nullable(
-          value.resolution,
-          fn(e)
-          { json.string(resolution_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #("format", json.nullable(value.format, json.string)),
+    #(
+      "frameRate",
+      json.nullable(value.frame_rate, fn(e) {
+        json.string(frame_rate_to_string(e))
+      }),
+    ),
+    #(
+      "ingestionInfo",
+      json.nullable(value.ingestion_info, ingestion_info_to_json),
+    ),
+    #(
+      "ingestionType",
+      json.nullable(value.ingestion_type, fn(e) {
+        json.string(ingestion_type_to_string(e))
+      }),
+    ),
+    #(
+      "resolution",
+      json.nullable(value.resolution, fn(e) {
+        json.string(resolution_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The frame rate of the inbound video data.
@@ -217,36 +213,32 @@ pub fn ingestion_info_decoder() -> Decoder(IngestionInfo) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    IngestionInfo(
-      backup_ingestion_address,
-      ingestion_address,
-      rtmps_backup_ingestion_address,
-      rtmps_ingestion_address,
-      stream_name,
-    ),
-  )
+  decode.success(IngestionInfo(
+    backup_ingestion_address,
+    ingestion_address,
+    rtmps_backup_ingestion_address,
+    rtmps_ingestion_address,
+    stream_name,
+  ))
 }
 
 pub fn ingestion_info_to_json(value: IngestionInfo) -> Json {
-  json.object(
-    [
-      #(
-        "backupIngestionAddress",
-        json.nullable(value.backup_ingestion_address, json.string),
-      ),
-      #("ingestionAddress", json.nullable(value.ingestion_address, json.string)),
-      #(
-        "rtmpsBackupIngestionAddress",
-        json.nullable(value.rtmps_backup_ingestion_address, json.string),
-      ),
-      #(
-        "rtmpsIngestionAddress",
-        json.nullable(value.rtmps_ingestion_address, json.string),
-      ),
-      #("streamName", json.nullable(value.stream_name, json.string)),
-    ],
-  )
+  json.object([
+    #(
+      "backupIngestionAddress",
+      json.nullable(value.backup_ingestion_address, json.string),
+    ),
+    #("ingestionAddress", json.nullable(value.ingestion_address, json.string)),
+    #(
+      "rtmpsBackupIngestionAddress",
+      json.nullable(value.rtmps_backup_ingestion_address, json.string),
+    ),
+    #(
+      "rtmpsIngestionAddress",
+      json.nullable(value.rtmps_ingestion_address, json.string),
+    ),
+    #("streamName", json.nullable(value.stream_name, json.string)),
+  ])
 }
 
 /// A *liveBroadcast* resource represents an event that will be streamed, via live video, on YouTube.
@@ -304,48 +296,44 @@ pub fn live_broadcast_decoder() -> Decoder(LiveBroadcast) {
     option.None,
     decode.optional(live_broadcast_status_decoder()),
   )
-  decode.success(
-    LiveBroadcast(
-      content_details,
-      etag,
-      id,
-      kind,
-      monetization_details,
-      snippet,
-      statistics,
-      status,
-    ),
-  )
+  decode.success(LiveBroadcast(
+    content_details,
+    etag,
+    id,
+    kind,
+    monetization_details,
+    snippet,
+    statistics,
+    status,
+  ))
 }
 
 pub fn live_broadcast_to_json(value: LiveBroadcast) -> Json {
-  json.object(
-    [
-      #(
-        "contentDetails",
-        json.nullable(
-          value.content_details,
-          live_broadcast_content_details_to_json,
-        ),
+  json.object([
+    #(
+      "contentDetails",
+      json.nullable(
+        value.content_details,
+        live_broadcast_content_details_to_json,
       ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "monetizationDetails",
-        json.nullable(
-          value.monetization_details,
-          live_broadcast_monetization_details_to_json,
-        ),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "monetizationDetails",
+      json.nullable(
+        value.monetization_details,
+        live_broadcast_monetization_details_to_json,
       ),
-      #("snippet", json.nullable(value.snippet, live_broadcast_snippet_to_json)),
-      #(
-        "statistics",
-        json.nullable(value.statistics, live_broadcast_statistics_to_json),
-      ),
-      #("status", json.nullable(value.status, live_broadcast_status_to_json)),
-    ],
-  )
+    ),
+    #("snippet", json.nullable(value.snippet, live_broadcast_snippet_to_json)),
+    #(
+      "statistics",
+      json.nullable(value.statistics, live_broadcast_statistics_to_json),
+    ),
+    #("status", json.nullable(value.status, live_broadcast_status_to_json)),
+  ])
 }
 
 /// Detailed settings of a broadcast.
@@ -465,101 +453,89 @@ pub fn live_broadcast_content_details_decoder() -> Decoder(
     option.None,
     decode.optional(stereo_layout_decoder()),
   )
-  decode.success(
-    LiveBroadcastContentDetails(
-      availability_config,
-      bound_stream_id,
-      bound_stream_last_update_time_ms,
-      closed_captions_type,
-      enable_auto_start,
-      enable_auto_stop,
-      enable_closed_captions,
-      enable_content_encryption,
-      enable_dvr,
-      enable_embed,
-      enable_low_latency,
-      latency_preference,
-      mesh,
-      monitor_stream,
-      projection,
-      record_from_start,
-      start_with_slate,
-      stereo_layout,
-    ),
-  )
+  decode.success(LiveBroadcastContentDetails(
+    availability_config,
+    bound_stream_id,
+    bound_stream_last_update_time_ms,
+    closed_captions_type,
+    enable_auto_start,
+    enable_auto_stop,
+    enable_closed_captions,
+    enable_content_encryption,
+    enable_dvr,
+    enable_embed,
+    enable_low_latency,
+    latency_preference,
+    mesh,
+    monitor_stream,
+    projection,
+    record_from_start,
+    start_with_slate,
+    stereo_layout,
+  ))
 }
 
 pub fn live_broadcast_content_details_to_json(
   value: LiveBroadcastContentDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "availabilityConfig",
-        json.nullable(
-          value.availability_config,
-          availability.availability_config_to_json,
-        ),
+  json.object([
+    #(
+      "availabilityConfig",
+      json.nullable(
+        value.availability_config,
+        availability.availability_config_to_json,
       ),
-      #("boundStreamId", json.nullable(value.bound_stream_id, json.string)),
-      #(
-        "boundStreamLastUpdateTimeMs",
-        json.nullable(value.bound_stream_last_update_time_ms, json.string),
-      ),
-      #(
-        "closedCaptionsType",
-        json.nullable(
-          value.closed_captions_type,
-          fn(e)
-          { json.string(closed_captions_type_to_string(e)) },
-        ),
-      ),
-      #("enableAutoStart", json.nullable(value.enable_auto_start, json.bool)),
-      #("enableAutoStop", json.nullable(value.enable_auto_stop, json.bool)),
-      #(
-        "enableClosedCaptions",
-        json.nullable(value.enable_closed_captions, json.bool),
-      ),
-      #(
-        "enableContentEncryption",
-        json.nullable(value.enable_content_encryption, json.bool),
-      ),
-      #("enableDvr", json.nullable(value.enable_dvr, json.bool)),
-      #("enableEmbed", json.nullable(value.enable_embed, json.bool)),
-      #("enableLowLatency", json.nullable(value.enable_low_latency, json.bool)),
-      #(
-        "latencyPreference",
-        json.nullable(
-          value.latency_preference,
-          fn(e)
-          { json.string(latency_preference_to_string(e)) },
-        ),
-      ),
-      #("mesh", json.nullable(value.mesh, json.string)),
-      #(
-        "monitorStream",
-        json.nullable(value.monitor_stream, monitor_stream_info_to_json),
-      ),
-      #(
-        "projection",
-        json.nullable(
-          value.projection,
-          fn(e)
-          { json.string(projection_to_string(e)) },
-        ),
-      ),
-      #("recordFromStart", json.nullable(value.record_from_start, json.bool)),
-      #("startWithSlate", json.nullable(value.start_with_slate, json.bool)),
-      #(
-        "stereoLayout",
-        json.nullable(
-          value.stereo_layout,
-          fn(e)
-          { json.string(stereo_layout_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+    ),
+    #("boundStreamId", json.nullable(value.bound_stream_id, json.string)),
+    #(
+      "boundStreamLastUpdateTimeMs",
+      json.nullable(value.bound_stream_last_update_time_ms, json.string),
+    ),
+    #(
+      "closedCaptionsType",
+      json.nullable(value.closed_captions_type, fn(e) {
+        json.string(closed_captions_type_to_string(e))
+      }),
+    ),
+    #("enableAutoStart", json.nullable(value.enable_auto_start, json.bool)),
+    #("enableAutoStop", json.nullable(value.enable_auto_stop, json.bool)),
+    #(
+      "enableClosedCaptions",
+      json.nullable(value.enable_closed_captions, json.bool),
+    ),
+    #(
+      "enableContentEncryption",
+      json.nullable(value.enable_content_encryption, json.bool),
+    ),
+    #("enableDvr", json.nullable(value.enable_dvr, json.bool)),
+    #("enableEmbed", json.nullable(value.enable_embed, json.bool)),
+    #("enableLowLatency", json.nullable(value.enable_low_latency, json.bool)),
+    #(
+      "latencyPreference",
+      json.nullable(value.latency_preference, fn(e) {
+        json.string(latency_preference_to_string(e))
+      }),
+    ),
+    #("mesh", json.nullable(value.mesh, json.string)),
+    #(
+      "monitorStream",
+      json.nullable(value.monitor_stream, monitor_stream_info_to_json),
+    ),
+    #(
+      "projection",
+      json.nullable(value.projection, fn(e) {
+        json.string(projection_to_string(e))
+      }),
+    ),
+    #("recordFromStart", json.nullable(value.record_from_start, json.bool)),
+    #("startWithSlate", json.nullable(value.start_with_slate, json.bool)),
+    #(
+      "stereoLayout",
+      json.nullable(value.stereo_layout, fn(e) {
+        json.string(stereo_layout_to_string(e))
+      }),
+    ),
+  ])
 }
 
 pub type ClosedCaptionsType {
@@ -571,7 +547,8 @@ pub type ClosedCaptionsType {
 
 pub fn closed_captions_type_to_string(value: ClosedCaptionsType) -> String {
   case value {
-    ClosedCaptionsTypeClosedCaptionsTypeUnspecified -> "closedCaptionsTypeUnspecified"
+    ClosedCaptionsTypeClosedCaptionsTypeUnspecified ->
+      "closedCaptionsTypeUnspecified"
     ClosedCaptionsTypeClosedCaptionsDisabled -> "closedCaptionsDisabled"
     ClosedCaptionsTypeClosedCaptionsHttpPost -> "closedCaptionsHttpPost"
     ClosedCaptionsTypeClosedCaptionsEmbedded -> "closedCaptionsEmbedded"
@@ -581,22 +558,19 @@ pub fn closed_captions_type_to_string(value: ClosedCaptionsType) -> String {
 pub fn closed_captions_type_decoder() -> Decoder(ClosedCaptionsType) {
   use value <- decode.then(decode.string)
   case value {
-    "closedCaptionsTypeUnspecified" -> decode.success(
-      ClosedCaptionsTypeClosedCaptionsTypeUnspecified,
-    )
-    "closedCaptionsDisabled" -> decode.success(
-      ClosedCaptionsTypeClosedCaptionsDisabled,
-    )
-    "closedCaptionsHttpPost" -> decode.success(
-      ClosedCaptionsTypeClosedCaptionsHttpPost,
-    )
-    "closedCaptionsEmbedded" -> decode.success(
-      ClosedCaptionsTypeClosedCaptionsEmbedded,
-    )
-    _ -> decode.failure(
-      ClosedCaptionsTypeClosedCaptionsTypeUnspecified,
-      "a valid ClosedCaptionsType",
-    )
+    "closedCaptionsTypeUnspecified" ->
+      decode.success(ClosedCaptionsTypeClosedCaptionsTypeUnspecified)
+    "closedCaptionsDisabled" ->
+      decode.success(ClosedCaptionsTypeClosedCaptionsDisabled)
+    "closedCaptionsHttpPost" ->
+      decode.success(ClosedCaptionsTypeClosedCaptionsHttpPost)
+    "closedCaptionsEmbedded" ->
+      decode.success(ClosedCaptionsTypeClosedCaptionsEmbedded)
+    _ ->
+      decode.failure(
+        ClosedCaptionsTypeClosedCaptionsTypeUnspecified,
+        "a valid ClosedCaptionsType",
+      )
   }
 }
 
@@ -610,7 +584,8 @@ pub type LatencyPreference {
 
 pub fn latency_preference_to_string(value: LatencyPreference) -> String {
   case value {
-    LatencyPreferenceLatencyPreferenceUnspecified -> "latencyPreferenceUnspecified"
+    LatencyPreferenceLatencyPreferenceUnspecified ->
+      "latencyPreferenceUnspecified"
     LatencyPreferenceNormal -> "normal"
     LatencyPreferenceLow -> "low"
     LatencyPreferenceUltraLow -> "ultraLow"
@@ -620,16 +595,16 @@ pub fn latency_preference_to_string(value: LatencyPreference) -> String {
 pub fn latency_preference_decoder() -> Decoder(LatencyPreference) {
   use value <- decode.then(decode.string)
   case value {
-    "latencyPreferenceUnspecified" -> decode.success(
-      LatencyPreferenceLatencyPreferenceUnspecified,
-    )
+    "latencyPreferenceUnspecified" ->
+      decode.success(LatencyPreferenceLatencyPreferenceUnspecified)
     "normal" -> decode.success(LatencyPreferenceNormal)
     "low" -> decode.success(LatencyPreferenceLow)
     "ultraLow" -> decode.success(LatencyPreferenceUltraLow)
-    _ -> decode.failure(
-      LatencyPreferenceLatencyPreferenceUnspecified,
-      "a valid LatencyPreference",
-    )
+    _ ->
+      decode.failure(
+        LatencyPreferenceLatencyPreferenceUnspecified,
+        "a valid LatencyPreference",
+      )
   }
 }
 
@@ -681,16 +656,16 @@ pub fn stereo_layout_to_string(value: StereoLayout) -> String {
 pub fn stereo_layout_decoder() -> Decoder(StereoLayout) {
   use value <- decode.then(decode.string)
   case value {
-    "stereoLayoutUnspecified" -> decode.success(
-      StereoLayoutStereoLayoutUnspecified,
-    )
+    "stereoLayoutUnspecified" ->
+      decode.success(StereoLayoutStereoLayoutUnspecified)
     "mono" -> decode.success(StereoLayoutMono)
     "leftRight" -> decode.success(StereoLayoutLeftRight)
     "topBottom" -> decode.success(StereoLayoutTopBottom)
-    _ -> decode.failure(
-      StereoLayoutStereoLayoutUnspecified,
-      "a valid StereoLayout",
-    )
+    _ ->
+      decode.failure(
+        StereoLayoutStereoLayoutUnspecified,
+        "a valid StereoLayout",
+      )
   }
 }
 
@@ -756,48 +731,44 @@ pub fn live_broadcast_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveBroadcastListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(LiveBroadcastListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
-pub fn live_broadcast_list_response_to_json(value: LiveBroadcastListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, live_broadcast_to_json) },
-        ),
+pub fn live_broadcast_list_response_to_json(
+  value: LiveBroadcastListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, live_broadcast_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Monetization settings of a broadcast.
@@ -819,17 +790,12 @@ pub fn live_broadcast_monetization_details_decoder() -> Decoder(
 pub fn live_broadcast_monetization_details_to_json(
   value: LiveBroadcastMonetizationDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "cuepointSchedule",
-        json.nullable(
-          value.cuepoint_schedule,
-          cuepoint.cuepoint_schedule_to_json,
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "cuepointSchedule",
+      json.nullable(value.cuepoint_schedule, cuepoint.cuepoint_schedule_to_json),
+    ),
+  ])
 }
 
 /// Basic broadcast information.
@@ -911,53 +877,46 @@ pub fn live_broadcast_snippet_decoder() -> Decoder(LiveBroadcastSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveBroadcastSnippet(
-      actual_end_time,
-      actual_start_time,
-      category_id,
-      channel_id,
-      description,
-      is_default_broadcast,
-      live_chat_id,
-      published_at,
-      scheduled_end_time,
-      scheduled_start_time,
-      thumbnails,
-      title,
-    ),
-  )
+  decode.success(LiveBroadcastSnippet(
+    actual_end_time,
+    actual_start_time,
+    category_id,
+    channel_id,
+    description,
+    is_default_broadcast,
+    live_chat_id,
+    published_at,
+    scheduled_end_time,
+    scheduled_start_time,
+    thumbnails,
+    title,
+  ))
 }
 
 pub fn live_broadcast_snippet_to_json(value: LiveBroadcastSnippet) -> Json {
-  json.object(
-    [
-      #("actualEndTime", json.nullable(value.actual_end_time, json.string)),
-      #("actualStartTime", json.nullable(value.actual_start_time, json.string)),
-      #("categoryId", json.nullable(value.category_id, json.string)),
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #(
-        "isDefaultBroadcast",
-        json.nullable(value.is_default_broadcast, json.bool),
-      ),
-      #("liveChatId", json.nullable(value.live_chat_id, json.string)),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #(
-        "scheduledEndTime",
-        json.nullable(value.scheduled_end_time, json.string),
-      ),
-      #(
-        "scheduledStartTime",
-        json.nullable(value.scheduled_start_time, json.string),
-      ),
-      #(
-        "thumbnails",
-        json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("actualEndTime", json.nullable(value.actual_end_time, json.string)),
+    #("actualStartTime", json.nullable(value.actual_start_time, json.string)),
+    #("categoryId", json.nullable(value.category_id, json.string)),
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #(
+      "isDefaultBroadcast",
+      json.nullable(value.is_default_broadcast, json.bool),
+    ),
+    #("liveChatId", json.nullable(value.live_chat_id, json.string)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #("scheduledEndTime", json.nullable(value.scheduled_end_time, json.string)),
+    #(
+      "scheduledStartTime",
+      json.nullable(value.scheduled_start_time, json.string),
+    ),
+    #(
+      "thumbnails",
+      json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 /// Statistics about the live broadcast. These represent a snapshot of the values at the time of the request. Statistics are only returned for live broadcasts.
@@ -974,15 +933,12 @@ pub fn live_broadcast_statistics_decoder() -> Decoder(LiveBroadcastStatistics) {
   decode.success(LiveBroadcastStatistics(concurrent_viewers))
 }
 
-pub fn live_broadcast_statistics_to_json(value: LiveBroadcastStatistics) -> Json {
-  json.object(
-    [
-      #(
-        "concurrentViewers",
-        json.nullable(value.concurrent_viewers, json.string),
-      ),
-    ],
-  )
+pub fn live_broadcast_statistics_to_json(
+  value: LiveBroadcastStatistics,
+) -> Json {
+  json.object([
+    #("concurrentViewers", json.nullable(value.concurrent_viewers, json.string)),
+  ])
 }
 
 /// Live broadcast state.
@@ -1028,60 +984,48 @@ pub fn live_broadcast_status_decoder() -> Decoder(LiveBroadcastStatus) {
     option.None,
     decode.optional(decode.bool),
   )
-  decode.success(
-    LiveBroadcastStatus(
-      life_cycle_status,
-      live_broadcast_priority,
-      made_for_kids,
-      privacy_status,
-      recording_status,
-      self_declared_made_for_kids,
-    ),
-  )
+  decode.success(LiveBroadcastStatus(
+    life_cycle_status,
+    live_broadcast_priority,
+    made_for_kids,
+    privacy_status,
+    recording_status,
+    self_declared_made_for_kids,
+  ))
 }
 
 pub fn live_broadcast_status_to_json(value: LiveBroadcastStatus) -> Json {
-  json.object(
-    [
-      #(
-        "lifeCycleStatus",
-        json.nullable(
-          value.life_cycle_status,
-          fn(e)
-          { json.string(life_cycle_status_to_string(e)) },
-        ),
-      ),
-      #(
-        "liveBroadcastPriority",
-        json.nullable(
-          value.live_broadcast_priority,
-          fn(e)
-          { json.string(live_broadcast_priority_to_string(e)) },
-        ),
-      ),
-      #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
-      #(
-        "privacyStatus",
-        json.nullable(
-          value.privacy_status,
-          fn(e)
-          { json.string(privacy_status_to_string(e)) },
-        ),
-      ),
-      #(
-        "recordingStatus",
-        json.nullable(
-          value.recording_status,
-          fn(e)
-          { json.string(recording_status_to_string(e)) },
-        ),
-      ),
-      #(
-        "selfDeclaredMadeForKids",
-        json.nullable(value.self_declared_made_for_kids, json.bool),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "lifeCycleStatus",
+      json.nullable(value.life_cycle_status, fn(e) {
+        json.string(life_cycle_status_to_string(e))
+      }),
+    ),
+    #(
+      "liveBroadcastPriority",
+      json.nullable(value.live_broadcast_priority, fn(e) {
+        json.string(live_broadcast_priority_to_string(e))
+      }),
+    ),
+    #("madeForKids", json.nullable(value.made_for_kids, json.bool)),
+    #(
+      "privacyStatus",
+      json.nullable(value.privacy_status, fn(e) {
+        json.string(privacy_status_to_string(e))
+      }),
+    ),
+    #(
+      "recordingStatus",
+      json.nullable(value.recording_status, fn(e) {
+        json.string(recording_status_to_string(e))
+      }),
+    ),
+    #(
+      "selfDeclaredMadeForKids",
+      json.nullable(value.self_declared_made_for_kids, json.bool),
+    ),
+  ])
 }
 
 /// The broadcast's status. The status can be updated using the API's liveBroadcasts.transition method.
@@ -1114,9 +1058,8 @@ pub fn life_cycle_status_to_string(value: LifeCycleStatus) -> String {
 pub fn life_cycle_status_decoder() -> Decoder(LifeCycleStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "lifeCycleStatusUnspecified" -> decode.success(
-      LifeCycleStatusLifeCycleStatusUnspecified,
-    )
+    "lifeCycleStatusUnspecified" ->
+      decode.success(LifeCycleStatusLifeCycleStatusUnspecified)
     "created" -> decode.success(LifeCycleStatusCreated)
     "ready" -> decode.success(LifeCycleStatusReady)
     "testing" -> decode.success(LifeCycleStatusTesting)
@@ -1125,10 +1068,11 @@ pub fn life_cycle_status_decoder() -> Decoder(LifeCycleStatus) {
     "revoked" -> decode.success(LifeCycleStatusRevoked)
     "testStarting" -> decode.success(LifeCycleStatusTestStarting)
     "liveStarting" -> decode.success(LifeCycleStatusLiveStarting)
-    _ -> decode.failure(
-      LifeCycleStatusLifeCycleStatusUnspecified,
-      "a valid LifeCycleStatus",
-    )
+    _ ->
+      decode.failure(
+        LifeCycleStatusLifeCycleStatusUnspecified,
+        "a valid LifeCycleStatus",
+      )
   }
 }
 
@@ -1140,10 +1084,12 @@ pub type LiveBroadcastPriority {
   LiveBroadcastPriorityHigh
 }
 
-pub fn live_broadcast_priority_to_string(value: LiveBroadcastPriority) -> String {
-  case value
-  {
-    LiveBroadcastPriorityLiveBroadcastPriorityUnspecified -> "liveBroadcastPriorityUnspecified"
+pub fn live_broadcast_priority_to_string(
+  value: LiveBroadcastPriority,
+) -> String {
+  case value {
+    LiveBroadcastPriorityLiveBroadcastPriorityUnspecified ->
+      "liveBroadcastPriorityUnspecified"
     LiveBroadcastPriorityLow -> "low"
     LiveBroadcastPriorityNormal -> "normal"
     LiveBroadcastPriorityHigh -> "high"
@@ -1153,16 +1099,16 @@ pub fn live_broadcast_priority_to_string(value: LiveBroadcastPriority) -> String
 pub fn live_broadcast_priority_decoder() -> Decoder(LiveBroadcastPriority) {
   use value <- decode.then(decode.string)
   case value {
-    "liveBroadcastPriorityUnspecified" -> decode.success(
-      LiveBroadcastPriorityLiveBroadcastPriorityUnspecified,
-    )
+    "liveBroadcastPriorityUnspecified" ->
+      decode.success(LiveBroadcastPriorityLiveBroadcastPriorityUnspecified)
     "low" -> decode.success(LiveBroadcastPriorityLow)
     "normal" -> decode.success(LiveBroadcastPriorityNormal)
     "high" -> decode.success(LiveBroadcastPriorityHigh)
-    _ -> decode.failure(
-      LiveBroadcastPriorityLiveBroadcastPriorityUnspecified,
-      "a valid LiveBroadcastPriority",
-    )
+    _ ->
+      decode.failure(
+        LiveBroadcastPriorityLiveBroadcastPriorityUnspecified,
+        "a valid LiveBroadcastPriority",
+      )
   }
 }
 
@@ -1201,7 +1147,8 @@ pub type RecordingStatus {
 
 pub fn recording_status_to_string(value: RecordingStatus) -> String {
   case value {
-    RecordingStatusLiveBroadcastRecordingStatusUnspecified -> "liveBroadcastRecordingStatusUnspecified"
+    RecordingStatusLiveBroadcastRecordingStatusUnspecified ->
+      "liveBroadcastRecordingStatusUnspecified"
     RecordingStatusNotRecording -> "notRecording"
     RecordingStatusRecording -> "recording"
     RecordingStatusRecorded -> "recorded"
@@ -1211,16 +1158,16 @@ pub fn recording_status_to_string(value: RecordingStatus) -> String {
 pub fn recording_status_decoder() -> Decoder(RecordingStatus) {
   use value <- decode.then(decode.string)
   case value {
-    "liveBroadcastRecordingStatusUnspecified" -> decode.success(
-      RecordingStatusLiveBroadcastRecordingStatusUnspecified,
-    )
+    "liveBroadcastRecordingStatusUnspecified" ->
+      decode.success(RecordingStatusLiveBroadcastRecordingStatusUnspecified)
     "notRecording" -> decode.success(RecordingStatusNotRecording)
     "recording" -> decode.success(RecordingStatusRecording)
     "recorded" -> decode.success(RecordingStatusRecorded)
-    _ -> decode.failure(
-      RecordingStatusLiveBroadcastRecordingStatusUnspecified,
-      "a valid RecordingStatus",
-    )
+    _ ->
+      decode.failure(
+        RecordingStatusLiveBroadcastRecordingStatusUnspecified,
+        "a valid RecordingStatus",
+      )
   }
 }
 
@@ -1259,14 +1206,12 @@ pub fn live_chat_ban_decoder() -> Decoder(LiveChatBan) {
 }
 
 pub fn live_chat_ban_to_json(value: LiveChatBan) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, live_chat_ban_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, live_chat_ban_snippet_to_json)),
+  ])
 }
 
 pub type LiveChatBanSnippet {
@@ -1299,41 +1244,35 @@ pub fn live_chat_ban_snippet_decoder() -> Decoder(LiveChatBanSnippet) {
     option.None,
     decode.optional(live_chat_ban_snippet_type_decoder()),
   )
-  decode.success(
-    LiveChatBanSnippet(
-      ban_duration_seconds,
-      banned_user_details,
-      live_chat_id,
-      type_,
-    ),
-  )
+  decode.success(LiveChatBanSnippet(
+    ban_duration_seconds,
+    banned_user_details,
+    live_chat_id,
+    type_,
+  ))
 }
 
 pub fn live_chat_ban_snippet_to_json(value: LiveChatBanSnippet) -> Json {
-  json.object(
-    [
-      #(
-        "banDurationSeconds",
-        json.nullable(value.ban_duration_seconds, json.string),
+  json.object([
+    #(
+      "banDurationSeconds",
+      json.nullable(value.ban_duration_seconds, json.string),
+    ),
+    #(
+      "bannedUserDetails",
+      json.nullable(
+        value.banned_user_details,
+        channel.channel_profile_details_to_json,
       ),
-      #(
-        "bannedUserDetails",
-        json.nullable(
-          value.banned_user_details,
-          channel.channel_profile_details_to_json,
-        ),
-      ),
-      #("liveChatId", json.nullable(value.live_chat_id, json.string)),
-      #(
-        "type",
-        json.nullable(
-          value.type_,
-          fn(e)
-          { json.string(live_chat_ban_snippet_type_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+    ),
+    #("liveChatId", json.nullable(value.live_chat_id, json.string)),
+    #(
+      "type",
+      json.nullable(value.type_, fn(e) {
+        json.string(live_chat_ban_snippet_type_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The type of ban.
@@ -1343,10 +1282,12 @@ pub type LiveChatBanSnippetType {
   LiveChatBanSnippetTypeTemporary
 }
 
-pub fn live_chat_ban_snippet_type_to_string(value: LiveChatBanSnippetType) -> String {
-  case value
-  {
-    LiveChatBanSnippetTypeLiveChatBanTypeUnspecified -> "liveChatBanTypeUnspecified"
+pub fn live_chat_ban_snippet_type_to_string(
+  value: LiveChatBanSnippetType,
+) -> String {
+  case value {
+    LiveChatBanSnippetTypeLiveChatBanTypeUnspecified ->
+      "liveChatBanTypeUnspecified"
     LiveChatBanSnippetTypePermanent -> "permanent"
     LiveChatBanSnippetTypeTemporary -> "temporary"
   }
@@ -1355,15 +1296,15 @@ pub fn live_chat_ban_snippet_type_to_string(value: LiveChatBanSnippetType) -> St
 pub fn live_chat_ban_snippet_type_decoder() -> Decoder(LiveChatBanSnippetType) {
   use value <- decode.then(decode.string)
   case value {
-    "liveChatBanTypeUnspecified" -> decode.success(
-      LiveChatBanSnippetTypeLiveChatBanTypeUnspecified,
-    )
+    "liveChatBanTypeUnspecified" ->
+      decode.success(LiveChatBanSnippetTypeLiveChatBanTypeUnspecified)
     "permanent" -> decode.success(LiveChatBanSnippetTypePermanent)
     "temporary" -> decode.success(LiveChatBanSnippetTypeTemporary)
-    _ -> decode.failure(
-      LiveChatBanSnippetTypeLiveChatBanTypeUnspecified,
-      "a valid LiveChatBanSnippetType",
-    )
+    _ ->
+      decode.failure(
+        LiveChatBanSnippetTypeLiveChatBanTypeUnspecified,
+        "a valid LiveChatBanSnippetType",
+      )
   }
 }
 
@@ -1399,30 +1340,26 @@ pub fn live_chat_fan_funding_event_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveChatFanFundingEventDetails(
-      amount_display_string,
-      amount_micros,
-      currency,
-      user_comment,
-    ),
-  )
+  decode.success(LiveChatFanFundingEventDetails(
+    amount_display_string,
+    amount_micros,
+    currency,
+    user_comment,
+  ))
 }
 
 pub fn live_chat_fan_funding_event_details_to_json(
   value: LiveChatFanFundingEventDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "amountDisplayString",
-        json.nullable(value.amount_display_string, json.string),
-      ),
-      #("amountMicros", json.nullable(value.amount_micros, json.string)),
-      #("currency", json.nullable(value.currency, json.string)),
-      #("userComment", json.nullable(value.user_comment, json.string)),
-    ],
-  )
+  json.object([
+    #(
+      "amountDisplayString",
+      json.nullable(value.amount_display_string, json.string),
+    ),
+    #("amountMicros", json.nullable(value.amount_micros, json.string)),
+    #("currency", json.nullable(value.currency, json.string)),
+    #("userComment", json.nullable(value.user_comment, json.string)),
+  ])
 }
 
 /// Details about the gift event, this is only set if the type is `giftEvent`.
@@ -1480,33 +1417,29 @@ pub fn live_chat_gift_details_decoder() -> Decoder(LiveChatGiftDetails) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveChatGiftDetails(
-      alt_text,
-      combo_count,
-      gift_duration,
-      gift_name,
-      gift_url,
-      has_visual_effect,
-      jewels_amount,
-      language,
-    ),
-  )
+  decode.success(LiveChatGiftDetails(
+    alt_text,
+    combo_count,
+    gift_duration,
+    gift_name,
+    gift_url,
+    has_visual_effect,
+    jewels_amount,
+    language,
+  ))
 }
 
 pub fn live_chat_gift_details_to_json(value: LiveChatGiftDetails) -> Json {
-  json.object(
-    [
-      #("altText", json.nullable(value.alt_text, json.string)),
-      #("comboCount", json.nullable(value.combo_count, json.int)),
-      #("giftDuration", json.nullable(value.gift_duration, json.string)),
-      #("giftName", json.nullable(value.gift_name, json.string)),
-      #("giftUrl", json.nullable(value.gift_url, json.string)),
-      #("hasVisualEffect", json.nullable(value.has_visual_effect, json.bool)),
-      #("jewelsAmount", json.nullable(value.jewels_amount, json.int)),
-      #("language", json.nullable(value.language, json.string)),
-    ],
-  )
+  json.object([
+    #("altText", json.nullable(value.alt_text, json.string)),
+    #("comboCount", json.nullable(value.combo_count, json.int)),
+    #("giftDuration", json.nullable(value.gift_duration, json.string)),
+    #("giftName", json.nullable(value.gift_name, json.string)),
+    #("giftUrl", json.nullable(value.gift_url, json.string)),
+    #("hasVisualEffect", json.nullable(value.has_visual_effect, json.bool)),
+    #("jewelsAmount", json.nullable(value.jewels_amount, json.int)),
+    #("language", json.nullable(value.language, json.string)),
+  ])
 }
 
 pub type LiveChatGiftMembershipReceivedDetails {
@@ -1535,31 +1468,24 @@ pub fn live_chat_gift_membership_received_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveChatGiftMembershipReceivedDetails(
-      associated_membership_gifting_message_id,
-      gifter_channel_id,
-      member_level_name,
-    ),
-  )
+  decode.success(LiveChatGiftMembershipReceivedDetails(
+    associated_membership_gifting_message_id,
+    gifter_channel_id,
+    member_level_name,
+  ))
 }
 
 pub fn live_chat_gift_membership_received_details_to_json(
   value: LiveChatGiftMembershipReceivedDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "associatedMembershipGiftingMessageId",
-        json.nullable(
-          value.associated_membership_gifting_message_id,
-          json.string,
-        ),
-      ),
-      #("gifterChannelId", json.nullable(value.gifter_channel_id, json.string)),
-      #("memberLevelName", json.nullable(value.member_level_name, json.string)),
-    ],
-  )
+  json.object([
+    #(
+      "associatedMembershipGiftingMessageId",
+      json.nullable(value.associated_membership_gifting_message_id, json.string),
+    ),
+    #("gifterChannelId", json.nullable(value.gifter_channel_id, json.string)),
+    #("memberLevelName", json.nullable(value.member_level_name, json.string)),
+  ])
 }
 
 pub type LiveChatMemberMilestoneChatDetails {
@@ -1588,25 +1514,21 @@ pub fn live_chat_member_milestone_chat_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveChatMemberMilestoneChatDetails(
-      member_level_name,
-      member_month,
-      user_comment,
-    ),
-  )
+  decode.success(LiveChatMemberMilestoneChatDetails(
+    member_level_name,
+    member_month,
+    user_comment,
+  ))
 }
 
 pub fn live_chat_member_milestone_chat_details_to_json(
   value: LiveChatMemberMilestoneChatDetails,
 ) -> Json {
-  json.object(
-    [
-      #("memberLevelName", json.nullable(value.member_level_name, json.string)),
-      #("memberMonth", json.nullable(value.member_month, json.int)),
-      #("userComment", json.nullable(value.user_comment, json.string)),
-    ],
-  )
+  json.object([
+    #("memberLevelName", json.nullable(value.member_level_name, json.string)),
+    #("memberMonth", json.nullable(value.member_month, json.int)),
+    #("userComment", json.nullable(value.user_comment, json.string)),
+  ])
 }
 
 pub type LiveChatMembershipGiftingDetails {
@@ -1629,29 +1551,25 @@ pub fn live_chat_membership_gifting_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveChatMembershipGiftingDetails(
-      gift_memberships_count,
-      gift_memberships_level_name,
-    ),
-  )
+  decode.success(LiveChatMembershipGiftingDetails(
+    gift_memberships_count,
+    gift_memberships_level_name,
+  ))
 }
 
 pub fn live_chat_membership_gifting_details_to_json(
   value: LiveChatMembershipGiftingDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "giftMembershipsCount",
-        json.nullable(value.gift_memberships_count, json.int),
-      ),
-      #(
-        "giftMembershipsLevelName",
-        json.nullable(value.gift_memberships_level_name, json.string),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "giftMembershipsCount",
+      json.nullable(value.gift_memberships_count, json.int),
+    ),
+    #(
+      "giftMembershipsLevelName",
+      json.nullable(value.gift_memberships_level_name, json.string),
+    ),
+  ])
 }
 
 /// A *liveChatMessage* resource represents a chat message in a YouTube Live Chat.
@@ -1695,24 +1613,22 @@ pub fn live_chat_message_decoder() -> Decoder(LiveChatMessage) {
 }
 
 pub fn live_chat_message_to_json(value: LiveChatMessage) -> Json {
-  json.object(
-    [
-      #(
-        "authorDetails",
-        json.nullable(
-          value.author_details,
-          live_chat_message_author_details_to_json,
-        ),
+  json.object([
+    #(
+      "authorDetails",
+      json.nullable(
+        value.author_details,
+        live_chat_message_author_details_to_json,
       ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "snippet",
-        json.nullable(value.snippet, live_chat_message_snippet_to_json),
-      ),
-    ],
-  )
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "snippet",
+      json.nullable(value.snippet, live_chat_message_snippet_to_json),
+    ),
+  ])
 }
 
 pub type LiveChatMessageAuthorDetails {
@@ -1771,35 +1687,31 @@ pub fn live_chat_message_author_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveChatMessageAuthorDetails(
-      channel_id,
-      channel_url,
-      display_name,
-      is_chat_moderator,
-      is_chat_owner,
-      is_chat_sponsor,
-      is_verified,
-      profile_image_url,
-    ),
-  )
+  decode.success(LiveChatMessageAuthorDetails(
+    channel_id,
+    channel_url,
+    display_name,
+    is_chat_moderator,
+    is_chat_owner,
+    is_chat_sponsor,
+    is_verified,
+    profile_image_url,
+  ))
 }
 
 pub fn live_chat_message_author_details_to_json(
   value: LiveChatMessageAuthorDetails,
 ) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("channelUrl", json.nullable(value.channel_url, json.string)),
-      #("displayName", json.nullable(value.display_name, json.string)),
-      #("isChatModerator", json.nullable(value.is_chat_moderator, json.bool)),
-      #("isChatOwner", json.nullable(value.is_chat_owner, json.bool)),
-      #("isChatSponsor", json.nullable(value.is_chat_sponsor, json.bool)),
-      #("isVerified", json.nullable(value.is_verified, json.bool)),
-      #("profileImageUrl", json.nullable(value.profile_image_url, json.string)),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("channelUrl", json.nullable(value.channel_url, json.string)),
+    #("displayName", json.nullable(value.display_name, json.string)),
+    #("isChatModerator", json.nullable(value.is_chat_moderator, json.bool)),
+    #("isChatOwner", json.nullable(value.is_chat_owner, json.bool)),
+    #("isChatSponsor", json.nullable(value.is_chat_sponsor, json.bool)),
+    #("isVerified", json.nullable(value.is_verified, json.bool)),
+    #("profileImageUrl", json.nullable(value.profile_image_url, json.string)),
+  ])
 }
 
 pub type LiveChatMessageDeletedDetails {
@@ -1820,14 +1732,9 @@ pub fn live_chat_message_deleted_details_decoder() -> Decoder(
 pub fn live_chat_message_deleted_details_to_json(
   value: LiveChatMessageDeletedDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "deletedMessageId",
-        json.nullable(value.deleted_message_id, json.string),
-      ),
-    ],
-  )
+  json.object([
+    #("deletedMessageId", json.nullable(value.deleted_message_id, json.string)),
+  ])
 }
 
 pub type LiveChatMessageListResponse {
@@ -1904,60 +1811,54 @@ pub fn live_chat_message_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveChatMessageListResponse(
-      active_poll_item,
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      offline_at,
-      page_info,
-      polling_interval_millis,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(LiveChatMessageListResponse(
+    active_poll_item,
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    offline_at,
+    page_info,
+    polling_interval_millis,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
 pub fn live_chat_message_list_response_to_json(
   value: LiveChatMessageListResponse,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "activePollItem",
-        json.nullable(value.active_poll_item, live_chat_message_to_json),
+  json.object([
+    #(
+      "activePollItem",
+      json.nullable(value.active_poll_item, live_chat_message_to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, live_chat_message_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("offlineAt", json.nullable(value.offline_at, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #(
+      "pollingIntervalMillis",
+      json.nullable(value.polling_interval_millis, json.int),
+    ),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, live_chat_message_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("offlineAt", json.nullable(value.offline_at, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #(
-        "pollingIntervalMillis",
-        json.nullable(value.polling_interval_millis, json.int),
-      ),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 pub type LiveChatMessageRetractedDetails {
@@ -1978,14 +1879,12 @@ pub fn live_chat_message_retracted_details_decoder() -> Decoder(
 pub fn live_chat_message_retracted_details_to_json(
   value: LiveChatMessageRetractedDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "retractedMessageId",
-        json.nullable(value.retracted_message_id, json.string),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "retractedMessageId",
+      json.nullable(value.retracted_message_id, json.string),
+    ),
+  ])
 }
 
 /// Next ID: 35
@@ -1995,8 +1894,9 @@ pub type LiveChatMessageSnippet {
     display_message: Option(String),
     fan_funding_event_details: Option(LiveChatFanFundingEventDetails),
     gift_details: Option(LiveChatGiftDetails),
-    gift_membership_received_details:
-    Option(LiveChatGiftMembershipReceivedDetails),
+    gift_membership_received_details: Option(
+      LiveChatGiftMembershipReceivedDetails,
+    ),
     has_display_content: Option(Bool),
     live_chat_id: Option(String),
     member_milestone_chat_details: Option(LiveChatMemberMilestoneChatDetails),
@@ -2110,137 +2010,130 @@ pub fn live_chat_message_snippet_decoder() -> Decoder(LiveChatMessageSnippet) {
     option.None,
     decode.optional(live_chat_user_banned_message_details_decoder()),
   )
-  decode.success(
-    LiveChatMessageSnippet(
-      author_channel_id,
-      display_message,
-      fan_funding_event_details,
-      gift_details,
-      gift_membership_received_details,
-      has_display_content,
-      live_chat_id,
-      member_milestone_chat_details,
-      membership_gifting_details,
-      message_deleted_details,
-      message_retracted_details,
-      new_sponsor_details,
-      poll_details,
-      published_at,
-      super_chat_details,
-      super_sticker_details,
-      text_message_details,
-      type_,
-      user_banned_details,
-    ),
-  )
+  decode.success(LiveChatMessageSnippet(
+    author_channel_id,
+    display_message,
+    fan_funding_event_details,
+    gift_details,
+    gift_membership_received_details,
+    has_display_content,
+    live_chat_id,
+    member_milestone_chat_details,
+    membership_gifting_details,
+    message_deleted_details,
+    message_retracted_details,
+    new_sponsor_details,
+    poll_details,
+    published_at,
+    super_chat_details,
+    super_sticker_details,
+    text_message_details,
+    type_,
+    user_banned_details,
+  ))
 }
 
-pub fn live_chat_message_snippet_to_json(value: LiveChatMessageSnippet) -> Json {
-  json.object(
-    [
-      #("authorChannelId", json.nullable(value.author_channel_id, json.string)),
-      #("displayMessage", json.nullable(value.display_message, json.string)),
-      #(
-        "fanFundingEventDetails",
-        json.nullable(
-          value.fan_funding_event_details,
-          live_chat_fan_funding_event_details_to_json,
-        ),
+pub fn live_chat_message_snippet_to_json(
+  value: LiveChatMessageSnippet,
+) -> Json {
+  json.object([
+    #("authorChannelId", json.nullable(value.author_channel_id, json.string)),
+    #("displayMessage", json.nullable(value.display_message, json.string)),
+    #(
+      "fanFundingEventDetails",
+      json.nullable(
+        value.fan_funding_event_details,
+        live_chat_fan_funding_event_details_to_json,
       ),
-      #(
-        "giftDetails",
-        json.nullable(value.gift_details, live_chat_gift_details_to_json),
+    ),
+    #(
+      "giftDetails",
+      json.nullable(value.gift_details, live_chat_gift_details_to_json),
+    ),
+    #(
+      "giftMembershipReceivedDetails",
+      json.nullable(
+        value.gift_membership_received_details,
+        live_chat_gift_membership_received_details_to_json,
       ),
-      #(
-        "giftMembershipReceivedDetails",
-        json.nullable(
-          value.gift_membership_received_details,
-          live_chat_gift_membership_received_details_to_json,
-        ),
+    ),
+    #("hasDisplayContent", json.nullable(value.has_display_content, json.bool)),
+    #("liveChatId", json.nullable(value.live_chat_id, json.string)),
+    #(
+      "memberMilestoneChatDetails",
+      json.nullable(
+        value.member_milestone_chat_details,
+        live_chat_member_milestone_chat_details_to_json,
       ),
-      #(
-        "hasDisplayContent",
-        json.nullable(value.has_display_content, json.bool),
+    ),
+    #(
+      "membershipGiftingDetails",
+      json.nullable(
+        value.membership_gifting_details,
+        live_chat_membership_gifting_details_to_json,
       ),
-      #("liveChatId", json.nullable(value.live_chat_id, json.string)),
-      #(
-        "memberMilestoneChatDetails",
-        json.nullable(
-          value.member_milestone_chat_details,
-          live_chat_member_milestone_chat_details_to_json,
-        ),
+    ),
+    #(
+      "messageDeletedDetails",
+      json.nullable(
+        value.message_deleted_details,
+        live_chat_message_deleted_details_to_json,
       ),
-      #(
-        "membershipGiftingDetails",
-        json.nullable(
-          value.membership_gifting_details,
-          live_chat_membership_gifting_details_to_json,
-        ),
+    ),
+    #(
+      "messageRetractedDetails",
+      json.nullable(
+        value.message_retracted_details,
+        live_chat_message_retracted_details_to_json,
       ),
-      #(
-        "messageDeletedDetails",
-        json.nullable(
-          value.message_deleted_details,
-          live_chat_message_deleted_details_to_json,
-        ),
+    ),
+    #(
+      "newSponsorDetails",
+      json.nullable(
+        value.new_sponsor_details,
+        live_chat_new_sponsor_details_to_json,
       ),
-      #(
-        "messageRetractedDetails",
-        json.nullable(
-          value.message_retracted_details,
-          live_chat_message_retracted_details_to_json,
-        ),
+    ),
+    #(
+      "pollDetails",
+      json.nullable(value.poll_details, live_chat_poll_details_to_json),
+    ),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #(
+      "superChatDetails",
+      json.nullable(
+        value.super_chat_details,
+        live_chat_super_chat_details_to_json,
       ),
-      #(
-        "newSponsorDetails",
-        json.nullable(
-          value.new_sponsor_details,
-          live_chat_new_sponsor_details_to_json,
-        ),
+    ),
+    #(
+      "superStickerDetails",
+      json.nullable(
+        value.super_sticker_details,
+        live_chat_super_sticker_details_to_json,
       ),
-      #(
-        "pollDetails",
-        json.nullable(value.poll_details, live_chat_poll_details_to_json),
+    ),
+    #(
+      "textMessageDetails",
+      json.nullable(
+        value.text_message_details,
+        live_chat_text_message_details_to_json,
       ),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #(
-        "superChatDetails",
-        json.nullable(
-          value.super_chat_details,
-          live_chat_super_chat_details_to_json,
-        ),
+    ),
+    #(
+      "type",
+      json.nullable(value.type_, fn(e) {
+        json.string(live_chat_message_snippet_type_to_string(e))
+      }),
+    ),
+    #(
+      "userBannedDetails",
+      json.nullable(
+        value.user_banned_details,
+        live_chat_user_banned_message_details_to_json,
       ),
-      #(
-        "superStickerDetails",
-        json.nullable(
-          value.super_sticker_details,
-          live_chat_super_sticker_details_to_json,
-        ),
-      ),
-      #(
-        "textMessageDetails",
-        json.nullable(
-          value.text_message_details,
-          live_chat_text_message_details_to_json,
-        ),
-      ),
-      #(
-        "type",
-        json.nullable(
-          value.type_,
-          fn(e)
-          { json.string(live_chat_message_snippet_type_to_string(e)) },
-        ),
-      ),
-      #(
-        "userBannedDetails",
-        json.nullable(
-          value.user_banned_details,
-          live_chat_user_banned_message_details_to_json,
-        ),
-      ),
-    ],
-  )
+    ),
+  ])
 }
 
 /// The type of message, this will always be present, it determines the contents of the message as well as which fields will be present.
@@ -2274,12 +2167,16 @@ pub fn live_chat_message_snippet_type_to_string(
     LiveChatMessageSnippetTypeTombstone -> "tombstone"
     LiveChatMessageSnippetTypeFanFundingEvent -> "fanFundingEvent"
     LiveChatMessageSnippetTypeChatEndedEvent -> "chatEndedEvent"
-    LiveChatMessageSnippetTypeSponsorOnlyModeStartedEvent -> "sponsorOnlyModeStartedEvent"
-    LiveChatMessageSnippetTypeSponsorOnlyModeEndedEvent -> "sponsorOnlyModeEndedEvent"
+    LiveChatMessageSnippetTypeSponsorOnlyModeStartedEvent ->
+      "sponsorOnlyModeStartedEvent"
+    LiveChatMessageSnippetTypeSponsorOnlyModeEndedEvent ->
+      "sponsorOnlyModeEndedEvent"
     LiveChatMessageSnippetTypeNewSponsorEvent -> "newSponsorEvent"
-    LiveChatMessageSnippetTypeMemberMilestoneChatEvent -> "memberMilestoneChatEvent"
+    LiveChatMessageSnippetTypeMemberMilestoneChatEvent ->
+      "memberMilestoneChatEvent"
     LiveChatMessageSnippetTypeMembershipGiftingEvent -> "membershipGiftingEvent"
-    LiveChatMessageSnippetTypeGiftMembershipReceivedEvent -> "giftMembershipReceivedEvent"
+    LiveChatMessageSnippetTypeGiftMembershipReceivedEvent ->
+      "giftMembershipReceivedEvent"
     LiveChatMessageSnippetTypeMessageDeletedEvent -> "messageDeletedEvent"
     LiveChatMessageSnippetTypeMessageRetractedEvent -> "messageRetractedEvent"
     LiveChatMessageSnippetTypeUserBannedEvent -> "userBannedEvent"
@@ -2296,51 +2193,40 @@ pub fn live_chat_message_snippet_type_decoder() -> Decoder(
   use value <- decode.then(decode.string)
   case value {
     "invalidType" -> decode.success(LiveChatMessageSnippetTypeInvalidType)
-    "textMessageEvent" -> decode.success(
-      LiveChatMessageSnippetTypeTextMessageEvent,
-    )
+    "textMessageEvent" ->
+      decode.success(LiveChatMessageSnippetTypeTextMessageEvent)
     "tombstone" -> decode.success(LiveChatMessageSnippetTypeTombstone)
-    "fanFundingEvent" -> decode.success(
-      LiveChatMessageSnippetTypeFanFundingEvent,
-    )
+    "fanFundingEvent" ->
+      decode.success(LiveChatMessageSnippetTypeFanFundingEvent)
     "chatEndedEvent" -> decode.success(LiveChatMessageSnippetTypeChatEndedEvent)
-    "sponsorOnlyModeStartedEvent" -> decode.success(
-      LiveChatMessageSnippetTypeSponsorOnlyModeStartedEvent,
-    )
-    "sponsorOnlyModeEndedEvent" -> decode.success(
-      LiveChatMessageSnippetTypeSponsorOnlyModeEndedEvent,
-    )
-    "newSponsorEvent" -> decode.success(
-      LiveChatMessageSnippetTypeNewSponsorEvent,
-    )
-    "memberMilestoneChatEvent" -> decode.success(
-      LiveChatMessageSnippetTypeMemberMilestoneChatEvent,
-    )
-    "membershipGiftingEvent" -> decode.success(
-      LiveChatMessageSnippetTypeMembershipGiftingEvent,
-    )
-    "giftMembershipReceivedEvent" -> decode.success(
-      LiveChatMessageSnippetTypeGiftMembershipReceivedEvent,
-    )
-    "messageDeletedEvent" -> decode.success(
-      LiveChatMessageSnippetTypeMessageDeletedEvent,
-    )
-    "messageRetractedEvent" -> decode.success(
-      LiveChatMessageSnippetTypeMessageRetractedEvent,
-    )
-    "userBannedEvent" -> decode.success(
-      LiveChatMessageSnippetTypeUserBannedEvent,
-    )
+    "sponsorOnlyModeStartedEvent" ->
+      decode.success(LiveChatMessageSnippetTypeSponsorOnlyModeStartedEvent)
+    "sponsorOnlyModeEndedEvent" ->
+      decode.success(LiveChatMessageSnippetTypeSponsorOnlyModeEndedEvent)
+    "newSponsorEvent" ->
+      decode.success(LiveChatMessageSnippetTypeNewSponsorEvent)
+    "memberMilestoneChatEvent" ->
+      decode.success(LiveChatMessageSnippetTypeMemberMilestoneChatEvent)
+    "membershipGiftingEvent" ->
+      decode.success(LiveChatMessageSnippetTypeMembershipGiftingEvent)
+    "giftMembershipReceivedEvent" ->
+      decode.success(LiveChatMessageSnippetTypeGiftMembershipReceivedEvent)
+    "messageDeletedEvent" ->
+      decode.success(LiveChatMessageSnippetTypeMessageDeletedEvent)
+    "messageRetractedEvent" ->
+      decode.success(LiveChatMessageSnippetTypeMessageRetractedEvent)
+    "userBannedEvent" ->
+      decode.success(LiveChatMessageSnippetTypeUserBannedEvent)
     "superChatEvent" -> decode.success(LiveChatMessageSnippetTypeSuperChatEvent)
-    "superStickerEvent" -> decode.success(
-      LiveChatMessageSnippetTypeSuperStickerEvent,
-    )
+    "superStickerEvent" ->
+      decode.success(LiveChatMessageSnippetTypeSuperStickerEvent)
     "pollEvent" -> decode.success(LiveChatMessageSnippetTypePollEvent)
     "giftEvent" -> decode.success(LiveChatMessageSnippetTypeGiftEvent)
-    _ -> decode.failure(
-      LiveChatMessageSnippetTypeInvalidType,
-      "a valid LiveChatMessageSnippetType",
-    )
+    _ ->
+      decode.failure(
+        LiveChatMessageSnippetTypeInvalidType,
+        "a valid LiveChatMessageSnippetType",
+      )
   }
 }
 
@@ -2379,17 +2265,15 @@ pub fn live_chat_moderator_decoder() -> Decoder(LiveChatModerator) {
 }
 
 pub fn live_chat_moderator_to_json(value: LiveChatModerator) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "snippet",
-        json.nullable(value.snippet, live_chat_moderator_snippet_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "snippet",
+      json.nullable(value.snippet, live_chat_moderator_snippet_to_json),
+    ),
+  ])
 }
 
 pub type LiveChatModeratorListResponse {
@@ -2454,50 +2338,44 @@ pub fn live_chat_moderator_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveChatModeratorListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(LiveChatModeratorListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
 pub fn live_chat_moderator_list_response_to_json(
   value: LiveChatModeratorListResponse,
 ) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, live_chat_moderator_to_json) },
-        ),
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, live_chat_moderator_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 pub type LiveChatModeratorSnippet {
@@ -2523,19 +2401,19 @@ pub fn live_chat_moderator_snippet_decoder() -> Decoder(
   decode.success(LiveChatModeratorSnippet(live_chat_id, moderator_details))
 }
 
-pub fn live_chat_moderator_snippet_to_json(value: LiveChatModeratorSnippet) -> Json {
-  json.object(
-    [
-      #("liveChatId", json.nullable(value.live_chat_id, json.string)),
-      #(
-        "moderatorDetails",
-        json.nullable(
-          value.moderator_details,
-          channel.channel_profile_details_to_json,
-        ),
+pub fn live_chat_moderator_snippet_to_json(
+  value: LiveChatModeratorSnippet,
+) -> Json {
+  json.object([
+    #("liveChatId", json.nullable(value.live_chat_id, json.string)),
+    #(
+      "moderatorDetails",
+      json.nullable(
+        value.moderator_details,
+        channel.channel_profile_details_to_json,
       ),
-    ],
-  )
+    ),
+  ])
 }
 
 pub type LiveChatNewSponsorDetails {
@@ -2561,13 +2439,13 @@ pub fn live_chat_new_sponsor_details_decoder() -> Decoder(
   decode.success(LiveChatNewSponsorDetails(is_upgrade, member_level_name))
 }
 
-pub fn live_chat_new_sponsor_details_to_json(value: LiveChatNewSponsorDetails) -> Json {
-  json.object(
-    [
-      #("isUpgrade", json.nullable(value.is_upgrade, json.bool)),
-      #("memberLevelName", json.nullable(value.member_level_name, json.string)),
-    ],
-  )
+pub fn live_chat_new_sponsor_details_to_json(
+  value: LiveChatNewSponsorDetails,
+) -> Json {
+  json.object([
+    #("isUpgrade", json.nullable(value.is_upgrade, json.bool)),
+    #("memberLevelName", json.nullable(value.member_level_name, json.string)),
+  ])
 }
 
 pub type LiveChatPollDetails {
@@ -2592,25 +2470,21 @@ pub fn live_chat_poll_details_decoder() -> Decoder(LiveChatPollDetails) {
 }
 
 pub fn live_chat_poll_details_to_json(value: LiveChatPollDetails) -> Json {
-  json.object(
-    [
-      #(
-        "metadata",
-        json.nullable(
-          value.metadata,
-          live_chat_poll_details_poll_metadata_to_json,
-        ),
+  json.object([
+    #(
+      "metadata",
+      json.nullable(
+        value.metadata,
+        live_chat_poll_details_poll_metadata_to_json,
       ),
-      #(
-        "status",
-        json.nullable(
-          value.status,
-          fn(e)
-          { json.string(live_chat_poll_details_status_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+    ),
+    #(
+      "status",
+      json.nullable(value.status, fn(e) {
+        json.string(live_chat_poll_details_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 pub type LiveChatPollDetailsStatus {
@@ -2619,9 +2493,10 @@ pub type LiveChatPollDetailsStatus {
   LiveChatPollDetailsStatusClosed
 }
 
-pub fn live_chat_poll_details_status_to_string(value: LiveChatPollDetailsStatus) -> String {
-  case value
-  {
+pub fn live_chat_poll_details_status_to_string(
+  value: LiveChatPollDetailsStatus,
+) -> String {
+  case value {
     LiveChatPollDetailsStatusUnknown -> "unknown"
     LiveChatPollDetailsStatusActive -> "active"
     LiveChatPollDetailsStatusClosed -> "closed"
@@ -2636,10 +2511,11 @@ pub fn live_chat_poll_details_status_decoder() -> Decoder(
     "unknown" -> decode.success(LiveChatPollDetailsStatusUnknown)
     "active" -> decode.success(LiveChatPollDetailsStatusActive)
     "closed" -> decode.success(LiveChatPollDetailsStatusClosed)
-    _ -> decode.failure(
-      LiveChatPollDetailsStatusUnknown,
-      "a valid LiveChatPollDetailsStatus",
-    )
+    _ ->
+      decode.failure(
+        LiveChatPollDetailsStatusUnknown,
+        "a valid LiveChatPollDetailsStatus",
+      )
   }
 }
 
@@ -2671,24 +2547,18 @@ pub fn live_chat_poll_details_poll_metadata_decoder() -> Decoder(
 pub fn live_chat_poll_details_poll_metadata_to_json(
   value: LiveChatPollDetailsPollMetadata,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "options",
-        json.nullable(
-          value.options,
-          fn(items)
-          {
-            json.array(
-              items,
-              live_chat_poll_details_poll_metadata_poll_option_to_json,
-            )
-          },
-        ),
-      ),
-      #("questionText", json.nullable(value.question_text, json.string)),
-    ],
-  )
+  json.object([
+    #(
+      "options",
+      json.nullable(value.options, fn(items) {
+        json.array(
+          items,
+          live_chat_poll_details_poll_metadata_poll_option_to_json,
+        )
+      }),
+    ),
+    #("questionText", json.nullable(value.question_text, json.string)),
+  ])
 }
 
 pub type LiveChatPollDetailsPollMetadataPollOption {
@@ -2717,12 +2587,10 @@ pub fn live_chat_poll_details_poll_metadata_poll_option_decoder() -> Decoder(
 pub fn live_chat_poll_details_poll_metadata_poll_option_to_json(
   value: LiveChatPollDetailsPollMetadataPollOption,
 ) -> Json {
-  json.object(
-    [
-      #("optionText", json.nullable(value.option_text, json.string)),
-      #("tally", json.nullable(value.tally, json.string)),
-    ],
-  )
+  json.object([
+    #("optionText", json.nullable(value.option_text, json.string)),
+    #("tally", json.nullable(value.tally, json.string)),
+  ])
 }
 
 pub type LiveChatSuperChatDetails {
@@ -2763,30 +2631,28 @@ pub fn live_chat_super_chat_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveChatSuperChatDetails(
-      amount_display_string,
-      amount_micros,
-      currency,
-      tier,
-      user_comment,
-    ),
-  )
+  decode.success(LiveChatSuperChatDetails(
+    amount_display_string,
+    amount_micros,
+    currency,
+    tier,
+    user_comment,
+  ))
 }
 
-pub fn live_chat_super_chat_details_to_json(value: LiveChatSuperChatDetails) -> Json {
-  json.object(
-    [
-      #(
-        "amountDisplayString",
-        json.nullable(value.amount_display_string, json.string),
-      ),
-      #("amountMicros", json.nullable(value.amount_micros, json.string)),
-      #("currency", json.nullable(value.currency, json.string)),
-      #("tier", json.nullable(value.tier, json.int)),
-      #("userComment", json.nullable(value.user_comment, json.string)),
-    ],
-  )
+pub fn live_chat_super_chat_details_to_json(
+  value: LiveChatSuperChatDetails,
+) -> Json {
+  json.object([
+    #(
+      "amountDisplayString",
+      json.nullable(value.amount_display_string, json.string),
+    ),
+    #("amountMicros", json.nullable(value.amount_micros, json.string)),
+    #("currency", json.nullable(value.currency, json.string)),
+    #("tier", json.nullable(value.tier, json.int)),
+    #("userComment", json.nullable(value.user_comment, json.string)),
+  ])
 }
 
 pub type LiveChatSuperStickerDetails {
@@ -2827,38 +2693,34 @@ pub fn live_chat_super_sticker_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.int),
   )
-  decode.success(
-    LiveChatSuperStickerDetails(
-      amount_display_string,
-      amount_micros,
-      currency,
-      super_sticker_metadata,
-      tier,
-    ),
-  )
+  decode.success(LiveChatSuperStickerDetails(
+    amount_display_string,
+    amount_micros,
+    currency,
+    super_sticker_metadata,
+    tier,
+  ))
 }
 
 pub fn live_chat_super_sticker_details_to_json(
   value: LiveChatSuperStickerDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "amountDisplayString",
-        json.nullable(value.amount_display_string, json.string),
+  json.object([
+    #(
+      "amountDisplayString",
+      json.nullable(value.amount_display_string, json.string),
+    ),
+    #("amountMicros", json.nullable(value.amount_micros, json.string)),
+    #("currency", json.nullable(value.currency, json.string)),
+    #(
+      "superStickerMetadata",
+      json.nullable(
+        value.super_sticker_metadata,
+        super.super_sticker_metadata_to_json,
       ),
-      #("amountMicros", json.nullable(value.amount_micros, json.string)),
-      #("currency", json.nullable(value.currency, json.string)),
-      #(
-        "superStickerMetadata",
-        json.nullable(
-          value.super_sticker_metadata,
-          super.super_sticker_metadata_to_json,
-        ),
-      ),
-      #("tier", json.nullable(value.tier, json.int)),
-    ],
-  )
+    ),
+    #("tier", json.nullable(value.tier, json.int)),
+  ])
 }
 
 pub type LiveChatTextMessageDetails {
@@ -2876,10 +2738,10 @@ pub fn live_chat_text_message_details_decoder() -> Decoder(
   decode.success(LiveChatTextMessageDetails(message_text))
 }
 
-pub fn live_chat_text_message_details_to_json(value: LiveChatTextMessageDetails) -> Json {
-  json.object(
-    [#("messageText", json.nullable(value.message_text, json.string))],
-  )
+pub fn live_chat_text_message_details_to_json(
+  value: LiveChatTextMessageDetails,
+) -> Json {
+  json.object([#("messageText", json.nullable(value.message_text, json.string))])
 }
 
 pub type LiveChatUserBannedMessageDetails {
@@ -2908,41 +2770,33 @@ pub fn live_chat_user_banned_message_details_decoder() -> Decoder(
     option.None,
     decode.optional(channel.channel_profile_details_decoder()),
   )
-  decode.success(
-    LiveChatUserBannedMessageDetails(
-      ban_duration_seconds,
-      ban_type,
-      banned_user_details,
-    ),
-  )
+  decode.success(LiveChatUserBannedMessageDetails(
+    ban_duration_seconds,
+    ban_type,
+    banned_user_details,
+  ))
 }
 
 pub fn live_chat_user_banned_message_details_to_json(
   value: LiveChatUserBannedMessageDetails,
 ) -> Json {
-  json.object(
-    [
-      #(
-        "banDurationSeconds",
-        json.nullable(value.ban_duration_seconds, json.string),
+  json.object([
+    #(
+      "banDurationSeconds",
+      json.nullable(value.ban_duration_seconds, json.string),
+    ),
+    #(
+      "banType",
+      json.nullable(value.ban_type, fn(e) { json.string(ban_type_to_string(e)) }),
+    ),
+    #(
+      "bannedUserDetails",
+      json.nullable(
+        value.banned_user_details,
+        channel.channel_profile_details_to_json,
       ),
-      #(
-        "banType",
-        json.nullable(
-          value.ban_type,
-          fn(e)
-          { json.string(ban_type_to_string(e)) },
-        ),
-      ),
-      #(
-        "bannedUserDetails",
-        json.nullable(
-          value.banned_user_details,
-          channel.channel_profile_details_to_json,
-        ),
-      ),
-    ],
-  )
+    ),
+  ])
 }
 
 /// The type of ban.
@@ -3016,29 +2870,30 @@ pub fn live_stream_decoder() -> Decoder(LiveStream) {
     option.None,
     decode.optional(live_stream_status_decoder()),
   )
-  decode.success(
-    LiveStream(cdn, content_details, etag, id, kind, snippet, status),
-  )
+  decode.success(LiveStream(
+    cdn,
+    content_details,
+    etag,
+    id,
+    kind,
+    snippet,
+    status,
+  ))
 }
 
 pub fn live_stream_to_json(value: LiveStream) -> Json {
-  json.object(
-    [
-      #("cdn", json.nullable(value.cdn, cdn_settings_to_json)),
-      #(
-        "contentDetails",
-        json.nullable(
-          value.content_details,
-          live_stream_content_details_to_json,
-        ),
-      ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, live_stream_snippet_to_json)),
-      #("status", json.nullable(value.status, live_stream_status_to_json)),
-    ],
-  )
+  json.object([
+    #("cdn", json.nullable(value.cdn, cdn_settings_to_json)),
+    #(
+      "contentDetails",
+      json.nullable(value.content_details, live_stream_content_details_to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, live_stream_snippet_to_json)),
+    #("status", json.nullable(value.status, live_stream_status_to_json)),
+  ])
 }
 
 pub type LiveStreamConfigurationIssue {
@@ -3073,36 +2928,31 @@ pub fn live_stream_configuration_issue_decoder() -> Decoder(
     option.None,
     decode.optional(live_stream_configuration_issue_type_decoder()),
   )
-  decode.success(
-    LiveStreamConfigurationIssue(description, reason, severity, type_),
-  )
+  decode.success(LiveStreamConfigurationIssue(
+    description,
+    reason,
+    severity,
+    type_,
+  ))
 }
 
 pub fn live_stream_configuration_issue_to_json(
   value: LiveStreamConfigurationIssue,
 ) -> Json {
-  json.object(
-    [
-      #("description", json.nullable(value.description, json.string)),
-      #("reason", json.nullable(value.reason, json.string)),
-      #(
-        "severity",
-        json.nullable(
-          value.severity,
-          fn(e)
-          { json.string(severity_to_string(e)) },
-        ),
-      ),
-      #(
-        "type",
-        json.nullable(
-          value.type_,
-          fn(e)
-          { json.string(live_stream_configuration_issue_type_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #("description", json.nullable(value.description, json.string)),
+    #("reason", json.nullable(value.reason, json.string)),
+    #(
+      "severity",
+      json.nullable(value.severity, fn(e) { json.string(severity_to_string(e)) }),
+    ),
+    #(
+      "type",
+      json.nullable(value.type_, fn(e) {
+        json.string(live_stream_configuration_issue_type_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// How severe this issue is to the stream.
@@ -3186,26 +3036,38 @@ pub fn live_stream_configuration_issue_type_to_string(
     LiveStreamConfigurationIssueTypeVideoCodec -> "videoCodec"
     LiveStreamConfigurationIssueTypeNoAudioStream -> "noAudioStream"
     LiveStreamConfigurationIssueTypeNoVideoStream -> "noVideoStream"
-    LiveStreamConfigurationIssueTypeMultipleVideoStreams -> "multipleVideoStreams"
-    LiveStreamConfigurationIssueTypeMultipleAudioStreams -> "multipleAudioStreams"
-    LiveStreamConfigurationIssueTypeAudioTooManyChannels -> "audioTooManyChannels"
+    LiveStreamConfigurationIssueTypeMultipleVideoStreams ->
+      "multipleVideoStreams"
+    LiveStreamConfigurationIssueTypeMultipleAudioStreams ->
+      "multipleAudioStreams"
+    LiveStreamConfigurationIssueTypeAudioTooManyChannels ->
+      "audioTooManyChannels"
     LiveStreamConfigurationIssueTypeInterlacedVideo -> "interlacedVideo"
     LiveStreamConfigurationIssueTypeFrameRateHigh -> "frameRateHigh"
     LiveStreamConfigurationIssueTypeResolutionMismatch -> "resolutionMismatch"
     LiveStreamConfigurationIssueTypeVideoCodecMismatch -> "videoCodecMismatch"
-    LiveStreamConfigurationIssueTypeVideoInterlaceMismatch -> "videoInterlaceMismatch"
-    LiveStreamConfigurationIssueTypeVideoProfileMismatch -> "videoProfileMismatch"
-    LiveStreamConfigurationIssueTypeVideoBitrateMismatch -> "videoBitrateMismatch"
+    LiveStreamConfigurationIssueTypeVideoInterlaceMismatch ->
+      "videoInterlaceMismatch"
+    LiveStreamConfigurationIssueTypeVideoProfileMismatch ->
+      "videoProfileMismatch"
+    LiveStreamConfigurationIssueTypeVideoBitrateMismatch ->
+      "videoBitrateMismatch"
     LiveStreamConfigurationIssueTypeFramerateMismatch -> "framerateMismatch"
     LiveStreamConfigurationIssueTypeGopMismatch -> "gopMismatch"
-    LiveStreamConfigurationIssueTypeAudioSampleRateMismatch -> "audioSampleRateMismatch"
+    LiveStreamConfigurationIssueTypeAudioSampleRateMismatch ->
+      "audioSampleRateMismatch"
     LiveStreamConfigurationIssueTypeAudioStereoMismatch -> "audioStereoMismatch"
     LiveStreamConfigurationIssueTypeAudioCodecMismatch -> "audioCodecMismatch"
-    LiveStreamConfigurationIssueTypeAudioBitrateMismatch -> "audioBitrateMismatch"
-    LiveStreamConfigurationIssueTypeVideoResolutionSuboptimal -> "videoResolutionSuboptimal"
-    LiveStreamConfigurationIssueTypeVideoResolutionUnsupported -> "videoResolutionUnsupported"
-    LiveStreamConfigurationIssueTypeVideoIngestionStarved -> "videoIngestionStarved"
-    LiveStreamConfigurationIssueTypeVideoIngestionFasterThanRealtime -> "videoIngestionFasterThanRealtime"
+    LiveStreamConfigurationIssueTypeAudioBitrateMismatch ->
+      "audioBitrateMismatch"
+    LiveStreamConfigurationIssueTypeVideoResolutionSuboptimal ->
+      "videoResolutionSuboptimal"
+    LiveStreamConfigurationIssueTypeVideoResolutionUnsupported ->
+      "videoResolutionUnsupported"
+    LiveStreamConfigurationIssueTypeVideoIngestionStarved ->
+      "videoIngestionStarved"
+    LiveStreamConfigurationIssueTypeVideoIngestionFasterThanRealtime ->
+      "videoIngestionFasterThanRealtime"
   }
 }
 
@@ -3216,94 +3078,71 @@ pub fn live_stream_configuration_issue_type_decoder() -> Decoder(
   case value {
     "gopSizeOver" -> decode.success(LiveStreamConfigurationIssueTypeGopSizeOver)
     "gopSizeLong" -> decode.success(LiveStreamConfigurationIssueTypeGopSizeLong)
-    "gopSizeShort" -> decode.success(
-      LiveStreamConfigurationIssueTypeGopSizeShort,
-    )
+    "gopSizeShort" ->
+      decode.success(LiveStreamConfigurationIssueTypeGopSizeShort)
     "openGop" -> decode.success(LiveStreamConfigurationIssueTypeOpenGop)
-    "badContainer" -> decode.success(
-      LiveStreamConfigurationIssueTypeBadContainer,
-    )
-    "audioBitrateHigh" -> decode.success(
-      LiveStreamConfigurationIssueTypeAudioBitrateHigh,
-    )
-    "audioBitrateLow" -> decode.success(
-      LiveStreamConfigurationIssueTypeAudioBitrateLow,
-    )
-    "audioSampleRate" -> decode.success(
-      LiveStreamConfigurationIssueTypeAudioSampleRate,
-    )
+    "badContainer" ->
+      decode.success(LiveStreamConfigurationIssueTypeBadContainer)
+    "audioBitrateHigh" ->
+      decode.success(LiveStreamConfigurationIssueTypeAudioBitrateHigh)
+    "audioBitrateLow" ->
+      decode.success(LiveStreamConfigurationIssueTypeAudioBitrateLow)
+    "audioSampleRate" ->
+      decode.success(LiveStreamConfigurationIssueTypeAudioSampleRate)
     "bitrateHigh" -> decode.success(LiveStreamConfigurationIssueTypeBitrateHigh)
     "bitrateLow" -> decode.success(LiveStreamConfigurationIssueTypeBitrateLow)
     "audioCodec" -> decode.success(LiveStreamConfigurationIssueTypeAudioCodec)
     "videoCodec" -> decode.success(LiveStreamConfigurationIssueTypeVideoCodec)
-    "noAudioStream" -> decode.success(
-      LiveStreamConfigurationIssueTypeNoAudioStream,
-    )
-    "noVideoStream" -> decode.success(
-      LiveStreamConfigurationIssueTypeNoVideoStream,
-    )
-    "multipleVideoStreams" -> decode.success(
-      LiveStreamConfigurationIssueTypeMultipleVideoStreams,
-    )
-    "multipleAudioStreams" -> decode.success(
-      LiveStreamConfigurationIssueTypeMultipleAudioStreams,
-    )
-    "audioTooManyChannels" -> decode.success(
-      LiveStreamConfigurationIssueTypeAudioTooManyChannels,
-    )
-    "interlacedVideo" -> decode.success(
-      LiveStreamConfigurationIssueTypeInterlacedVideo,
-    )
-    "frameRateHigh" -> decode.success(
-      LiveStreamConfigurationIssueTypeFrameRateHigh,
-    )
-    "resolutionMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeResolutionMismatch,
-    )
-    "videoCodecMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeVideoCodecMismatch,
-    )
-    "videoInterlaceMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeVideoInterlaceMismatch,
-    )
-    "videoProfileMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeVideoProfileMismatch,
-    )
-    "videoBitrateMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeVideoBitrateMismatch,
-    )
-    "framerateMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeFramerateMismatch,
-    )
+    "noAudioStream" ->
+      decode.success(LiveStreamConfigurationIssueTypeNoAudioStream)
+    "noVideoStream" ->
+      decode.success(LiveStreamConfigurationIssueTypeNoVideoStream)
+    "multipleVideoStreams" ->
+      decode.success(LiveStreamConfigurationIssueTypeMultipleVideoStreams)
+    "multipleAudioStreams" ->
+      decode.success(LiveStreamConfigurationIssueTypeMultipleAudioStreams)
+    "audioTooManyChannels" ->
+      decode.success(LiveStreamConfigurationIssueTypeAudioTooManyChannels)
+    "interlacedVideo" ->
+      decode.success(LiveStreamConfigurationIssueTypeInterlacedVideo)
+    "frameRateHigh" ->
+      decode.success(LiveStreamConfigurationIssueTypeFrameRateHigh)
+    "resolutionMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeResolutionMismatch)
+    "videoCodecMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeVideoCodecMismatch)
+    "videoInterlaceMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeVideoInterlaceMismatch)
+    "videoProfileMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeVideoProfileMismatch)
+    "videoBitrateMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeVideoBitrateMismatch)
+    "framerateMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeFramerateMismatch)
     "gopMismatch" -> decode.success(LiveStreamConfigurationIssueTypeGopMismatch)
-    "audioSampleRateMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeAudioSampleRateMismatch,
-    )
-    "audioStereoMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeAudioStereoMismatch,
-    )
-    "audioCodecMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeAudioCodecMismatch,
-    )
-    "audioBitrateMismatch" -> decode.success(
-      LiveStreamConfigurationIssueTypeAudioBitrateMismatch,
-    )
-    "videoResolutionSuboptimal" -> decode.success(
-      LiveStreamConfigurationIssueTypeVideoResolutionSuboptimal,
-    )
-    "videoResolutionUnsupported" -> decode.success(
-      LiveStreamConfigurationIssueTypeVideoResolutionUnsupported,
-    )
-    "videoIngestionStarved" -> decode.success(
-      LiveStreamConfigurationIssueTypeVideoIngestionStarved,
-    )
-    "videoIngestionFasterThanRealtime" -> decode.success(
-      LiveStreamConfigurationIssueTypeVideoIngestionFasterThanRealtime,
-    )
-    _ -> decode.failure(
-      LiveStreamConfigurationIssueTypeGopSizeOver,
-      "a valid LiveStreamConfigurationIssueType",
-    )
+    "audioSampleRateMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeAudioSampleRateMismatch)
+    "audioStereoMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeAudioStereoMismatch)
+    "audioCodecMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeAudioCodecMismatch)
+    "audioBitrateMismatch" ->
+      decode.success(LiveStreamConfigurationIssueTypeAudioBitrateMismatch)
+    "videoResolutionSuboptimal" ->
+      decode.success(LiveStreamConfigurationIssueTypeVideoResolutionSuboptimal)
+    "videoResolutionUnsupported" ->
+      decode.success(LiveStreamConfigurationIssueTypeVideoResolutionUnsupported)
+    "videoIngestionStarved" ->
+      decode.success(LiveStreamConfigurationIssueTypeVideoIngestionStarved)
+    "videoIngestionFasterThanRealtime" ->
+      decode.success(
+        LiveStreamConfigurationIssueTypeVideoIngestionFasterThanRealtime,
+      )
+    _ ->
+      decode.failure(
+        LiveStreamConfigurationIssueTypeGopSizeOver,
+        "a valid LiveStreamConfigurationIssueType",
+      )
   }
 }
 
@@ -3328,21 +3167,22 @@ pub fn live_stream_content_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.bool),
   )
-  decode.success(
-    LiveStreamContentDetails(closed_captions_ingestion_url, is_reusable),
-  )
+  decode.success(LiveStreamContentDetails(
+    closed_captions_ingestion_url,
+    is_reusable,
+  ))
 }
 
-pub fn live_stream_content_details_to_json(value: LiveStreamContentDetails) -> Json {
-  json.object(
-    [
-      #(
-        "closedCaptionsIngestionUrl",
-        json.nullable(value.closed_captions_ingestion_url, json.string),
-      ),
-      #("isReusable", json.nullable(value.is_reusable, json.bool)),
-    ],
-  )
+pub fn live_stream_content_details_to_json(
+  value: LiveStreamContentDetails,
+) -> Json {
+  json.object([
+    #(
+      "closedCaptionsIngestionUrl",
+      json.nullable(value.closed_captions_ingestion_url, json.string),
+    ),
+    #("isReusable", json.nullable(value.is_reusable, json.bool)),
+  ])
 }
 
 pub type LiveStreamHealthStatus {
@@ -3369,40 +3209,34 @@ pub fn live_stream_health_status_decoder() -> Decoder(LiveStreamHealthStatus) {
     option.None,
     decode.optional(live_stream_health_status_status_decoder()),
   )
-  decode.success(
-    LiveStreamHealthStatus(
-      configuration_issues,
-      last_update_time_seconds,
-      status,
-    ),
-  )
+  decode.success(LiveStreamHealthStatus(
+    configuration_issues,
+    last_update_time_seconds,
+    status,
+  ))
 }
 
-pub fn live_stream_health_status_to_json(value: LiveStreamHealthStatus) -> Json {
-  json.object(
-    [
-      #(
-        "configurationIssues",
-        json.nullable(
-          value.configuration_issues,
-          fn(items)
-          { json.array(items, live_stream_configuration_issue_to_json) },
-        ),
-      ),
-      #(
-        "lastUpdateTimeSeconds",
-        json.nullable(value.last_update_time_seconds, json.string),
-      ),
-      #(
-        "status",
-        json.nullable(
-          value.status,
-          fn(e)
-          { json.string(live_stream_health_status_status_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+pub fn live_stream_health_status_to_json(
+  value: LiveStreamHealthStatus,
+) -> Json {
+  json.object([
+    #(
+      "configurationIssues",
+      json.nullable(value.configuration_issues, fn(items) {
+        json.array(items, live_stream_configuration_issue_to_json)
+      }),
+    ),
+    #(
+      "lastUpdateTimeSeconds",
+      json.nullable(value.last_update_time_seconds, json.string),
+    ),
+    #(
+      "status",
+      json.nullable(value.status, fn(e) {
+        json.string(live_stream_health_status_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 /// The status code of this stream
@@ -3436,10 +3270,11 @@ pub fn live_stream_health_status_status_decoder() -> Decoder(
     "bad" -> decode.success(LiveStreamHealthStatusStatusBad)
     "noData" -> decode.success(LiveStreamHealthStatusStatusNoData)
     "revoked" -> decode.success(LiveStreamHealthStatusStatusRevoked)
-    _ -> decode.failure(
-      LiveStreamHealthStatusStatusGood,
-      "a valid LiveStreamHealthStatusStatus",
-    )
+    _ ->
+      decode.failure(
+        LiveStreamHealthStatusStatusGood,
+        "a valid LiveStreamHealthStatusStatus",
+      )
   }
 }
 
@@ -3503,48 +3338,44 @@ pub fn live_stream_list_response_decoder() -> Decoder(LiveStreamListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveStreamListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(LiveStreamListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
-pub fn live_stream_list_response_to_json(value: LiveStreamListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, live_stream_to_json) },
-        ),
+pub fn live_stream_list_response_to_json(
+  value: LiveStreamListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, live_stream_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 pub type LiveStreamSnippet {
@@ -3583,27 +3414,23 @@ pub fn live_stream_snippet_decoder() -> Decoder(LiveStreamSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    LiveStreamSnippet(
-      channel_id,
-      description,
-      is_default_stream,
-      published_at,
-      title,
-    ),
-  )
+  decode.success(LiveStreamSnippet(
+    channel_id,
+    description,
+    is_default_stream,
+    published_at,
+    title,
+  ))
 }
 
 pub fn live_stream_snippet_to_json(value: LiveStreamSnippet) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #("isDefaultStream", json.nullable(value.is_default_stream, json.bool)),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #("isDefaultStream", json.nullable(value.is_default_stream, json.bool)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 /// Brief description of the live stream status.
@@ -3629,22 +3456,18 @@ pub fn live_stream_status_decoder() -> Decoder(LiveStreamStatus) {
 }
 
 pub fn live_stream_status_to_json(value: LiveStreamStatus) -> Json {
-  json.object(
-    [
-      #(
-        "healthStatus",
-        json.nullable(value.health_status, live_stream_health_status_to_json),
-      ),
-      #(
-        "streamStatus",
-        json.nullable(
-          value.stream_status,
-          fn(e)
-          { json.string(stream_status_to_string(e)) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "healthStatus",
+      json.nullable(value.health_status, live_stream_health_status_to_json),
+    ),
+    #(
+      "streamStatus",
+      json.nullable(value.stream_status, fn(e) {
+        json.string(stream_status_to_string(e))
+      }),
+    ),
+  ])
 }
 
 pub type StreamStatus {
@@ -3702,27 +3525,23 @@ pub fn monitor_stream_info_decoder() -> Decoder(MonitorStreamInfo) {
     option.None,
     decode.optional(decode.bool),
   )
-  decode.success(
-    MonitorStreamInfo(
-      broadcast_stream_delay_ms,
-      embed_html,
-      enable_monitor_stream,
-    ),
-  )
+  decode.success(MonitorStreamInfo(
+    broadcast_stream_delay_ms,
+    embed_html,
+    enable_monitor_stream,
+  ))
 }
 
 pub fn monitor_stream_info_to_json(value: MonitorStreamInfo) -> Json {
-  json.object(
-    [
-      #(
-        "broadcastStreamDelayMs",
-        json.nullable(value.broadcast_stream_delay_ms, json.int),
-      ),
-      #("embedHtml", json.nullable(value.embed_html, json.string)),
-      #(
-        "enableMonitorStream",
-        json.nullable(value.enable_monitor_stream, json.bool),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "broadcastStreamDelayMs",
+      json.nullable(value.broadcast_stream_delay_ms, json.int),
+    ),
+    #("embedHtml", json.nullable(value.embed_html, json.string)),
+    #(
+      "enableMonitorStream",
+      json.nullable(value.enable_monitor_stream, json.bool),
+    ),
+  ])
 }

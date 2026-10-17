@@ -35,13 +35,11 @@ pub fn member_decoder() -> Decoder(Member) {
 }
 
 pub fn member_to_json(value: Member) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, member_snippet_to_json)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, member_snippet_to_json)),
+  ])
 }
 
 pub type MemberListResponse {
@@ -98,46 +96,38 @@ pub fn member_list_response_decoder() -> Decoder(MemberListResponse) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    MemberListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(MemberListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
 pub fn member_list_response_to_json(value: MemberListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, member_to_json) },
-        ),
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) { json.array(items, member_to_json) }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 pub type MemberSnippet {
@@ -164,32 +154,29 @@ pub fn member_snippet_decoder() -> Decoder(MemberSnippet) {
     option.None,
     decode.optional(memberships.memberships_details_decoder()),
   )
-  decode.success(
-    MemberSnippet(creator_channel_id, member_details, memberships_details),
-  )
+  decode.success(MemberSnippet(
+    creator_channel_id,
+    member_details,
+    memberships_details,
+  ))
 }
 
 pub fn member_snippet_to_json(value: MemberSnippet) -> Json {
-  json.object(
-    [
-      #(
-        "creatorChannelId",
-        json.nullable(value.creator_channel_id, json.string),
+  json.object([
+    #("creatorChannelId", json.nullable(value.creator_channel_id, json.string)),
+    #(
+      "memberDetails",
+      json.nullable(
+        value.member_details,
+        channel.channel_profile_details_to_json,
       ),
-      #(
-        "memberDetails",
-        json.nullable(
-          value.member_details,
-          channel.channel_profile_details_to_json,
-        ),
+    ),
+    #(
+      "membershipsDetails",
+      json.nullable(
+        value.memberships_details,
+        memberships.memberships_details_to_json,
       ),
-      #(
-        "membershipsDetails",
-        json.nullable(
-          value.memberships_details,
-          memberships.memberships_details_to_json,
-        ),
-      ),
-    ],
-  )
+    ),
+  ])
 }

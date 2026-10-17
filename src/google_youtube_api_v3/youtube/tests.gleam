@@ -42,18 +42,16 @@ pub fn test_item_decoder() -> Decoder(TestItem) {
 }
 
 pub fn test_item_to_json(value: TestItem) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("featuredPart", json.nullable(value.featured_part, json.bool)),
-      #("gaia", json.nullable(value.gaia, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #(
-        "snippet",
-        json.nullable(value.snippet, test_item_test_item_snippet_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("featuredPart", json.nullable(value.featured_part, json.bool)),
+    #("gaia", json.nullable(value.gaia, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #(
+      "snippet",
+      json.nullable(value.snippet, test_item_test_item_snippet_to_json),
+    ),
+  ])
 }
 
 pub type TestItemTestItemSnippet {
@@ -64,6 +62,8 @@ pub fn test_item_test_item_snippet_decoder() -> Decoder(TestItemTestItemSnippet)
   decode.success(TestItemTestItemSnippet)
 }
 
-pub fn test_item_test_item_snippet_to_json(_value: TestItemTestItemSnippet) -> Json {
+pub fn test_item_test_item_snippet_to_json(
+  _value: TestItemTestItemSnippet,
+) -> Json {
   json.object([])
 }

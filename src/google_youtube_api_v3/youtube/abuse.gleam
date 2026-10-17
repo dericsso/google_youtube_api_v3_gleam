@@ -32,34 +32,31 @@ pub fn abuse_report_decoder() -> Decoder(AbuseReport) {
     option.None,
     decode.optional(entity_decoder()),
   )
-  decode.success(
-    AbuseReport(abuse_types, description, related_entities, subject),
-  )
+  decode.success(AbuseReport(
+    abuse_types,
+    description,
+    related_entities,
+    subject,
+  ))
 }
 
 pub fn abuse_report_to_json(value: AbuseReport) -> Json {
-  json.object(
-    [
-      #(
-        "abuseTypes",
-        json.nullable(
-          value.abuse_types,
-          fn(items)
-          { json.array(items, abuse_type_to_json) },
-        ),
-      ),
-      #("description", json.nullable(value.description, json.string)),
-      #(
-        "relatedEntities",
-        json.nullable(
-          value.related_entities,
-          fn(items)
-          { json.array(items, related_entity_to_json) },
-        ),
-      ),
-      #("subject", json.nullable(value.subject, entity_to_json)),
-    ],
-  )
+  json.object([
+    #(
+      "abuseTypes",
+      json.nullable(value.abuse_types, fn(items) {
+        json.array(items, abuse_type_to_json)
+      }),
+    ),
+    #("description", json.nullable(value.description, json.string)),
+    #(
+      "relatedEntities",
+      json.nullable(value.related_entities, fn(items) {
+        json.array(items, related_entity_to_json)
+      }),
+    ),
+    #("subject", json.nullable(value.subject, entity_to_json)),
+  ])
 }
 
 pub type AbuseType {
@@ -103,13 +100,11 @@ pub fn entity_decoder() -> Decoder(Entity) {
 }
 
 pub fn entity_to_json(value: Entity) -> Json {
-  json.object(
-    [
-      #("id", json.nullable(value.id, json.string)),
-      #("typeId", json.nullable(value.type_id, json.string)),
-      #("url", json.nullable(value.url, json.string)),
-    ],
-  )
+  json.object([
+    #("id", json.nullable(value.id, json.string)),
+    #("typeId", json.nullable(value.type_id, json.string)),
+    #("url", json.nullable(value.url, json.string)),
+  ])
 }
 
 pub type RelatedEntity {

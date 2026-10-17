@@ -16,9 +16,7 @@ pub fn level_details_decoder() -> Decoder(LevelDetails) {
 }
 
 pub fn level_details_to_json(value: LevelDetails) -> Json {
-  json.object(
-    [#("displayName", json.nullable(value.display_name, json.string))],
-  )
+  json.object([#("displayName", json.nullable(value.display_name, json.string))])
 }
 
 pub type MembershipsDetails {
@@ -57,50 +55,42 @@ pub fn memberships_details_decoder() -> Decoder(MembershipsDetails) {
     option.None,
     decode.optional(decode.list(memberships_duration_at_level_decoder())),
   )
-  decode.success(
-    MembershipsDetails(
-      accessible_levels,
-      highest_accessible_level,
-      highest_accessible_level_display_name,
-      memberships_duration,
-      memberships_duration_at_levels,
-    ),
-  )
+  decode.success(MembershipsDetails(
+    accessible_levels,
+    highest_accessible_level,
+    highest_accessible_level_display_name,
+    memberships_duration,
+    memberships_duration_at_levels,
+  ))
 }
 
 pub fn memberships_details_to_json(value: MembershipsDetails) -> Json {
-  json.object(
-    [
-      #(
-        "accessibleLevels",
-        json.nullable(
-          value.accessible_levels,
-          fn(items)
-          { json.array(items, json.string) },
-        ),
-      ),
-      #(
-        "highestAccessibleLevel",
-        json.nullable(value.highest_accessible_level, json.string),
-      ),
-      #(
-        "highestAccessibleLevelDisplayName",
-        json.nullable(value.highest_accessible_level_display_name, json.string),
-      ),
-      #(
-        "membershipsDuration",
-        json.nullable(value.memberships_duration, memberships_duration_to_json),
-      ),
-      #(
-        "membershipsDurationAtLevels",
-        json.nullable(
-          value.memberships_duration_at_levels,
-          fn(items)
-          { json.array(items, memberships_duration_at_level_to_json) },
-        ),
-      ),
-    ],
-  )
+  json.object([
+    #(
+      "accessibleLevels",
+      json.nullable(value.accessible_levels, fn(items) {
+        json.array(items, json.string)
+      }),
+    ),
+    #(
+      "highestAccessibleLevel",
+      json.nullable(value.highest_accessible_level, json.string),
+    ),
+    #(
+      "highestAccessibleLevelDisplayName",
+      json.nullable(value.highest_accessible_level_display_name, json.string),
+    ),
+    #(
+      "membershipsDuration",
+      json.nullable(value.memberships_duration, memberships_duration_to_json),
+    ),
+    #(
+      "membershipsDurationAtLevels",
+      json.nullable(value.memberships_duration_at_levels, fn(items) {
+        json.array(items, memberships_duration_at_level_to_json)
+      }),
+    ),
+  ])
 }
 
 pub type MembershipsDuration {
@@ -121,21 +111,17 @@ pub fn memberships_duration_decoder() -> Decoder(MembershipsDuration) {
     option.None,
     decode.optional(decode.int),
   )
-  decode.success(
-    MembershipsDuration(member_since, member_total_duration_months),
-  )
+  decode.success(MembershipsDuration(member_since, member_total_duration_months))
 }
 
 pub fn memberships_duration_to_json(value: MembershipsDuration) -> Json {
-  json.object(
-    [
-      #("memberSince", json.nullable(value.member_since, json.string)),
-      #(
-        "memberTotalDurationMonths",
-        json.nullable(value.member_total_duration_months, json.int),
-      ),
-    ],
-  )
+  json.object([
+    #("memberSince", json.nullable(value.member_since, json.string)),
+    #(
+      "memberTotalDurationMonths",
+      json.nullable(value.member_total_duration_months, json.int),
+    ),
+  ])
 }
 
 pub type MembershipsDurationAtLevel {
@@ -164,26 +150,24 @@ pub fn memberships_duration_at_level_decoder() -> Decoder(
     option.None,
     decode.optional(decode.int),
   )
-  decode.success(
-    MembershipsDurationAtLevel(
-      level,
-      member_since,
-      member_total_duration_months,
-    ),
-  )
+  decode.success(MembershipsDurationAtLevel(
+    level,
+    member_since,
+    member_total_duration_months,
+  ))
 }
 
-pub fn memberships_duration_at_level_to_json(value: MembershipsDurationAtLevel) -> Json {
-  json.object(
-    [
-      #("level", json.nullable(value.level, json.string)),
-      #("memberSince", json.nullable(value.member_since, json.string)),
-      #(
-        "memberTotalDurationMonths",
-        json.nullable(value.member_total_duration_months, json.int),
-      ),
-    ],
-  )
+pub fn memberships_duration_at_level_to_json(
+  value: MembershipsDurationAtLevel,
+) -> Json {
+  json.object([
+    #("level", json.nullable(value.level, json.string)),
+    #("memberSince", json.nullable(value.member_since, json.string)),
+    #(
+      "memberTotalDurationMonths",
+      json.nullable(value.member_total_duration_months, json.int),
+    ),
+  ])
 }
 
 /// A *membershipsLevel* resource represents an offer made by YouTube creators for their fans. Users can become members of the channel by joining one of the available levels. They will provide recurring monetary support and receives special benefits.
@@ -221,17 +205,15 @@ pub fn memberships_level_decoder() -> Decoder(MembershipsLevel) {
 }
 
 pub fn memberships_level_to_json(value: MembershipsLevel) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "snippet",
-        json.nullable(value.snippet, memberships_level_snippet_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #(
+      "snippet",
+      json.nullable(value.snippet, memberships_level_snippet_to_json),
+    ),
+  ])
 }
 
 pub type MembershipsLevelListResponse {
@@ -272,30 +254,30 @@ pub fn memberships_level_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    MembershipsLevelListResponse(etag, event_id, items, kind, visitor_id),
-  )
+  decode.success(MembershipsLevelListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    visitor_id,
+  ))
 }
 
 pub fn memberships_level_list_response_to_json(
   value: MembershipsLevelListResponse,
 ) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, memberships_level_to_json) },
-        ),
-      ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, memberships_level_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 pub type MembershipsLevelSnippet {
@@ -319,17 +301,11 @@ pub fn memberships_level_snippet_decoder() -> Decoder(MembershipsLevelSnippet) {
   decode.success(MembershipsLevelSnippet(creator_channel_id, level_details))
 }
 
-pub fn memberships_level_snippet_to_json(value: MembershipsLevelSnippet) -> Json {
-  json.object(
-    [
-      #(
-        "creatorChannelId",
-        json.nullable(value.creator_channel_id, json.string),
-      ),
-      #(
-        "levelDetails",
-        json.nullable(value.level_details, level_details_to_json),
-      ),
-    ],
-  )
+pub fn memberships_level_snippet_to_json(
+  value: MembershipsLevelSnippet,
+) -> Json {
+  json.object([
+    #("creatorChannelId", json.nullable(value.creator_channel_id, json.string)),
+    #("levelDetails", json.nullable(value.level_details, level_details_to_json)),
+  ])
 }

@@ -28,7 +28,10 @@ pub fn members_list(part: List(String)) -> MembersListParams {
   )
 }
 
-pub fn members_list_add_part(params: MembersListParams, value: String) -> MembersListParams {
+pub fn members_list_add_part(
+  params: MembersListParams,
+  value: String,
+) -> MembersListParams {
   MembersListParams(
     list.append(params.part, [value]),
     params.filter_by_member_channel_id,
@@ -39,7 +42,10 @@ pub fn members_list_add_part(params: MembersListParams, value: String) -> Member
   )
 }
 
-pub fn members_list_with_page_token(params: MembersListParams, value: String) -> MembersListParams {
+pub fn members_list_with_page_token(
+  params: MembersListParams,
+  value: String,
+) -> MembersListParams {
   MembersListParams(
     params.part,
     params.filter_by_member_channel_id,
@@ -50,7 +56,10 @@ pub fn members_list_with_page_token(params: MembersListParams, value: String) ->
   )
 }
 
-pub fn members_list_with_mode(params: MembersListParams, value: MembersListMode) -> MembersListParams {
+pub fn members_list_with_mode(
+  params: MembersListParams,
+  value: MembersListMode,
+) -> MembersListParams {
   MembersListParams(
     params.part,
     params.filter_by_member_channel_id,
@@ -61,7 +70,10 @@ pub fn members_list_with_mode(params: MembersListParams, value: MembersListMode)
   )
 }
 
-pub fn members_list_with_max_results(params: MembersListParams, value: Int) -> MembersListParams {
+pub fn members_list_with_max_results(
+  params: MembersListParams,
+  value: Int,
+) -> MembersListParams {
   MembersListParams(
     params.part,
     params.filter_by_member_channel_id,
@@ -104,36 +116,29 @@ pub fn members_list_request(params: MembersListParams) -> Request {
   Request(
     http.Get,
     "youtube/v3/members",
-    list.flatten(
-      [
-        list.map(params.part, fn(v) { #("part", v) }),
-        case params.filter_by_member_channel_id
-        {
-          option.Some(v) -> [#("filterByMemberChannelId", v)]
-          option.None -> []
-        },
-        case params.has_access_to_level
-        {
-          option.Some(v) -> [#("hasAccessToLevel", v)]
-          option.None -> []
-        },
-        case params.max_results
-        {
-          option.Some(v) -> [#("maxResults", int.to_string(v))]
-          option.None -> []
-        },
-        case params.mode
-        {
-          option.Some(v) -> [#("mode", members_list_mode_to_string(v))]
-          option.None -> []
-        },
-        case params.page_token
-        {
-          option.Some(v) -> [#("pageToken", v)]
-          option.None -> []
-        },
-      ],
-    ),
+    list.flatten([
+      list.map(params.part, fn(v) { #("part", v) }),
+      case params.filter_by_member_channel_id {
+        option.Some(v) -> [#("filterByMemberChannelId", v)]
+        option.None -> []
+      },
+      case params.has_access_to_level {
+        option.Some(v) -> [#("hasAccessToLevel", v)]
+        option.None -> []
+      },
+      case params.max_results {
+        option.Some(v) -> [#("maxResults", int.to_string(v))]
+        option.None -> []
+      },
+      case params.mode {
+        option.Some(v) -> [#("mode", members_list_mode_to_string(v))]
+        option.None -> []
+      },
+      case params.page_token {
+        option.Some(v) -> [#("pageToken", v)]
+        option.None -> []
+      },
+    ]),
     [],
     ["https://www.googleapis.com/auth/youtube.channel-memberships.creator"],
     option.None,
@@ -145,7 +150,9 @@ pub type MembershipsLevelsListParams {
   MembershipsLevelsListParams(part: List(String))
 }
 
-pub fn memberships_levels_list(part: List(String)) -> MembershipsLevelsListParams {
+pub fn memberships_levels_list(
+  part: List(String),
+) -> MembershipsLevelsListParams {
   MembershipsLevelsListParams(part)
 }
 
@@ -156,7 +163,9 @@ pub fn memberships_levels_list_add_part(
   MembershipsLevelsListParams(list.append(params.part, [value]))
 }
 
-pub fn memberships_levels_list_request(params: MembershipsLevelsListParams) -> Request {
+pub fn memberships_levels_list_request(
+  params: MembershipsLevelsListParams,
+) -> Request {
   Request(
     http.Get,
     "youtube/v3/membershipsLevels",
@@ -185,14 +194,14 @@ pub fn members_list_mode_to_string(value: MembersListMode) -> String {
 pub fn members_list_mode_decoder() -> Decoder(MembersListMode) {
   use value <- decode.then(decode.string)
   case value {
-    "listMembersModeUnknown" -> decode.success(
-      MembersListModeListMembersModeUnknown,
-    )
+    "listMembersModeUnknown" ->
+      decode.success(MembersListModeListMembersModeUnknown)
     "updates" -> decode.success(MembersListModeUpdates)
     "all_current" -> decode.success(MembersListModeAllCurrent)
-    _ -> decode.failure(
-      MembersListModeListMembersModeUnknown,
-      "a valid MembersListMode",
-    )
+    _ ->
+      decode.failure(
+        MembersListModeListMembersModeUnknown,
+        "a valid MembersListMode",
+      )
   }
 }

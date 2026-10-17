@@ -40,17 +40,12 @@ pub fn super_chat_event_decoder() -> Decoder(SuperChatEvent) {
 }
 
 pub fn super_chat_event_to_json(value: SuperChatEvent) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #(
-        "snippet",
-        json.nullable(value.snippet, super_chat_event_snippet_to_json),
-      ),
-    ],
-  )
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, super_chat_event_snippet_to_json)),
+  ])
 }
 
 pub type SuperChatEventListResponse {
@@ -109,46 +104,42 @@ pub fn super_chat_event_list_response_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    SuperChatEventListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(SuperChatEventListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
-pub fn super_chat_event_list_response_to_json(value: SuperChatEventListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, super_chat_event_to_json) },
-        ),
+pub fn super_chat_event_list_response_to_json(
+  value: SuperChatEventListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, super_chat_event_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 pub type SuperChatEventSnippet {
@@ -217,52 +208,48 @@ pub fn super_chat_event_snippet_decoder() -> Decoder(SuperChatEventSnippet) {
     option.None,
     decode.optional(channel.channel_profile_details_decoder()),
   )
-  decode.success(
-    SuperChatEventSnippet(
-      amount_micros,
-      channel_id,
-      comment_text,
-      created_at,
-      currency,
-      display_string,
-      is_super_sticker_event,
-      message_type,
-      super_sticker_metadata,
-      supporter_details,
-    ),
-  )
+  decode.success(SuperChatEventSnippet(
+    amount_micros,
+    channel_id,
+    comment_text,
+    created_at,
+    currency,
+    display_string,
+    is_super_sticker_event,
+    message_type,
+    super_sticker_metadata,
+    supporter_details,
+  ))
 }
 
 pub fn super_chat_event_snippet_to_json(value: SuperChatEventSnippet) -> Json {
-  json.object(
-    [
-      #("amountMicros", json.nullable(value.amount_micros, json.string)),
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("commentText", json.nullable(value.comment_text, json.string)),
-      #("createdAt", json.nullable(value.created_at, json.string)),
-      #("currency", json.nullable(value.currency, json.string)),
-      #("displayString", json.nullable(value.display_string, json.string)),
-      #(
-        "isSuperStickerEvent",
-        json.nullable(value.is_super_sticker_event, json.bool),
+  json.object([
+    #("amountMicros", json.nullable(value.amount_micros, json.string)),
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("commentText", json.nullable(value.comment_text, json.string)),
+    #("createdAt", json.nullable(value.created_at, json.string)),
+    #("currency", json.nullable(value.currency, json.string)),
+    #("displayString", json.nullable(value.display_string, json.string)),
+    #(
+      "isSuperStickerEvent",
+      json.nullable(value.is_super_sticker_event, json.bool),
+    ),
+    #("messageType", json.nullable(value.message_type, json.int)),
+    #(
+      "superStickerMetadata",
+      json.nullable(
+        value.super_sticker_metadata,
+        super_sticker_metadata_to_json,
       ),
-      #("messageType", json.nullable(value.message_type, json.int)),
-      #(
-        "superStickerMetadata",
-        json.nullable(
-          value.super_sticker_metadata,
-          super_sticker_metadata_to_json,
-        ),
+    ),
+    #(
+      "supporterDetails",
+      json.nullable(
+        value.supporter_details,
+        channel.channel_profile_details_to_json,
       ),
-      #(
-        "supporterDetails",
-        json.nullable(
-          value.supporter_details,
-          channel.channel_profile_details_to_json,
-        ),
-      ),
-    ],
-  )
+    ),
+  ])
 }
 
 pub type SuperStickerMetadata {
@@ -293,11 +280,9 @@ pub fn super_sticker_metadata_decoder() -> Decoder(SuperStickerMetadata) {
 }
 
 pub fn super_sticker_metadata_to_json(value: SuperStickerMetadata) -> Json {
-  json.object(
-    [
-      #("altText", json.nullable(value.alt_text, json.string)),
-      #("altTextLanguage", json.nullable(value.alt_text_language, json.string)),
-      #("stickerId", json.nullable(value.sticker_id, json.string)),
-    ],
-  )
+  json.object([
+    #("altText", json.nullable(value.alt_text, json.string)),
+    #("altTextLanguage", json.nullable(value.alt_text_language, json.string)),
+    #("stickerId", json.nullable(value.sticker_id, json.string)),
+  ])
 }

@@ -49,34 +49,34 @@ pub fn subscription_decoder() -> Decoder(Subscription) {
     option.None,
     decode.optional(subscription_subscriber_snippet_decoder()),
   )
-  decode.success(
-    Subscription(content_details, etag, id, kind, snippet, subscriber_snippet),
-  )
+  decode.success(Subscription(
+    content_details,
+    etag,
+    id,
+    kind,
+    snippet,
+    subscriber_snippet,
+  ))
 }
 
 pub fn subscription_to_json(value: Subscription) -> Json {
-  json.object(
-    [
-      #(
-        "contentDetails",
-        json.nullable(
-          value.content_details,
-          subscription_content_details_to_json,
-        ),
+  json.object([
+    #(
+      "contentDetails",
+      json.nullable(value.content_details, subscription_content_details_to_json),
+    ),
+    #("etag", json.nullable(value.etag, json.string)),
+    #("id", json.nullable(value.id, json.string)),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("snippet", json.nullable(value.snippet, subscription_snippet_to_json)),
+    #(
+      "subscriberSnippet",
+      json.nullable(
+        value.subscriber_snippet,
+        subscription_subscriber_snippet_to_json,
       ),
-      #("etag", json.nullable(value.etag, json.string)),
-      #("id", json.nullable(value.id, json.string)),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("snippet", json.nullable(value.snippet, subscription_snippet_to_json)),
-      #(
-        "subscriberSnippet",
-        json.nullable(
-          value.subscriber_snippet,
-          subscription_subscriber_snippet_to_json,
-        ),
-      ),
-    ],
-  )
+    ),
+  ])
 }
 
 /// Details about the content to witch a subscription refers.
@@ -106,26 +106,26 @@ pub fn subscription_content_details_decoder() -> Decoder(
     option.None,
     decode.optional(decode.int),
   )
-  decode.success(
-    SubscriptionContentDetails(activity_type, new_item_count, total_item_count),
-  )
+  decode.success(SubscriptionContentDetails(
+    activity_type,
+    new_item_count,
+    total_item_count,
+  ))
 }
 
-pub fn subscription_content_details_to_json(value: SubscriptionContentDetails) -> Json {
-  json.object(
-    [
-      #(
-        "activityType",
-        json.nullable(
-          value.activity_type,
-          fn(e)
-          { json.string(activity_type_to_string(e)) },
-        ),
-      ),
-      #("newItemCount", json.nullable(value.new_item_count, json.int)),
-      #("totalItemCount", json.nullable(value.total_item_count, json.int)),
-    ],
-  )
+pub fn subscription_content_details_to_json(
+  value: SubscriptionContentDetails,
+) -> Json {
+  json.object([
+    #(
+      "activityType",
+      json.nullable(value.activity_type, fn(e) {
+        json.string(activity_type_to_string(e))
+      }),
+    ),
+    #("newItemCount", json.nullable(value.new_item_count, json.int)),
+    #("totalItemCount", json.nullable(value.total_item_count, json.int)),
+  ])
 }
 
 /// The type of activity this subscription is for (only uploads, everything).
@@ -137,7 +137,8 @@ pub type ActivityType {
 
 pub fn activity_type_to_string(value: ActivityType) -> String {
   case value {
-    ActivityTypeSubscriptionActivityTypeUnspecified -> "subscriptionActivityTypeUnspecified"
+    ActivityTypeSubscriptionActivityTypeUnspecified ->
+      "subscriptionActivityTypeUnspecified"
     ActivityTypeAll -> "all"
     ActivityTypeUploads -> "uploads"
   }
@@ -146,15 +147,15 @@ pub fn activity_type_to_string(value: ActivityType) -> String {
 pub fn activity_type_decoder() -> Decoder(ActivityType) {
   use value <- decode.then(decode.string)
   case value {
-    "subscriptionActivityTypeUnspecified" -> decode.success(
-      ActivityTypeSubscriptionActivityTypeUnspecified,
-    )
+    "subscriptionActivityTypeUnspecified" ->
+      decode.success(ActivityTypeSubscriptionActivityTypeUnspecified)
     "all" -> decode.success(ActivityTypeAll)
     "uploads" -> decode.success(ActivityTypeUploads)
-    _ -> decode.failure(
-      ActivityTypeSubscriptionActivityTypeUnspecified,
-      "a valid ActivityType",
-    )
+    _ ->
+      decode.failure(
+        ActivityTypeSubscriptionActivityTypeUnspecified,
+        "a valid ActivityType",
+      )
   }
 }
 
@@ -173,108 +174,89 @@ pub type SubscriptionListResponse {
 }
 
 pub fn subscription_list_response_decoder() -> Decoder(SubscriptionListResponse) {
-  use
-  etag
-  <-
-  decode.optional_field("etag", option.None, decode.optional(decode.string))
-  use
-  event_id
-  <-
-  decode.optional_field("eventId", option.None, decode.optional(decode.string))
-  use
-  items
-  <-
-  decode.optional_field(
+  use etag <- decode.optional_field(
+    "etag",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use event_id <- decode.optional_field(
+    "eventId",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use items <- decode.optional_field(
     "items",
     option.None,
     decode.optional(decode.list(subscription_decoder())),
   )
-  use
-  kind
-  <-
-  decode.optional_field("kind", option.None, decode.optional(decode.string))
-  use
-  next_page_token
-  <-
-  decode.optional_field(
+  use kind <- decode.optional_field(
+    "kind",
+    option.None,
+    decode.optional(decode.string),
+  )
+  use next_page_token <- decode.optional_field(
     "nextPageToken",
     option.None,
     decode.optional(decode.string),
   )
-  use
-  page_info
-  <-
-  decode.optional_field(
+  use page_info <- decode.optional_field(
     "pageInfo",
     option.None,
     decode.optional(page_info.page_info_decoder()),
   )
-  use
-  prev_page_token
-  <-
-  decode.optional_field(
+  use prev_page_token <- decode.optional_field(
     "prevPageToken",
     option.None,
     decode.optional(decode.string),
   )
-  use
-  token_pagination
-  <-
-  decode.optional_field(
+  use token_pagination <- decode.optional_field(
     "tokenPagination",
     option.None,
     decode.optional(token_pagination.token_pagination_decoder()),
   )
-  use
-  visitor_id
-  <-
-  decode.optional_field(
+  use visitor_id <- decode.optional_field(
     "visitorId",
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    SubscriptionListResponse(
-      etag,
-      event_id,
-      items,
-      kind,
-      next_page_token,
-      page_info,
-      prev_page_token,
-      token_pagination,
-      visitor_id,
-    ),
-  )
+  decode.success(SubscriptionListResponse(
+    etag,
+    event_id,
+    items,
+    kind,
+    next_page_token,
+    page_info,
+    prev_page_token,
+    token_pagination,
+    visitor_id,
+  ))
 }
 
-pub fn subscription_list_response_to_json(value: SubscriptionListResponse) -> Json {
-  json.object(
-    [
-      #("etag", json.nullable(value.etag, json.string)),
-      #("eventId", json.nullable(value.event_id, json.string)),
-      #(
-        "items",
-        json.nullable(
-          value.items,
-          fn(items)
-          { json.array(items, subscription_to_json) },
-        ),
+pub fn subscription_list_response_to_json(
+  value: SubscriptionListResponse,
+) -> Json {
+  json.object([
+    #("etag", json.nullable(value.etag, json.string)),
+    #("eventId", json.nullable(value.event_id, json.string)),
+    #(
+      "items",
+      json.nullable(value.items, fn(items) {
+        json.array(items, subscription_to_json)
+      }),
+    ),
+    #("kind", json.nullable(value.kind, json.string)),
+    #("nextPageToken", json.nullable(value.next_page_token, json.string)),
+    #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
+    #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
+    #(
+      "tokenPagination",
+      json.nullable(
+        value.token_pagination,
+        token_pagination.token_pagination_to_json,
       ),
-      #("kind", json.nullable(value.kind, json.string)),
-      #("nextPageToken", json.nullable(value.next_page_token, json.string)),
-      #("pageInfo", json.nullable(value.page_info, page_info.page_info_to_json)),
-      #("prevPageToken", json.nullable(value.prev_page_token, json.string)),
-      #(
-        "tokenPagination",
-        json.nullable(
-          value.token_pagination,
-          token_pagination.token_pagination_to_json,
-        ),
-      ),
-      #("visitorId", json.nullable(value.visitor_id, json.string)),
-    ],
-  )
+    ),
+    #("visitorId", json.nullable(value.visitor_id, json.string)),
+  ])
 }
 
 /// Basic details about a subscription, including title, description and thumbnails of the subscribed item.
@@ -320,35 +302,31 @@ pub fn subscription_snippet_decoder() -> Decoder(SubscriptionSnippet) {
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    SubscriptionSnippet(
-      channel_id,
-      description,
-      published_at,
-      resource_id,
-      thumbnails,
-      title,
-    ),
-  )
+  decode.success(SubscriptionSnippet(
+    channel_id,
+    description,
+    published_at,
+    resource_id,
+    thumbnails,
+    title,
+  ))
 }
 
 pub fn subscription_snippet_to_json(value: SubscriptionSnippet) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #("publishedAt", json.nullable(value.published_at, json.string)),
-      #(
-        "resourceId",
-        json.nullable(value.resource_id, resource_id.resource_id_to_json),
-      ),
-      #(
-        "thumbnails",
-        json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #("publishedAt", json.nullable(value.published_at, json.string)),
+    #(
+      "resourceId",
+      json.nullable(value.resource_id, resource_id.resource_id_to_json),
+    ),
+    #(
+      "thumbnails",
+      json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }
 
 /// Basic details about a subscription's subscriber including title, description, channel ID and thumbnails.
@@ -384,23 +362,24 @@ pub fn subscription_subscriber_snippet_decoder() -> Decoder(
     option.None,
     decode.optional(decode.string),
   )
-  decode.success(
-    SubscriptionSubscriberSnippet(channel_id, description, thumbnails, title),
-  )
+  decode.success(SubscriptionSubscriberSnippet(
+    channel_id,
+    description,
+    thumbnails,
+    title,
+  ))
 }
 
 pub fn subscription_subscriber_snippet_to_json(
   value: SubscriptionSubscriberSnippet,
 ) -> Json {
-  json.object(
-    [
-      #("channelId", json.nullable(value.channel_id, json.string)),
-      #("description", json.nullable(value.description, json.string)),
-      #(
-        "thumbnails",
-        json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
-      ),
-      #("title", json.nullable(value.title, json.string)),
-    ],
-  )
+  json.object([
+    #("channelId", json.nullable(value.channel_id, json.string)),
+    #("description", json.nullable(value.description, json.string)),
+    #(
+      "thumbnails",
+      json.nullable(value.thumbnails, thumbnail.thumbnail_details_to_json),
+    ),
+    #("title", json.nullable(value.title, json.string)),
+  ])
 }

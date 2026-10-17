@@ -33,52 +33,54 @@ rendered `Request` with your own HTTP client — convert it with
 `request.to_http_request` into a standard `gleam/http` record and hand
 it to any ecosystem client such as `gleam_httpc`.
 
+## Quick Start
+
+Add the package:
+
 ```sh
-gleam add google_youtube_api_v3@1
+gleam add google_youtube_api_v3
 ```
 
+The following single-file example uses `gleam_httpc` as the transport. This
+package remains Sans-IO and does not add `gleam_httpc` as a dependency; add it
+to your application if you want to run this example.
+
 ```gleam
-import gleam/json
-import gleam/option
+import gleam/httpc
+import gleam/result
+import gleam/string
 import google_youtube_api_v3/request
 import google_youtube_api_v3/youtube/api/video as video_api
-import google_youtube_api_v3/youtube/playlist
 import google_youtube_api_v3/youtube/video
 
-pub fn video_title(body: String) -> option.Option(String) {
-  // Decode a video resource. Missing fields become `None`,
-  // unknown enum strings are a decode error, not silent garbage.
-  let assert Ok(v) = json.parse(body, video.video_decoder())
-  case v.snippet {
-    option.Some(snippet) -> snippet.title
-    option.None -> option.None
-  }
-}
+pub fn most_popular(
+  api_key: String,
+) -> Result(video.VideoListResponse, String) {
+  // 1. Build and authorize the request.
+  let api_request =
+    video_api.videos_list(["snippet"])
+    |> video_api.videos_list_with_chart(
+      video_api.VideosListChartMostPopular,
+    )
+    |> video_api.videos_list_with_max_results(10)
+    |> video_api.videos_list_request
+    |> request.authorize(request.ApiKey(api_key))
 
-pub fn privacy_label(status: playlist.PlaylistItemStatus) -> String {
-  case status.privacy_status {
-    option.Some(s) -> playlist.playlist_item_status_privacy_status_to_string(s)
-    option.None -> "unknown"
-  }
-}
+  // 2. Convert it to gleam/http and send it with httpc.
+  use response <- result.try(
+    api_request
+    |> request.to_http_request
+    |> httpc.send
+    |> result.map_error(string.inspect),
+  )
 
-pub fn most_popular(api_key: String) -> request.Request {
-  // Build and authorize the request as pure data. Convert it with
-  // request.to_http_request before passing it to any HTTP client.
-  video_api.videos_list(["snippet"])
-  |> video_api.videos_list_with_chart(video_api.VideosListChartMostPopular)
-  |> video_api.videos_list_with_max_results(10)
-  |> video_api.videos_list_request
-  |> request.authorize(request.ApiKey(api_key))
-}
-
-// After sending the request with your HTTP client:
-pub fn parse_most_popular_response(status: Int, body: String) {
+  // 3. Decode the HTTP response with the generated decoder.
   request.parse_response(
-    status,
-    body,
+    response.status,
+    response.body,
     video.video_list_response_decoder(),
   )
+  |> result.map_error(string.inspect)
 }
 ```
 
@@ -97,11 +99,13 @@ type-checks the tests — which import the generated modules. If the two
 drift apart mid-change, move `test/generate_test.gleam` aside, regenerate,
 format, and restore it.
 
-The generator (`dev/google_youtube_api_v3_dev.gleam`) parses `discovery/` with
-maintained `gleam/dynamic/decode` decoders and emits the generated schema and
-request-builder modules with [gleamgen](https://hex.pm/packages/gleamgen).
-Generated files under `src/google_youtube_api_v3/youtube/` are reproducible
-artifacts; edit the generator rather than the output.
+Run `gleam dev` to regenerate the YouTube schema types and API request
+builders from the JSON document in `discovery/`. The generator is
+`dev/google_youtube_api_v3_dev.gleam`; it uses `gleam/dynamic/decode` to read
+the document and [gleamgen](https://hex.pm/packages/gleamgen) to write Gleam
+modules. Regeneration overwrites the generated files under
+`src/google_youtube_api_v3/youtube/`, so modify the generator instead of
+editing those output files directly.
 
 > **Disclosure:** this project is AI-assisted, not vibe-coded. An AI coding
 > agent (via OpenCode) wrote the generator and the generated code

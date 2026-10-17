@@ -13,7 +13,8 @@ import google_youtube_api_v3/youtube/api/video as videos_api
 import google_youtube_api_v3/youtube/page_info
 import google_youtube_api_v3/youtube/playlist
 import google_youtube_api_v3/youtube/video
-import google_youtube_api_v3_dev.{
+import google_youtube_api_v3_dev
+import google_youtube_api_v3_dev/domain.{
   type Discovery, type Kind, type Method, type Parameter, type Resource,
   type Schema, Array, Boolean, Delete, Discovery, Get, Integer, Method, Number,
   Object, ParamBoolean, ParamInteger, ParamString, Parameter, Path, Post, Put,
@@ -70,12 +71,7 @@ fn descendants(schema: Schema) -> List(Schema) {
       }
       list.flatten([wrapped_props, from_props, from_additional])
     }
-    Ref(_)
-    | Str(_, _)
-    | Integer(_)
-    | Number
-    | Boolean
-    | google_youtube_api_v3_dev.Any -> []
+    Ref(_) | Str(_, _) | Integer(_) | Number | Boolean | domain.Any -> []
   }
 }
 
@@ -335,8 +331,7 @@ pub fn array_items_variants_are_decoded_test() {
 // ---------------------------------------------------------------------------
 
 fn parse_schema(raw: String) -> Schema {
-  let assert Ok(schema) =
-    json.parse(raw, google_youtube_api_v3_dev.schema_decoder())
+  let assert Ok(schema) = json.parse(raw, domain.schema_decoder())
     as "inline schema snippet must decode"
   schema
 }
@@ -381,7 +376,7 @@ pub fn boolean_decoder_test() {
 
 pub fn any_decoder_test() {
   parse_schema("{\"type\": \"any\"}")
-  |> should.equal(Schema(None, google_youtube_api_v3_dev.Any))
+  |> should.equal(Schema(None, domain.Any))
 }
 
 pub fn array_of_ref_decoder_test() {
@@ -409,7 +404,7 @@ pub fn object_decoder_test() {
 }
 
 pub fn unknown_type_fails_test() {
-  json.parse("{\"type\": \"null\"}", google_youtube_api_v3_dev.schema_decoder())
+  json.parse("{\"type\": \"null\"}", domain.schema_decoder())
   |> should.be_error
 }
 
@@ -581,15 +576,13 @@ pub fn media_upload_is_decoded_test() {
 // ---------------------------------------------------------------------------
 
 fn parse_method(raw: String) -> Method {
-  let assert Ok(method) =
-    json.parse(raw, google_youtube_api_v3_dev.method_decoder())
+  let assert Ok(method) = json.parse(raw, domain.method_decoder())
     as "inline method snippet must decode"
   method
 }
 
 fn parse_parameter(raw: String) -> Parameter {
-  let assert Ok(parameter) =
-    json.parse(raw, google_youtube_api_v3_dev.parameter_decoder())
+  let assert Ok(parameter) = json.parse(raw, domain.parameter_decoder())
     as "inline parameter snippet must decode"
   parameter
 }
@@ -617,7 +610,7 @@ pub fn minimal_method_decodes_with_defaults_test() {
 pub fn unknown_http_method_fails_test() {
   json.parse(
     "{\"id\": \"x\", \"path\": \"y\", \"httpMethod\": \"PATCH\"}",
-    google_youtube_api_v3_dev.method_decoder(),
+    domain.method_decoder(),
   )
   |> should.be_error
 }
@@ -663,7 +656,7 @@ pub fn minimal_parameter_decodes_with_defaults_test() {
 pub fn unknown_parameter_location_fails_test() {
   json.parse(
     "{\"location\": \"header\", \"type\": \"string\"}",
-    google_youtube_api_v3_dev.parameter_decoder(),
+    domain.parameter_decoder(),
   )
   |> should.be_error
 }
@@ -671,7 +664,7 @@ pub fn unknown_parameter_location_fails_test() {
 pub fn unknown_parameter_type_fails_test() {
   json.parse(
     "{\"location\": \"query\", \"type\": \"null\"}",
-    google_youtube_api_v3_dev.parameter_decoder(),
+    domain.parameter_decoder(),
   )
   |> should.be_error
 }

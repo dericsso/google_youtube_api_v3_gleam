@@ -1,5 +1,4 @@
 import gleam/dict.{type Dict}
-import gleam/dynamic/decode
 import gleam/int
 import gleam/io
 import gleam/json
@@ -15,13 +14,22 @@ import gleamgen/expression/constructor
 import gleamgen/function
 import gleamgen/import_.{type ImportReference}
 import gleamgen/module.{type Module}
-import gleamgen/module/definition.{type Definition}
+import gleamgen/module/definition
 import gleamgen/parameter
 import gleamgen/pattern
 import gleamgen/render
 import gleamgen/type_.{type GeneratedType}
 import gleamgen/type_/custom
 import gleamgen/type_/variant
+import google_youtube_api_v3_dev/domain.{
+  type Discovery, type Method, type Parameter, type Resource, type Schema, Any,
+  Array, Boolean, Delete, Get, Integer, Number, Object, ParamBoolean,
+  ParamInteger, ParamString, Post, Put, Ref, Str,
+}
+import google_youtube_api_v3_dev/expressions
+import google_youtube_api_v3_dev/naming
+import google_youtube_api_v3_dev/paths
+import google_youtube_api_v3_dev/rendering
 import justin
 import simplifile.{type FileError}
 
@@ -34,180 +42,34 @@ const discovery_file_path = "discovery/2026-10-16_discovery_document.json"
 // ---------------------------------------------------------------------------
 
 /// Types used by so many different groups that they keep their own module.
-const standalone_schemas = [
-  "page_info",
-  "token_pagination",
-  "resource_id",
-]
-
 /// One-family types that don't share a first token with anything: they
 /// merge into the group that actually references them. Placement was
 /// checked against the generated import graph to stay acyclic.
-fn singleton_owner(name: String) -> Result(String, Nil) {
-  case name {
-    "batch_get_stats_response"
-    | "content_rating"
-    | "geo_point"
-    | "access_policy"
-    | "brand_partner" -> Ok("video")
-    "image_settings" | "watch_settings" | "property_value" -> Ok("channel")
-    "cdn_settings" | "monitor_stream_info" | "ingestion_info" -> Ok("live")
-    "interval" -> Ok("availability")
-    "level_details" -> Ok("memberships")
-    "entity" | "related_entity" -> Ok("abuse")
-    "language_tag" -> Ok("localized")
-    _ -> Error(Nil)
-  }
-}
-
-fn first_token(name: String) -> String {
-  case string.split(name, "_") {
-    [head, ..] -> head
-    [] -> name
-  }
-}
-
 /// The module hosting the named schema, snake_case.
 pub fn group_of(name: String) -> String {
-  case list.contains(standalone_schemas, name) {
-    True -> name
-    False ->
-      case singleton_owner(name) {
-        Ok(group) -> group
-        Error(Nil) -> rename_group(first_token(name))
-      }
-  }
+  naming.group_of(name)
 }
 
 /// Gleam reserves `test` for upcoming test syntax; the TestItem domain's
 /// group takes the plural name instead (matching its `api/tests` module).
-fn rename_group(token: String) -> String {
-  case token {
-    "test" -> "tests"
-    other -> other
-  }
-}
-
 /// The group hosting a discovery (camelCase) schema name.
 pub fn schema_group_of(schema_name: String) -> String {
-  group_of(justin.snake_case(schema_name))
+  naming.schema_group_of(schema_name)
 }
 
 /// Every schema name mapped to its host module, snake_case.
 pub fn group_map(schemas: Dict(String, a)) -> Dict(String, String) {
-  schemas
-  |> dict.to_list
-  |> list.map(fn(kv) { #(kv.0, group_of(justin.snake_case(kv.0))) })
-  |> dict.from_list
+  naming.group_map(schemas)
 }
 
-/// Group schemas by host module; each list sorted by schema name.
-fn group_schemas(
-  schemas: Dict(String, Schema),
-) -> Dict(String, List(#(String, Schema))) {
-  schemas
-  |> dict.to_list
-  |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) })
-  |> list.fold(dict.new(), fn(acc, kv) {
-    let group = group_of(justin.snake_case(kv.0))
-    let current = case dict.get(acc, group) {
-      Ok(existing) -> existing
-      Error(Nil) -> []
-    }
-    dict.insert(acc, group, list.append(current, [kv]))
-  })
+pub fn parse_discovery(content: String) -> Result(Discovery, DiscoveryError) {
+  json.parse(content, domain.root_decoder()) |> result.map_error(ParseFailed)
 }
 
 pub type DiscoveryError {
   ReadFailed(FileError)
   WriteFailed(FileError)
   ParseFailed(json.DecodeError)
-}
-
-pub type Discovery {
-  Discovery(schemas: Dict(String, Schema), resources: Dict(String, Resource))
-}
-
-pub type Resource {
-  Resource(methods: Dict(String, Method), nested: Dict(String, Resource))
-}
-
-pub type HttpMethod {
-  Get
-  Post
-  Put
-  Delete
-}
-
-pub type Location {
-  Query
-  Path
-}
-
-pub type ParamType {
-  ParamString
-  ParamInteger
-  ParamBoolean
-}
-
-pub type Method {
-  Method(
-    id: String,
-    path: String,
-    http_method: HttpMethod,
-    description: Option(String),
-    parameters: Dict(String, Parameter),
-    parameter_order: List(String),
-    request: Option(String),
-    response: Option(String),
-    scopes: List(String),
-    media_upload: Option(MediaUpload),
-    supports_media_upload: Bool,
-    supports_media_download: Bool,
-  )
-}
-
-pub type MediaUpload {
-  MediaUpload(
-    accept: List(String),
-    max_size: Option(String),
-    protocols: List(String),
-  )
-}
-
-pub type Parameter {
-  Parameter(
-    location: Location,
-    param_type: ParamType,
-    format: Option(String),
-    description: Option(String),
-    required: Bool,
-    repeated: Bool,
-    default: Option(String),
-    minimum: Option(String),
-    maximum: Option(String),
-    enum: List(String),
-    deprecated: Bool,
-  )
-}
-
-pub type Schema {
-  Schema(description: Option(String), kind: Kind)
-}
-
-pub type Kind {
-  Ref(name: String)
-  Str(format: Option(String), enum: List(String))
-  Integer(format: Option(String))
-  Number
-  Boolean
-  Any
-  Array(items: Schema)
-  Object(properties: Dict(String, Schema), additional: Option(Schema))
-}
-
-pub fn parse_discovery(content: String) -> Result(Discovery, DiscoveryError) {
-  json.parse(content, root_decoder()) |> result.map_error(ParseFailed)
 }
 
 fn run() -> Result(Discovery, DiscoveryError) {
@@ -226,267 +88,17 @@ fn run() -> Result(Discovery, DiscoveryError) {
   Ok(discovery)
 }
 
-pub fn root_decoder() -> decode.Decoder(Discovery) {
-  use schemas <- decode.field(
-    "schemas",
-    decode.dict(decode.string, schema_decoder()),
-  )
-  use resources <- decode.field(
-    "resources",
-    decode.dict(decode.string, resource_decoder()),
-  )
-  decode.success(Discovery(schemas:, resources:))
-}
-
-pub fn resource_decoder() -> decode.Decoder(Resource) {
-  use <- decode.recursive
-  use methods <- decode.optional_field(
-    "methods",
-    dict.new(),
-    decode.dict(decode.string, method_decoder()),
-  )
-  use nested <- decode.optional_field(
-    "resources",
-    dict.new(),
-    decode.dict(decode.string, resource_decoder()),
-  )
-  decode.success(Resource(methods:, nested:))
-}
-
-pub fn method_decoder() -> decode.Decoder(Method) {
-  use id <- decode.field("id", decode.string)
-  use path <- decode.field("path", decode.string)
-  use http_method <- decode.then(http_method_decoder())
-  use description <- decode.optional_field(
-    "description",
-    None,
-    decode.optional(decode.string),
-  )
-  use parameters <- decode.optional_field(
-    "parameters",
-    dict.new(),
-    decode.dict(decode.string, parameter_decoder()),
-  )
-  use parameter_order <- decode.optional_field(
-    "parameterOrder",
-    [],
-    decode.list(decode.string),
-  )
-  use request <- decode.optional_field(
-    "request",
-    None,
-    decode.optional(decode.at(["$ref"], decode.string)),
-  )
-  use response <- decode.optional_field(
-    "response",
-    None,
-    decode.optional(decode.at(["$ref"], decode.string)),
-  )
-  use scopes <- decode.optional_field("scopes", [], decode.list(decode.string))
-  use media_upload <- decode.optional_field(
-    "mediaUpload",
-    None,
-    decode.optional(media_upload_decoder()),
-  )
-  use supports_media_upload <- decode.optional_field(
-    "supportsMediaUpload",
-    False,
-    decode.bool,
-  )
-  use supports_media_download <- decode.optional_field(
-    "supportsMediaDownload",
-    False,
-    decode.bool,
-  )
-  decode.success(Method(
-    id:,
-    path:,
-    http_method:,
-    description:,
-    parameters:,
-    parameter_order:,
-    request:,
-    response:,
-    scopes:,
-    media_upload:,
-    supports_media_upload:,
-    supports_media_download:,
-  ))
-}
-
-fn http_method_decoder() -> decode.Decoder(HttpMethod) {
-  use method <- decode.field("httpMethod", decode.string)
-  case method {
-    "GET" -> decode.success(Get)
-    "POST" -> decode.success(Post)
-    "PUT" -> decode.success(Put)
-    "DELETE" -> decode.success(Delete)
-    other -> decode.failure(Get, "a known HTTP method, got " <> other)
-  }
-}
-
-pub fn media_upload_decoder() -> decode.Decoder(MediaUpload) {
-  use accept <- decode.optional_field("accept", [], decode.list(decode.string))
-  use max_size <- decode.optional_field(
-    "maxSize",
-    None,
-    decode.optional(decode.string),
-  )
-  use protocols <- decode.optional_field(
-    "protocols",
-    dict.new(),
-    decode.dict(decode.string, decode.dynamic),
-  )
-  decode.success(MediaUpload(
-    accept:,
-    max_size:,
-    protocols: dict.keys(protocols),
-  ))
-}
-
-pub fn parameter_decoder() -> decode.Decoder(Parameter) {
-  use location <- decode.then(location_decoder())
-  use param_type <- decode.then(param_type_decoder())
-  use format <- decode.optional_field(
-    "format",
-    None,
-    decode.optional(decode.string),
-  )
-  use description <- decode.optional_field(
-    "description",
-    None,
-    decode.optional(decode.string),
-  )
-  use required <- decode.optional_field("required", False, decode.bool)
-  use repeated <- decode.optional_field("repeated", False, decode.bool)
-  use default <- decode.optional_field(
-    "default",
-    None,
-    decode.optional(decode.string),
-  )
-  use minimum <- decode.optional_field(
-    "minimum",
-    None,
-    decode.optional(decode.string),
-  )
-  use maximum <- decode.optional_field(
-    "maximum",
-    None,
-    decode.optional(decode.string),
-  )
-  use enum <- decode.optional_field("enum", [], decode.list(decode.string))
-  use deprecated <- decode.optional_field("deprecated", False, decode.bool)
-  decode.success(Parameter(
-    location:,
-    param_type:,
-    format:,
-    description:,
-    required:,
-    repeated:,
-    default:,
-    minimum:,
-    maximum:,
-    enum:,
-    deprecated:,
-  ))
-}
-
-fn location_decoder() -> decode.Decoder(Location) {
-  use location <- decode.field("location", decode.string)
-  case location {
-    "query" -> decode.success(Query)
-    "path" -> decode.success(Path)
-    other -> decode.failure(Query, "a known parameter location, got " <> other)
-  }
-}
-
-fn param_type_decoder() -> decode.Decoder(ParamType) {
-  use param_type <- decode.field("type", decode.string)
-  case param_type {
-    "string" -> decode.success(ParamString)
-    "integer" -> decode.success(ParamInteger)
-    "boolean" -> decode.success(ParamBoolean)
-    other ->
-      decode.failure(ParamString, "a known parameter type, got " <> other)
-  }
-}
-
-pub fn schema_decoder() -> decode.Decoder(Schema) {
-  use <- decode.recursive
-  use description <- decode.optional_field(
-    "description",
-    None,
-    decode.optional(decode.string),
-  )
-  use kind <- decode.then(kind_decoder())
-  decode.success(Schema(description:, kind:))
-}
-
-pub fn kind_decoder() -> decode.Decoder(Kind) {
-  use ref <- decode.optional_field("$ref", None, decode.optional(decode.string))
-  case ref {
-    Some(name) -> decode.success(Ref(name))
-    None -> {
-      use type_ <- decode.field("type", decode.string)
-      case type_ {
-        "string" -> {
-          use format <- decode.optional_field(
-            "format",
-            None,
-            decode.optional(decode.string),
-          )
-          use enum <- decode.optional_field(
-            "enum",
-            [],
-            decode.list(decode.string),
-          )
-          decode.success(Str(format:, enum:))
-        }
-        "integer" -> {
-          use format <- decode.optional_field(
-            "format",
-            None,
-            decode.optional(decode.string),
-          )
-          decode.success(Integer(format:))
-        }
-        "number" -> decode.success(Number)
-        "boolean" -> decode.success(Boolean)
-        "any" -> decode.success(Any)
-        "array" -> {
-          use items <- decode.field("items", schema_decoder())
-          decode.success(Array(items:))
-        }
-        "object" -> {
-          use properties <- decode.optional_field(
-            "properties",
-            dict.new(),
-            decode.dict(decode.string, schema_decoder()),
-          )
-          use additional <- decode.optional_field(
-            "additionalProperties",
-            None,
-            decode.optional(schema_decoder()),
-          )
-          decode.success(Object(properties:, additional:))
-        }
-        other -> decode.failure(Any, "a known schema type, got " <> other)
-      }
-    }
-  }
-}
-
 fn generate_code(
   discovery: Discovery,
   base_path: String,
 ) -> Result(Nil, DiscoveryError) {
   use _ <- result.try(
-    initialize_directory(base_path) |> result.map_error(WriteFailed),
+    rendering.initialize_directory(base_path) |> result.map_error(WriteFailed),
   )
 
   let groups = group_map(discovery.schemas)
   use item <- list.try_each(
-    group_schemas(discovery.schemas)
+    naming.group_schemas(discovery.schemas)
     |> dict.to_list
     |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) }),
   )
@@ -511,7 +123,7 @@ fn generate_requests(
   base_path: String,
 ) -> Result(Nil, DiscoveryError) {
   use _ <- result.try(
-    initialize_directory(base_path) |> result.map_error(WriteFailed),
+    rendering.initialize_directory(base_path) |> result.map_error(WriteFailed),
   )
 
   use item <- list.try_each(grouped_resources(discovery.resources))
@@ -714,7 +326,7 @@ fn method_param_enum(
         to_string_name: stem <> "_to_string",
         decoder_name: stem <> "_decoder",
         variants: list.map(values, fn(value) {
-          #(type_name <> enum_variant_stem(value), value)
+          #(type_name <> naming.enum_variant_stem(value), value)
         }),
       ))
     }
@@ -873,7 +485,7 @@ fn build_request_module(methods: List(#(String, String, Method))) -> String {
   mod
   |> module.render(render.default_context())
   |> render.to_string()
-  |> fix_empty_param_break()
+  |> rendering.fix_empty_param_break()
 }
 
 fn ref_or(
@@ -914,7 +526,7 @@ fn with_request_method(
       list.map(spec.optional, fn(item) { #(item, False) }),
     )
   let field_of = fn(item: #(String, Parameter)) {
-    #(sanitize_field(justin.snake_case(item.0)), item.1)
+    #(naming.sanitize_field(justin.snake_case(item.0)), item.1)
   }
   let fields =
     list.map(ordered, fn(pair) {
@@ -933,7 +545,7 @@ fn with_request_method(
   let details =
     definition.new(params_type)
     |> definition.with_publicity(True)
-    |> with_description(spec.method.description)
+    |> rendering.with_description(spec.method.description)
   use _type, constructors <- module.with_custom_type_dynamic(
     details,
     custom.new_dynamic(
@@ -954,7 +566,7 @@ fn with_request_method(
   let required_args =
     list.map(spec.required, fn(item) {
       parameter.new(
-        sanitize_field(justin.snake_case(item.0)),
+        naming.sanitize_field(justin.snake_case(item.0)),
         param_value_type(item.1, enum_for(spec.enums, item.0))
           |> type_.to_dynamic,
       )
@@ -962,7 +574,7 @@ fn with_request_method(
   let init_for = fn(item: #(String, Parameter), is_required: Bool) {
     case is_required {
       True ->
-        expression.raw(sanitize_field(justin.snake_case(item.0)))
+        expression.raw(naming.sanitize_field(justin.snake_case(item.0)))
         |> expression.to_dynamic
       False -> expression.option_none() |> expression.to_dynamic
     }
@@ -996,9 +608,9 @@ fn with_to_request(
   let params = list.append(spec.required, spec.optional)
   // Segments combine with one `flatten`: an empty `[]` literal would
   // misrender as `[ , ]` once glam breaks the line, so empties below
-  // always go through `empty_list()`.
+  // always go through `expressions.empty_list()`.
   let query =
-    expression.call_dynamic(qualified(ctx.list_ref, "flatten"), [
+    expression.call_dynamic(expressions.qualified(ctx.list_ref, "flatten"), [
       expression.list(
         list.map(params, fn(item) {
           query_segment(item.0, item.1, enum_for(spec.enums, item.0), ctx)
@@ -1010,13 +622,19 @@ fn with_to_request(
     None -> expression.option_none() |> expression.to_dynamic
     Some(body_name) -> {
       let assert Ok(body_ref) = dict.get(ctx.body_lookup, body_name)
-      some_expr(
-        expression.call_dynamic(qualified(ctx.json_ref, "to_string"), [
-          expression.call_dynamic(
-            qualified(body_ref, justin.snake_case(body_name) <> "_to_json"),
-            [raw_expr("body")],
-          ),
-        ]),
+      expressions.some(
+        expression.call_dynamic(
+          expressions.qualified(ctx.json_ref, "to_string"),
+          [
+            expression.call_dynamic(
+              expressions.qualified(
+                body_ref,
+                justin.snake_case(body_name) <> "_to_json",
+              ),
+              [expressions.raw("body")],
+            ),
+          ],
+        ),
       )
     }
   }
@@ -1034,10 +652,10 @@ fn with_to_request(
       ))
         |> expression.to_dynamic,
       [
-        qualified(ctx.http_ref, http_method),
-        path_expr(spec.method.path),
+        expressions.qualified(ctx.http_ref, http_method),
+        paths.path_expr(spec.method.path),
         query,
-        empty_list(),
+        expressions.empty_list(),
         expression.list(
           list.map(spec.method.scopes, fn(scope) {
             expression.string(scope) |> expression.to_dynamic
@@ -1090,7 +708,7 @@ fn query_segment(
   field_enum: Option(EnumSpec),
   ctx: BuilderCtx,
 ) -> expression.Expression(type_.Dynamic) {
-  let field_name = sanitize_field(justin.snake_case(json_key))
+  let field_name = naming.sanitize_field(justin.snake_case(json_key))
   let pair = fn(value) {
     expression.tuple2(
       expression.string(json_key) |> expression.to_dynamic,
@@ -1100,28 +718,35 @@ fn query_segment(
   }
   case param.required, param.repeated {
     True, False ->
-      expression.list([pair(access_field("params", field_name))])
+      expression.list([pair(expressions.access_field("params", field_name))])
       |> expression.to_dynamic
     True, True ->
-      expression.call_dynamic(qualified(ctx.list_ref, "map"), [
-        access_field("params", field_name),
-        closure1("v", pair(raw_expr("v"))),
+      expression.call_dynamic(expressions.qualified(ctx.list_ref, "map"), [
+        expressions.access_field("params", field_name),
+        rendering.closure1("v", pair(expressions.raw("v"))),
       ])
     False, _ ->
-      case_.new(option_subject(access_field("params", field_name)))
+      case_.new(
+        expressions.option_subject(expressions.access_field(
+          "params",
+          field_name,
+        )),
+      )
       |> case_.with_pattern(pattern.option_some(pattern.variable("v")), fn(v) {
         case param.repeated {
           True ->
-            expression.call_dynamic(qualified(ctx.list_ref, "map"), [
+            expression.call_dynamic(expressions.qualified(ctx.list_ref, "map"), [
               v |> expression.to_dynamic,
-              closure1("w", pair(raw_expr("w"))),
+              rendering.closure1("w", pair(expressions.raw("w"))),
             ])
           False ->
             expression.list([pair(v |> expression.to_dynamic)])
             |> expression.to_dynamic
         }
       })
-      |> case_.with_pattern(pattern.option_none(), fn(_) { empty_list() })
+      |> case_.with_pattern(pattern.option_none(), fn(_) {
+        expressions.empty_list()
+      })
       |> case_.build_expression
       |> expression.to_dynamic
   }
@@ -1129,10 +754,6 @@ fn query_segment(
 
 /// An empty list literal. Built raw because glam misrenders a broken
 /// empty pretty-list as `[ , ]`.
-fn empty_list() -> expression.Expression(type_.Dynamic) {
-  expression.raw("[]") |> expression.to_dynamic
-}
-
 /// Render one query value as a string.
 fn query_value(
   value: expression.Expression(type_.Dynamic),
@@ -1151,52 +772,18 @@ fn query_value(
         None -> value
       }
     ParamInteger ->
-      expression.call_dynamic(qualified(ctx.int_ref, "to_string"), [value])
+      expression.call_dynamic(expressions.qualified(ctx.int_ref, "to_string"), [
+        value,
+      ])
     ParamBoolean ->
-      expression.call_dynamic(qualified(ctx.bool_ref, "to_string"), [value])
+      expression.call_dynamic(expressions.qualified(ctx.bool_ref, "to_string"), [
+        value,
+      ])
   }
 }
 
 /// A path with `{placeholders}` becomes string concatenations.
 /// Only `captions.download` uses one, but this handles the general case.
-fn path_expr(path: String) -> expression.Expression(type_.Dynamic) {
-  let parts = parse_path_template(path)
-  let exprs =
-    list.map(parts, fn(part) {
-      case part {
-        #(False, literal) -> expression.string(literal)
-        #(True, name) ->
-          access_field("params", sanitize_field(justin.snake_case(name)))
-          |> expression.coerce_dynamic_unsafe
-      }
-    })
-  case exprs {
-    [] -> expression.string("")
-    [first, ..rest] ->
-      list.fold(rest, first, fn(acc, part) {
-        expression.concat_string(acc, part)
-      })
-  }
-  |> expression.to_dynamic
-}
-
-fn parse_path_template(path: String) -> List(#(Bool, String)) {
-  case string.split(path, on: "{") {
-    [] -> []
-    [head, ..tail] -> {
-      let parts =
-        list.flat_map(tail, fn(chunk) {
-          case string.split_once(chunk, on: "}") {
-            Ok(#(var, after)) -> [#(True, var), #(False, after)]
-            Error(Nil) -> [#(False, "{" <> chunk)]
-          }
-        })
-      [#(False, head), ..parts]
-      |> list.filter(fn(part) { part.1 != "" || part.0 })
-    }
-  }
-}
-
 /// `with_*` replaces one optional param, `add_*` appends one repeated value.
 fn with_setters(
   spec: MethodSpec,
@@ -1236,7 +823,7 @@ fn with_setter(
   handler: fn() -> Module,
 ) -> Module {
   let #(json_key, param) = item
-  let field_name = sanitize_field(justin.snake_case(json_key))
+  let field_name = naming.sanitize_field(justin.snake_case(json_key))
   let field_enum = enum_for(spec.enums, json_key)
   let params_type = spec.method_pascal <> "Params"
   let is_required = param_required(spec, json_key)
@@ -1245,38 +832,53 @@ fn with_setter(
     "add" -> param_base_type(param, field_enum)
     _ -> param_value_type(param, field_enum)
   }
-  let single = expression.list([raw_expr("value")]) |> expression.to_dynamic
+  let single =
+    expression.list([expressions.raw("value")]) |> expression.to_dynamic
   let appended =
-    expression.call_dynamic(qualified(ctx.list_ref, "append"), [
-      access_field("params", field_name),
+    expression.call_dynamic(expressions.qualified(ctx.list_ref, "append"), [
+      expressions.access_field("params", field_name),
       single,
     ])
   let new_value = case kind, is_required {
     "add", True -> appended
     "add", False ->
-      case_.new(option_subject(access_field("params", field_name)))
+      case_.new(
+        expressions.option_subject(expressions.access_field(
+          "params",
+          field_name,
+        )),
+      )
       |> case_.with_pattern(pattern.option_some(pattern.variable("vs")), fn(vs) {
-        some_expr(
-          expression.call_dynamic(qualified(ctx.list_ref, "append"), [
-            vs |> expression.to_dynamic,
-            single,
-          ]),
+        expressions.some(
+          expression.call_dynamic(
+            expressions.qualified(ctx.list_ref, "append"),
+            [
+              vs |> expression.to_dynamic,
+              single,
+            ],
+          ),
         )
       })
-      |> case_.with_pattern(pattern.option_none(), fn(_) { some_expr(single) })
+      |> case_.with_pattern(pattern.option_none(), fn(_) {
+        expressions.some(single)
+      })
       |> case_.build_expression
       |> expression.to_dynamic
-    _, _ -> some_expr(raw_expr("value"))
+    _, _ -> expressions.some(expressions.raw("value"))
   }
   let rebuilt =
     expression.call_dynamic(
       ctor_expr,
       list.map(ordered, fn(pair) {
-        let target = sanitize_field(justin.snake_case(pair.0.0)) == field_name
+        let target =
+          naming.sanitize_field(justin.snake_case(pair.0.0)) == field_name
         case target {
           True -> new_value
           False ->
-            access_field("params", sanitize_field(justin.snake_case(pair.0.0)))
+            expressions.access_field(
+              "params",
+              naming.sanitize_field(justin.snake_case(pair.0.0)),
+            )
         }
       }),
     )
@@ -1333,38 +935,6 @@ fn param_base_type(
 
 fn param_required(spec: MethodSpec, json_key: String) -> Bool {
   list.any(spec.required, fn(item) { item.0 == json_key })
-}
-
-fn raw_expr(name: String) -> expression.Expression(type_.Dynamic) {
-  expression.raw(name) |> expression.to_dynamic
-}
-
-/// Re-type an expression so `case_` patterns can unify against it
-/// (e.g. matching `option_some` on an `Option` field).
-fn option_subject(
-  value: expression.Expression(type_.Dynamic),
-) -> expression.Expression(Option(a)) {
-  expression.coerce_dynamic_unsafe(value)
-}
-
-fn some_expr(
-  value: expression.Expression(type_.Dynamic),
-) -> expression.Expression(type_.Dynamic) {
-  expression.option_some(value) |> expression.to_dynamic
-}
-
-fn access_field(
-  record: String,
-  field: String,
-) -> expression.Expression(type_.Dynamic) {
-  expression.field(expression.raw(record), field) |> expression.to_dynamic
-}
-
-fn qualified(
-  ref: ImportReference,
-  name: String,
-) -> expression.Expression(type_.Dynamic) {
-  expression.imported_ident(ref, name) |> expression.to_dynamic
 }
 
 /// Build the full source text for a single schema file.
@@ -1524,7 +1094,7 @@ pub fn build_group_module(
   })
   |> module.render(render.default_context())
   |> render.to_string()
-  |> fix_empty_param_break()
+  |> rendering.fix_empty_param_break()
 }
 
 /// Everything a group's decoder/encoder builders need.
@@ -1550,7 +1120,7 @@ fn base_props(
         let #(json_key, prop_schema) = prop
         #(
           json_key,
-          sanitize_field(justin.snake_case(json_key)),
+          naming.sanitize_field(justin.snake_case(json_key)),
           prop_schema,
           property_enum(json_key, prop_schema),
         )
@@ -1576,7 +1146,7 @@ fn prefix_enum(
             to_string_name: justin.snake_case(type_name) <> "_to_string",
             decoder_name: justin.snake_case(type_name) <> "_decoder",
             variants: list.map(spec.variants, fn(v) {
-              #(type_name <> enum_variant_stem(v.1), v.1)
+              #(type_name <> naming.enum_variant_stem(v.1), v.1)
             }),
           ))
         }
@@ -1617,7 +1187,7 @@ fn with_schema_items(
       let details =
         definition.new(name)
         |> definition.with_publicity(True)
-        |> with_description(schema.description)
+        |> rendering.with_description(schema.description)
       let variant =
         variant.new(name)
         |> variant.with_arguments_dynamic(fields)
@@ -1801,27 +1371,11 @@ fn property_enum(json_key: String, schema: Schema) -> Option(EnumSpec) {
         to_string_name: stem <> "_to_string",
         decoder_name: stem <> "_decoder",
         variants: list.map(values, fn(value) {
-          #(type_name <> enum_variant_stem(value), value)
+          #(type_name <> naming.enum_variant_stem(value), value)
         }),
       ))
     }
     _ -> None
-  }
-}
-
-/// Constructor names must start with a letter: `240p` becomes `Value240p`.
-/// Callers prefix with the enum type name since constructors are
-/// module-scoped in Gleam.
-fn enum_variant_stem(value: String) -> String {
-  let base = justin.pascal_case(value)
-  let alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  case string.to_graphemes(base) {
-    [first, ..] ->
-      case string.contains(alpha, first) {
-        True -> base
-        False -> "Value" <> base
-      }
-    _ -> "Value" <> base
   }
 }
 
@@ -1842,7 +1396,7 @@ fn with_enums(
       let details =
         definition.new(spec.type_name)
         |> definition.with_publicity(True)
-        |> with_description(description)
+        |> rendering.with_description(description)
       use _type, constructors <- module.with_custom_type_dynamic(
         details,
         custom.new_dynamic(variants, []),
@@ -1980,7 +1534,7 @@ fn encoder_function(
   let body =
     expression.call_dynamic(j("object"), [
       case entries {
-        [] -> empty_list()
+        [] -> expressions.empty_list()
         _ -> expression.list(entries) |> expression.to_dynamic
       },
     ])
@@ -2013,7 +1567,7 @@ fn value_to_json_fn(
     Boolean -> j("bool")
     Any -> j("string")
     Array(items:) ->
-      closure1(
+      rendering.closure1(
         "items",
         expression.call_dynamic(j("array"), [
           expression.raw("items") |> expression.to_dynamic,
@@ -2032,15 +1586,15 @@ fn value_to_json_fn(
     Object(properties:, additional:) -> {
       let #(key_fn, value_fn) = case dict.is_empty(properties), additional {
         True, Some(extra) -> #(
-          closure1("k", expression.raw("k") |> expression.to_dynamic),
+          rendering.closure1("k", expression.raw("k") |> expression.to_dynamic),
           element_to_json_fn(extra, json_ref, ref_lookup, None),
         )
         _, _ -> #(
-          closure1("k", expression.raw("k") |> expression.to_dynamic),
+          rendering.closure1("k", expression.raw("k") |> expression.to_dynamic),
           j("string"),
         )
       }
-      closure1(
+      rendering.closure1(
         "d",
         expression.call_dynamic(j("dict"), [
           expression.raw("d") |> expression.to_dynamic,
@@ -2065,7 +1619,7 @@ fn element_to_json_fn(
       let j = fn(name) {
         import_.raw_ident(json_ref, name) |> expression.to_dynamic
       }
-      closure1(
+      rendering.closure1(
         "e",
         expression.call_dynamic(j("string"), [
           expression.call_dynamic(
@@ -2079,83 +1633,9 @@ fn element_to_json_fn(
   }
 }
 
-/// A one-argument anonymous function expression.
-fn closure1(
-  param_name: String,
-  body: expression.Expression(type_.Dynamic),
-) -> expression.Expression(type_.Dynamic) {
-  function.new1(
-    param1: parameter.new(param_name, type_.dynamic() |> type_.to_dynamic),
-    returns: type_.dynamic() |> type_.to_dynamic,
-    handler: fn(_) { body },
-  )
-  |> function.anonymous
-  |> expression.to_dynamic
-}
-
-fn with_description(
-  details: Definition,
-  description: Option(String),
-) -> Definition {
-  case description {
-    Some(doc) -> definition.with_documentation_comments(details, [doc])
-    None -> details
-  }
-}
-
-/// glam breaks a zero-parameter list that doesn't fit a line as
-/// `(" ," )` — collapse it back to `()` (same renderer quirk family as
-/// the `[ , ]` empty-list misrender, which the `empty_list()` helper
-/// avoids the same way).
-fn fix_empty_param_break(code: String) -> String {
-  code
-  |> string.replace("(\n  ,\n)", "()")
-  |> string.replace("(\n    ,\n  )", "()")
-}
-
 /// Gleam keywords can't be used as labelled-argument names. Decoder helper
 /// names are also reserved so field bindings never shadow them in generated
 /// `decoder()` bodies.
-fn sanitize_field(name: String) -> String {
-  case name {
-    "as"
-    | "assert"
-    | "auto"
-    | "case"
-    | "const"
-    | "delegate"
-    | "derive"
-    | "echo"
-    | "else"
-    | "fn"
-    | "if"
-    | "import"
-    | "let"
-    | "opaque"
-    | "panic"
-    | "pub"
-    | "test"
-    | "todo"
-    | "type"
-    | "use"
-    | "bool"
-    | "decode"
-    | "decoder"
-    | "dict"
-    | "dynamic"
-    | "float"
-    | "int"
-    | "json"
-    | "list"
-    | "option"
-    | "optional"
-    | "optional_field"
-    | "string"
-    | "success" -> name <> "_"
-    _ -> name
-  }
-}
-
 fn schema_to_type(
   schema: Schema,
   ref_lookup: Dict(String, ImportReference),
@@ -2231,16 +1711,6 @@ fn collect_refs(schema: Schema) -> List(String) {
     }
     Str(_, _) | Integer(_) | Number | Boolean | Any -> []
   }
-}
-
-fn initialize_directory(directory_path: String) -> Result(Nil, FileError) {
-  use res <- result.try(simplifile.exists(directory_path, False))
-  let res = case res {
-    True -> Ok(Nil)
-    False -> simplifile.create_directory(directory_path)
-  }
-  use _ <- result.try(res)
-  simplifile.clear_directory(directory_path)
 }
 
 pub fn main() -> Nil {

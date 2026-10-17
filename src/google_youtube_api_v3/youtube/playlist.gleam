@@ -1,5 +1,3 @@
-//// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
-
 import gleam/dict.{type Dict}
 import gleam/dynamic/decode.{type Decoder}
 import gleam/json.{type Json}

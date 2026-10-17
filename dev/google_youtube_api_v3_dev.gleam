@@ -544,6 +544,8 @@ fn api_group_of(resource: String) -> String {
     ["youtube", "v3", ..] -> "live"
     ["members", ..] | ["memberships", ..] -> "memberships"
     ["subscriptions", ..] -> "subscription"
+    ["super", "chat", ..] -> "super_chat"
+    ["third", "party", ..] -> "third_party_links"
     ["videos", ..] | ["video", ..] -> "video"
     ["channels", ..] | ["channel", ..] -> "channel"
     ["playlists", ..] | ["playlist", ..] -> "playlist"
@@ -823,7 +825,7 @@ fn build_request_module(methods: List(#(String, String, Method))) -> String {
       },
     ])
   let mod =
-    module.with_module_documentation_comments([generated_notice], fn() {
+    module.with_module_documentation_comments([], fn() {
       use imported <- module.with_dynamic_imports(
         list.map(tagged, fn(t) { t.1 }),
       )
@@ -1370,10 +1372,6 @@ fn qualified(
   expression.imported_ident(ref, name) |> expression.to_dynamic
 }
 
-/// Marker rendered as a `////` comment on top of every generated file.
-pub const generated_notice: String =
-  "DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`"
-
 /// Build the full source text for a single schema file.
 /// Build the full source text for one schema group: every schema of the
 /// group becomes a custom type plus `<schema>_decoder` and
@@ -1482,7 +1480,7 @@ pub fn build_group_module(
       host_imports,
     ])
 
-  module.with_module_documentation_comments([generated_notice], fn() {
+  module.with_module_documentation_comments([], fn() {
     use imported <- module.with_dynamic_imports(all_imports)
     let assert [decode_mod, json_mod, ..rest] = imported
     let #(dict_mods, rest2) =

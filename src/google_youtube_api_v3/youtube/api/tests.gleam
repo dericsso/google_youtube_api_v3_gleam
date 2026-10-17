@@ -1,5 +1,3 @@
-//// DO NOT CHANGE, THIS IS AN AUTO GENERATED FILE FROM `generate.gleam`
-
 import gleam/http
 import gleam/json
 import gleam/list

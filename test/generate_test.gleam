@@ -428,12 +428,6 @@ pub fn description_is_optional_test() {
 // Codegen tests: the `type` emitted per file
 // ---------------------------------------------------------------------------
 
-pub fn generated_module_carries_do_not_change_header_test() {
-  render_group("Video")
-  |> string.starts_with("//// " <> google_youtube_api_v3_dev.generated_notice)
-  |> should.be_true
-}
-
 // ---------------------------------------------------------------------------
 // Method/resource regression tests
 // ---------------------------------------------------------------------------

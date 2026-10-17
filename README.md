@@ -17,12 +17,12 @@ Each of the 209 API resource types gets its own module under `youtube/` with:
 - a real custom type plus `to_string`/`decoder` helpers for every
   string-enum field (e.g. `PrivacyStatusPublic` instead of a bare string).
 
-Each of the 32 API resources also gets a fluent request builder under
-`youtube/api/` (one per resource, all 83 methods), plus a Sans-IO runtime
+The 32 API resources are grouped into 17 semantic fluent request-builder
+modules under `youtube/api/` (all 83 methods), plus a Sans-IO runtime
 in `google_youtube_api_v3/request` (maintained source, not generated):
 
-- `videos.list(["snippet"]) |> videos.list_with_max_results(10)` builds
-  params; `videos.list_request(params)` renders a pure `Request` value
+- `video.videos_list(["snippet"]) |> video.videos_list_with_max_results(10)`
+  builds params; `video.videos_list_request(params)` renders a pure `Request` value
   (verb, path, query pairs, scopes, optional JSON body),
 - `request.authorize(req, request.ApiKey(key))` pins credentials,
 - `request.parse_response(status, body, decoder)` decodes success bodies
@@ -43,10 +43,9 @@ import gleam/json
 import gleam/option
 import gleam/result
 import google_youtube_api_v3/request
-import google_youtube_api_v3/youtube/api/videos
-import google_youtube_api_v3/youtube/playlist_item_status
+import google_youtube_api_v3/youtube/api/video as video_api
+import google_youtube_api_v3/youtube/playlist
 import google_youtube_api_v3/youtube/video
-import google_youtube_api_v3/youtube/video_list_response
 
 pub fn video_title(body: String) -> option.Option(String) {
   // Decode a video resource. Missing fields become `None`,
@@ -58,9 +57,9 @@ pub fn video_title(body: String) -> option.Option(String) {
   }
 }
 
-pub fn privacy_label(status: playlist_item_status.PlaylistItemStatus) -> String {
+pub fn privacy_label(status: playlist.PlaylistItemStatus) -> String {
   case status.privacy_status {
-    option.Some(s) -> playlist_item_status.privacy_status_to_string(s)
+    option.Some(s) -> playlist.playlist_item_status_privacy_status_to_string(s)
     option.None -> "unknown"
   }
 }
@@ -70,10 +69,10 @@ pub fn most_popular(api_key: String) {
   // `gleam/http` request, send it with Stock Erlang httpc, then parse
   // the response with a generated decoder.
   let req =
-    videos.list(["snippet"])
-    |> videos.list_with_chart(videos.ListChartMostPopular)
-    |> videos.list_with_max_results(10)
-    |> videos.list_request
+    video_api.videos_list(["snippet"])
+    |> video_api.videos_list_with_chart(video_api.VideosListChartMostPopular)
+    |> video_api.videos_list_with_max_results(10)
+    |> video_api.videos_list_request
   use response <- result.try(
     req
     |> request.authorize(request.ApiKey(api_key))
@@ -84,7 +83,7 @@ pub fn most_popular(api_key: String) {
   request.parse_response(
     response.status,
     response.body,
-    video_list_response.decoder(),
+    video.video_list_response_decoder(),
   )
   |> result.map_error(fn(_) { Nil })
 }

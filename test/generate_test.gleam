@@ -8,8 +8,8 @@ import gleam/string
 import gleeunit/should
 import google_youtube_api_v3/request as api_request
 import google_youtube_api_v3/youtube/api/captions as captions_api
-import google_youtube_api_v3/youtube/api/playlists as playlists_api
-import google_youtube_api_v3/youtube/api/videos as videos_api
+import google_youtube_api_v3/youtube/api/playlist as playlists_api
+import google_youtube_api_v3/youtube/api/video as videos_api
 import google_youtube_api_v3/youtube/page_info
 import google_youtube_api_v3/youtube/playlist
 import google_youtube_api_v3/youtube/video
@@ -854,10 +854,10 @@ pub fn resources_flatten_to_32_builder_modules_test() {
 
 pub fn fluent_builder_renders_full_request_test() {
   let request =
-    videos_api.list(["snippet", "id"])
-    |> videos_api.list_with_max_results(10)
-    |> videos_api.list_with_chart(videos_api.ListChartMostPopular)
-    |> videos_api.list_request
+    videos_api.videos_list(["snippet", "id"])
+    |> videos_api.videos_list_with_max_results(10)
+    |> videos_api.videos_list_with_chart(videos_api.VideosListChartMostPopular)
+    |> videos_api.videos_list_request
   should.equal(request.method, http.Get)
   should.equal(request.path, "youtube/v3/videos")
   should.equal(request.query, [
@@ -876,9 +876,9 @@ pub fn fluent_builder_renders_full_request_test() {
 
 pub fn fluent_builder_appends_repeated_values_test() {
   let request =
-    videos_api.list(["snippet"])
-    |> videos_api.list_add_part("id")
-    |> videos_api.list_request
+    videos_api.videos_list(["snippet"])
+    |> videos_api.videos_list_add_part("id")
+    |> videos_api.videos_list_request
   should.equal(request.query, [#("part", "snippet"), #("part", "id")])
 }
 
@@ -895,8 +895,8 @@ pub fn fluent_builder_encodes_typed_body_test() {
   let body =
     playlist.Playlist(None, None, Some("PL1"), None, None, None, None, None)
   let request =
-    playlists_api.insert(["snippet"])
-    |> playlists_api.insert_request(body)
+    playlists_api.playlists_insert(["snippet"])
+    |> playlists_api.playlists_insert_request(body)
   should.equal(request.method, http.Post)
   should.equal(request.path, "youtube/v3/playlists")
   let assert Some(raw) = request.body
@@ -910,16 +910,16 @@ pub fn fluent_builder_encodes_typed_body_test() {
 
 pub fn authorize_appends_api_key_to_query_test() {
   let request =
-    videos_api.list(["snippet"])
-    |> videos_api.list_request
+    videos_api.videos_list(["snippet"])
+    |> videos_api.videos_list_request
     |> api_request.authorize(api_request.ApiKey("KEY"))
   should.equal(request.query, [#("key", "KEY"), #("part", "snippet")])
 }
 
 pub fn authorize_adds_bearer_header_test() {
   let request =
-    videos_api.list(["snippet"])
-    |> videos_api.list_request
+    videos_api.videos_list(["snippet"])
+    |> videos_api.videos_list_request
     |> api_request.authorize(api_request.OAuthToken("TOKEN"))
   should.equal(request.headers, [#("Authorization", "Bearer TOKEN")])
 }
@@ -961,9 +961,9 @@ pub fn http_method_to_string_test() {
 
 pub fn to_url_encodes_query_test() {
   let url =
-    videos_api.list(["snippet"])
-    |> videos_api.list_with_max_results(5)
-    |> videos_api.list_request
+    videos_api.videos_list(["snippet"])
+    |> videos_api.videos_list_with_max_results(5)
+    |> videos_api.videos_list_request
     |> api_request.to_url
   should.equal(
     url,
@@ -973,9 +973,9 @@ pub fn to_url_encodes_query_test() {
 
 pub fn to_http_request_converts_sans_io_request_test() {
   let converted =
-    videos_api.list(["snippet"])
-    |> videos_api.list_with_max_results(5)
-    |> videos_api.list_request
+    videos_api.videos_list(["snippet"])
+    |> videos_api.videos_list_with_max_results(5)
+    |> videos_api.videos_list_request
     |> api_request.to_http_request
   should.equal(converted.method, http.Get)
   should.equal(converted.scheme, http.Https)

@@ -503,7 +503,7 @@ fn generate_code(
 }
 
 // ---------------------------------------------------------------------------
-// Request builders: one fluent module per API resource under youtube/api
+// Request builders: one fluent module per semantic API family under youtube/api
 // ---------------------------------------------------------------------------
 
 fn generate_requests(
@@ -514,7 +514,7 @@ fn generate_requests(
     initialize_directory(base_path) |> result.map_error(WriteFailed),
   )
 
-  use item <- list.try_each(flatten_resources(discovery.resources))
+  use item <- list.try_each(grouped_resources(discovery.resources))
 
   let #(module_name, methods) = item
   let file_path = base_path <> "/" <> module_name <> ".gleam"
@@ -536,6 +536,69 @@ pub fn flatten_resources(
   dict.to_list(resources)
   |> list.flat_map(fn(item) { flatten_resource([item.0], item.1) })
   |> list.sort(fn(a, b) { string.compare(a.0, b.0) })
+}
+
+fn api_group_of(resource: String) -> String {
+  let tokens = resource |> justin.snake_case |> string.split("_")
+  case tokens {
+    ["youtube", "v3", ..] -> "live"
+    ["members", ..] | ["memberships", ..] -> "memberships"
+    ["subscriptions", ..] -> "subscription"
+    ["videos", ..] | ["video", ..] -> "video"
+    ["channels", ..] | ["channel", ..] -> "channel"
+    ["playlists", ..] | ["playlist", ..] -> "playlist"
+    ["comments", ..] | ["comment", ..] -> "comment"
+    ["activities", ..] | ["activity", ..] -> "activity"
+    [head, ..] -> head
+    [] -> resource
+  }
+}
+
+fn grouped_resources(
+  resources: Dict(String, Resource),
+) -> List(#(String, List(#(String, String, Method)))) {
+  let flattened = flatten_resources(resources)
+  let resource_counts =
+    flattened
+    |> list.fold(dict.new(), fn(acc, item) {
+      let group = api_group_of(item.0)
+      let current = case dict.get(acc, group) {
+        Ok(names) -> names
+        Error(Nil) -> []
+      }
+      case list.contains(current, item.0) {
+        True -> dict.insert(acc, group, current)
+        False -> dict.insert(acc, group, list.append(current, [item.0]))
+      }
+    })
+  flattened
+  |> list.fold(dict.new(), fn(acc, item) {
+    let #(resource, methods) = item
+    let group = api_group_of(resource)
+    let prefix = case dict.get(resource_counts, group) {
+      Ok(names) -> list.length(names) > 1
+      Error(Nil) -> False
+    }
+    let tagged =
+      methods
+      |> list.map(fn(method) {
+        let method_name = case prefix {
+          True -> resource <> "_" <> method.0
+          False -> method.0
+        }
+        #(resource, method_name, method.1)
+      })
+    let current = case dict.get(acc, group) {
+      Ok(existing) -> existing
+      Error(Nil) -> []
+    }
+    dict.insert(acc, group, list.append(current, tagged))
+  })
+  |> dict.to_list
+  |> list.map(fn(item) {
+    #(item.0, list.sort(item.1, by: fn(a, b) { string.compare(a.1, b.1) }))
+  })
+  |> list.sort(by: fn(a, b) { string.compare(a.0, b.0) })
 }
 
 fn flatten_resource(
@@ -667,8 +730,9 @@ fn enum_for(
 }
 
 /// Build one `youtube/api/*` module: a fluent params builder per method.
-fn build_request_module(methods: List(#(String, Method))) -> String {
-  let specs = list.map(methods, fn(item) { to_method_spec(item.0, item.1) })
+fn build_request_module(methods: List(#(String, String, Method))) -> String {
+  let specs =
+    list.map(methods, fn(item) { to_method_spec(item.1, item.2) })
   let all_params =
     list.flat_map(specs, fn(spec) { list.append(spec.required, spec.optional) })
   let param_types = list.map(all_params, fn(item) { item.1.param_type })

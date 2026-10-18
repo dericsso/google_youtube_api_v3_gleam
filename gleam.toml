@@ -1,8 +1,8 @@
 name = "google_youtube_api_v3"
-version = "2.0.0"
+version = "2.0.1"
 description = "Gleam bindings for the YouTube Data API v3, generated from the official discovery document"
 licences = ["Apache-2.0"]
-repository = { type = "github", user = "dericsso", repo = "google_api_gleam" }
+repository = { type = "github", user = "dericsso", repo = "google_youtube_api_v3_gleam" }
 links = [{ title = "Homepage", href = "https://github.com/dericsso/google_api_gleam" }]
 
 # For a full reference of all the available options, you can have a look at
